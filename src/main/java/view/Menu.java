@@ -3,7 +3,9 @@ package view;
 import com.google.gson.GsonBuilder;
 import view.accountmenu.AccountMenuProcessor;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -19,13 +21,25 @@ public class Menu {
     }
 
     public static Menu makeMenu(String menuName) {
-        String json;
+        String json = "";
         try {
-            json = Menu.getJsonFromDB(String menuName);
+            json = Menu.getJsonFromDB(menuName);
         } catch (FileNotFoundException e) {
             System.out.println("file not found");
         }
         return new GsonBuilder().setPrettyPrinting().create().fromJson(json, Menu.class);
+    }
+
+    public static String getJsonFromDB(String menuName) throws FileNotFoundException {
+        File file = new File(menuName + ".json");
+        Scanner myScanner = new Scanner(file);
+        StringBuilder json = new StringBuilder();
+        while (myScanner.hasNextLine()){
+            json.append(myScanner.nextLine());
+            json.append("\n");
+        }
+        json = new StringBuilder(json.substring(0, json.length() - 1));
+        return json.toString();
     }
 
     public void show() {
