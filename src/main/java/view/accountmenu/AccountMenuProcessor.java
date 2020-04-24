@@ -11,11 +11,11 @@ public class AccountMenuProcessor {
     private HashMap<String, FunctioningOption> functionHashMap;
 
     public boolean isThereFunctionWithName(String functionName){
-        return functionHashMap.containsKey(functionName);
+        return functionHashMap.containsKey(functionName.toLowerCase());
     }
 
     public void executeTheFunctionWithName(String functionName){
-        functionHashMap.get(functionName).dosth();
+        functionHashMap.get(functionName.toLowerCase()).dosth();
     }
 
     private AccountMenuProcessor(){
