@@ -8,7 +8,15 @@ import java.util.Scanner;
 public class AccountMenuProcessor {
     private static AccountMenuProcessor accountMenuProcessor;
     private static Scanner scanner = new Scanner(System.in);
-    HashMap<String, FunctioningOption> functionHashMap;
+    private HashMap<String, FunctioningOption> functionHashMap;
+
+    public boolean isThereFunctionWithName(String functionName){
+        return functionHashMap.containsKey(functionName);
+    }
+
+    public void executeTheFunctionWithName(String functionName){
+        functionHashMap.get(functionName).dosth();
+    }
 
     private AccountMenuProcessor(){
         this.functionHashMap = new HashMap<String, FunctioningOption>();
@@ -27,7 +35,7 @@ public class AccountMenuProcessor {
 
     }
 
-    public AccountMenuProcessor getInstance(){
+    public static AccountMenuProcessor getInstance(){
         if(accountMenuProcessor == null)
             return new AccountMenuProcessor();
 
