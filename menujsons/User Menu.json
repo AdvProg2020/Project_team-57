@@ -1,0 +1,9 @@
+{
+  "options" : [
+    "Register",
+    "Login"
+  ],
+  "name" : "User Menu",
+  "parentMenu" : "Main Menu",
+  "isThereParentMenu" : "true"
+}

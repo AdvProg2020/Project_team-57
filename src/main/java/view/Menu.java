@@ -1,6 +1,7 @@
 package view;
 
 import com.google.gson.GsonBuilder;
+import view.accountmenu.AccountMenuProcessor;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -8,10 +9,10 @@ import java.util.Scanner;
 
 public class Menu {
     protected static Scanner scanner;
+    protected static AccountMenuProcessor accountMenuProcessor = AccountMenuProcessor.getInstance();
     private ArrayList<String> options;
     private String name;
     private String parentName;
-    private int input;
     private boolean isThereParentMenu;
 
     private Menu() {
@@ -41,6 +42,7 @@ public class Menu {
 
     public Menu execute() {
         Menu nextMenu = this;
+        int input = 0;
         try {
             input = Integer.parseInt(scanner.nextLine().trim());
             if (input > options.size() || input < 0 || (!isThereParentMenu && input == 0))
@@ -55,7 +57,10 @@ public class Menu {
         if (input == 0)
             nextMenu = Menu.makeMenu(this.parentName);
         else {
-            nextMenu = Menu.makeMenu(this.options.get(input));
+            if (accountMenuProcessor.isThereFunctionWithName(this.options.get(input)))
+                accountMenuProcessor.executeTheFunctionWithName(this.options.get(input));
+            else
+                nextMenu = Menu.makeMenu(this.options.get(input));
         }
         return nextMenu;
     }

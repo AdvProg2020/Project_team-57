@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "user menu",
+    "product menu",
+    "off menu"
+  ],
+  "name" : "Main Menu",
+  "parentMenu" : "null",
+  "isThereParentMenu" : "false"
+}
