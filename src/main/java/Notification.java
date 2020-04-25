@@ -3,7 +3,8 @@ public enum Notification {
     LOGIN_SUCCESSFUL("Logged in successfully"),
     INVALID_USERNAME("Username is invalid"),
     INVALID_PASSWORD("Password is invalid"),
-    WRONG_PASSWORD("WRONG PASSWORD!");
+    WRONG_PASSWORD("WRONG PASSWORD!"),
+    COMMAN_ERROR("Error has occured");
 
     private String message;
 
