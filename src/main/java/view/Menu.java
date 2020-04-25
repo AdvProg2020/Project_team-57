@@ -31,7 +31,7 @@ public class Menu {
     }
 
     public static String getJsonFromDB(String menuName) throws FileNotFoundException {
-        File file = new File(menuName + ".json");
+        File file = new File("menujsons\\" + menuName + ".json");
         Scanner myScanner = new Scanner(file);
         StringBuilder json = new StringBuilder();
         while (myScanner.hasNextLine()){
