@@ -1,3 +1,5 @@
+package notification;
+
 public enum Notification {
     REGISTER_SUCCESSFUL("Registered successfully"),
     LOGIN_SUCCESSFUL("Logged in successfully"),
