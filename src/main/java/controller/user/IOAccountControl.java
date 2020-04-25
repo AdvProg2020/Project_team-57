@@ -1,17 +1,18 @@
-package controller;
+package controller.user;
 
+import controller.Control;
 import notification.Notification;
 
 import java.util.regex.Pattern;
 
-public class AccountControl {
-    private static AccountControl accountControl;
+public class IOAccountControl extends Control {
+    private static IOAccountControl accountControl;
 
-    public static AccountControl getInstance(){
+    public static IOAccountControl getInstance(){
         if(accountControl == null)
-            return new AccountControl();
+            return new IOAccountControl();
 
-        return AccountControl.accountControl;
+        return IOAccountControl.accountControl;
     }
 
     public Notification register(String username, String password, String type){

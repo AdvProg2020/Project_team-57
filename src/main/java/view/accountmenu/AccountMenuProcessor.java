@@ -1,13 +1,13 @@
 package view.accountmenu;
 
-import controller.AccountControl;
+import controller.user.IOAccountControl;
 import view.FunctioningOption;
 
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class AccountMenuProcessor {
-    private static AccountControl accountControl = AccountControl.getInstance();
+    private static IOAccountControl accountControl = IOAccountControl.getInstance();
     private static AccountMenuProcessor accountMenuProcessor;
     private static Scanner scanner = new Scanner(System.in);
     private HashMap<String, FunctioningOption> functionHashMap;
