@@ -1,27 +1,29 @@
 package controller;
 
+import notification.Notification;
+
 import java.util.regex.Pattern;
 
 public class AccountControl {
 
 
-    public void register(String username, String password, String type){
+    public Notification register(String username, String password, String type){
         if(/*is there username with name*/ true){
-
+            return Notification.INVALID_USERNAME;
         } else if(!isPasswordValid(password)){
-
+            return Notification.INVALID_PASSWORD;
         } else {
-
+            return Notification.REGISTER_SUCCESSFUL;
         }
     }
 
-    public void login(String username, String password){
+    public Notification login(String username, String password){
         if(/*is there username with name*/ true){
-
+            return Notification.INVALID_USERNAME;
         } else if(/*is password correct*/ true){
-
+            return Notification.WRONG_PASSWORD;
         } else {
-
+            return Notification.LOGIN_SUCCESSFUL;
         }
     }
 
