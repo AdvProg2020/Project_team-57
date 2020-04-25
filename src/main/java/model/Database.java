@@ -5,14 +5,19 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Database {
+    public static String localDBUrl = "jdbc:sqlite:database\\database.sqlite";
     public static Connection getConnection ()
     {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         Connection connection = null;
         try {
-            String localUrl = "jdbc:sqlite:database.sqlite";
-            connection = DriverManager.getConnection(localUrl);
+            connection = DriverManager.getConnection(localDBUrl);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return connection;
     }
