@@ -1,11 +1,13 @@
 package view.accountmenu;
 
+import controller.AccountControl;
 import view.FunctioningOption;
 
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class AccountMenuProcessor {
+    private static AccountControl accountControl = AccountControl.getInstance();
     private static AccountMenuProcessor accountMenuProcessor;
     private static Scanner scanner = new Scanner(System.in);
     private HashMap<String, FunctioningOption> functionHashMap;
@@ -63,9 +65,7 @@ public class AccountMenuProcessor {
             type = Integer.parseInt(scanner.nextLine().trim());
 
             if(checkNumber(type = Integer.parseInt(scanner.nextLine().trim()), 0, 4))
-                if(checkRegisterError(username, password, types.get(type))){
-
-                }
+                System.out.println(accountControl.register(username, password, types.get(type)).getMessage());
 
         } catch (NumberFormatException e){
             System.out.println("what you have typed is not a number.");
@@ -81,10 +81,6 @@ public class AccountMenuProcessor {
         return true;
     }
 
-    public boolean checkRegisterError(String username, String password, String type) {
-        return true;
-    }
-
     public void login(){
         String username, password;
 
@@ -94,12 +90,7 @@ public class AccountMenuProcessor {
         System.out.println("please enter your password: ");
         password = scanner.nextLine().trim();
 
-        if(checkLoginError(username, password)){
-
-        }
+        System.out.println(accountControl.login(username, password).getMessage());
     }
 
-    public boolean checkLoginError(String username, String password) {
-        return true;
-    }
 }

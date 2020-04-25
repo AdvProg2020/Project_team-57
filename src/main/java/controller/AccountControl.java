@@ -5,7 +5,14 @@ import notification.Notification;
 import java.util.regex.Pattern;
 
 public class AccountControl {
+    private static AccountControl accountControl;
 
+    public static AccountControl getInstance(){
+        if(accountControl == null)
+            return new AccountControl();
+
+        return AccountControl.accountControl;
+    }
 
     public Notification register(String username, String password, String type){
         if(/*is there username with name*/ true){
