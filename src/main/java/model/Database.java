@@ -3,8 +3,10 @@ package model;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Database {
+
     public static String localDBUrl = "jdbc:sqlite:database\\database.sqlite";
     public static Connection getConnection ()
     {

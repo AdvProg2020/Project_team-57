@@ -1,12 +1,13 @@
-package view.accountmenu;
+package view.process.account;
 
 import controller.user.IOAccountControl;
 import view.FunctioningOption;
+import view.process.Processor;
 
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class IOAccountProcessor {
+public class IOAccountProcessor extends Processor {
     private static IOAccountControl accountControl = IOAccountControl.getInstance();
     private static IOAccountProcessor accountMenuProcessor;
     private static Scanner scanner = new Scanner(System.in);

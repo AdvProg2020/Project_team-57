@@ -1,4 +1,6 @@
 package view.process.account;
 
-public class Buyer extends IOUser {
+import view.process.Processor;
+
+public class Buyer extends Processor {
 }

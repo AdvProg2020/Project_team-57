@@ -1,4 +1,6 @@
 package view.process.account;
 
-public class Manager extends IOUser {
+import view.process.Processor;
+
+public class Manager extends Processor {
 }
