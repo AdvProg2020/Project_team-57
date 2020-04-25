@@ -1,17 +1,16 @@
 package view;
 
 import com.google.gson.GsonBuilder;
-import view.accountmenu.AccountMenuProcessor;
+import view.accountmenu.IOAccountProcessor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
     protected static Scanner scanner;
-    protected static AccountMenuProcessor accountMenuProcessor = AccountMenuProcessor.getInstance();
+    protected static IOAccountProcessor accountMenuProcessor = IOAccountProcessor.getInstance();
     private ArrayList<String> options;
     private String name;
     private String parentName;

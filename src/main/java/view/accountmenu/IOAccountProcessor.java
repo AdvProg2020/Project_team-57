@@ -6,9 +6,9 @@ import view.FunctioningOption;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class AccountMenuProcessor {
+public class IOAccountProcessor {
     private static IOAccountControl accountControl = IOAccountControl.getInstance();
-    private static AccountMenuProcessor accountMenuProcessor;
+    private static IOAccountProcessor accountMenuProcessor;
     private static Scanner scanner = new Scanner(System.in);
     private HashMap<String, FunctioningOption> functionHashMap;
 
@@ -20,7 +20,7 @@ public class AccountMenuProcessor {
         functionHashMap.get(functionName.toLowerCase()).dosth();
     }
 
-    private AccountMenuProcessor(){
+    private IOAccountProcessor(){
         this.functionHashMap = new HashMap<String, FunctioningOption>();
         functionHashMap.put("register", new FunctioningOption(){
             public void dosth() {
@@ -37,11 +37,11 @@ public class AccountMenuProcessor {
 
     }
 
-    public static AccountMenuProcessor getInstance(){
+    public static IOAccountProcessor getInstance(){
         if(accountMenuProcessor == null)
-            return new AccountMenuProcessor();
+            return new IOAccountProcessor();
 
-        return AccountMenuProcessor.accountMenuProcessor;
+        return IOAccountProcessor.accountMenuProcessor;
     }
 
     public void register(){
