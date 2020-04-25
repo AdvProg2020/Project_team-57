@@ -3,10 +3,12 @@ package view;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
+
 public class MenuTest {
 
     @Test
-    public void getJsonFromDBTest(){
+    public void getJsonFromDBTest() throws FileNotFoundException {
         String mainMenuFile = "{\n" +
                 "  \"options\" : [\n" +
                 "    \"user menu\",\n" +
@@ -28,7 +30,11 @@ public class MenuTest {
                 "  \"isThereParentMenu\" : \"true\"\n" +
                 "}";
 
-        Assert.assertEquals(mainMenuFile, Menu.getJsonFromDB("Main Menu"));
-        Assert.assertEquals(userMenuFile, Menu.getJsonFromDB("User Menu"));
+        try {
+            Assert.assertEquals(mainMenuFile, Menu.getJsonFromDB("Main Menu"));
+            Assert.assertEquals(userMenuFile, Menu.getJsonFromDB("User Menu"));
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
     }
 }
