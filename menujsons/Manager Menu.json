@@ -1,0 +1,9 @@
+{
+  "options" : [
+
+  ],
+  "name" : "Manager Menu",
+  "parentMenu" : "Main Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "ManagerProcessor"
+}

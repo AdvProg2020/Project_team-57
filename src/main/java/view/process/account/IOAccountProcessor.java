@@ -2,6 +2,7 @@ package view.process.account;
 
 import controller.user.IOAccountControl;
 import view.FunctioningOption;
+import view.process.MainMenuProcessor;
 import view.process.Processor;
 
 import java.util.HashMap;
@@ -84,8 +85,7 @@ public class IOAccountProcessor extends Processor {
         password = scanner.nextLine().trim();
 
         System.out.println(accountControl.login(username, password).getMessage());
-        //TODO
-        return "";
+        return MainMenuProcessor.getInstance().executeTheFunctionWithName("user menu");
     }
 
 }

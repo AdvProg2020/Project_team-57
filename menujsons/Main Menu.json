@@ -6,5 +6,6 @@
   ],
   "name" : "Main Menu",
   "parentMenu" : "null",
-  "isThereParentMenu" : "false"
+  "isThereParentMenu" : "false",
+  "processorName" : "MainMenuProcessor"
 }
