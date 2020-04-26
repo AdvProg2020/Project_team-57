@@ -1,7 +1,7 @@
 package view;
 
 import com.google.gson.GsonBuilder;
-import view.accountmenu.IOAccountProcessor;
+import view.process.account.IOAccountProcessor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
