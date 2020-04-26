@@ -1,7 +1,8 @@
 package view;
 
 import com.google.gson.GsonBuilder;
-import view.accountmenu.IOAccountProcessor;
+import view.process.Processor;
+import view.process.account.IOAccountProcessor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,7 +11,8 @@ import java.util.Scanner;
 
 public class Menu {
     protected static Scanner scanner;
-    protected static IOAccountProcessor accountMenuProcessor = IOAccountProcessor.getInstance();
+    protected String processorName;
+    protected Processor processor;
     private ArrayList<String> options;
     private String name;
     private String parentName;
@@ -54,6 +56,7 @@ public class Menu {
     }
 
     public Menu execute() {
+        processor = Processor.findProcessorWithName(processorName);
         Menu nextMenu = this;
         int input = 0;
         try {
@@ -70,8 +73,8 @@ public class Menu {
         if (input == 0)
             nextMenu = Menu.makeMenu(this.parentName);
         else {
-            if (accountMenuProcessor.isThereFunctionWithName(this.options.get(input)))
-                accountMenuProcessor.executeTheFunctionWithName(this.options.get(input));
+            if (processor.isThereFunctionWithName(this.options.get(input)))
+                nextMenu = Menu.makeMenu(processor.executeTheFunctionWithName(this.options.get(input)));
             else
                 nextMenu = Menu.makeMenu(this.options.get(input));
         }

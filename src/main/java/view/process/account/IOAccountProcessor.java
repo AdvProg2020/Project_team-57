@@ -9,29 +9,19 @@ import java.util.Scanner;
 
 public class IOAccountProcessor extends Processor {
     private static IOAccountControl accountControl = IOAccountControl.getInstance();
-    private static IOAccountProcessor accountMenuProcessor;
-    private static Scanner scanner = new Scanner(System.in);
-    private HashMap<String, FunctioningOption> functionHashMap;
-
-    public boolean isThereFunctionWithName(String functionName){
-        return functionHashMap.containsKey(functionName.toLowerCase());
-    }
-
-    public void executeTheFunctionWithName(String functionName){
-        functionHashMap.get(functionName.toLowerCase()).dosth();
-    }
+    private static IOAccountProcessor iOAccountProcessor;
 
     private IOAccountProcessor(){
         this.functionHashMap = new HashMap<String, FunctioningOption>();
         functionHashMap.put("register", new FunctioningOption(){
-            public void dosth() {
-                register();
+            public String dosth() {
+                return register();
             }
         });
 
         functionHashMap.put("login", new FunctioningOption() {
-            public void dosth() {
-                login();
+            public String dosth() {
+                return login();
             }
         });
 
@@ -39,13 +29,13 @@ public class IOAccountProcessor extends Processor {
     }
 
     public static IOAccountProcessor getInstance(){
-        if(accountMenuProcessor == null)
-            return new IOAccountProcessor();
+        if(iOAccountProcessor == null)
+             iOAccountProcessor = new IOAccountProcessor();
 
-        return IOAccountProcessor.accountMenuProcessor;
+        return IOAccountProcessor.iOAccountProcessor;
     }
 
-    public void register(){
+    public String register(){
         String username, password;
         int type;
 
@@ -71,6 +61,8 @@ public class IOAccountProcessor extends Processor {
         } catch (NumberFormatException e){
             System.out.println("what you have typed is not a number.");
         }
+
+        return "IOAccount Menu";
     }
 
     public boolean checkNumber(int number, int minimum, int maximum){
@@ -82,7 +74,7 @@ public class IOAccountProcessor extends Processor {
         return true;
     }
 
-    public void login(){
+    public String login(){
         String username, password;
 
         System.out.println("please enter your username: ");
@@ -92,6 +84,8 @@ public class IOAccountProcessor extends Processor {
         password = scanner.nextLine().trim();
 
         System.out.println(accountControl.login(username, password).getMessage());
+        //TODO
+        return "";
     }
 
 }
