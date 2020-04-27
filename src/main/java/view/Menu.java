@@ -43,7 +43,7 @@ public class Menu {
         return json.toString();
     }
 
-    public void show() {
+    public Menu show() {
         System.out.println(this.name + ":");
         if (this.isThereParentMenu) {
             System.out.println("0. Back");
@@ -52,7 +52,7 @@ public class Menu {
         for (int i = 0; i < this.options.size(); i++) {
             System.out.println("" + (i + 1) + ". " + options.get(i));
         }
-        this.execute();
+        return this.execute();
     }
 
     public Menu execute() {
