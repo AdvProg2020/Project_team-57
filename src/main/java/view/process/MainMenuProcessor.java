@@ -27,9 +27,9 @@ public class MainMenuProcessor extends Processor {
     }
 
     public Menu iOManage(){
-        if(Control.isLogedIn()) {
+        if(Control.isLoggedIn()) {
             Menu menu = Menu.makeMenu(Control.getType() + " Menu");
-            menu.setName(Control.getUserName());
+            menu.setName(Control.getUsername());
             return menu;
         }
 
