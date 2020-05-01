@@ -17,7 +17,7 @@ public class IOControl extends Control {
             return Notification.ERROR_USERNAME_FORMAT;
         if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
             return Notification.ERROR_PASSWORD_LENGTH;
-        if (!account.getPassword().contains("[a-z || A-Z]") || !account.getPassword().contains("[0-9]") ||
+        if (!account.getPassword().contains("[a-z && A-Z") || !account.getPassword().contains("[0-9]") ||
                 !account.getPassword().contains("[^a-zA-Z0-9]"))
             return Notification.ERROR_PASSWORD_FORMAT;
         try {
@@ -40,7 +40,7 @@ public class IOControl extends Control {
             return Notification.ERROR_USERNAME_FORMAT;
         if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
             return Notification.ERROR_PASSWORD_LENGTH;
-        if (!account.getPassword().contains("[a-z || A-Z]") || !account.getPassword().contains("[0-9]") ||
+        if (!account.getPassword().contains("[a-z && A-Z]") || !account.getPassword().contains("[0-9]") ||
         !account.getPassword().contains("[^a-zA-Z0-9]"))
             return Notification.ERROR_PASSWORD_FORMAT;
         try {
