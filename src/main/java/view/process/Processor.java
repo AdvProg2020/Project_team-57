@@ -15,11 +15,6 @@ public abstract class Processor {
         //TODO
     }
 
-    public Menu logOut(){
-        //TODO
-        return null;
-    }
-
     public static Processor findProcessorWithName(String name){
         return processesHashMap.get(name);
     }

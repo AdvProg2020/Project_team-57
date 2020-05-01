@@ -1,11 +1,13 @@
 package view.process;
 
+import controller.IOControl;
+import model.existence.Account;
 import view.Menu;
 
 import java.util.HashMap;
 
 public class IOProcessor extends Processor {
-    private static IOAccountController ioAccountController = IOAccountController.getInstance();
+    private static IOControl ioControl = IOControl.getController();
     private static IOProcessor ioProcessor = null;
 
     private IOProcessor(){
@@ -36,7 +38,6 @@ public class IOProcessor extends Processor {
         String type = null;
         int input = 0;
 
-        //TODO Setting the situation of throwing an exception or not
         while(flag){
             flag = false;
             System.out.println("Please Enter The Type Of Your Account :" +
@@ -72,12 +73,12 @@ public class IOProcessor extends Processor {
         account.setType(type);
 
         System.out.println("Please Enter Your UserName :");
-        account.setUserName(Menu.getScanner().nextLine().trim());
+        account.setUsername(Menu.getScanner().nextLine().trim());
 
         System.out.println("Please Enter Your PassWord :");
-        account.setPassWord(Menu.getScanner().nextLine().trim());
+        account.setPassword(Menu.getScanner().nextLine().trim());
 
-        System.out.println(ioAccountController.register(account).getMessage());
+        System.out.println(ioControl.register(account).getMessage());
         return Menu.makeMenu("IOAccount Menu");
     }
 
@@ -85,12 +86,12 @@ public class IOProcessor extends Processor {
         Account account = new Account();
 
         System.out.println("Please Enter Your UserName :");
-        account.setUserName(Menu.getScanner().nextLine().trim());
+        account.setUsername(Menu.getScanner().nextLine().trim());
 
         System.out.println("Please Enter Your PassWord :");
-        account.setPassWord(Menu.getScanner().nextLine().trim());
+        account.setPassword(Menu.getScanner().nextLine().trim());
 
-        System.out.println(ioAccountController.login(account).getMessage());
+        System.out.println(ioControl.login(account).getMessage());
         return MainMenuProcessor.getInstance().iOManage();
     }
 
