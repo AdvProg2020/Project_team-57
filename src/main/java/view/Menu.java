@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
-    protected static Scanner scanner = new Scanner(System.in);
+    public static Scanner scanner = new Scanner(System.in);
     private String processorName;
     private Processor processor;
     private ArrayList<String> options;
