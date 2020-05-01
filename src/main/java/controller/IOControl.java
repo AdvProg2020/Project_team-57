@@ -26,7 +26,9 @@ public class IOControl extends Control {
                 return Notification.REGISTER_SUCCESSFUL;
             } else
                 return Notification.ERROR_FREE_USERNAME;
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
+            return Notification.UNKNOWN_ERROR;
+        } catch (ClassNotFoundException e){
             return Notification.UNKNOWN_ERROR;
         }
     }
@@ -44,15 +46,17 @@ public class IOControl extends Control {
         try {
             if (AccountTable.isUsernameFree(account.getUsername())) {
                 if (AccountTable.isPasswordCorrect(account.getUsername(), account.getPassword())) {
-                    Control.setType(Account.getType());
-                    Control.setUsername(Account.getUsername());
+                    Control.setType(account.getType());
+                    Control.setUsername(account.getUsername());
                     Control.setLoggedIn(true);
                     return Notification.LOGIN_SUCCESSFUL;
                 } else
                     return Notification.WRONG_PASSWORD;
             }else
                 return Notification.ERROR_FREE_USERNAME;
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
+            return Notification.UNKNOWN_ERROR;
+        } catch (ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
     }
