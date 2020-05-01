@@ -1,5 +1,7 @@
 package view.process;
 
+import view.Menu;
+
 public interface FunctioningOption {
-    public String doTheThing();
+    public Menu doTheThing();
 }

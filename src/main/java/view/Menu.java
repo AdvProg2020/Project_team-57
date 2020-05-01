@@ -73,11 +73,15 @@ public class Menu {
             nextMenu = Menu.makeMenu(this.parentName);
         else {
             if (processor.isThereFunctionWithName(this.options.get(input)))
-                nextMenu = Menu.makeMenu(processor.executeTheFunctionWithName(this.options.get(input)));
+                nextMenu = processor.executeTheFunctionWithName(this.options.get(input));
             else
                 nextMenu = Menu.makeMenu(this.options.get(input));
         }
         return nextMenu;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     private class InputIsBiggerThanExistingNumbers extends Exception {

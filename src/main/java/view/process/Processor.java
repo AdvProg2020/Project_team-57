@@ -1,5 +1,7 @@
 package view.process;
 
+import view.Menu;
+
 import java.util.HashMap;
 
 public abstract class Processor {
@@ -21,7 +23,7 @@ public abstract class Processor {
         return functionsHashMap.containsKey(name);
     }
 
-    public String executeTheFunctionWithName(String name) {
+    public Menu executeTheFunctionWithName(String name) {
         return functionsHashMap.get(name).doTheThing();
     }
 }
