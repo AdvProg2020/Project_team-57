@@ -11,11 +11,11 @@ public class IOControl extends Control {
 
 
     public Notification register(Account account) {
-        if (account.getUsername().length < 6)
+        if (account.getUsername().length() < 6 || account.getUsername().length() > 16)
             return Notification.ERROR_USERNAME_LENGTH;
         if (account.getUsername().contains("\\W"))
             return Notification.ERROR_USERNAME_FORMAT;
-        if (account.getPassword().length < 8 || account.getPassword().lenth > 16)
+        if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
             return Notification.ERROR_PASSWORD_LENGTH;
         if (!account.getPassword().contains("[a-z || A-Z]") || !account.getPassword().contains("[0-9]") ||
                 !account.getPassword().contains("[^a-zA-Z0-9]"))
@@ -32,11 +32,11 @@ public class IOControl extends Control {
     }
 
     public Notification login(Account account){
-        if (account.getUsername().length < 6)
+        if (account.getUsername().length() < 6 || account.getUsername().length() > 16)
             return Notification.ERROR_USERNAME_LENGTH;
         if (account.getUsername().contains("\\W"))
             return Notification.ERROR_USERNAME_FORMAT;
-        if (account.getPassword().length < 8 || account.getPassword().lenth > 16)
+        if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
             return Notification.ERROR_PASSWORD_LENGTH;
         if (!account.getPassword().contains("[a-z || A-Z]") || !account.getPassword().contains("[0-9]") ||
         !account.getPassword().contains("[^a-zA-Z0-9]"))
