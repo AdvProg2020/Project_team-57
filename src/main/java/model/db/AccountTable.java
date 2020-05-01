@@ -12,6 +12,15 @@ public class AccountTable extends Database {
         return !preparedStatement.executeQuery().next();
     }
 
+    public static boolean isPasswordCorrect(String username, String password) throws SQLException, ClassNotFoundException {
+        String command = "SELECT Password From Accounts WHERE Username = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        return password.equals(resultSet.getString("Password"));
+    }
+
     public static void addAccount(String username, String password, String accType) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Accounts (Username, Password, AccType) " +
                                 "VALUES (?, ?, ?);";
