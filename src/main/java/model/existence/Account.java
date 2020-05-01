@@ -9,6 +9,8 @@ public class Account {
     private String email;
     private double credit;
 
+    public Account() {}
+
     public Account(String username, String password) {
         this.username = username;
         this.password = password;
