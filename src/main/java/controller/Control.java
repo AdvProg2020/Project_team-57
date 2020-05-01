@@ -2,9 +2,9 @@ package controller;
 
 public class Control {
     private static Control control = null;
-    protected boolean isLoggedIn = false;
-    protected String username;
-    protected String type;
+    private static boolean isLoggedIn = false;
+    private static String username;
+    private static String type;
 
 
     public static Control getController(){
@@ -14,27 +14,27 @@ public class Control {
         return control;
     }
 
-    public boolean isLoggedIn() {
-        return isLoggedIn;
+    public static boolean isLoggedIn() {
+        return Control.isLoggedIn;
     }
 
-    public void setLoggedIn(boolean loggedIn) {
-        isLoggedIn = loggedIn;
+    public static void setLoggedIn(boolean loggedIn) {
+        Control.isLoggedIn = loggedIn;
     }
 
-    public String getUsername() {
-        return username;
+    public static String getUsername() {
+        return Control.username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public static void setUsername(String username) {
+        Control.username = username;
     }
 
-    public String getType() {
-        return type;
+    public static String getType() {
+        return Control.type;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public static void setType(String type) {
+        Control.type = type;
     }
 }
