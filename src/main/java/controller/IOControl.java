@@ -60,11 +60,9 @@ public class IOControl extends Control {
     }
 
     private boolean isPasswordValid(String password) {
-        if (password.contains("[^0-9a-zA-Z-_]"))
+        if (!password.matches("[a-zA-Z0-9_\\-]+"))
             return false;
-        if (!password.contains("[a-z || A-Z]"))
-            return false;
-        if (!password.contains("[0-9]"))
+        if (password.matches("[a-z | A-Z | \\- | _]*$") || password.matches("[0-9 | \\- | _]*$"))
             return false;
         return true;
     }
