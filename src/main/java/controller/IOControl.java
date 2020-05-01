@@ -17,8 +17,7 @@ public class IOControl extends Control {
             return Notification.ERROR_USERNAME_FORMAT;
         if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
             return Notification.ERROR_PASSWORD_LENGTH;
-        if (!account.getPassword().contains("[a-z && A-Z") || !account.getPassword().contains("[0-9]") ||
-                !account.getPassword().contains("[^a-zA-Z0-9]"))
+        if (!isPasswordValid(account.getPassword()))
             return Notification.ERROR_PASSWORD_FORMAT;
         try {
             if (AccountTable.isUsernameFree(account.getUsername())) {
@@ -40,8 +39,7 @@ public class IOControl extends Control {
             return Notification.ERROR_USERNAME_FORMAT;
         if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
             return Notification.ERROR_PASSWORD_LENGTH;
-        if (!account.getPassword().contains("[a-z && A-Z]") || !account.getPassword().contains("[0-9]") ||
-        !account.getPassword().contains("[^a-zA-Z0-9]"))
+        if (!isPasswordValid(account.getPassword()))
             return Notification.ERROR_PASSWORD_FORMAT;
         try {
             if (AccountTable.isUsernameFree(account.getUsername())) {
@@ -52,7 +50,7 @@ public class IOControl extends Control {
                     return Notification.LOGIN_SUCCESSFUL;
                 } else
                     return Notification.WRONG_PASSWORD;
-            }else
+            } else
                 return Notification.ERROR_FREE_USERNAME;
         } catch (SQLException e) {
             return Notification.UNKNOWN_ERROR;
@@ -61,7 +59,17 @@ public class IOControl extends Control {
         }
     }
 
-    public static IOControl getController(){
+    private boolean isPasswordValid(String password) {
+        if (password.contains("[^0-9a-zA-Z-_]"))
+            return false;
+        if (!password.contains("[a-z || A-Z]"))
+            return false;
+        if (!password.contains("[0-9]"))
+            return false;
+        return true;
+    }
+
+    public static IOControl getController() {
         if (ioControl == null)
             ioControl = new IOControl();
         return ioControl;
