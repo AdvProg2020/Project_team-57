@@ -5,6 +5,8 @@ import model.existence.Account;
 import notification.Notification;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class IOControl extends Control {
     private static IOControl ioControl = null;
@@ -35,7 +37,7 @@ public class IOControl extends Control {
     public Notification login(Account account){
         if (account.getUsername().length() < 6 || account.getUsername().length() > 16)
             return Notification.ERROR_USERNAME_LENGTH;
-        if (account.getUsername().contains("\\W"))
+        if (isUsernameValid(account.getUsername()))
             return Notification.ERROR_USERNAME_FORMAT;
         if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
             return Notification.ERROR_PASSWORD_LENGTH;
@@ -60,10 +62,49 @@ public class IOControl extends Control {
     }
 
     private boolean isPasswordValid(String password) {
-        if (!password.matches("[a-zA-Z0-9_\\-]+"))
+        for(int i = 0; i < password.length(); ++i)
+        {
+            char c = password.charAt(i);
+            if(!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') &&
+                    !(c >= '0' && c <= '9') && (c != '_') && (c != '-'))
+                return false;
+        }
+        boolean flag = false;
+        for(int i = 0; i < password.length(); ++i)
+        {
+            char c =password.charAt(i);
+            if(c >= '0' && c <= '9') {
+                flag = true;
+                break;
+            }
+        }
+        if(!flag)
             return false;
-        if (password.matches("[a-z | A-Z | \\- | _]*$") || password.matches("[0-9 | \\- | _]*$"))
+        flag = false;
+        for(int i = 0; i < password.length(); ++i)
+        {
+            char c =password.charAt(i);
+            if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+                flag = true;
+                break;
+            }
+        }
+        if(!flag)
             return false;
+        return true;
+    }
+
+    private boolean isUsernameValid(String username)
+    {
+        Character[] validChars = {'-', '_', '$', '%', '@', '.', '*', '&', '+'};
+        ArrayList<Character> validCharacters = new ArrayList<Character>(Arrays.asList(validChars));
+        for(int i = 0; i < username.length(); ++i)
+        {
+            char c = username.charAt(i);
+            if(!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') &&
+                    !(c >= '0' && c <= '9') && !(validCharacters.contains(c)))
+                return false;
+        }
         return true;
     }
 
