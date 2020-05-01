@@ -36,7 +36,7 @@ public class IOProcessor extends Processor {
         Account account = new Account();
         boolean flag = true;
         String type = null;
-        int input = 0;
+        int input;
 
         while(flag){
             flag = false;

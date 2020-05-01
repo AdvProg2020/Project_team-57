@@ -1,13 +1,11 @@
 package view.process;
 
 import controller.Control;
-import controller.IOControl;
 import view.Menu;
 
 import java.util.HashMap;
 
 public class MainMenuProcessor extends Processor {
-    private static IOControl ioController = IOControl.getController();
     private static MainMenuProcessor mainMenuProcessor = null;
 
     private MainMenuProcessor(){
