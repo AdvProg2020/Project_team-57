@@ -80,29 +80,17 @@ public class Menu {
             } catch (NullPointerException e) {
                 System.out.println("Please Enter An Integer");
             } catch (InputIsBiggerThanExistingNumbers e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
-
-        /*try{
-            input = Integer.parseInt(scanner.nextLine().trim());
-            if (input > options.size() || input < 0 || (!isThereParentMenu && input == 0))
-                throw new InputIsBiggerThanExistingNumbers("input integer is invalid");
-        } catch (NumberFormatException e) {
-            System.out.println("Please Enter An Integer");
-        } catch (NullPointerException e) {
-            System.out.println("Please Enter An Integer");
-        } catch (InputIsBiggerThanExistingNumbers e) {
-            e.printStackTrace();
-        }*/
 
         if (input == 0)
             nextMenu = Menu.makeMenu(this.parentName);
         else {
-            if (processor.isThereFunctionWithName(this.options.get(input)))
-                nextMenu = processor.executeTheFunctionWithName(this.options.get(input));
+            if (processor.isThereFunctionWithName(this.options.get(input - 1)))
+                nextMenu = processor.executeTheFunctionWithName(this.options.get(input - 1));
             else
-                nextMenu = Menu.makeMenu(this.options.get(input));
+                nextMenu = Menu.makeMenu(this.options.get(input - 1));
         }
 
         return nextMenu;

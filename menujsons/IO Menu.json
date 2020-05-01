@@ -4,7 +4,7 @@
     "Login"
   ],
   "name" : "IO Menu",
-  "parentMenu" : "Main Menu",
+  "parentName" : "Main Menu",
   "isThereParentMenu" : "true",
   "processorName" : "IOProcessor"
 }

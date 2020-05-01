@@ -5,7 +5,7 @@
     "Offs Menu"
   ],
   "name" : "Main Menu",
-  "parentMenu" : "null",
+  "parentName" : "null",
   "isThereParentMenu" : "false",
   "processorName" : "MainMenuProcessor"
 }

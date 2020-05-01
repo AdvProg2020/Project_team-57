@@ -39,7 +39,6 @@ public class IOProcessor extends Processor {
         int input;
 
         while(flag){
-            flag = false;
             System.out.println("Please Enter The Type Of Your Account :" +
                     "\n1. Admin \n2. Vendor \n3. Customer");
 
@@ -49,15 +48,17 @@ public class IOProcessor extends Processor {
                 switch (input) {
                     case 1:
                         type = "Admin";
+                        flag = false;
                         break;
                     case 2:
                         type = "Vendor";
+                        flag = false;
                         break;
                     case 3:
                         type = "Customer";
+                        flag = false;
                         break;
                     default:
-                        flag = true;
                         throw new Menu.InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
                 }
 
@@ -66,7 +67,7 @@ public class IOProcessor extends Processor {
             } catch (NullPointerException e) {
                 System.out.println("Please Enter An Integer");
             } catch (Menu.InputIsBiggerThanExistingNumbers e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
 
@@ -79,7 +80,7 @@ public class IOProcessor extends Processor {
         account.setPassword(Menu.getScanner().nextLine().trim());
 
         System.out.println(ioControl.register(account).getMessage());
-        return Menu.makeMenu("IOAccount Menu");
+        return Menu.makeMenu("IO Menu");
     }
 
     public Menu login(){
