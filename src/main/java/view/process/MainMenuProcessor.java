@@ -1,11 +1,13 @@
 package view.process;
 
+import controller.Control;
+import controller.IOControl;
 import view.Menu;
 
 import java.util.HashMap;
 
 public class MainMenuProcessor extends Processor {
-    private static IOAccountController ioAccountController = IOAccountController.getInstance();
+    private static IOControl ioController = IOControl.getController();
     private static MainMenuProcessor mainMenuProcessor = null;
 
     private MainMenuProcessor(){
@@ -25,9 +27,9 @@ public class MainMenuProcessor extends Processor {
     }
 
     public Menu iOManage(){
-        if(Controller.getLoginStatus()) {
-            Menu menu = Menu.makeMenu(Controller.getType() + " Menu");
-            menu.setName(Controller.getUserName());
+        if(Control.isLogedIn()) {
+            Menu menu = Menu.makeMenu(Control.getType() + " Menu");
+            menu.setName(Control.getUserName());
             return menu;
         }
 
