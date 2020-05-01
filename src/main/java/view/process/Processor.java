@@ -11,8 +11,13 @@ public abstract class Processor {
     public static void initProcessHashMaps(){
         processesHashMap = new HashMap<String, Processor>();
         processesHashMap.put("MainMenuProcessor", MainMenuProcessor.getInstance());
-        processesHashMap.put("IOAccountProcessor", IOAccountProcessor.getInstance());
+        processesHashMap.put("IOProcessor", IOProcessor.getInstance());
         //TODO
+    }
+
+    public Menu logOut(){
+        //TODO
+        return null;
     }
 
     public static Processor findProcessorWithName(String name){

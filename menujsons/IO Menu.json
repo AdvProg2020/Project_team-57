@@ -3,8 +3,8 @@
     "Register",
     "Login"
   ],
-  "name" : "User Menu",
+  "name" : "IO Menu",
   "parentMenu" : "Main Menu",
   "isThereParentMenu" : "true",
-  "processorName" : "IOAccountProcessor"
+  "processorName" : "IOProcessor"
 }

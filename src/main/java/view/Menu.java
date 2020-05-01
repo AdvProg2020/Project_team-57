@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
-    public static Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
     private String processorName;
     private Processor processor;
     private ArrayList<String> options;
@@ -22,11 +22,13 @@ public class Menu {
 
     public static Menu makeMenu(String menuName) {
         String json = "";
+
         try {
             json = Menu.getJsonFromDB(menuName);
         } catch (FileNotFoundException e) {
             System.out.println("file not found");
         }
+
         return new GsonBuilder().setPrettyPrinting().create().fromJson(json, Menu.class);
     }
 
@@ -34,41 +36,66 @@ public class Menu {
         File file = new File("menujsons\\" + menuName + ".json");
         Scanner myScanner = new Scanner(file);
         StringBuilder json = new StringBuilder();
+
         while (myScanner.hasNextLine()){
             json.append(myScanner.nextLine());
             json.append("\n");
         }
+
         json = new StringBuilder(json.substring(0, json.length() - 1));
         return json.toString();
     }
 
-    public Menu show() {
+    public void show() {
         System.out.println(this.name + ":");
+
         if (this.isThereParentMenu) {
             System.out.println("0. Back");
             this.isThereParentMenu = true;
         }
+
         for (int i = 0; i < this.options.size(); i++) {
             System.out.println("" + (i + 1) + ". " + options.get(i));
         }
-        return this.execute();
+
     }
 
     public Menu execute() {
         processor = Processor.findProcessorWithName(processorName);
         Menu nextMenu = this;
+        boolean flag = true;
         int input = 0;
-        try {
+
+        while(flag){
+            try {
+                input = Integer.parseInt(Menu.getScanner().nextLine().trim());
+
+                if (input > options.size() || input < 0 || (!isThereParentMenu && input == 0))
+                    throw new InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
+                else
+                    flag = false;
+
+            } catch (NumberFormatException e) {
+                System.out.println("Please Enter An Integer");
+            } catch (NullPointerException e) {
+                System.out.println("Please Enter An Integer");
+            } catch (InputIsBiggerThanExistingNumbers e) {
+                e.printStackTrace();
+            }
+        }
+
+        /*try{
             input = Integer.parseInt(scanner.nextLine().trim());
             if (input > options.size() || input < 0 || (!isThereParentMenu && input == 0))
                 throw new InputIsBiggerThanExistingNumbers("input integer is invalid");
         } catch (NumberFormatException e) {
-            System.out.println("please enter an integer");
+            System.out.println("Please Enter An Integer");
         } catch (NullPointerException e) {
-            System.out.println("please enter an integer");
+            System.out.println("Please Enter An Integer");
         } catch (InputIsBiggerThanExistingNumbers e) {
             e.printStackTrace();
-        }
+        }*/
+
         if (input == 0)
             nextMenu = Menu.makeMenu(this.parentName);
         else {
@@ -77,14 +104,19 @@ public class Menu {
             else
                 nextMenu = Menu.makeMenu(this.options.get(input));
         }
+
         return nextMenu;
+    }
+
+    public static Scanner getScanner() {
+        return scanner;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    private class InputIsBiggerThanExistingNumbers extends Exception {
+    public static class InputIsBiggerThanExistingNumbers extends Exception {
         public InputIsBiggerThanExistingNumbers(String message) {
             super(message);
         }

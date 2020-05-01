@@ -1,8 +1,8 @@
 {
   "options" : [
-    "user menu",
-    "product menu",
-    "off menu"
+    "Account Menu",
+    "Products Menu",
+    "Offs Menu"
   ],
   "name" : "Main Menu",
   "parentMenu" : "null",

@@ -10,7 +10,7 @@ public class MainMenuProcessor extends Processor {
 
     private MainMenuProcessor(){
         functionsHashMap = new HashMap<String, FunctioningOption>();
-        functionsHashMap.put("User Menu", new FunctioningOption() {
+        functionsHashMap.put("Account Menu", new FunctioningOption() {
             public Menu doTheThing() {
                 return iOManage();
             }
@@ -31,6 +31,6 @@ public class MainMenuProcessor extends Processor {
             return menu;
         }
 
-        return Menu.makeMenu("IOAccount Menu");
+        return Menu.makeMenu("IO Menu");
     }
 }
