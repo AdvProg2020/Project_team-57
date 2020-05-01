@@ -1,5 +1,7 @@
 package controller;
 
+import model.db.AccountTable;
+import model.existence.Account;
 import notification.Notification;
 
 import java.sql.SQLException;
@@ -25,7 +27,7 @@ public class IOControl extends Control {
             } else
                 return Notification.ERROR_FREE_USERNAME;
         } catch (SQLException | ClassNotFoundException e) {
-            return Notification.ERROR_UNKNOWN_ERROR;
+            return Notification.UNKNOWN_ERROR;
         }
     }
 
@@ -42,17 +44,16 @@ public class IOControl extends Control {
         try {
             if (AccountTable.isUsernameFree(account.getUsername())) {
                 if (AccountTable.isPasswordCorrect(account.getUsername(), account.getPassword())) {
-                    AccountTable.login(account.getUsername(), account.getPassword());
-                    super.type = AccountTable.getType();
-                    super.username = account.getUsername();
-                    super.isLoggedIn = true;
+                    Control.setType(Account.getType());
+                    Control.setUsername(Account.getUsername());
+                    Control.setLoggedIn(true);
                     return Notification.LOGIN_SUCCESSFUL;
                 } else
                     return Notification.WRONG_PASSWORD;
             }else
                 return Notification.ERROR_FREE_USERNAME;
         } catch (SQLException | ClassNotFoundException e) {
-            return Notification.ERROR_UNKNOWN_ERROR;
+            return Notification.UNKNOWN_ERROR;
         }
     }
 
