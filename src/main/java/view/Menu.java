@@ -2,7 +2,6 @@ package view;
 
 import com.google.gson.GsonBuilder;
 import view.process.Processor;
-import view.process.account.IOAccountProcessor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
-    protected static Scanner scanner;
-    protected String processorName;
-    protected Processor processor;
+    protected static Scanner scanner = new Scanner(System.in);
+    private String processorName;
+    private Processor processor;
     private ArrayList<String> options;
     private String name;
     private String parentName;
