@@ -92,20 +92,28 @@ public class IOControl extends Control {
         if(!flag)
             return false;
         return true;
-    }
+    } // duplicate
 
     private boolean isUsernameValid(String username)
     {
         Character[] validChars = {'-', '_', '$', '%', '@', '.', '*', '&', '+'};
         ArrayList<Character> validCharacters = new ArrayList<Character>(Arrays.asList(validChars));
-        for(int i = 0; i < username.length(); ++i)
-        {
+        for (int i = 0; i < username.length(); ++i) {
             char c = username.charAt(i);
-            if(!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') &&
+            if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') &&
                     !(c >= '0' && c <= '9') && !(validCharacters.contains(c)))
                 return false;
         }
         return true;
+    }
+
+    public boolean isThereAdmin() {
+        try {
+            return AccountTable.isThereAdmin();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static IOControl getController() {

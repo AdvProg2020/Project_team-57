@@ -1,5 +1,8 @@
 package model.existence;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Account {
     private String username;
     private String password;
@@ -7,7 +10,20 @@ public class Account {
     private String firstName;
     private String lastName;
     private String email;
+    private String brand;
     private double credit;
+
+    public static Account makeAccount(ResultSet resultSet) throws SQLException {
+        resultSet.next();
+        Account account = new Account(resultSet.getString("Username"), resultSet.getString("Password"));
+        account.setType(resultSet.getString("AccType"));
+        account.setFirstName(resultSet.getString("FirstName"));
+        account.setLastName(resultSet.getString("LastName"));
+        account.setEmail(resultSet.getString("Email"));
+        account.setCredit(resultSet.getDouble("Credit"));
+        account.setBrand(resultSet.getString("Brand"));
+        return account;
+    }
 
     public Account() {}
 
@@ -40,6 +56,10 @@ public class Account {
         return email;
     }
 
+    public String getBrand() {
+        return brand;
+    }
+
     public double getCredit() {
         return credit;
     }
@@ -66,6 +86,10 @@ public class Account {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public void setCredit(double credit) {
