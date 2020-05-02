@@ -41,8 +41,8 @@ public class Database {
                     "AccType varchar (10)," +
                     "FirstName varchar (25)," +
                     "LastName varchar (25)," +
-                    "Email varchar (50)," +
-                    "Brand varchar(50)," +
+                    "Email varchar (35)," +
+                    "Brand varchar(35)," +
                     "Credit double," +
                     "primary key(Username)" +
                     ");");

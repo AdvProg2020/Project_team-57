@@ -53,37 +53,37 @@ public class AccountProcessor extends Processor {
         Account account = accountControl.getAccount();
         createCustomLine();
 
-        System.out.format("| %-15s | %-50s", "Username", account.getUsername());
+        System.out.format("| %-15s | %-35s | %n", "Username", account.getUsername());
         createCustomLine();
 
-        System.out.format("| %-15s | %-50s", "Password", "************");
+        System.out.format("| %-15s | %-35s | %n", "Password", "************");
         createCustomLine();
 
-        System.out.format("| %-15s | %-50s", "Account Type", account.getType());
+        System.out.format("| %-15s | %-35s | %n", "Account Type", account.getType());
         createCustomLine();
 
-        System.out.format("| %-15s | %-50s", "FirstName", account.getFirstName());
+        System.out.format("| %-15s | %-35s | %n", "FirstName", account.getFirstName());
         createCustomLine();
 
-        System.out.format("| %-15s | %-50s", "LastName", account.getLastName());
+        System.out.format("| %-15s | %-35s | %n", "LastName", account.getLastName());
         createCustomLine();
 
-        System.out.format("| %-15s | %-50s", "Email", account.getEmail());
+        System.out.format("| %-15s | %-35s | %n", "Email", account.getEmail());
         createCustomLine();
 
         if(Control.getType().equals("Vendor")){
-            System.out.format("| %-15s | %-50s", "Brand Name", account.getBrand());
+            System.out.format("| %-15s | %-35s | %n", "Brand Name", account.getBrand());
             createCustomLine();
         }
 
-        System.out.format("| %-15s | %-50f", "Credit", account.getCredit());
+        System.out.format("| %-15s | %-35f | %n", "Credit", account.getCredit());
         createCustomLine();
 
         return Menu.makeMenu(Control.getType() + " Menu");
     }
 
-    public void createCustomLine(){
-        System.out.println("+-----------------+----------------------------------------------------+");
+    private void createCustomLine(){
+        System.out.println("+-----------------+-------------------------------------+");
     }
 
     public Menu editField(){
@@ -94,22 +94,20 @@ public class AccountProcessor extends Processor {
         while(flag) {
             flag = false;
             System.out.println("Please Enter The Field You Wanna Edit :" +
-                    "\n1. Account Type" + "\n2. FirstName" + "\n3. LastName" + "\n4. Email");
+                    "\n1. FirstName" + "\n2. LastName" + "\n3. Email");
             if (Control.getType().equals("Vendor"))
                 System.out.println("\n5. Brand Name");
 
             try {
                 fieldNumber = Integer.parseInt(Menu.getScanner().nextLine().trim());
 
-                if(fieldNumber == 1) {
-                    fieldName = "AccType";
-                } else if(fieldNumber == 2){
+                if(fieldNumber == 1){
                     fieldName = "FirstName";
-                } else if(fieldNumber == 3){
+                } else if(fieldNumber == 2){
                     fieldName = "LastName";
-                } else if(fieldNumber == 4){
+                } else if(fieldNumber == 3){
                     fieldName = "Email";
-                } else if(Control.getType().equals("Vendor") && fieldNumber == 5){
+                } else if(Control.getType().equals("Vendor") && fieldNumber == 4){
                     fieldName = "Brand";
                 } else {
                     throw new Menu.InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
@@ -129,7 +127,7 @@ public class AccountProcessor extends Processor {
         System.out.println("Please Enter The New Value Of Your Field :");
         fieldValue = Menu.getScanner().nextLine().trim();
 
-        System.out.println(accountControl.editField(fieldName, fieldValue));
+        System.out.println(accountControl.editField(fieldName, fieldValue).getMessage());
         return Menu.makeMenu(Control.getType() + " Menu");
     }
 
@@ -186,9 +184,9 @@ public class AccountProcessor extends Processor {
         }
 
         if(input == 1){
-            System.out.println(accountControl.addMoney(transactionMoney));
+            System.out.println(accountControl.addMoney(transactionMoney).getMessage());
         } else {
-            System.out.println(accountControl.getMoney(transactionMoney));
+            System.out.println(accountControl.getMoney(transactionMoney).getMessage());
         }
 
         return Menu.makeMenu(Control.getType() + " Menu");

@@ -5,7 +5,8 @@ public enum Notification {
     LOGIN_SUCCESSFUL("Logged in successfully"),
     ERROR_USERNAME_LENGTH("Username must contain 6 to 16 characters!"),
     ERROR_USERNAME_FORMAT("Username must contain only word characters!"),
-    ERROR_FREE_USERNAME("Username doesn't exists"),
+    ERROR_FULL_USERNAME("Username Already Exists"),
+    ERROR_FREE_USERNAME("This Username is not registered Yet"),
     ERROR_PASSWORD_LENGTH("Password must contain 8 to 16 characters!"),
     ERROR_PASSWORD_FORMAT("Password contains some illegal characters"),
     UNKNOWN_ERROR("An unknown error occured"),
@@ -16,7 +17,8 @@ public enum Notification {
     EDIT_FIELD_SUCCESSFULLY("Value edited successfully\uD83E\uDD29"),
     RISE_MONEY_SUCCESSFULLY("Inventory has increased!"),
     LACK_BALANCE_ERROR("Anything else???\uD83D\uDE12\nInventory is not enough!"),
-    GET_MONEY_SUCCESSFULLY("Money has got successfully!");
+    GET_MONEY_SUCCESSFULLY("Money has got successfully!"),
+    WRONG_OLD_PASSWORD("Old Password Incorrect");
 
     private String message;
 

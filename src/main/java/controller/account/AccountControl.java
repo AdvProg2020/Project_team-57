@@ -19,13 +19,15 @@ public class AccountControl extends Control {
     }
 
     public Notification changePassword(String oldPassword, String newPassword) {
-        if (oldPassword.equals(newPassword))
-            return Notification.SAME_PASSWORD_ERROR;
-        if (newPassword.length() < 8 || newPassword.length() > 16)
-            return Notification.ERROR_PASSWORD_LENGTH;
-        if (!isPasswordValid(newPassword))
-            return Notification.ERROR_PASSWORD_FORMAT;
         try {
+            if(!AccountTable.isPasswordCorrect(Control.getUsername(), oldPassword))
+                return Notification.WRONG_OLD_PASSWORD;
+            if (oldPassword.equals(newPassword))
+                return Notification.SAME_PASSWORD_ERROR;
+            if (newPassword.length() < 8 || newPassword.length() > 16)
+                return Notification.ERROR_PASSWORD_LENGTH;
+            if (!isPasswordValid(newPassword))
+                return Notification.ERROR_PASSWORD_FORMAT;
             AccountTable.editField(Control.getUsername(), "Password", newPassword);
             return Notification.CHANGE_PASSWORD_SUCCESSFULLY;
         } catch (Exception e) {
@@ -35,7 +37,8 @@ public class AccountControl extends Control {
 
     public Notification editField(String fieldName, String newValue) {
         try {
-            if (AccountTable.getValueByField(Control.getUsername(), fieldName).equals(newValue))
+            if (AccountTable.getValueByField(Control.getUsername(), fieldName) != null &&
+                    AccountTable.getValueByField(Control.getUsername(), fieldName).equals(newValue))
                 return Notification.SAME_FIELD_ERROR;
             AccountTable.editField(Control.getUsername(), fieldName, newValue);
             return Notification.EDIT_FIELD_SUCCESSFULLY;
