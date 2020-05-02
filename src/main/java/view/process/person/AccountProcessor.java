@@ -11,7 +11,6 @@ import java.util.HashMap;
 
 public class AccountProcessor extends Processor {
     private static AccountControl accountControl = AccountControl.getController();
-    private static AccountProcessor customerProcessor = null;
 
     protected AccountProcessor(){
         functionsHashMap = new HashMap<String, FunctioningOption>();
@@ -40,13 +39,6 @@ public class AccountProcessor extends Processor {
             }
         });
 
-    }
-
-    public static AccountProcessor getInstance(){
-        if(customerProcessor == null)
-            customerProcessor = new AccountProcessor();
-
-        return customerProcessor;
     }
 
     public Menu showPersonalInfo(){

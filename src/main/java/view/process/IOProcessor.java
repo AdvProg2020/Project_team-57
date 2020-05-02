@@ -42,7 +42,7 @@ public class IOProcessor extends Processor {
 
         ArrayList<String> availableTypes = new ArrayList<String>();
 
-        if(ioControl.isThereAdmin())
+        if(!ioControl.isThereAdmin())
             availableTypes.add("Admin");
 
         availableTypes.add("Vendor");
@@ -61,25 +61,9 @@ public class IOProcessor extends Processor {
                     throw new Menu.InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
                 }
 
-                type = availableTypes.get(input);
+                type = availableTypes.get(input - 1);
                 flag = false;
 
-                /*switch (input) {
-                    case 1:
-                        type = "Admin";
-                        flag = false;
-                        break;
-                    case 2:
-                        type = "Vendor";
-                        flag = false;
-                        break;
-                    case 3:
-                        type = "Customer";
-                        flag = false;
-                        break;
-                    default:
-                        throw new Menu.InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
-                }*/
 
             } catch (NumberFormatException e) {
                 System.out.println("Please Enter An Integer");
