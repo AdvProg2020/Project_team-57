@@ -92,7 +92,7 @@ public class IOControl extends Control {
         if(!flag)
             return false;
         return true;
-    }
+    } // duplicate
 
     private boolean isUsernameValid(String username)
     {
@@ -106,6 +106,10 @@ public class IOControl extends Control {
                 return false;
         }
         return true;
+    }
+
+    public boolean isThereAdmin(){
+        return AccountTable.isThereAdmin();
     }
 
     public static IOControl getController() {
