@@ -1,6 +1,7 @@
 package view.process.person;
 
 import controller.Control;
+import controller.account.AccountControl;
 import model.existence.Account;
 import view.Menu;
 import view.process.FunctioningOption;
@@ -146,7 +147,7 @@ public class AccountProcessor extends Processor {
     }
 
     public Menu editCredit(){
-        double transactionMoney;
+        double transactionMoney = 0;
         int input = 0;
         boolean flag = true;
 
@@ -187,7 +188,7 @@ public class AccountProcessor extends Processor {
         if(input == 1){
             System.out.println(accountControl.addMoney(transactionMoney));
         } else {
-            System.out.println(accountControl.reduceMoney(transactionMoney));
+            System.out.println(accountControl.getMoney(transactionMoney));
         }
 
         return Menu.makeMenu(Control.getType() + " Menu");

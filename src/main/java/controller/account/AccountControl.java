@@ -7,7 +7,7 @@ import notification.Notification;
 
 
 public class AccountControl extends Control {
-    private static AccountControl accountControl = null;
+    private static AccountControl customerControl = null;
 
     public Account getAccount() {
         try {
@@ -95,8 +95,8 @@ public class AccountControl extends Control {
     } // duplicate
 
     public static AccountControl getController() {
-        if (accountControl == null)
-            accountControl = new AccountControl();
-        return accountControl;
+        if (customerControl == null)
+            customerControl = new AccountControl();
+        return customerControl;
     }
 }

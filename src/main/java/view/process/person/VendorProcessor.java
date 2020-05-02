@@ -1,8 +1,10 @@
 package view.process.person;
 
 
+import controller.account.Vendor;
+
 public class VendorProcessor extends AccountProcessor {
-    private static VendorControl vendorControl = VendorControl.getController();
+    private static Vendor vendorControl = Vendor.getController();
     private static VendorProcessor vendorProcessor = null;
 
     private VendorProcessor(){
