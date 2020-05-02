@@ -49,10 +49,10 @@ public class Menu {
     public void show() {
         System.out.println(this.name + ":");
 
-        if (this.isThereParentMenu) {
+        if (this.isThereParentMenu)
             System.out.println("0. Back");
-            this.isThereParentMenu = true;
-        }
+          else
+            System.out.println("0. Exit");
 
         for (int i = 0; i < this.options.size(); i++) {
             System.out.println("" + (i + 1) + ". " + options.get(i));
@@ -84,9 +84,13 @@ public class Menu {
             }
         }
 
-        if (input == 0)
-            nextMenu = Menu.makeMenu(this.parentName);
-        else {
+        if (input == 0) {
+            if(isThereParentMenu){
+                nextMenu = Menu.makeMenu(this.parentName);
+            } else {
+                nextMenu = null;
+            }
+        } else {
             if (processor.isThereFunctionWithName(this.options.get(input - 1)))
                 nextMenu = processor.executeTheFunctionWithName(this.options.get(input - 1));
             else
