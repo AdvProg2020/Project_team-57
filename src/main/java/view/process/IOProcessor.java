@@ -38,7 +38,6 @@ public class IOProcessor extends Processor {
         Account account = new Account();
         boolean flag = true;
         String type = null;
-        int input;
 
         ArrayList<String> availableTypes = new ArrayList<String>();
 
@@ -51,29 +50,12 @@ public class IOProcessor extends Processor {
         while(flag){
             System.out.println("Please Enter The Type Of Your Account :");
 
-            for(int i = 0; i < availableTypes.size(); i++)
-                System.out.println((i + 1) + ". " + availableTypes.get(i));
+            type = setOptionsForArrayList(availableTypes);
 
-            System.out.println((availableTypes.size() + 1) + ". Cancel");
-
-            try {
-                input = Integer.parseInt(Menu.getScanner().nextLine().trim());
-
-                if(input == availableTypes.size() + 1)
-                    return Menu.makeMenu("IO Menu");
-                else if(input < 0 || input > availableTypes.size())
-                    throw new Menu.InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
-
-                type = availableTypes.get(input - 1);
+            if(type == "Cancel")
+                return Menu.makeMenu("IO Menu");
+            else if(type != null)
                 flag = false;
-
-            } catch (NumberFormatException e) {
-                System.out.println("Please Enter An Integer");
-            } catch (NullPointerException e) {
-                System.out.println("Please Enter An Integer");
-            } catch (Menu.InputIsBiggerThanExistingNumbers e) {
-                System.out.println(e.getMessage());
-            }
         }
 
         account.setType(type);

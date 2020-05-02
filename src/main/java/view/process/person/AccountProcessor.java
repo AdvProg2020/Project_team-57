@@ -89,7 +89,6 @@ public class AccountProcessor extends Processor {
     public Menu editField(){
         String fieldName = null, fieldValue = null;
         boolean flag = true;
-        int fieldNumber;
 
         ArrayList<String> availableFields = new ArrayList<String>();
         availableFields.add("FirstName");
@@ -102,29 +101,12 @@ public class AccountProcessor extends Processor {
         while(flag) {
             System.out.println("Please Enter The Field You Wanna Edit :");
 
-            for(int i = 0; i < availableFields.size(); i++)
-                System.out.println((i + 1) + ". " + availableFields.get(i));
+            fieldName = setOptionsForArrayList(availableFields);
 
-            System.out.println((availableFields.size() + 1) + ". Cancel");
-
-            try {
-                fieldNumber = Integer.parseInt(Menu.getScanner().nextLine().trim());
-
-                if(fieldNumber == availableFields.size() + 1)
-                    return Menu.makeMenu(Control.getType() + " Menu");
-                else if(fieldNumber < 0 || fieldNumber > availableFields.size())
-                    throw new Menu.InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
-
-                fieldName = availableFields.get(fieldNumber - 1);
+            if(fieldName == "Cancel")
+                return Menu.makeMenu(Control.getType() + " Menu");
+            else if(fieldName != null)
                 flag = false;
-
-            } catch (NumberFormatException e) {
-                System.out.println("Please Enter An Integer");
-            } catch (NullPointerException e) {
-                System.out.println("Please Enter An Integer");
-            } catch (Menu.InputIsBiggerThanExistingNumbers e) {
-                System.out.println(e.getMessage());
-            }
         }
 
         System.out.println("Please Enter The New Value Of Your Field :");
@@ -149,30 +131,23 @@ public class AccountProcessor extends Processor {
 
     public Menu editCredit(){
         double transactionMoney = 0;
-        int input = 0;
+        String creditOption = null;
         boolean flag = true;
 
+        ArrayList<String> creditOptions = new ArrayList<String>();
+        creditOptions.add("Add Money");
+        creditOptions.add("Reduce Money");
+
         while(flag) {
-            System.out.println("Do You Wanna Add Money or Reduce Money ?" +
-                    "\n1. Add Money" + "\n2. Reduce Money" + "\n3. Cancel");
+            System.out.println("Do You Wanna Add Money or Reduce Money ?");
 
-            try {
-                input = Integer.parseInt(Menu.getScanner().nextLine().trim());
+            creditOption = setOptionsForArrayList(creditOptions);
 
-                if(input == 3) {
-                    return Menu.makeMenu(Control.getType() + " Menu");
-                } else if(input != 1 && input != 2) {
-                    throw new Menu.InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
-                } else
-                    flag = false;
+            if(creditOption == "Cancel")
+                return Menu.makeMenu(Control.getType() + " Menu");
+            else if(creditOption != null)
+                flag = false;
 
-            } catch (NumberFormatException e) {
-                System.out.println("Please Enter An Integer");
-            } catch (NullPointerException e) {
-                System.out.println("Please Enter An Integer");
-            } catch (Menu.InputIsBiggerThanExistingNumbers e) {
-                System.out.println(e.getMessage());
-            }
         }
 
         flag = true;
@@ -189,7 +164,7 @@ public class AccountProcessor extends Processor {
             }
         }
 
-        if(input == 1){
+        if(creditOption.equals("Add Money")){
             System.out.println(accountControl.addMoney(transactionMoney).getMessage());
         } else {
             System.out.println(accountControl.getMoney(transactionMoney).getMessage());

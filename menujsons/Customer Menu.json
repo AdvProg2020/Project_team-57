@@ -5,7 +5,7 @@
     "Edit Credit",
     "Change Password"
   ],
-  "name" : "Buyer Menu",
+  "name" : "Customer Menu",
   "parentName" : "Main Menu",
   "isThereParentMenu" : "true",
   "processorName" : "CustomerProcessor"

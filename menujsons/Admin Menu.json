@@ -5,7 +5,7 @@
     "Edit Credit",
     "Change Password"
   ],
-  "name" : "Manager Menu",
+  "name" : "Admin Menu",
   "parentName" : "Main Menu",
   "isThereParentMenu" : "true",
   "processorName" : "AdminProcessor"
