@@ -46,7 +46,7 @@ public abstract class Processor {
         System.out.println((options.size() + 1) + ". Cancel");
 
         try {
-            option = Integer.parseInt(Menu.getScanner().nextLine().trim());
+            option = Integer.parseInt(scanner.nextLine().trim());
 
             if(option == options.size() + 1)
                 return "Cancel";

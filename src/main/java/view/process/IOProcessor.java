@@ -61,10 +61,10 @@ public class IOProcessor extends Processor {
         account.setType(type);
 
         System.out.println("Please Enter Your UserName :");
-        account.setUsername(Menu.getScanner().nextLine().trim());
+        account.setUsername(scanner.nextLine().trim());
 
         System.out.println("Please Enter Your PassWord :");
-        account.setPassword(Menu.getScanner().nextLine().trim());
+        account.setPassword(scanner.nextLine().trim());
 
         System.out.println(ioControl.register(account).getMessage());
         return Menu.makeMenu("IO Menu");
@@ -74,10 +74,10 @@ public class IOProcessor extends Processor {
         Account account = new Account();
 
         System.out.println("Please Enter Your UserName :");
-        account.setUsername(Menu.getScanner().nextLine().trim());
+        account.setUsername(scanner.nextLine().trim());
 
         System.out.println("Please Enter Your PassWord :");
-        account.setPassword(Menu.getScanner().nextLine().trim());
+        account.setPassword(scanner.nextLine().trim());
 
         System.out.println(ioControl.login(account).getMessage());
         return MainMenuProcessor.getInstance().iOManage();

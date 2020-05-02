@@ -110,7 +110,7 @@ public class AccountProcessor extends Processor {
         }
 
         System.out.println("Please Enter The New Value Of Your Field :");
-        fieldValue = Menu.getScanner().nextLine().trim();
+        fieldValue = scanner.nextLine().trim();
 
         System.out.println(accountControl.editField(fieldName, fieldValue).getMessage());
         return Menu.makeMenu(Control.getType() + " Menu");
@@ -120,10 +120,10 @@ public class AccountProcessor extends Processor {
         String oldPassWord, newPassWord;
 
         System.out.println("Please Enter Your Old PassWord :");
-        oldPassWord = Menu.getScanner().nextLine().trim();
+        oldPassWord = scanner.nextLine().trim();
 
         System.out.println("Please Enter Your New PassWord :");
-        newPassWord = Menu.getScanner().nextLine().trim();
+        newPassWord = scanner.nextLine().trim();
 
         System.out.println(accountControl.changePassword(oldPassWord, newPassWord).getMessage());
         return Menu.makeMenu(Control.getType() + " Menu");
