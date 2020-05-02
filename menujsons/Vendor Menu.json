@@ -6,7 +6,7 @@
     "Change Password"
   ],
   "name" : "Seller Menu",
-  "parentMenu" : "Main Menu",
+  "parentName" : "Main Menu",
   "isThereParentMenu" : "true",
   "processorName" : "VendorProcessor"
 }

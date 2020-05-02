@@ -15,7 +15,7 @@ public class IOControl extends Control {
     public Notification register(Account account) {
         if (account.getUsername().length() < 6 || account.getUsername().length() > 16)
             return Notification.ERROR_USERNAME_LENGTH;
-        if (account.getUsername().contains("\\W"))
+        if (!isUsernameValid(account.getUsername()))
             return Notification.ERROR_USERNAME_FORMAT;
         if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
             return Notification.ERROR_PASSWORD_LENGTH;
@@ -37,16 +37,16 @@ public class IOControl extends Control {
     public Notification login(Account account){
         if (account.getUsername().length() < 6 || account.getUsername().length() > 16)
             return Notification.ERROR_USERNAME_LENGTH;
-        if (isUsernameValid(account.getUsername()))
+        if (!isUsernameValid(account.getUsername()))
             return Notification.ERROR_USERNAME_FORMAT;
         if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
             return Notification.ERROR_PASSWORD_LENGTH;
         if (!isPasswordValid(account.getPassword()))
             return Notification.ERROR_PASSWORD_FORMAT;
         try {
-            if (AccountTable.isUsernameFree(account.getUsername())) {
+            if (!AccountTable.isUsernameFree(account.getUsername())) {
                 if (AccountTable.isPasswordCorrect(account.getUsername(), account.getPassword())) {
-                    Control.setType(account.getType());
+                    Control.setType(AccountTable.getTypeByUsername(account.getUsername()));
                     Control.setUsername(account.getUsername());
                     Control.setLoggedIn(true);
                     return Notification.LOGIN_SUCCESSFUL;

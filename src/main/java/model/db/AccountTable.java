@@ -32,6 +32,15 @@ public class AccountTable extends Database {
         preparedStatement.execute();
     }
 
+    public static String getTypeByUsername(String username) throws SQLException, ClassNotFoundException {
+        String command = "SELECT AccType From Accounts WHERE Username = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        return resultSet.getString("AccType");
+    }
+
     public static boolean isThereAdmin() throws SQLException, ClassNotFoundException {
         String command = "SELECT * From Accounts WHERE AccType = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -42,6 +51,7 @@ public class AccountTable extends Database {
     public static Account getAccountByUsername(String username) throws SQLException, ClassNotFoundException {
         String command = "SELECT * From Accounts WHERE Username = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
         return Account.makeAccount(preparedStatement.executeQuery());
     }
 

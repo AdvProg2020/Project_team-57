@@ -6,7 +6,7 @@
     "Change Password"
   ],
   "name" : "Manager Menu",
-  "parentMenu" : "Main Menu",
+  "parentName" : "Main Menu",
   "isThereParentMenu" : "true",
   "processorName" : "AdminProcessor"
 }
