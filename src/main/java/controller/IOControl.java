@@ -1,5 +1,6 @@
 package controller;
 
+import controller.account.ValidPassword;
 import model.db.AccountTable;
 import model.existence.Account;
 import notification.Notification;
@@ -8,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class IOControl extends Control {
+public class IOControl extends Control implements ValidPassword {
     private static IOControl ioControl = null;
 
     public Notification register(Account account) {
@@ -18,7 +19,7 @@ public class IOControl extends Control {
             return Notification.ERROR_USERNAME_FORMAT;
         if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
             return Notification.ERROR_PASSWORD_LENGTH;
-        if (!isPasswordValid(account.getPassword()))
+        if (!this.isPasswordValid(account.getPassword()))
             return Notification.ERROR_PASSWORD_FORMAT;
         try {
             if (AccountTable.isUsernameFree(account.getUsername())) {
@@ -40,7 +41,7 @@ public class IOControl extends Control {
             return Notification.ERROR_USERNAME_FORMAT;
         if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
             return Notification.ERROR_PASSWORD_LENGTH;
-        if (!isPasswordValid(account.getPassword()))
+        if (!this.isPasswordValid(account.getPassword()))
             return Notification.ERROR_PASSWORD_FORMAT;
         try {
             if (!AccountTable.isUsernameFree(account.getUsername())) {
@@ -59,39 +60,6 @@ public class IOControl extends Control {
             return Notification.UNKNOWN_ERROR;
         }
     }
-
-    private boolean isPasswordValid(String password) {
-        for(int i = 0; i < password.length(); ++i)
-        {
-            char c = password.charAt(i);
-            if(!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') &&
-                    !(c >= '0' && c <= '9') && (c != '_') && (c != '-'))
-                return false;
-        }
-        boolean flag = false;
-        for(int i = 0; i < password.length(); ++i)
-        {
-            char c =password.charAt(i);
-            if(c >= '0' && c <= '9') {
-                flag = true;
-                break;
-            }
-        }
-        if(!flag)
-            return false;
-        flag = false;
-        for(int i = 0; i < password.length(); ++i)
-        {
-            char c =password.charAt(i);
-            if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
-                flag = true;
-                break;
-            }
-        }
-        if(!flag)
-            return false;
-        return true;
-    } // duplicate
 
     private boolean isUsernameValid(String username)
     {
