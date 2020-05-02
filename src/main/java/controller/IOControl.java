@@ -25,7 +25,7 @@ public class IOControl extends Control {
                 AccountTable.addAccount(account.getUsername(), account.getPassword(), account.getType());
                 return Notification.REGISTER_SUCCESSFUL;
             } else
-                return Notification.ERROR_FREE_USERNAME;
+                return Notification.ERROR_FULL_USERNAME;
         } catch (SQLException e) {
             return Notification.UNKNOWN_ERROR;
         } catch (ClassNotFoundException e){
