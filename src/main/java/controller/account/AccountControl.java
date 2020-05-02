@@ -11,8 +11,9 @@ public class AccountControl extends Control {
 
     public Account getAccount() {
         try {
-            return AccountTable.getAccountWithName(Control.getUsername());
+            return AccountTable.getAccountByUsername(Control.getUsername());
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -34,7 +35,7 @@ public class AccountControl extends Control {
 
     public Notification editField(String fieldName, String newValue) {
         try {
-            if (AccountTable.getValueWithField(Control.getUsername(), fieldName).equals(newValue))
+            if (AccountTable.getValueByField(Control.getUsername(), fieldName).equals(newValue))
                 return Notification.SAME_FIELD_ERROR;
             AccountTable.editField(Control.getUsername(), fieldName, newValue);
             return Notification.EDIT_FIELD_SUCCESSFULLY;
