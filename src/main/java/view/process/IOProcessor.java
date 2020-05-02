@@ -54,16 +54,18 @@ public class IOProcessor extends Processor {
             for(int i = 0; i < availableTypes.size(); i++)
                 System.out.println((i + 1) + ". " + availableTypes.get(i));
 
+            System.out.println((availableTypes.size() + 1) + ". Cancel");
+
             try {
                 input = Integer.parseInt(Menu.getScanner().nextLine().trim());
 
-                if(input <= 0 || input > availableTypes.size()){
+                if(input == availableTypes.size() + 1)
+                    return Menu.makeMenu("IO Menu");
+                else if(input < 0 || input > availableTypes.size())
                     throw new Menu.InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
-                }
 
                 type = availableTypes.get(input - 1);
                 flag = false;
-
 
             } catch (NumberFormatException e) {
                 System.out.println("Please Enter An Integer");

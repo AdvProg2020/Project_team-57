@@ -70,7 +70,7 @@ public class Menu {
             try {
                 input = Integer.parseInt(Menu.getScanner().nextLine().trim());
 
-                if (input > options.size() || input < 0 || (!isThereParentMenu && input == 0))
+                if (input > options.size() || input < 0)
                     throw new InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
                 else
                     flag = false;

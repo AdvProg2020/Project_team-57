@@ -7,6 +7,7 @@ import view.Menu;
 import view.process.FunctioningOption;
 import view.process.Processor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AccountProcessor extends Processor {
@@ -45,26 +46,26 @@ public class AccountProcessor extends Processor {
         Account account = accountControl.getAccount();
         createCustomLine();
 
-        System.out.format("| %-15s | %-35s | %n", "Username", account.getUsername());
+        printWithNullChecking("UserName", account.getUsername());
         createCustomLine();
 
-        System.out.format("| %-15s | %-35s | %n", "Password", "************");
+        printWithNullChecking("PassWord", "************");
         createCustomLine();
 
-        System.out.format("| %-15s | %-35s | %n", "Account Type", account.getType());
+        printWithNullChecking("Account Type", account.getType());
         createCustomLine();
 
-        System.out.format("| %-15s | %-35s | %n", "FirstName", account.getFirstName());
+        printWithNullChecking("FirstName", account.getFirstName());
         createCustomLine();
 
-        System.out.format("| %-15s | %-35s | %n", "LastName", account.getLastName());
+        printWithNullChecking("LastName", account.getLastName());
         createCustomLine();
 
-        System.out.format("| %-15s | %-35s | %n", "Email", account.getEmail());
+        printWithNullChecking("Email", account.getEmail());
         createCustomLine();
 
         if(Control.getType().equals("Vendor")){
-            System.out.format("| %-15s | %-35s | %n", "Brand Name", account.getBrand());
+            printWithNullChecking("Brand", account.getBrand());
             createCustomLine();
         }
 
@@ -78,41 +79,51 @@ public class AccountProcessor extends Processor {
         System.out.println("+-----------------+-------------------------------------+");
     }
 
+    private void printWithNullChecking(String fieldName, String fieldValue){
+        if(fieldValue == null)
+            System.out.format("| %-15s | %-35s | %n", fieldName, "Not Assigned");
+        else
+            System.out.format("| %-15s | %-35s | %n", fieldName, fieldValue);
+    }
+
     public Menu editField(){
         String fieldName = null, fieldValue = null;
         boolean flag = true;
         int fieldNumber;
 
+        ArrayList<String> availableFields = new ArrayList<String>();
+        availableFields.add("FirstName");
+        availableFields.add("LastName");
+        availableFields.add("Email");
+
+        if(Control.getType().equals("Vendor"))
+            availableFields.add("Brand");
+
         while(flag) {
-            flag = false;
-            System.out.println("Please Enter The Field You Wanna Edit :" +
-                    "\n1. FirstName" + "\n2. LastName" + "\n3. Email");
-            if (Control.getType().equals("Vendor"))
-                System.out.println("\n5. Brand Name");
+            System.out.println("Please Enter The Field You Wanna Edit :");
+
+            for(int i = 0; i < availableFields.size(); i++)
+                System.out.println((i + 1) + ". " + availableFields.get(i));
+
+            System.out.println((availableFields.size() + 1) + ". Cancel");
 
             try {
                 fieldNumber = Integer.parseInt(Menu.getScanner().nextLine().trim());
 
-                if(fieldNumber == 1){
-                    fieldName = "FirstName";
-                } else if(fieldNumber == 2){
-                    fieldName = "LastName";
-                } else if(fieldNumber == 3){
-                    fieldName = "Email";
-                } else if(Control.getType().equals("Vendor") && fieldNumber == 4){
-                    fieldName = "Brand";
-                } else {
+                if(fieldNumber == availableFields.size() + 1)
+                    return Menu.makeMenu(Control.getType() + " Menu");
+                else if(fieldNumber < 0 || fieldNumber > availableFields.size())
                     throw new Menu.InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
-                }
+
+                fieldName = availableFields.get(fieldNumber - 1);
+                flag = false;
+
             } catch (NumberFormatException e) {
                 System.out.println("Please Enter An Integer");
-                flag = true;
             } catch (NullPointerException e) {
                 System.out.println("Please Enter An Integer");
-                flag = true;
             } catch (Menu.InputIsBiggerThanExistingNumbers e) {
                 System.out.println(e.getMessage());
-                flag = true;
             }
         }
 
@@ -143,15 +154,18 @@ public class AccountProcessor extends Processor {
 
         while(flag) {
             System.out.println("Do You Wanna Add Money or Reduce Money ?" +
-                    "\n1. Add Money" + "\n2. Reduce Money");
+                    "\n1. Add Money" + "\n2. Reduce Money" + "\n3. Cancel");
 
             try {
                 input = Integer.parseInt(Menu.getScanner().nextLine().trim());
 
-                if(input != 1 && input != 2) {
+                if(input == 3) {
+                    return Menu.makeMenu(Control.getType() + " Menu");
+                } else if(input != 1 && input != 2) {
                     throw new Menu.InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
                 } else
                     flag = false;
+
             } catch (NumberFormatException e) {
                 System.out.println("Please Enter An Integer");
             } catch (NullPointerException e) {
