@@ -3,8 +3,10 @@ package view.process;
 import view.Menu;
 
 import java.util.HashMap;
+import java.util.Scanner;
 
 public abstract class Processor {
+    protected static Scanner scanner = Menu.getScanner();
     private static HashMap<String, Processor> processesHashMap;
     protected HashMap<String, FunctioningOption> functionsHashMap;
 

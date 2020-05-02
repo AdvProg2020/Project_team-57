@@ -1,9 +1,12 @@
 {
   "options" : [
-
+    "View Personal Info",
+    "Edit Field",
+    "Edit Credit",
+    "Change Password"
   ],
   "name" : "Buyer Menu",
   "parentMenu" : "Main Menu",
   "isThereParentMenu" : "true",
-  "processorName" : "BuyerProcessor"
+  "processorName" : "CustomerProcessor"
 }
