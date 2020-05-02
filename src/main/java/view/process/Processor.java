@@ -1,6 +1,9 @@
 package view.process;
 
 import view.Menu;
+import view.process.person.AdminProcessor;
+import view.process.person.CustomerProcessor;
+import view.process.person.VendorProcessor;
 
 import java.util.HashMap;
 import java.util.Scanner;
@@ -14,7 +17,10 @@ public abstract class Processor {
         processesHashMap = new HashMap<String, Processor>();
         processesHashMap.put("MainMenuProcessor", MainMenuProcessor.getInstance());
         processesHashMap.put("IOProcessor", IOProcessor.getInstance());
-        //TODO
+        processesHashMap.put("AdminProcessor", AdminProcessor.getInstance());
+        processesHashMap.put("VendorProcessor", VendorProcessor.getInstance());
+        processesHashMap.put("CustomerProcessor", CustomerProcessor.getInstance());
+
     }
 
     public static Processor findProcessorWithName(String name){
