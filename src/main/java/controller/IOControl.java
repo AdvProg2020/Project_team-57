@@ -11,7 +11,6 @@ import java.util.Arrays;
 public class IOControl extends Control {
     private static IOControl ioControl = null;
 
-
     public Notification register(Account account) {
         if (account.getUsername().length() < 6 || account.getUsername().length() > 16)
             return Notification.ERROR_USERNAME_LENGTH;

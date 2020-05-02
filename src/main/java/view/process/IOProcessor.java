@@ -1,9 +1,11 @@
 package view.process;
 
+import controller.Control;
 import controller.IOControl;
 import model.existence.Account;
 import view.Menu;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class IOProcessor extends Processor {
@@ -38,14 +40,31 @@ public class IOProcessor extends Processor {
         String type = null;
         int input;
 
+        ArrayList<String> availableTypes = new ArrayList<String>();
+
+        if(ioControl.isThereAdmin())
+            availableTypes.add("Admin");
+
+        availableTypes.add("Vendor");
+        availableTypes.add("Customer");
+
         while(flag){
-            System.out.println("Please Enter The Type Of Your Account :" +
-                    "\n1. Admin \n2. Vendor \n3. Customer");
+            System.out.println("Please Enter The Type Of Your Account :");
+
+            for(int i = 0; i < availableTypes.size(); i++)
+                System.out.println((i + 1) + ". " + availableTypes.get(i));
 
             try {
                 input = Integer.parseInt(Menu.getScanner().nextLine().trim());
 
-                switch (input) {
+                if(input <= 0 || input > availableTypes.size()){
+                    throw new Menu.InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
+                }
+
+                type = availableTypes.get(input);
+                flag = false;
+
+                /*switch (input) {
                     case 1:
                         type = "Admin";
                         flag = false;
@@ -60,7 +79,7 @@ public class IOProcessor extends Processor {
                         break;
                     default:
                         throw new Menu.InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
-                }
+                }*/
 
             } catch (NumberFormatException e) {
                 System.out.println("Please Enter An Integer");
