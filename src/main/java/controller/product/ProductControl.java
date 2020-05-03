@@ -1,10 +1,11 @@
 package controller.product;
 
 import controller.Control;
+import model.db.ProductTable;
+import model.existence.Product;
 import notification.Notification;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ProductControl extends Control {
     private static ProductControl productControl = null;
@@ -12,7 +13,7 @@ public class ProductControl extends Control {
 
     public Product getProductById(String productId) {
         try {
-            return ProductTable.getProductById(productId);
+            return ProductTable.getProductByID(productId);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -21,17 +22,21 @@ public class ProductControl extends Control {
 
     public Notification removeProductById(String productId) {
         try {
-            ProductTable.removeProductById(productId);
+            ProductTable.removeProductByID(productId);
             return Notification.REMOVE_PRODUCT_SUCCESSFULLY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
         }
     }
 
-    public void setProductLists(ArrayList<String> productName, ArrayList<String> productId){
-        for (Product product : ProductTable.getAllProducts()){
-            productName.add(product.getName());
-            productId.add(product.getId());
+    public void setProductLists(ArrayList<String> productName, ArrayList<String> productId) {
+        try {
+            for (Product product : ProductTable.getAllProducts()) {
+                productName.add(product.getName());
+                productId.add(product.getID());
+            }
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
