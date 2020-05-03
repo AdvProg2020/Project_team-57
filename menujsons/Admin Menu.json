@@ -3,7 +3,8 @@
     "View Personal Info",
     "Edit Field",
     "Edit Credit",
-    "Change Password"
+    "Change Password",
+    "Manage All Products"
   ],
   "name" : "Admin Menu",
   "parentName" : "Main Menu",

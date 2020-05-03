@@ -5,8 +5,6 @@ import model.db.ProductTable;
 import model.existence.Product;
 import notification.Notification;
 
-import java.util.ArrayList;
-
 public class ProductControl extends Control {
     private static ProductControl productControl = null;
 
@@ -29,15 +27,25 @@ public class ProductControl extends Control {
         }
     }
 
-    public void setProductLists(ArrayList<String> productName, ArrayList<String> productId) {
-        try {
-            for (Product product : ProductTable.getAllProducts()) {
-                productName.add(product.getName());
-                productId.add(product.getID());
+
+    public String getProductMenuType()
+    {
+        if(isLoggedIn())
+        {
+            if(getType().equals("Admin"))
+                return "Admin Product Menu";
+            else if(getType().equals("Customer")) {
+                //TODO
             }
-        } catch (Exception e){
-            e.printStackTrace();
+            else{
+                //TODO
+            }
         }
+        else
+        {
+            return "Not Logged In Product Menu";
+        }
+        return null;
     }
 
     public static ProductControl getController(){

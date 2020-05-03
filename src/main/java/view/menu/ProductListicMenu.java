@@ -1,6 +1,7 @@
 package view.menu;
 
 import com.google.gson.GsonBuilder;
+import controller.Control;
 import view.menu.Menu;
 import view.process.Processor;
 import view.process.ProductListicProcessor;
@@ -75,6 +76,19 @@ public class ProductListicMenu extends Menu {
                 int command = Integer.parseInt(input) - 1;
                 if(command < maxOption)
                 {
+                    if (command == 0)
+                    {
+                        if(parentName.equals("Main Menu"))
+                        {
+                            return Menu.makeMenu("Main Menu");
+                        }
+                        else
+                        {
+                            Menu menu = Menu.makeMenu(Control.getType() + " Menu");
+                            menu.setName(Control.getUsername());
+                            return menu;
+                        }
+                    }
                     return processor.getProductMenu(processor.chooseProductMenuType(), productIDs.get(command), this);
                 }
                 else
@@ -116,7 +130,7 @@ public class ProductListicMenu extends Menu {
             System.out.println("Please Enter An Integer");
         } catch (NullPointerException e) {
             System.out.println("Please Enter An Integer");
-        } catch (InputIsBiggerThanExistingNumbers inputIsBiggerThanExistingNumbers) {
+        } catch (InputIsBiggerThanExistingNumbers e) {
             System.out.println(e.getMessage());
         }
         return false;
@@ -128,5 +142,21 @@ public class ProductListicMenu extends Menu {
         if(pageNumber == pageLim - 1 && input.equals("+"))
             return false;
         return true;
+    }
+
+    public ArrayList<String> getProductNames() {
+        return productNames;
+    }
+
+    public ArrayList<String> getProductIDs() {
+        return productIDs;
+    }
+
+    public void setProductNames(ArrayList<String> productNames) {
+        this.productNames = productNames;
+    }
+
+    public void setProductIDs(ArrayList<String> productIDs) {
+        this.productIDs = productIDs;
     }
 }

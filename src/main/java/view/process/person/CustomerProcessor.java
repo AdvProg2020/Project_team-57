@@ -1,10 +1,10 @@
 package view.process.person;
 
 
-import controller.account.Customer;
+import controller.account.CustomerControl;
 
 public class CustomerProcessor extends AccountProcessor {
-    private static Customer customer = Customer.getController();
+    private static CustomerControl customerControl = CustomerControl.getController();
     private static CustomerProcessor customerProcessor = null;
 
     private CustomerProcessor(){

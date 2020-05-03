@@ -1,37 +1,14 @@
 package view.process;
 
+import controller.Control;
+import controller.account.AdminControl;
 import controller.product.ProductControl;
-import view.menu.Menu;
-
-import java.util.HashMap;
 
 public class ProductProcessor extends Processor{
-    private static ProductControl productControl = ProductControl.getController();
     private static ProductProcessor productProcessor = null;
 
+    private ProductControl productControl = ProductControl.getController();
     private ProductProcessor(){
-        functionsHashMap = new HashMap<String, FunctioningOption>();
-        functionsHashMap.put("Edit Product", new FunctioningOption() {
-            @Override
-            public Menu doTheThing() {
-                editProduct();
-                return null;
-            }
-        });
-        functionsHashMap.put("View Buyers", new FunctioningOption() {
-            @Override
-            public Menu doTheThing() {
-                viewBuyers();
-                return null;
-            }
-        });
-        functionsHashMap.put("Remove Product", new FunctioningOption() {
-            @Override
-            public Menu doTheThing() {
-                removeProduct();
-                return null;
-            }
-        });
 
     }
 
@@ -50,7 +27,7 @@ public class ProductProcessor extends Processor{
 
     }
 
-    public void removeProduct(){
-
+    public void removeProduct(String productID){
+        System.out.println(productControl.removeProductById(productID).getMessage());
     }
 }

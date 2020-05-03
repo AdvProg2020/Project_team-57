@@ -4,6 +4,7 @@ package view.process;
 import controller.Control;
 import controller.product.ProductControl;
 import view.menu.ProductListicMenu;
+import view.menu.ProductMenu;
 
 public class ProductListicProcessor extends Processor {
     private static ProductListicProcessor processor = null;
@@ -26,24 +27,6 @@ public class ProductListicProcessor extends Processor {
     }
 
     public String chooseProductMenuType() {
-        if(Control.isLoggedIn())
-        {
-            if(Control.getType().equals("Admin"))
-            {
-
-            }
-            else if(Control.getType().equals("Vendor"))
-            {
-                //TODO
-            }
-            else if(Control.getType().equals("Customer"))
-            {
-                //TODO
-            }
-        }
-        else
-        {
-            //TODO
-        }
+        return controller.getProductMenuType();
     }
 }
