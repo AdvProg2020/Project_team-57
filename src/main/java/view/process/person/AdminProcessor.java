@@ -15,7 +15,7 @@ public class AdminProcessor extends AccountProcessor {
         functionsHashMap.put("Manage All Products", new FunctioningOption() {
             @Override
             public Menu doTheThing() {
-                return showPersonalInfo();
+                return manageAllProducts();
             }
         });
     }
@@ -29,7 +29,7 @@ public class AdminProcessor extends AccountProcessor {
 
     public Menu manageAllProducts()
     {
-        ProductListicMenu menu = ProductListicMenu.makeProductListicMenu("Manange All Products Listic Menu");
+        ProductListicMenu menu = ProductListicMenu.makeProductListicMenu("Manage All Products Listic Menu");
         adminControl.setProductLists(menu.getProductNames(), menu.getProductIDs());
         return menu;
     }

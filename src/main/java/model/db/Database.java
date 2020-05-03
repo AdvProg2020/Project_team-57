@@ -47,14 +47,13 @@ public class Database {
                     "primary key(Username)" +
                     ");");
         }
-
         command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'Products'";
         resultSet = statement.executeQuery(command);
         if(!resultSet.next()){
             statement.execute("CREATE TABLE Products(" +
                     "ID varchar(8)," +
                     "Status int," +
-                    "Name varchar(20)," +
+                    "ProductName varchar(20)," +
                     "Brand varchar(20)," +
                     "SellerUserName varchar(16)," +
                     "Count int," +
@@ -67,7 +66,6 @@ public class Database {
                     "primary key(ID)" +
                     ");");
         }
-
         statement.close(); resultSet.close();
     }
 

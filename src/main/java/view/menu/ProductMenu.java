@@ -3,11 +3,13 @@ package view.menu;
 import com.google.gson.GsonBuilder;
 import model.existence.Product;
 import view.process.Processor;
+import view.process.ProductListicProcessor;
 import view.process.ProductProcessor;
 
 import java.io.FileNotFoundException;
 
 public class ProductMenu extends Menu {
+    private ProductProcessor productProcessor = ProductProcessor.getInstance();
     private ProductListicMenu parentMenu;
     private Product product;
 
@@ -36,8 +38,6 @@ public class ProductMenu extends Menu {
     }
 
     public Menu execute(){
-        processor = ProductProcessor.getInstance();
-        Menu nextMenu = this;
         boolean flag = true;
         int input = 0;
 
@@ -59,11 +59,13 @@ public class ProductMenu extends Menu {
             }
         }
 
-        if(input == 0 || options.get(input - 1).equals("Remove Product")) {
-            nextMenu = parentMenu;
+        if(input != 0 && options.get(input - 1).equals("Remove Product"))
+        {
+            productProcessor.removeProduct(product.getID());
+            parentMenu.deleteProductFromListWithId(product.getID());
         }
 
-        return nextMenu;
+        return parentMenu;
     }
 
     public void printProductSpecs(Product product){
@@ -138,9 +140,9 @@ public class ProductMenu extends Menu {
         if(description.length() <= 35){
             return new String[]{description};
         } else if(description.length() > 35 && description.length() <= 70){
-            return new String[]{description.substring(0, 34), description.substring(35)};
+            return new String[]{description.substring(0, 35), description.substring(35)};
         } else {
-            return new String[]{description.substring(0, 34), description.substring(35, 69), description.substring(70)};
+            return new String[]{description.substring(0, 35), description.substring(35, 70), description.substring(70)};
         }
     }
 

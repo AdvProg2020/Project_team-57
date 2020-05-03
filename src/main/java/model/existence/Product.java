@@ -20,7 +20,7 @@ public class Product {
     public Product(ResultSet resultSet) throws SQLException {
         this.ID = resultSet.getString("ID");
         this.status = resultSet.getInt("Status");
-        this.name = resultSet.getString("Name");
+        this.name = resultSet.getString("ProductName");
         this.brand = resultSet.getString("Brand");
         this.sellerUserName = resultSet.getString("SellerUserName");
         this.count = resultSet.getInt("Count");

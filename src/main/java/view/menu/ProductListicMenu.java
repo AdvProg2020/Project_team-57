@@ -2,15 +2,13 @@ package view.menu;
 
 import com.google.gson.GsonBuilder;
 import controller.Control;
-import view.menu.Menu;
-import view.process.Processor;
 import view.process.ProductListicProcessor;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 public class ProductListicMenu extends Menu {
-    private ProductListicProcessor processor = ProductListicProcessor.getInstance();
+    private ProductListicProcessor listicProcessor = ProductListicProcessor.getInstance();
     private ArrayList<String> productNames = new ArrayList<>();
     private ArrayList<String> productIDs = new ArrayList<>();
     private int pageSize = 5;
@@ -36,31 +34,28 @@ public class ProductListicMenu extends Menu {
         pageLim = (productNames.size() / pageSize);
         if(productNames.size() % 5 != 0)
             ++pageLim;
-        while (true)
+        setMaxOption();
+        System.out.println("0. Cancel");
+        System.out.println("Page " + (pageNumber + 1));
+        for(int j = 0; j < maxOption; ++j)
         {
-            setMaxOption();
-            System.out.println("0. Cancel");
-            System.out.println("Page " + (pageNumber + 1));
-            for(int j = 0; j < maxOption; ++j)
-            {
-                System.out.println((j + 1) + ". " + productNames.get((pageNumber * pageLim) + j));
-            }
-            if(pageNumber == pageLim - 1)
-                System.out.println("-: Previous Page");
-            else if(pageNumber == 0)
-                System.out.println("+: Next Page");
-            else
-                System.out.println("-: Previous Page, +: Next Page");
+            System.out.println((j + 1) + ". " + productNames.get((pageNumber * pageSize) + j));
+        }
+        if(pageNumber == pageLim - 1)
+            System.out.println("-: Previous Page");
+        else if(pageNumber == 0)
+            System.out.println("+: Next Page");
+        else
+            System.out.println("-: Previous Page, +: Next Page");
 
-            if(options != null && options.size() > 0)
-            {
+        if(options != null && options.size() > 0)
+        {
 
-                for(int j = maxOption; j < options.size() + (maxOption); ++j)
-                {
-                    System.out.println((j + 1) + ". " + options.get(j - maxOption));
-                }
-                maxOption += options.size();
+            for(int j = maxOption; j < options.size() + (maxOption); ++j)
+            {
+                System.out.println((j + 1) + ". " + options.get(j - maxOption));
             }
+            maxOption += options.size();
         }
     }
 
@@ -76,7 +71,7 @@ public class ProductListicMenu extends Menu {
                 int command = Integer.parseInt(input) - 1;
                 if(command < maxOption)
                 {
-                    if (command == 0)
+                    if (command == -1)
                     {
                         if(parentName.equals("Main Menu"))
                         {
@@ -89,7 +84,7 @@ public class ProductListicMenu extends Menu {
                             return menu;
                         }
                     }
-                    return processor.getProductMenu(processor.chooseProductMenuType(), productIDs.get(command), this);
+                    return listicProcessor.getProductMenu(listicProcessor.chooseProductMenuType(), productIDs.get(command + (pageNumber * pageSize)), this);
                 }
                 else
                 {
@@ -101,8 +96,8 @@ public class ProductListicMenu extends Menu {
     }
 
     private void setMaxOption() {
-        if(productNames.size() - (pageNumber * pageLim) < 5 )
-            maxOption = productNames.size() - (pageNumber * pageLim);
+        if(productNames.size() - (pageNumber * pageSize) < 5 )
+            maxOption = productNames.size() - (pageNumber * pageSize);
         else
             maxOption = 5;
     }
@@ -138,9 +133,15 @@ public class ProductListicMenu extends Menu {
 
     private boolean canChangePage() {
         if(pageNumber == 0 && input.equals("-"))
+        {
+            System.out.println("It's Only The beginning, BRO!!!");
             return false;
+        }
         if(pageNumber == pageLim - 1 && input.equals("+"))
+        {
+            System.out.println("It's The End Of The Line, DUDE! You Can't Go Any Further :/");
             return false;
+        }
         return true;
     }
 
@@ -158,5 +159,11 @@ public class ProductListicMenu extends Menu {
 
     public void setProductIDs(ArrayList<String> productIDs) {
         this.productIDs = productIDs;
+    }
+
+    public void deleteProductFromListWithId(String productID)
+    {
+        int index = productIDs.indexOf(productID);
+        productIDs.remove(index); productNames.remove(index);
     }
 }
