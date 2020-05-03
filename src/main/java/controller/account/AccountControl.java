@@ -8,7 +8,6 @@ import notification.Notification;
 
 public class AccountControl extends Control implements ValidPassword{
     private static AccountControl customerControl = null;
-
     public Account getAccount() {
         try {
             return AccountTable.getAccountByUsername(Control.getUsername());

@@ -18,7 +18,8 @@ public enum Notification {
     RISE_MONEY_SUCCESSFULLY("Inventory has increased!"),
     LACK_BALANCE_ERROR("Anything else???\uD83D\uDE12\nInventory is not enough!"),
     GET_MONEY_SUCCESSFULLY("Money has got successfully!"),
-    WRONG_OLD_PASSWORD("Old Password Incorrect");
+    WRONG_OLD_PASSWORD("Old Password Incorrect"),
+    REMOVE_PRODUCT_SUCCESSFULLY("Product removed successfully");
 
     private String message;
 
