@@ -6,13 +6,7 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
-        /*try {
-            ProductTable.tempAddProducts();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }*/
+
         Processor.initProcessHashMaps();
         Menu menu = Menu.makeMenu("Main Menu");
 
