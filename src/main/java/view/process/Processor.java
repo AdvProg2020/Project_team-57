@@ -1,7 +1,6 @@
 package view.process;
 
-import controller.Control;
-import view.Menu;
+import view.menu.Menu;
 import view.process.person.AdminProcessor;
 import view.process.person.CustomerProcessor;
 import view.process.person.VendorProcessor;

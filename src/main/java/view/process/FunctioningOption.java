@@ -1,6 +1,6 @@
 package view.process;
 
-import view.Menu;
+import view.menu.Menu;
 
 public interface FunctioningOption {
     public Menu doTheThing();

@@ -1,9 +1,8 @@
 package view.process;
 
-import controller.Control;
 import controller.IOControl;
 import model.existence.Account;
-import view.Menu;
+import view.menu.Menu;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -3,7 +3,7 @@ package view.process.person;
 import controller.Control;
 import controller.account.AccountControl;
 import model.existence.Account;
-import view.Menu;
+import view.menu.Menu;
 import view.process.FunctioningOption;
 import view.process.Processor;
 

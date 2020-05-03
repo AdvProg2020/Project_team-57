@@ -1,4 +1,4 @@
-import view.Menu;
+import view.menu.Menu;
 import view.process.Processor;
 
 public class Main {

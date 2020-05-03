@@ -1,0 +1,6 @@
+{
+  "name" : "Manange All Products",
+  "parentName" : "Admin Menu",
+  "isThereParentMenu" : true,
+  "processorName" : "ProductsListicMenu"
+}

@@ -1,4 +1,4 @@
-package view;
+package view.menu;
 
 import com.google.gson.GsonBuilder;
 import view.process.Processor;
@@ -9,15 +9,15 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
-    private static Scanner scanner = new Scanner(System.in);
-    private String processorName;
-    private Processor processor;
-    private ArrayList<String> options;
-    private String name;
-    private String parentName;
+    protected static Scanner scanner = new Scanner(System.in);
+    protected String processorName;
+    protected Processor processor;
+    protected ArrayList<String> options;
+    protected String name;
+    protected String parentName;
     private boolean isThereParentMenu;
 
-    private Menu() {
+    protected Menu() {
     }
 
     public static Menu makeMenu(String menuName) {
@@ -26,13 +26,13 @@ public class Menu {
         try {
             json = Menu.getJsonFromDB(menuName);
         } catch (FileNotFoundException e) {
-            System.out.println("file not found");
+            System.out.println("Menu File Couldn't Get Initialized! Please Contact Us As Soon As Possible :.(");
         }
 
         return new GsonBuilder().setPrettyPrinting().create().fromJson(json, Menu.class);
     }
 
-    public static String getJsonFromDB(String menuName) throws FileNotFoundException {
+    protected static String getJsonFromDB(String menuName) throws FileNotFoundException {
         File file = new File("menujsons\\" + menuName + ".json");
         Scanner myScanner = new Scanner(file);
         StringBuilder json = new StringBuilder();

@@ -1,7 +1,7 @@
 package view.process;
 
 import controller.Control;
-import view.Menu;
+import view.menu.Menu;
 
 import java.util.HashMap;
 
