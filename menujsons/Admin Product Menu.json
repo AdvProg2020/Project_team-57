@@ -1,0 +1,9 @@
+{
+  "options" : [
+    "Remove Product"
+  ],
+  "name" : "Product Menu",
+  "parentName" : "Manage All Products Listic Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "ProductProcessor"
+}

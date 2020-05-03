@@ -1,0 +1,11 @@
+{
+  "options" : [
+    "Edit Product",
+    "View Buyers",
+    "Remove Product"
+  ],
+  "name" : "Product Menu",
+  "parentName" : "Manage Products Listic Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "ProductProcessor"
+}
