@@ -2,8 +2,6 @@ package view.process;
 
 import com.google.gson.GsonBuilder;
 import controller.account.AccountControl;
-import view.menu.ListicOptionMenu;
-import view.menu.ProductMenu;
 import view.menu.RegisterMenu;
 
 public class RegisterProcessor extends ListicOptionProcessor {

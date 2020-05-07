@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 
 public class ListicOptionMenu extends Menu {
     protected ListicMenu parentMenu;
-//    protected ListicOptionProcessor listicOptionProcessor;
 
     public static ListicOptionMenu makeMenu(String menuName, ListicMenu parentMenu, String optionID) {
         String json = "";
