@@ -3,7 +3,6 @@ package view.process.person;
 
 import controller.account.AdminControl;
 import view.menu.Menu;
-import view.menu.ProductListicMenu;
 import view.process.FunctioningOption;
 
 public class AdminProcessor extends AccountProcessor {

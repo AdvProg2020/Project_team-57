@@ -2,6 +2,7 @@ package view.menu;
 
 import com.google.gson.GsonBuilder;
 import view.process.ListicProcessor;
+import view.process.Processor;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -26,12 +27,12 @@ public class ListicMenu extends Menu {
             System.out.println("Menu File Couldn't Get Initialized! Please Contact Us As Soon As Possible :.(");
         }
         ListicMenu listicMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicMenu.class);
-        ListicProcessor.initListicMenu(listicMenu);
         return listicMenu;
     }
 
     @Override
     public void show() {
+        ListicProcessor.initListicMenu(this);
         pageLim = (listicOptionNames.size() / pageSize);
         if(listicOptionNames.size() % 5 != 0)
             ++pageLim;
@@ -76,7 +77,10 @@ public class ListicMenu extends Menu {
                     {
                         return Menu.makeMenu(parentName);
                     }
-                    return listicProcessor.getProductMenu(listicProcessor.chooseProductMenuType(), listicOptionPrimaryKeys.get(command + (pageNumber * pageSize)), this);
+                    //return listicProcessor.getProductMenu(listicProcessor.chooseProductMenuType(), listicOptionPrimaryKeys.get(command + (pageNumber * pageSize)), this);
+                    return Processor.findProcessorWithName(this.processorName).
+                            executeTheFunctionWithName("Open Functioning Option",
+                            listicOptionPrimaryKeys.get(command + (pageNumber * pageSize)), this);
                 }
                 else
                 {

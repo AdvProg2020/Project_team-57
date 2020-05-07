@@ -3,6 +3,7 @@ package view.process;
 import controller.account.AccountControl;
 import controller.product.ProductControl;
 import view.menu.ListicMenu;
+import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 
 public class ListicProcessor extends Processor {
@@ -14,10 +15,10 @@ public class ListicProcessor extends Processor {
         productControl = ProductControl.getController();
         accountControl = AccountControl.getController();
 
-        this.functionsHashMap.put("Open Listic Option", new FunctioningOption() {
+        this.functionsHashMap.put("Open Functioning Option", new FunctioningOption() {
             @Override
-            public Menu doTheThing() {
-                return getListicOptionMenu();
+            public Menu doTheThing(Object... objects) {
+                return getListicOptionMenu(objects);
             }
         });
     }
@@ -29,16 +30,19 @@ public class ListicProcessor extends Processor {
         return processor;
     }
 
-    public ListicOptionMenu getListicOptionMenu(String primaryKey, Menu parentMenu)
+    public ListicOptionMenu getListicOptionMenu(Object... objects)
     {
+        Object[] allObjects = objects.clone();
+        String primaryKey = (String) allObjects[0];
+        Menu parentMenu = (Menu) allObjects[1];
         if(parentMenu.getName().equals("Manage All Products"))
         {
-            return ListicOptionMenu.makeMenu("Admin Product Menu", primaryKey, parentMenu);
+            return ListicOptionMenu.makeMenu("Admin Product Menu", parentMenu, primaryKey);
         }
         //TODO (Name ???)
         else if(parentMenu.getName().equals("Manage Vendors Registration Requests"))
         {
-            return ListicOptionMenu.makeMenu("Register Request Menu", primaryKey, parentMenu);
+            return ListicOptionMenu.makeMenu("Register Request Menu", parentMenu, primaryKey);
         }
         return null;
     }

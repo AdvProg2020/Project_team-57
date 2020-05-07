@@ -1,6 +1,7 @@
 package view.menu;
 
 import com.google.gson.GsonBuilder;
+import controller.Control;
 import view.process.Processor;
 
 import java.io.File;
@@ -29,7 +30,13 @@ public class Menu {
             System.out.println("Menu File Couldn't Get Initialized! Please Contact Us As Soon As Possible :.(");
         }
 
-        return new GsonBuilder().setPrettyPrinting().create().fromJson(json, Menu.class);
+        Menu menu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, Menu.class);
+        if(menuName.equals("Admin Menu") || menuName.equals("Customer Menu") || menuName.equals("Vendor Menu"))
+        {
+            menu.setName(Control.getUsername());
+        }
+        return menu;
+
     }
 
     protected static String getJsonFromDB(String menuName) throws FileNotFoundException {

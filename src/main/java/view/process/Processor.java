@@ -33,8 +33,8 @@ public abstract class Processor {
         return functionsHashMap.containsKey(name);
     }
 
-    public Menu executeTheFunctionWithName(String name) {
-        return functionsHashMap.get(name).doTheThing();
+    public Menu executeTheFunctionWithName(String name, Object... objects) {
+        return functionsHashMap.get(name).doTheThing(objects);
     }
 
     protected String setOptionsForArrayList(ArrayList<String> options){
