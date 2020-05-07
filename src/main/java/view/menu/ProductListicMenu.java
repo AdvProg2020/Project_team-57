@@ -17,7 +17,6 @@ public class ProductListicMenu extends Menu {
     private int maxOption;
     private String input;
 
-
     public static ProductListicMenu makeProductListicMenu(String menuName)
     {
         String json = "";
@@ -101,7 +100,6 @@ public class ProductListicMenu extends Menu {
         else
             maxOption = 5;
     }
-
 
     private boolean getInput() {
         try {

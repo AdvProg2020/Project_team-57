@@ -8,12 +8,12 @@ import view.process.ProductProcessor;
 
 import java.io.FileNotFoundException;
 
-public class ProductMenu extends Menu {
+public class ProductMenu extends ListicOptionMenu {
     private ProductProcessor productProcessor = ProductProcessor.getInstance();
     private ProductListicMenu parentMenu;
     private Product product;
 
-    public static ProductMenu makeMenu(String menuName, ProductListicMenu parentMenu) {
+    /*public static ProductMenu makeMenu(String menuName, ProductListicMenu parentMenu) {
         String json = "";
 
         try {
@@ -28,12 +28,17 @@ public class ProductMenu extends Menu {
     }
 
     public void show(){
-        printProductSpecs(product);
+        printProductSpecs();
 
         System.out.println("0. back");
 
         for(int i = 0; i < options.size(); i++)
             System.out.println((i + 1) + ". " + options.get(i));
+
+    }*/
+
+    public void setMenu(String ID){
+        listicOptionProcessor = ProductProcessor.getInstance();
 
     }
 
@@ -68,7 +73,7 @@ public class ProductMenu extends Menu {
         return parentMenu;
     }
 
-    public void printProductSpecs(Product product){
+    public void printProductSpecs(){
         printCustomLine();
 
         printCustomStatus(product.getStatus());
@@ -144,10 +149,6 @@ public class ProductMenu extends Menu {
         } else {
             return new String[]{description.substring(0, 35), description.substring(35, 70), description.substring(70)};
         }
-    }
-
-    public void setParentMenu(ProductListicMenu parentMenu) {
-        this.parentMenu = parentMenu;
     }
 
     public void setProduct(Product product) {
