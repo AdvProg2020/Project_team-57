@@ -21,7 +21,8 @@ public class RegisterProcessor extends ListicOptionProcessor {
 
     public static RegisterMenu setMenu(String json, String ID){
         RegisterMenu registerMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, RegisterMenu.class);
-        registerMenu.setAccount(accountControl.getAccountByID(ID));
+        registerMenu.setAccount(accountControl.getAccountByUsername(ID));
         return registerMenu;
     }
+
 }

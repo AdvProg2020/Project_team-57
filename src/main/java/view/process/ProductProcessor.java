@@ -1,16 +1,12 @@
 package view.process;
 
 import com.google.gson.GsonBuilder;
-import controller.Control;
-import controller.account.AdminControl;
 import controller.product.ProductControl;
-import model.existence.Product;
-import view.menu.ListicOptionMenu;
 import view.menu.ProductMenu;
 
 public class ProductProcessor extends ListicOptionProcessor{
     private static ProductProcessor productProcessor = null;
-    private ProductControl productControl = ProductControl.getController();
+    private static ProductControl productControl = ProductControl.getController();
 
     private ProductProcessor(){
 

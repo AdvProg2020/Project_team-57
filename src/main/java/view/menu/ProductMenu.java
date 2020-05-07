@@ -35,11 +35,6 @@ public class ProductMenu extends ListicOptionMenu {
 
     }*/
 
-    public void setMenu(String ID){
-        listicOptionProcessor = ProductProcessor.getInstance();
-
-    }
-
     public Menu execute(){
         boolean flag = true;
         int input = 0;
