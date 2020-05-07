@@ -2,6 +2,7 @@ package controller.account;
 
 import controller.Control;
 import model.db.AccountTable;
+import model.db.VendorTable;
 import model.existence.Account;
 import notification.Notification;
 
@@ -89,6 +90,37 @@ public class AccountControl extends Control implements ValidPassword{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return new ArrayList<>();
+        }
+    }
+
+    public Notification modifyApprove(String username, int flag) {
+        try {
+            VendorTable.modifyApprove(username, flag);
+            if (flag == 0)
+                return Notification.DECLINE_REQUEST;
+            else
+                return Notification.ACCEPT_ADD_VENDOR_REQUEST;
+        } catch (SQLException throwable) {
+            return Notification.UNKNOWN_ERROR;
+        } catch (ClassNotFoundException e) {
+            return Notification.UNKNOWN_ERROR;
+        }
+    }
+
+    public ArrayList<String> getAllUsernames() {
+        ArrayList<String> allUsernames = new ArrayList<>();
+        try {
+
+            for (Account account : VendorTable.getUnApprovedVendors()) {
+                allUsernames.add(account.getUsername());
+            }
+            return allUsernames;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

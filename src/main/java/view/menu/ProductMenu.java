@@ -2,40 +2,18 @@ package view.menu;
 
 import com.google.gson.GsonBuilder;
 import model.existence.Product;
+import view.process.Processor;
 import view.process.ProductProcessor;
 
 import java.io.FileNotFoundException;
 
 public class ProductMenu extends ListicOptionMenu {
-    private ProductProcessor productProcessor = ProductProcessor.getInstance();
     private ProductListicMenu parentMenu;
     private Product product;
 
-    /*public static ProductMenu makeMenu(String menuName, ProductListicMenu parentMenu) {
-        String json = "";
-
-        try {
-            json = ProductMenu.getJsonFromDB(menuName);
-        } catch (FileNotFoundException e) {
-            System.out.println("ProductMenu File Couldn't Get Initialized! Please Contact Us As Soon As Possible :.(");
-        }
-
-        ProductMenu menu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ProductMenu.class);
-        menu.setParentMenu(parentMenu);
-        return menu;
-    }
-
-    public void show(){
-        printProductSpecs();
-
-        System.out.println("0. back");
-
-        for(int i = 0; i < options.size(); i++)
-            System.out.println((i + 1) + ". " + options.get(i));
-
-    }*/
-
     public Menu execute(){
+        processor = Processor.findProcessorWithName(processorName);
+        Menu nextMenu = this;
         boolean flag = true;
         int input = 0;
 
@@ -57,13 +35,12 @@ public class ProductMenu extends ListicOptionMenu {
             }
         }
 
-        if(input != 0 && options.get(input - 1).equals("Remove Product"))
+        if(input != 0 && processor.isThereFunctionWithName(options.get(input - 1)))
         {
-            productProcessor.removeProduct(product.getID());
-            parentMenu.deleteProductFromListWithId(product.getID());
+            nextMenu = processor.executeTheFunctionWithName(options.get(input - 1), this.getParentMenu(), product.getID());
         }
 
-        return parentMenu;
+        return nextMenu;
     }
 
     public void printProductSpecs(){

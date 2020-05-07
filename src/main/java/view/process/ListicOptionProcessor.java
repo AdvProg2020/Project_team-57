@@ -6,6 +6,8 @@ import view.menu.Menu;
 import view.menu.ProductMenu;
 import view.menu.RegisterMenu;
 
+import java.util.HashMap;
+
 public class ListicOptionProcessor extends Processor{
 
 }

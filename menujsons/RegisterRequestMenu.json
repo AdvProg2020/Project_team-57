@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "Accept Request",
+    "Decline Request"
+  ],
+  "name" : "Register Request Menu",
+  "parentName" : "Request Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "RegisterRequestProcessor"
+}
