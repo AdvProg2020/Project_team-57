@@ -5,7 +5,6 @@ import model.existence.Account;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class AccountTable extends Database {
     public static boolean isUsernameFree(String username) throws SQLException, ClassNotFoundException {
@@ -95,18 +94,5 @@ public class AccountTable extends Database {
         ResultSet resultSet = preparedStatement.executeQuery();
         resultSet.next();
         return resultSet.getDouble("Credit");
-    }
-
-    public static ArrayList<Account> getUnapprovedVendors() throws SQLException, ClassNotFoundException {
-        String command = "SELECT * FROM Accounts WHERE AccType = ? AND IsApproved = ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, "Vendor");
-        preparedStatement.setBoolean(2, false);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        ArrayList<Account> accounts = new ArrayList<>();
-        while (resultSet.next()) {
-            accounts.add(Account.makeAccount(resultSet));
-        }
-        return accounts;
     }
 }

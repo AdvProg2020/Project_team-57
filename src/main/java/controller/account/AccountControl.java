@@ -2,9 +2,9 @@ package controller.account;
 
 import controller.Control;
 import model.db.AccountTable;
+import model.db.VendorTable;
 import model.existence.Account;
 import notification.Notification;
-
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class AccountControl extends Control implements ValidPassword{
 
     public ArrayList<Account> getUnApprovedVendors() {
         try {
-            return AccountTable.getUnapprovedVendors();
+            return VendorTable.getUnApprovedVendors();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
             return new ArrayList<>();
@@ -92,19 +92,40 @@ public class AccountControl extends Control implements ValidPassword{
         }
     }
 
+    public Notification modifyApprove(String username, int flag) {
+        try {
+            VendorTable.modifyApprove(username, flag);
+            if (flag == 0)
+                return Notification.DECLINE_REQUEST;
+            else
+                return Notification.ACCEPT_ADD_VENDOR_REQUEST;
+        } catch (SQLException throwable) {
+            return Notification.UNKNOWN_ERROR;
+        } catch (ClassNotFoundException e) {
+            return Notification.UNKNOWN_ERROR;
+        }
+    }
+
+    public ArrayList<String> getAllUsernames() {
+        ArrayList<String> allUsernames = new ArrayList<>();
+        try {
+
+            for (Account account : VendorTable.getUnApprovedVendors()) {
+                allUsernames.add(account.getUsername());
+            }
+            return allUsernames;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static AccountControl getController() {
         if (customerControl == null)
             customerControl = new AccountControl();
         return customerControl;
-    }
-
-    public ArrayList<String> getAllUsernames()
-    {
-        ArrayList<String> allUsernames = new ArrayList<>();
-        for(Account account : AccountTable.getUnApprovedVendors())
-        {
-            allUsernames.add(account.getUsername());
-        }
-        return allUsernames;
     }
 }

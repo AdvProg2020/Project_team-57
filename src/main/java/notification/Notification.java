@@ -19,7 +19,9 @@ public enum Notification {
     LACK_BALANCE_ERROR("Anything else???\uD83D\uDE12\nInventory is not enough!"),
     GET_MONEY_SUCCESSFULLY("Money has got successfully!"),
     WRONG_OLD_PASSWORD("Old Password Incorrect"),
-    REMOVE_PRODUCT_SUCCESSFULLY("Product removed successfully");
+    REMOVE_PRODUCT_SUCCESSFULLY("Product removed successfully"),
+    DECLINE_REQUEST("Request declined"),
+    ACCEPT_ADD_VENDOR_REQUEST("The seller was added to the store");
 
     private String message;
 
