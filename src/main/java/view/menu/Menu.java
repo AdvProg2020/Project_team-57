@@ -113,4 +113,8 @@ public class Menu {
             super(message);
         }
     }
+
+    public String getName() {
+        return name;
+    }
 }

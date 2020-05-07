@@ -5,6 +5,8 @@ import model.db.AccountTable;
 import model.existence.Account;
 import notification.Notification;
 
+import java.util.ArrayList;
+
 
 public class AccountControl extends Control implements ValidPassword{
     private static AccountControl customerControl = null;
@@ -70,5 +72,15 @@ public class AccountControl extends Control implements ValidPassword{
         if (customerControl == null)
             customerControl = new AccountControl();
         return customerControl;
+    }
+
+    public ArrayList<String> getAllUsernames()
+    {
+        ArrayList<String> allUsernames = new ArrayList<>();
+        for(Account account : AccountTable.getUnApprovedVendors())
+        {
+            allUsernames.add(account.getUsername());
+        }
+        return allUsernames;
     }
 }
