@@ -11,7 +11,7 @@ public class MainMenuProcessor extends Processor {
     private MainMenuProcessor(){
         functionsHashMap = new HashMap<>();
         functionsHashMap.put("Account Menu", new FunctioningOption() {
-            public Menu doTheThing() {
+            public Menu doTheThing(Object... objects) {
                 return iOManage();
             }
         });

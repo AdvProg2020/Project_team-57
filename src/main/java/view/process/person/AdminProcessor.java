@@ -2,8 +2,10 @@ package view.process.person;
 
 
 import controller.account.AdminControl;
+import view.menu.ListicMenu;
 import view.menu.Menu;
 import view.process.FunctioningOption;
+
 
 public class AdminProcessor extends AccountProcessor {
     private static AdminControl adminControl = AdminControl.getController();
@@ -13,7 +15,7 @@ public class AdminProcessor extends AccountProcessor {
         super();
         functionsHashMap.put("Manage All Products", new FunctioningOption() {
             @Override
-            public Menu doTheThing() {
+            public Menu doTheThing(Object... objects) {
                 return manageAllProducts();
             }
         });
@@ -28,8 +30,6 @@ public class AdminProcessor extends AccountProcessor {
 
     public Menu manageAllProducts()
     {
-        ProductListicMenu menu = ProductListicMenu.makeProductListicMenu("Manage All Products Listic Menu");
-        adminControl.setProductLists(menu.getProductNames(), menu.getProductIDs());
-        return menu;
+        return ListicMenu.makeListicMenu("Manage All Products Listic Menu");
     }
 }

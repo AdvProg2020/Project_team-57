@@ -17,25 +17,25 @@ public class AccountProcessor extends Processor {
         functionsHashMap = new HashMap<String, FunctioningOption>();
         functionsHashMap.put("View Personal Info", new FunctioningOption() {
             @Override
-            public Menu doTheThing() {
+            public Menu doTheThing(Object... objects) {
                 return showPersonalInfo();
             }
         });
         functionsHashMap.put("Edit Field", new FunctioningOption() {
             @Override
-            public Menu doTheThing() {
+            public Menu doTheThing(Object... objects) {
                 return editField();
             }
         });
         functionsHashMap.put("Change Password", new FunctioningOption() {
             @Override
-            public Menu doTheThing() {
+            public Menu doTheThing(Object... objects) {
                 return changePassword();
             }
         });
         functionsHashMap.put("Edit Credit", new FunctioningOption() {
             @Override
-            public Menu doTheThing() {
+            public Menu doTheThing(Object... objects) {
                 return editCredit();
             }
         });

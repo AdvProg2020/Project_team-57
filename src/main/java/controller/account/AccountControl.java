@@ -101,9 +101,15 @@ public class AccountControl extends Control implements ValidPassword{
     public ArrayList<String> getAllUsernames()
     {
         ArrayList<String> allUsernames = new ArrayList<>();
-        for(Account account : AccountTable.getUnApprovedVendors())
-        {
-            allUsernames.add(account.getUsername());
+        try {
+            for(Account account : AccountTable.getUnapprovedVendors())
+            {
+                allUsernames.add(account.getUsername());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return allUsernames;
     }
