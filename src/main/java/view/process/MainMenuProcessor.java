@@ -9,7 +9,7 @@ public class MainMenuProcessor extends Processor {
     private static MainMenuProcessor mainMenuProcessor = null;
 
     private MainMenuProcessor(){
-        functionsHashMap = new HashMap<String, FunctioningOption>();
+        functionsHashMap = new HashMap<>();
         functionsHashMap.put("Account Menu", new FunctioningOption() {
             public Menu doTheThing() {
                 return iOManage();

@@ -5,12 +5,25 @@ import model.db.AccountTable;
 import model.existence.Account;
 import notification.Notification;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 
-public class AccountControl extends Control implements ValidPassword{
+
+public class AccountControl extends Control implements ValidPassword {
     private static AccountControl customerControl = null;
+
     public Account getAccount() {
         try {
             return AccountTable.getAccountByUsername(Control.getUsername());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Account getAccountByUsername(String username){
+        try {
+            return AccountTable.getAccountByUsername(username);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -63,6 +76,18 @@ public class AccountControl extends Control implements ValidPassword{
             return Notification.GET_MONEY_SUCCESSFULLY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
+        }
+    }
+
+    public ArrayList<Account> getUnApprovedVendors() {
+        try {
+            return AccountTable.getUnapprovedVendors();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            return new ArrayList<>();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 
