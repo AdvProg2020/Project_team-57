@@ -44,6 +44,7 @@ public class Database {
                     "Email varchar (35)," +
                     "Brand varchar(35)," +
                     "Credit double," +
+                    "IsApproved BIT," +
                     "primary key(Username)" +
                     ");");
         }

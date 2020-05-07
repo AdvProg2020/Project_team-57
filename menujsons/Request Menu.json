@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "Manage Vendors Registration Requests",
+    "Add Product",
+    "Edit Product"
+  ],
+  "name" : "Request Menu",
+  "parentName" : "Admin Menu",
+  "isThereParentMenu" : "true",
+}

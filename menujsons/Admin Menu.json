@@ -4,7 +4,8 @@
     "Edit Field",
     "Edit Credit",
     "Change Password",
-    "Manage All Products"
+    "Manage All Products",
+    "Manage All Requests"
   ],
   "name" : "Admin Menu",
   "parentName" : "Main Menu",
