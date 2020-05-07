@@ -5,6 +5,9 @@ import model.db.ProductTable;
 import model.existence.Product;
 import notification.Notification;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 public class ProductControl extends Control {
     private static ProductControl productControl = null;
 
@@ -52,5 +55,35 @@ public class ProductControl extends Control {
         if (productControl == null)
             productControl = new ProductControl();
         return productControl;
+    }
+
+    public ArrayList<String> getAllProductNames()
+    {
+        ArrayList<String> allProductNames = new ArrayList<>();
+        try {
+            for (Product product : ProductTable.getAllProducts()) {
+                allProductNames.add(product.getName());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return allProductNames;
+    }
+
+    public ArrayList<String> getAllProductIDs()
+    {
+        ArrayList<String> allProductIDs = new ArrayList<>();
+        try {
+            for (Product product : ProductTable.getAllProducts()) {
+                allProductIDs.add(product.getName());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return allProductIDs;
     }
 }

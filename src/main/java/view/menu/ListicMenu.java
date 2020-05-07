@@ -1,15 +1,15 @@
 package view.menu;
 
 import com.google.gson.GsonBuilder;
-import controller.Control;
+import view.process.ListicProcessor;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-public class ProductListicMenu extends Menu {
-    private ProductListicProcessor listicProcessor = ProductListicProcessor.getInstance();
-    private ArrayList<String> productNames = new ArrayList<>();
-    private ArrayList<String> productIDs = new ArrayList<>();
+public class ListicMenu extends Menu {
+    private String listicProcessorName;
+    private ArrayList<String> listicOptionNames = new ArrayList<>();
+    private ArrayList<String> listicOptionPrimaryKeys = new ArrayList<>();
     private int pageSize = 5;
     private int pageNumber = 0;
     private int pageLim;
@@ -17,7 +17,7 @@ public class ProductListicMenu extends Menu {
     private String input;
 
 
-    public static ProductListicMenu makeProductListicMenu(String menuName)
+    public static ListicMenu makeListicMenu(String menuName)
     {
         String json = "";
         try {
@@ -25,20 +25,22 @@ public class ProductListicMenu extends Menu {
         } catch (FileNotFoundException e) {
             System.out.println("Menu File Couldn't Get Initialized! Please Contact Us As Soon As Possible :.(");
         }
-        return new GsonBuilder().setPrettyPrinting().create().fromJson(json, ProductListicMenu.class);
+        ListicMenu listicMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicMenu.class);
+        ListicProcessor.initListicMenu(listicMenu);
+        return listicMenu;
     }
 
     @Override
     public void show() {
-        pageLim = (productNames.size() / pageSize);
-        if(productNames.size() % 5 != 0)
+        pageLim = (listicOptionNames.size() / pageSize);
+        if(listicOptionNames.size() % 5 != 0)
             ++pageLim;
         setMaxOption();
         System.out.println("0. Cancel");
         System.out.println("Page " + (pageNumber + 1));
         for(int j = 0; j < maxOption; ++j)
         {
-            System.out.println((j + 1) + ". " + productNames.get((pageNumber * pageSize) + j));
+            System.out.println((j + 1) + ". " + listicOptionNames.get((pageNumber * pageSize) + j));
         }
         if(pageNumber == pageLim - 1)
             System.out.println("-: Previous Page");
@@ -72,18 +74,9 @@ public class ProductListicMenu extends Menu {
                 {
                     if (command == -1)
                     {
-                        if(parentName.equals("Main Menu"))
-                        {
-                            return Menu.makeMenu("Main Menu");
-                        }
-                        else
-                        {
-                            Menu menu = Menu.makeMenu(Control.getType() + " Menu");
-                            menu.setName(Control.getUsername());
-                            return menu;
-                        }
+                        return Menu.makeMenu(parentName);
                     }
-                    return listicProcessor.getProductMenu(listicProcessor.chooseProductMenuType(), productIDs.get(command + (pageNumber * pageSize)), this);
+                    return listicProcessor.getProductMenu(listicProcessor.chooseProductMenuType(), listicOptionPrimaryKeys.get(command + (pageNumber * pageSize)), this);
                 }
                 else
                 {
@@ -95,8 +88,8 @@ public class ProductListicMenu extends Menu {
     }
 
     private void setMaxOption() {
-        if(productNames.size() - (pageNumber * pageSize) < 5 )
-            maxOption = productNames.size() - (pageNumber * pageSize);
+        if(listicOptionNames.size() - (pageNumber * pageSize) < 5 )
+            maxOption = listicOptionNames.size() - (pageNumber * pageSize);
         else
             maxOption = 5;
     }
@@ -124,7 +117,7 @@ public class ProductListicMenu extends Menu {
             System.out.println("Please Enter An Integer");
         } catch (NullPointerException e) {
             System.out.println("Please Enter An Integer");
-        } catch (InputIsBiggerThanExistingNumbers e) {
+        } catch (Menu.InputIsBiggerThanExistingNumbers e) {
             System.out.println(e.getMessage());
         }
         return false;
@@ -144,25 +137,25 @@ public class ProductListicMenu extends Menu {
         return true;
     }
 
-    public ArrayList<String> getProductNames() {
-        return productNames;
+    public ArrayList<String> getListicOptionNames() {
+        return listicOptionNames;
     }
 
-    public ArrayList<String> getProductIDs() {
-        return productIDs;
+    public ArrayList<String> getListicOptionPrimaryKeys() {
+        return listicOptionPrimaryKeys;
     }
 
-    public void setProductNames(ArrayList<String> productNames) {
-        this.productNames = productNames;
+    public void setListicOptionNames(ArrayList<String> listicOptionNames) {
+        this.listicOptionNames = listicOptionNames;
     }
 
-    public void setProductIDs(ArrayList<String> productIDs) {
-        this.productIDs = productIDs;
+    public void setListicOptionPrimaryKeys(ArrayList<String> listicOptionPrimaryKeys) {
+        this.listicOptionPrimaryKeys = listicOptionPrimaryKeys;
     }
 
     public void deleteProductFromListWithId(String productID)
     {
-        int index = productIDs.indexOf(productID);
-        productIDs.remove(index); productNames.remove(index);
+        int index = listicOptionPrimaryKeys.indexOf(productID);
+        listicOptionPrimaryKeys.remove(index); listicOptionNames.remove(index);
     }
 }

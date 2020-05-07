@@ -2,8 +2,6 @@ package view.menu;
 
 import com.google.gson.GsonBuilder;
 import model.existence.Product;
-import view.process.Processor;
-import view.process.ProductListicProcessor;
 import view.process.ProductProcessor;
 
 import java.io.FileNotFoundException;
