@@ -81,18 +81,6 @@ public class AccountControl extends Control implements ValidPassword{
         }
     }
 
-    public ArrayList<Account> getUnApprovedVendors() {
-        try {
-            return AccountTable.getUnapprovedVendors();
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-            return new ArrayList<>();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
     public Notification modifyApprove(String username, int flag) {
         try {
             VendorTable.modifyApprove(username, flag);
@@ -107,7 +95,7 @@ public class AccountControl extends Control implements ValidPassword{
         }
     }
 
-    public ArrayList<String> getAllUsernames() {
+    public ArrayList<String> getUnapprovedUsernames() {
         ArrayList<String> allUsernames = new ArrayList<>();
         try {
 
@@ -128,21 +116,5 @@ public class AccountControl extends Control implements ValidPassword{
         if (customerControl == null)
             customerControl = new AccountControl();
         return customerControl;
-    }
-
-    public ArrayList<String> getAllUsernames()
-    {
-        ArrayList<String> allUsernames = new ArrayList<>();
-        try {
-            for(Account account : AccountTable.getUnapprovedVendors())
-            {
-                allUsernames.add(account.getUsername());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return allUsernames;
     }
 }

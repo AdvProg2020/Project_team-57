@@ -57,8 +57,8 @@ public class ListicProcessor extends Processor {
     }
 
     private static void initRegisterRequestListicMenu(ListicMenu listicMenu) {
-        listicMenu.setListicOptionNames(accountControl.getAllUsernames());
-        listicMenu.setListicOptionPrimaryKeys(accountControl.getAllUsernames());
+        listicMenu.setListicOptionNames(accountControl.getUnapprovedUsernames());
+        listicMenu.setListicOptionPrimaryKeys(accountControl.getUnapprovedUsernames());
     }
 
     private static void initProductListicMenu(ListicMenu listicMenu) {
