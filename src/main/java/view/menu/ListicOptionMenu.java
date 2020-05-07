@@ -2,15 +2,16 @@ package view.menu;
 
 import com.google.gson.GsonBuilder;
 import view.process.ListicOptionProcessor;
+import view.process.Processor;
 import view.process.ProductProcessor;
 import view.process.RegisterProcessor;
 
 import java.io.FileNotFoundException;
 
 public class ListicOptionMenu extends Menu {
-    protected ListicMenu parentMenu;
+    protected Menu parentMenu;
 
-    public static ListicOptionMenu makeMenu(String menuName, ListicMenu parentMenu, String optionID) {
+    public static ListicOptionMenu makeMenu(String menuName, Menu parentMenu, String optionID) {
         String json = "";
 
         try {
@@ -31,8 +32,6 @@ public class ListicOptionMenu extends Menu {
         return menu;
     }
 
-    public void setMenu(String ID){}
-
     public void show(){
         printOptionSpecs();
 
@@ -45,9 +44,11 @@ public class ListicOptionMenu extends Menu {
 
     protected void printOptionSpecs(){}
 
-    public void setParentMenu(ListicMenu parentMenu) {
+    public void setParentMenu(Menu parentMenu) {
         this.parentMenu = parentMenu;
     }
 
-
+    public Menu getParentMenu() {
+        return parentMenu;
+    }
 }

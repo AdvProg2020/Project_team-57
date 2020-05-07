@@ -22,6 +22,8 @@ public abstract class Processor {
         processesHashMap.put("VendorProcessor", VendorProcessor.getInstance());
         processesHashMap.put("CustomerProcessor", CustomerProcessor.getInstance());
         processesHashMap.put("ListicProcessor", ListicProcessor.getInstance());
+        processesHashMap.put("ProductProcessor", ProductProcessor.getInstance());
+        processesHashMap.put("RegisterRequestProcessor", RegisterProcessor.getInstance());
 
     }
 

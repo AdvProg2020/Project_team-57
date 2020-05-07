@@ -2,13 +2,26 @@ package view.process;
 
 import com.google.gson.GsonBuilder;
 import controller.product.ProductControl;
+import view.menu.ListicOptionMenu;
+import view.menu.Menu;
+import view.menu.ProductListicMenu;
 import view.menu.ProductMenu;
+
+import javax.swing.plaf.FontUIResource;
+import java.util.HashMap;
 
 public class ProductProcessor extends ListicOptionProcessor{
     private static ProductProcessor productProcessor = null;
     private static ProductControl productControl = ProductControl.getController();
 
     private ProductProcessor(){
+        this.functionsHashMap = new HashMap<>();
+        functionsHashMap.put("Edit Product", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return removeProduct(objects);
+            }
+        });
 
     }
 
@@ -25,15 +38,18 @@ public class ProductProcessor extends ListicOptionProcessor{
         return productMenu;
     }
 
-    public void editProduct(){
-
+    public void editProduct(Object... objects){
+        //Todo
     }
 
-    public void viewBuyers(){
-
+    public void viewBuyers(Object... objects){
+        //Todo
     }
 
-    public void removeProduct(String productID){
-        System.out.println(productControl.removeProductById(productID).getMessage());
+    public Menu removeProduct(Object... objects){
+        Object[] parameters = objects.clone();
+        System.out.println(productControl.removeProductById((String)parameters[1]).getMessage());
+        ((ProductListicMenu) parameters[0]).deleteProductFromListWithId((String)parameters[1]);
+        return (Menu)parameters[0];
     }
 }
