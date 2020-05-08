@@ -6,5 +6,6 @@
   ],
   "name" : "Request Menu",
   "parentName" : "Admin Menu",
-  "isThereParentMenu" : "true"
+  "isThereParentMenu" : "true",
+  "processorName" : "RequestProcessor"
 }

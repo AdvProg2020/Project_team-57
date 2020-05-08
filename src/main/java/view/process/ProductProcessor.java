@@ -4,7 +4,6 @@ import com.google.gson.GsonBuilder;
 import controller.product.ProductControl;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
-import view.menu.ProductListicMenu;
 import view.menu.ProductMenu;
 
 import javax.swing.plaf.FontUIResource;
@@ -49,7 +48,6 @@ public class ProductProcessor extends ListicOptionProcessor{
     public Menu removeProduct(Object... objects){
         Object[] parameters = objects.clone();
         System.out.println(productControl.removeProductById((String)parameters[1]).getMessage());
-        ((ProductListicMenu) parameters[0]).deleteProductFromListWithId((String)parameters[1]);
         return (Menu)parameters[0];
     }
 }

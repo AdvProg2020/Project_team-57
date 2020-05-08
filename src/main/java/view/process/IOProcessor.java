@@ -14,12 +14,12 @@ public class IOProcessor extends Processor {
     private IOProcessor(){
         functionsHashMap = new HashMap<String, FunctioningOption>();
         functionsHashMap.put("Register", new FunctioningOption() {
-            public Menu doTheThing() {
+            public Menu doTheThing(Object... objects) {
                 return register();
             }
         });
         functionsHashMap.put("Login", new FunctioningOption() {
-            public Menu doTheThing() {
+            public Menu doTheThing(Object... objects) {
                 return login();
             }
         });

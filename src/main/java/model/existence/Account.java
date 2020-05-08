@@ -14,7 +14,6 @@ public class Account {
     private double credit;
 
     public static Account makeAccount(ResultSet resultSet) throws SQLException {
-        resultSet.next();
         Account account = new Account(resultSet.getString("Username"), resultSet.getString("Password"));
         account.setType(resultSet.getString("AccType"));
         account.setFirstName(resultSet.getString("FirstName"));

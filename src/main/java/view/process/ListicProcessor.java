@@ -6,6 +6,8 @@ import view.menu.ListicMenu;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 
+import java.util.HashMap;
+
 public class ListicProcessor extends Processor {
     private static ProductControl productControl;
     private static AccountControl accountControl;
@@ -14,7 +16,7 @@ public class ListicProcessor extends Processor {
     public ListicProcessor() {
         productControl = ProductControl.getController();
         accountControl = AccountControl.getController();
-
+        this.functionsHashMap = new HashMap<>();
         this.functionsHashMap.put("Open Functioning Option", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {

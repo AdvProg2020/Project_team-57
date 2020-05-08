@@ -1,6 +1,6 @@
 {
   "name" : "Manage Vendors Registration Requests",
-  "parentName" : "Request Menu",
+  "parentName" : "Manage All Requests",
   "isThereParentMenu" : true,
   "processorName" : "ListicProcessor"
 }

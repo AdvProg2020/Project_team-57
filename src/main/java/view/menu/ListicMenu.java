@@ -43,12 +43,16 @@ public class ListicMenu extends Menu {
         {
             System.out.println((j + 1) + ". " + listicOptionNames.get((pageNumber * pageSize) + j));
         }
-        if(pageNumber == pageLim - 1)
-            System.out.println("-: Previous Page");
-        else if(pageNumber == 0)
-            System.out.println("+: Next Page");
-        else
-            System.out.println("-: Previous Page, +: Next Page");
+
+        if(pageLim != 1)
+        {
+            if(pageNumber == pageLim - 1)
+                System.out.println("-: Previous Page");
+            else if(pageNumber == 0)
+                System.out.println("+: Next Page");
+            else
+                System.out.println("-: Previous Page, +: Next Page");
+        }
 
         if(options != null && options.size() > 0)
         {

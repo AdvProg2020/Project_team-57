@@ -8,7 +8,6 @@ import view.process.ProductProcessor;
 import java.io.FileNotFoundException;
 
 public class ProductMenu extends ListicOptionMenu {
-    private ProductListicMenu parentMenu;
     private Product product;
 
     public Menu execute(){
