@@ -29,7 +29,7 @@ public class ListicProcessor extends Processor {
         this.functionsHashMap.put("Add Product", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return addProduct();
+                return addProduct(objects);
             }
         });
     }
@@ -58,9 +58,12 @@ public class ListicProcessor extends Processor {
         return null;
     }
 
-    public Menu addProduct()
+    public Menu addProduct(Object... objects)
     {
-
+        Object[] allObjects = objects.clone();
+        AddProductProcessor.getInstance((ListicMenu) allObjects[0]);
+        Menu menu = Menu.makeMenu("Add Product Menu");
+        return menu;
     }
 
 

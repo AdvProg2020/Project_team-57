@@ -34,6 +34,14 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
+    public static boolean isIDFree(String productId) throws SQLException, ClassNotFoundException
+    {
+        String command = "SELECT * FROM Products WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productId);
+        return !(preparedStatement.executeQuery().next());
+    }
+
     public static void tempAddProducts() throws SQLException, ClassNotFoundException {
         String task = "INSERT INTO Products (ID, Status, ProductName, IsCountable, Description) " +
                                 "VALUES(?, ?, ?, ?, ?)";

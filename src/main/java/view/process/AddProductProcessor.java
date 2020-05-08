@@ -1,5 +1,6 @@
 package view.process;
 
+import controller.account.VendorControl;
 import controller.product.ProductControl;
 import model.existence.Product;
 import view.menu.ListicMenu;
@@ -8,7 +9,7 @@ import view.menu.Menu;
 import java.util.HashMap;
 
 public class AddProductProcessor extends Processor {
-    private static ProductControl productControl = ProductControl.getController();
+    private static VendorControl vendorControl = VendorControl.getController();
     private static AddProductProcessor addProductProcessor = null;
     private static ListicMenu parentMenu;
     private static Menu thisMenu = null;
@@ -180,6 +181,7 @@ public class AddProductProcessor extends Processor {
 
     public Menu getCategory(){
         //TODO Getting Category
+        return null;
     }
 
     public Menu getDescription(){
@@ -206,7 +208,7 @@ public class AddProductProcessor extends Processor {
     }
 
     public Menu confirm(){
-        //TODO Seting Position for Parent Menu
+        System.out.println(vendorControl.addProduct(product));
         return back();
     }
 }

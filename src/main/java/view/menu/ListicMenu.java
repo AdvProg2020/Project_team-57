@@ -90,7 +90,7 @@ public class ListicMenu extends Menu {
                 {
                     command -= maxOption;
                     return Processor.findProcessorWithName(this.processorName).
-                            executeTheFunctionWithName(options.get(command));
+                            executeTheFunctionWithName(options.get(command), this);
                 }
             }
         }

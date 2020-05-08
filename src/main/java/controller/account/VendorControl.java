@@ -1,8 +1,10 @@
 package controller.account;
 
 import controller.Control;
+import model.db.ProductTable;
 import model.db.VendorTable;
 import model.existence.Product;
+import notification.Notification;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -43,6 +45,28 @@ public class VendorControl extends AccountControl{
             e.printStackTrace();
         }
         return productsIDs;
+    }
+
+    public Notification addProduct(Product product)
+    {
+        try {
+            while (true) {
+                String productId = generateProductID();
+                if (ProductTable.isIDFree(productId)) {
+                    break;
+                }
+            }
+            if(product.isCountable())
+                VendorTable.addCountableProduct(product, Control.getUsername());
+            else
+                VendorTable.addUnCountableProduct(product, Control.getUsername());
+            return Notification.ADD_PRODUCT;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
     }
 
     private String generateProductID()
