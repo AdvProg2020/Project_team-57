@@ -44,7 +44,7 @@ public class ListicMenu extends Menu {
             System.out.println((j + 1) + ". " + listicOptionNames.get((pageNumber * pageSize) + j));
         }
 
-        if(pageLim != 1)
+        if(pageLim != 1 && pageLim != 0)
         {
             if(pageNumber == pageLim - 1)
                 System.out.println("-: Previous Page");

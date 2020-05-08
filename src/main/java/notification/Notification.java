@@ -21,7 +21,8 @@ public enum Notification {
     WRONG_OLD_PASSWORD("Old Password Incorrect"),
     REMOVE_PRODUCT_SUCCESSFULLY("Product removed successfully"),
     DECLINE_REQUEST("Request declined"),
-    ACCEPT_ADD_VENDOR_REQUEST("The seller was added to the store");
+    ACCEPT_ADD_VENDOR_REQUEST("The seller was added to the store"),
+    USER_NOT_APPROVED("Wait for The Lord to Prove your Account, may the 4th be with you.\uD83D\uDE08");
 
     private String message;
 

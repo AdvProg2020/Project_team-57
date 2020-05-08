@@ -22,8 +22,8 @@ public class VendorTable extends Database {
     }
 
     public static void modifyApprove(String username, int flag) throws SQLException, ClassNotFoundException {
-        String accept = "UPDATE Account SET IsApproved = ? WHERE Username = ?";
-        String decline = "DELETE FROM Account WHERE Username = ?";
+        String accept = "UPDATE Accounts SET IsApproved = ? WHERE Username = ?";
+        String decline = "DELETE FROM Accounts WHERE Username = ?";
         PreparedStatement preparedStatement;
         if (flag == 0) {
             preparedStatement = getConnection().prepareStatement(decline);

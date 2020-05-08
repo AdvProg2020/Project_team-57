@@ -46,10 +46,14 @@ public class IOControl extends Control implements ValidPassword {
         try {
             if (!AccountTable.isUsernameFree(account.getUsername())) {
                 if (AccountTable.isPasswordCorrect(account.getUsername(), account.getPassword())) {
-                    Control.setType(AccountTable.getTypeByUsername(account.getUsername()));
-                    Control.setUsername(account.getUsername());
-                    Control.setLoggedIn(true);
-                    return Notification.LOGIN_SUCCESSFUL;
+                    if(AccountTable.isUserApproved(account.getUsername())) {
+                        Control.setType(AccountTable.getTypeByUsername(account.getUsername()));
+                        Control.setUsername(account.getUsername());
+                        Control.setLoggedIn(true);
+                        return Notification.LOGIN_SUCCESSFUL;
+                    } else {
+                        return Notification.USER_NOT_APPROVED;
+                    }
                 } else
                     return Notification.WRONG_PASSWORD;
             } else
