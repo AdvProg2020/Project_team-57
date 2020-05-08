@@ -50,7 +50,7 @@ public class ProductProcessor extends ListicOptionProcessor{
         ProductMenu productMenu = (ProductMenu)objects[0];
         Product product = (Product)objects[1];
         EditProductProcessor.getInstance(productMenu, product);
-
+        return EditProductProcessor.getInstance().editProductMenuManage(product);
     }
 
     public void viewBuyers(Object... objects){

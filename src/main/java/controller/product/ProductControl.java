@@ -2,6 +2,7 @@ package controller.product;
 
 import controller.Control;
 import model.db.ProductTable;
+import model.db.VendorTable;
 import model.existence.Product;
 import notification.Notification;
 
@@ -85,5 +86,29 @@ public class ProductControl extends Control {
             e.printStackTrace();
         }
         return allProductIDs;
+    }
+
+    public Notification editField(String fieldName, String newField, String ID) {
+        try {
+            if(ProductTable.getProductByID(ID).getStatus() == 2)
+                return Notification.PRODUCT_NOT_AVAILABLE;
+            else if (VendorTable.getFieldWithName(fieldName, ID).equals(newField))
+                return Notification.SAME_FIELD_ERROR;
+
+            if (!VendorTable.isThereProductWithID(ID))
+                VendorTable.addToTable(ProductTable.getProductByID(ID));
+
+
+            VendorTable.editFieldWithName(fieldName, newField, ID);
+            return Notification.EDIT_FIELD_SUCCESSFULLY;
+        } catch (SQLException e) {
+            return Notification.UNKNOWN_ERROR;
+        } catch (ClassNotFoundException e) {
+            return Notification.UNKNOWN_ERROR;
+        }
+    }
+
+    public Product getEditedProductByID(String ID) {
+        return ProductTable.getEditingProductWithID(ID);
     }
 }

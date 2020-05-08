@@ -182,6 +182,7 @@ public class AddProductProcessor extends Processor {
     public Menu getCategory(){
         //TODO Getting Category
         return null;
+        return getThisMenu();
     }
 
     public Menu getDescription(){
@@ -208,7 +209,7 @@ public class AddProductProcessor extends Processor {
     }
 
     public Menu confirm(){
-        System.out.println(vendorControl.addProduct(product));
+        //TODO Seting Position for Parent Menu
         return back();
     }
 }
