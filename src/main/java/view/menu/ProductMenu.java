@@ -36,7 +36,7 @@ public class ProductMenu extends ListicOptionMenu {
 
         if(input != 0 && processor.isThereFunctionWithName(options.get(input - 1)))
         {
-            nextMenu = processor.executeTheFunctionWithName(options.get(input - 1), this.getParentMenu(), product.getID());
+            nextMenu = processor.executeTheFunctionWithName(options.get(input - 1), this, product);
         }
 
         return nextMenu;
@@ -123,4 +123,5 @@ public class ProductMenu extends ListicOptionMenu {
     public void setProduct(Product product) {
         this.product = product;
     }
+
 }

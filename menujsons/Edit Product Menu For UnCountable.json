@@ -1,0 +1,13 @@
+{
+  "options" : [
+    "Name",
+    "Brand",
+    "Amount",
+    "Category",
+    "Description",
+    "Price"
+  ],
+  "name" : "Edit Product Menu",
+  "isThereParentMenu" : "false",
+  "processorName" : "EditProductProcessor"
+}
