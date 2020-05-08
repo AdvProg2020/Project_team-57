@@ -2,6 +2,7 @@ package view.process;
 
 import com.google.gson.GsonBuilder;
 import controller.product.ProductControl;
+import model.existence.Product;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 import view.menu.ProductMenu;
@@ -15,10 +16,16 @@ public class ProductProcessor extends ListicOptionProcessor{
 
     private ProductProcessor(){
         this.functionsHashMap = new HashMap<>();
-        functionsHashMap.put("Edit Product", new FunctioningOption() {
+        functionsHashMap.put("Remove Product", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
                 return removeProduct(objects);
+            }
+        });
+        functionsHashMap.put("Edit Product", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return editProduct(objects);
             }
         });
 
@@ -37,8 +44,13 @@ public class ProductProcessor extends ListicOptionProcessor{
         return productMenu;
     }
 
-    public void editProduct(Object... objects){
+    public Menu editProduct(Object... objects){
         //Todo
+        Object[] parameters = objects.clone();
+        ProductMenu productMenu = (ProductMenu)objects[0];
+        Product product = (Product)objects[1];
+        EditProductProcessor.getInstance(productMenu, product);
+
     }
 
     public void viewBuyers(Object... objects){
@@ -47,7 +59,7 @@ public class ProductProcessor extends ListicOptionProcessor{
 
     public Menu removeProduct(Object... objects){
         Object[] parameters = objects.clone();
-        System.out.println(productControl.removeProductById((String)parameters[1]).getMessage());
-        return (Menu)parameters[0];
+        System.out.println(productControl.removeProductById(((Product)parameters[1]).getID()).getMessage());
+        return ((ProductMenu)parameters[0]).getParentMenu();
     }
 }
