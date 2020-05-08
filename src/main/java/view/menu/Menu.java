@@ -94,10 +94,8 @@ public class Menu {
         if (input == 0) {
             if(isThereParentMenu){
                 nextMenu = Menu.makeMenu(this.parentName);
-            } else if(this.name.equals("Main Menu")) {
-                nextMenu = null;
             } else {
-                nextMenu = processor.executeTheFunctionWithName("Back");
+                nextMenu = null;
             }
         } else {
             if (processor.isThereFunctionWithName(this.options.get(input - 1)))
