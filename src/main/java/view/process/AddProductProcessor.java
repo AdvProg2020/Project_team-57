@@ -180,6 +180,7 @@ public class AddProductProcessor extends Processor {
 
     public Menu getCategory(){
         //TODO Getting Category
+        return getThisMenu();
     }
 
     public Menu getDescription(){
