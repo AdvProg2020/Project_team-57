@@ -88,7 +88,9 @@ public class ListicMenu extends Menu {
                 }
                 else
                 {
-                    //TODO
+                    command -= maxOption;
+                    return Processor.findProcessorWithName(this.processorName).
+                            executeTheFunctionWithName(options.get(command));
                 }
             }
         }
