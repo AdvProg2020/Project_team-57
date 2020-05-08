@@ -1,6 +1,7 @@
 package model.db;
 
 import model.existence.Account;
+import model.existence.Product;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,6 +34,97 @@ public class VendorTable extends Database {
             preparedStatement.setBoolean(1, true);
             preparedStatement.setString(2, username);
         }
+        preparedStatement.execute();
+    }
+
+    public static ArrayList<Product> getProductsWithUsername(String username) throws SQLException, ClassNotFoundException
+    {
+        ArrayList<Product> products = new ArrayList<>();
+        products.addAll(getApprovedProductsWithUsername(username));
+        products.addAll(getUnApprovedProductsWithUsername(username));
+        products.addAll(getEditingProductsWithUsername(username));
+        return products;
+    }
+
+    public static ArrayList<Product> getApprovedProductsWithUsername(String username) throws SQLException, ClassNotFoundException
+    {
+        ArrayList<Product> products = new ArrayList<>();
+        String command = "SELECT * FROM Products WHERE SellerUsername = ? AND Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1,username);
+        preparedStatement.setInt(2, 1);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next())
+        {
+            products.add(new Product(resultSet));
+        }
+        return products;
+    }
+
+    public static ArrayList<Product> getUnApprovedProductsWithUsername(String username) throws SQLException, ClassNotFoundException
+    {
+        ArrayList<Product> products = new ArrayList<>();
+        String command = "SELECT * FROM Products WHERE SellerUsername = ? AND Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1,username);
+        preparedStatement.setInt(2, 2);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next())
+        {
+            products.add(new Product(resultSet));
+        }
+        return products;
+    }
+
+    public static ArrayList<Product> getEditingProductsWithUsername(String username) throws SQLException, ClassNotFoundException
+    {
+        ArrayList<Product> products = new ArrayList<>();
+        String command = "SELECT * FROM EditingProducts WHERE SellerUsername = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1,username);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next())
+        {
+            products.add(new Product(resultSet));
+        }
+        return products;
+    }
+
+    public static void addCountableProduct(Product product, String username) throws SQLException, ClassNotFoundException
+    {
+        String command = "INSERT INTO Products (ID, ProductName, Brand, SellerUsername, Num, IsCountable, Category," +
+                "Description, Price, AverageScore)" +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, product.getID());
+        preparedStatement.setString(2, product.getName());
+        preparedStatement.setString(3, product.getBrand());
+        preparedStatement.setString(4, username);
+        preparedStatement.setInt(5, product.getCount());
+        preparedStatement.setBoolean(6, true);
+        preparedStatement.setString(7, product.getCategory());
+        preparedStatement.setString(8, product.getDescription());
+        preparedStatement.setDouble(9, product.getPrice());
+        preparedStatement.setDouble(10, product.getAverageScore());
+        preparedStatement.execute();
+    }
+
+    public static void addUnCountableProduct(Product product, String username) throws SQLException, ClassNotFoundException
+    {
+        String command = "INSERT INTO Products (ID, ProductName, Brand, SellerUsername, Amount, IsCountable, Category," +
+                "Description, Price, AverageScore)" +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, product.getID());
+        preparedStatement.setString(2, product.getName());
+        preparedStatement.setString(3, product.getBrand());
+        preparedStatement.setString(4, username);
+        preparedStatement.setDouble(5, product.getAmount());
+        preparedStatement.setBoolean(6, false);
+        preparedStatement.setString(7, product.getCategory());
+        preparedStatement.setString(8, product.getDescription());
+        preparedStatement.setDouble(9, product.getPrice());
+        preparedStatement.setDouble(10, product.getAverageScore());
         preparedStatement.execute();
     }
 

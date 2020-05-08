@@ -1,6 +1,7 @@
 package view.process;
 
 import controller.account.AccountControl;
+import controller.account.VendorControl;
 import controller.product.ProductControl;
 import view.menu.ListicMenu;
 import view.menu.ListicOptionMenu;
@@ -11,16 +12,24 @@ import java.util.HashMap;
 public class ListicProcessor extends Processor {
     private static ProductControl productControl;
     private static AccountControl accountControl;
+    private static VendorControl vendorControl;
     private static ListicProcessor processor = null;
 
     public ListicProcessor() {
         productControl = ProductControl.getController();
         accountControl = AccountControl.getController();
+        vendorControl = VendorControl.getController();
         this.functionsHashMap = new HashMap<>();
         this.functionsHashMap.put("Open Functioning Option", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
                 return getListicOptionMenu(objects);
+            }
+        });
+        this.functionsHashMap.put("Add Product", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addProduct();
             }
         });
     }
@@ -41,13 +50,19 @@ public class ListicProcessor extends Processor {
         {
             return ListicOptionMenu.makeMenu("Admin Product Menu", parentMenu, primaryKey);
         }
-        //TODO (Name ???)
         else if(parentMenu.getName().equals("Manage Vendors Registration Requests"))
         {
             return ListicOptionMenu.makeMenu("Register Request Menu", parentMenu, primaryKey);
         }
+        //TODO(OTHERS)
         return null;
     }
+
+    public Menu addProduct()
+    {
+
+    }
+
 
     public static void initListicMenu(ListicMenu listicMenu)
     {
@@ -55,7 +70,14 @@ public class ListicProcessor extends Processor {
             initProductListicMenu(listicMenu);
         else if(listicMenu.getName().equals("Manage Vendors Registration Requests"))
             initRegisterRequestListicMenu(listicMenu);
+        else if(listicMenu.getName().equals("Manage Products"))
+            initManageProducts(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initManageProducts(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(vendorControl.getVendorProductNames());
+        listicMenu.setListicOptionPrimaryKeys(vendorControl.getVendorProductIDs());
     }
 
     private static void initRegisterRequestListicMenu(ListicMenu listicMenu) {

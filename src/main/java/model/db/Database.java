@@ -26,9 +26,33 @@ public class Database {
             initConnection = DriverManager.getConnection(localDBUrl);
         initAccountTable(initConnection.createStatement());
         initProductTable(initConnection.createStatement());
+        initEditingProductTable(initConnection.createStatement());
 
         isDBInit = true;
         initConnection.close();
+    }
+
+    private static void initEditingProductTable(Statement statement) throws SQLException {
+        String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'EditingProducts'";
+        ResultSet resultSet = statement.executeQuery(command);
+        if(!resultSet.next()){
+            statement.execute("CREATE TABLE EditingProducts(" +
+                    "ID varchar(8)," +
+                    "ProductName varchar(20)," +
+                    "Brand varchar(20)," +
+                    "SellerUsername varchar(16)," +
+                    "Num int," +
+                    "Amount double," +
+                    "IsCountable BIT," +
+                    "Category varchar(20)," +
+                    "Description varchar(100)," +
+                    "Price double," +
+                    "AverageScore double," +
+                    "primary key(ID)" +
+                    ");");
+        }
+
+        statement.close(); resultSet.close();
     }
 
     private static void initProductTable(Statement statement) throws SQLException {
@@ -40,7 +64,7 @@ public class Database {
                     "Status int," +
                     "ProductName varchar(20)," +
                     "Brand varchar(20)," +
-                    "SellerUserName varchar(16)," +
+                    "SellerUsername varchar(16)," +
                     "Count int," +
                     "Amount double," +
                     "IsCountable BIT," +
