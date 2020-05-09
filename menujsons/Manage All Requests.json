@@ -1,8 +1,8 @@
 {
   "options" : [
     "Manage Vendors Registration Requests",
-    "Add Product",
-    "Edit Product"
+    "Manage Product Requests",
+    "Manage Off Requests"
   ],
   "name" : "Request Menu",
   "parentName" : "Admin Menu",

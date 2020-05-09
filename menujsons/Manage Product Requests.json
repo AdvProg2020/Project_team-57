@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "Add Product Requests",
+    "Edit Product Requests"
+  ],
+  "name" : "Manage Product Requests",
+  "parentName" : "ءManage All Requests",
+  "isThereParentMenu" : "true",
+  "processorName" : "RequestProcessor"
+}
