@@ -25,7 +25,7 @@ public class EditingProductTable extends Database{
         return !(preparedStatement.executeQuery().next());
     }
 
-    public void editFieldWithName(String ID, String fieldName, String newValue) throws SQLException, ClassNotFoundException {
+    public static void editFieldWithName(String ID, String fieldName, String newValue) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingProducts SET " + fieldName + " = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, newValue);
@@ -33,7 +33,7 @@ public class EditingProductTable extends Database{
         preparedStatement.execute();
     }
 
-    public void changeProductCount(String ID, int newValue) throws SQLException, ClassNotFoundException {
+    public static void changeProductCount(String ID, int newValue) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingProducts SET Count = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, newValue);
@@ -41,7 +41,7 @@ public class EditingProductTable extends Database{
         preparedStatement.execute();
     }
 
-    public void changeProductAmount(String ID, double newValue) throws SQLException, ClassNotFoundException {
+    public static void changeProductAmount(String ID, double newValue) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingProducts SET Amount = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDouble(1, newValue);
@@ -49,7 +49,7 @@ public class EditingProductTable extends Database{
         preparedStatement.execute();
     }
 
-    public void changeProductPrice(String ID, double newValue) throws SQLException, ClassNotFoundException {
+    public static void changeProductPrice(String ID, double newValue) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingProducts SET Price = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDouble(1, newValue);
@@ -79,7 +79,7 @@ public class EditingProductTable extends Database{
         preparedStatement.execute();
     }
 
-    public ArrayList<Product> getAllEditingProducts() throws SQLException, ClassNotFoundException {
+    public static ArrayList<Product> getAllEditingProducts() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM EditingProducts";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         ResultSet resultSet = preparedStatement.executeQuery();

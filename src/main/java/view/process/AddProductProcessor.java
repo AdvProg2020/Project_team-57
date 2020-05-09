@@ -181,7 +181,6 @@ public class AddProductProcessor extends Processor {
 
     public Menu getCategory(){
         //TODO Getting Category
-        return null;
         return getThisMenu();
     }
 

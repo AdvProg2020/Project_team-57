@@ -42,7 +42,7 @@ public class ProductTable extends Database {
         return !(preparedStatement.executeQuery().next());
     }
 
-    public void setProductStatus(String ID, int status) throws SQLException, ClassNotFoundException {
+    public static void setProductStatus(String ID, int status) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Products SET Status = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, status);
@@ -50,7 +50,7 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
-    public ArrayList<Product> getAllUnApprovedProducts() throws SQLException, ClassNotFoundException {
+    public static ArrayList<Product> getAllUnApprovedProducts() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Products WHERE Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, 2);

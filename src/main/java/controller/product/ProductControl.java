@@ -113,19 +113,23 @@ public class ProductControl extends Control {
     }
 
     private void editSpecificField(String fieldName, String newField, String ID) {
-        if(fieldName.equals("Name") || fieldName.equals("Brand") ||
-                fieldName.equals("Category") || fieldName.equals("Description"))
-            EditingProductTable.editFieldWithName(fieldName, newField, ID);
+        try {
+            if(fieldName.equals("Name") || fieldName.equals("Brand") ||
+                    fieldName.equals("Category") || fieldName.equals("Description"))
+                EditingProductTable.editFieldWithName(fieldName, newField, ID);
 
-        else if(fieldName.equals("Count"))
-            EditingProductTable.changeProductCount(Integer.parseInt(newField), ID);
+            else if(fieldName.equals("Count"))
+                EditingProductTable.changeProductCount(ID, Integer.parseInt(newField));
 
-        else if(fieldName.equals("Amount"))
-            EditingProductTable.changeProductAmount(Double.parseDouble(newField), ID);
+            else if(fieldName.equals("Amount"))
+                EditingProductTable.changeProductAmount(ID, Double.parseDouble(newField));
 
-        else if(fieldName.equals("Price"))
-            EditingProductTable.changeProductPrice(Double.parseDouble(newField), ID);
-
+            else if(fieldName.equals("Price"))
+                EditingProductTable.changeProductPrice(ID, Double.parseDouble(newField));
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private boolean checkFieldEquality(String fieldName, String newField, String ID) {
@@ -162,22 +166,35 @@ public class ProductControl extends Control {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public ArrayList<String> getAllUnApprovedProductNames() {
         ArrayList<String> unApprovedProducts = new ArrayList<>();
-        for(Product product : ProductTable.getAllUnApprovedProducts())
-        {
-            unApprovedProducts.add(product.getName());
+        try {
+            for(Product product : ProductTable.getAllUnApprovedProducts())
+            {
+                unApprovedProducts.add(product.getName());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return unApprovedProducts;
     }
 
     public ArrayList<String> getAllUnApprovedProductIDs() {
         ArrayList<String> unApprovedProducts = new ArrayList<>();
-        for(Product product : ProductTable.getAllUnApprovedProducts())
-        {
-            unApprovedProducts.add(product.getID());
+        try {
+            for(Product product : ProductTable.getAllUnApprovedProducts())
+            {
+                unApprovedProducts.add(product.getID());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return unApprovedProducts;
     }

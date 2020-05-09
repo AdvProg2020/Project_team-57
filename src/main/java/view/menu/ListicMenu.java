@@ -74,9 +74,11 @@ public class ListicMenu extends Menu {
             else if(input.equals("-"))
                 --pageNumber;
             else {
+                setMaxOption();
                 int command = Integer.parseInt(input) - 1;
                 if(command < maxOption)
                 {
+                    //System.out.println("MaxOption = " + maxOption + " Command = " + command);
                     if (command == -1)
                     {
                         return Menu.makeMenu(parentName);
@@ -98,8 +100,10 @@ public class ListicMenu extends Menu {
     }
 
     private void setMaxOption() {
-        if(listicOptionNames.size() - (pageNumber * pageSize) < 5 )
+        if(listicOptionNames.size() - (pageNumber * pageSize) < 5 ) {
+            //System.out.println("ListicOptinNames.size() = " + listicOptionNames.size());
             maxOption = listicOptionNames.size() - (pageNumber * pageSize);
+        }
         else
             maxOption = 5;
     }
