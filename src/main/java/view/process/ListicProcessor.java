@@ -54,6 +54,10 @@ public class ListicProcessor extends Processor {
         {
             return ListicOptionMenu.makeMenu("Register Request Menu", parentMenu, primaryKey);
         }
+        else if(parentMenu.getName().equals("Manage Products"))
+        {
+            return ListicOptionMenu.makeMenu("Vendor Product Menu", parentMenu, primaryKey);
+        }
         //TODO(OTHERS)
         return null;
     }
@@ -75,7 +79,14 @@ public class ListicProcessor extends Processor {
             initRegisterRequestListicMenu(listicMenu);
         else if(listicMenu.getName().equals("Manage Products"))
             initManageProducts(listicMenu);
+        else if(listicMenu.getName().equals("Manage Add Product Requests"))
+            initManageAddProductRequests(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initManageAddProductRequests(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(productControl.getAllUnApprovedProductNames());
+        listicMenu.setListicOptionPrimaryKeys(productControl.getAllUnApprovedProductIDs());
     }
 
     private static void initManageProducts(ListicMenu listicMenu) {

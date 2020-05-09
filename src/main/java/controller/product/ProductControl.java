@@ -111,4 +111,22 @@ public class ProductControl extends Control {
     public Product getEditedProductByID(String ID) {
         return ProductTable.getEditingProductWithID(ID);
     }
+
+    public ArrayList<String> getAllUnApprovedProductNames() {
+        ArrayList<String> unApprovedProducts = new ArrayList<>();
+        for(Product product : ProductTable.getAllUnApprovedProducts())
+        {
+            unApprovedProducts.add(product.getName());
+        }
+        return unApprovedProducts;
+    }
+
+    public ArrayList<String> getAllUnApprovedProductIDs() {
+        ArrayList<String> unApprovedProducts = new ArrayList<>();
+        for(Product product : ProductTable.getAllUnApprovedProducts())
+        {
+            unApprovedProducts.add(product.getID());
+        }
+        return unApprovedProducts;
+    }
 }
