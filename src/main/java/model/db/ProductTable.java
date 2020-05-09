@@ -42,6 +42,26 @@ public class ProductTable extends Database {
         return !(preparedStatement.executeQuery().next());
     }
 
+    public void setProductStatus(String ID, int status) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Products SET Status = ? WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, status);
+        preparedStatement.setString(2, ID);
+        preparedStatement.execute();
+    }
+
+    public ArrayList<Product> getAllUnApprovedProducts() throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Products WHERE Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, 2);
+        ArrayList<Product> products = new ArrayList<>();
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()){
+            products.add(new Product(resultSet));
+        }
+        return products;
+    }
+
     public static void tempAddProducts() throws SQLException, ClassNotFoundException {
         String task = "INSERT INTO Products (ID, Status, ProductName, IsCountable, Description) " +
                                 "VALUES(?, ?, ?, ?, ?)";

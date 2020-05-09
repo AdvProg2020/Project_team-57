@@ -39,12 +39,7 @@ public class EditProductProcessor extends Processor {
                 return editField("Amount", objects);
             }
         });
-        functionsHashMap.put("Category", new FunctioningOption() {
-            @Override
-            public Menu doTheThing(Object... objects) {
-                return editField("Category", objects);
-            }
-        });
+        functionsHashMap.put("Category", objects -> editField("Category", objects));
         //TODO for editing Category function
         functionsHashMap.put("Description", new FunctioningOption() {
             @Override
