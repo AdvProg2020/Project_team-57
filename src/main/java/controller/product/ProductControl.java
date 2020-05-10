@@ -3,7 +3,6 @@ package controller.product;
 import controller.Control;
 import model.db.EditingProductTable;
 import model.db.ProductTable;
-import model.db.VendorTable;
 import model.existence.Product;
 import notification.Notification;
 
@@ -26,6 +25,8 @@ public class ProductControl extends Control {
     public Notification removeProductById(String productId) {
         try {
             ProductTable.removeProductByID(productId);
+            if (EditingProductTable.isThereProductById(productId))
+                EditingProductTable.removeProductById(productId);
             return Notification.REMOVE_PRODUCT_SUCCESSFULLY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;

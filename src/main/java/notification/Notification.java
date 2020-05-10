@@ -24,7 +24,8 @@ public enum Notification {
     ACCEPT_ADD_VENDOR_REQUEST("The seller was added to the store"),
     USER_NOT_APPROVED("Wait for The Lord to Prove your Account, may the 4th be with you.\uD83D\uDE08"),
     PRODUCT_NOT_AVAILABLE("This Product is Unavailable. You can't Edit its Specs."),
-    ADD_PRODUCT("Successfully Added. Hope You Will Have A Good Sale If The Lord Accepts your Product");
+    ADD_PRODUCT("Successfully Added. Hope You Will Have A Good Sale If The Lord Accepts your Product"),
+    ACCEPT_ADDING_PRODUCT("Product added to store successfully\uD83D\uDC8B");
 
     private String message;
 
