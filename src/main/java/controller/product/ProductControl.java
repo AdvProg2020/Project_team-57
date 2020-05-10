@@ -79,7 +79,7 @@ public class ProductControl extends Control {
         ArrayList<String> allProductIDs = new ArrayList<>();
         try {
             for (Product product : ProductTable.getAllProducts()) {
-                allProductIDs.add(product.getName());
+                allProductIDs.add(product.getID());
             }
         } catch (SQLException e) {
             e.printStackTrace();

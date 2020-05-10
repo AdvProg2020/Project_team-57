@@ -21,10 +21,14 @@ public class ProductTable extends Database {
     }
 
     public static Product getProductByID(String ID) throws SQLException, ClassNotFoundException {
+        //System.out.println(ID);
         String queryTask = "SELECT * FROM Products WHERE ID = ?;";
         PreparedStatement preparedStatement = getConnection().prepareStatement(queryTask);
         preparedStatement.setString(1, ID);
-        return new Product(preparedStatement.executeQuery());
+        //System.out.println("Hello World");
+        Product product = new Product(preparedStatement.executeQuery());
+        //System.out.println(product.getName() + " : " + product.getID());
+        return product;
     }
 
     public static void removeProductByID(String ID) throws SQLException, ClassNotFoundException {

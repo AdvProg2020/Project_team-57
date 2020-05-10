@@ -40,37 +40,33 @@ public class RegisterMenu extends ListicOptionMenu {
     }
 
     protected void printOptionSpecs(){
-        createCustomLine();
+        printCustomLine();
 
         printWithNullChecking("UserName", account.getUsername());
-        createCustomLine();
+        printCustomLine();
 
         printWithNullChecking("PassWord", "************");
-        createCustomLine();
+        printCustomLine();
 
         printWithNullChecking("Account Type", account.getType());
-        createCustomLine();
+        printCustomLine();
 
         printWithNullChecking("FirstName", account.getFirstName());
-        createCustomLine();
+        printCustomLine();
 
         printWithNullChecking("LastName", account.getLastName());
-        createCustomLine();
+        printCustomLine();
 
         printWithNullChecking("Email", account.getEmail());
-        createCustomLine();
+        printCustomLine();
 
         if(Control.getType().equals("Vendor")){
             printWithNullChecking("Brand", account.getBrand());
-            createCustomLine();
+            printCustomLine();
         }
 
         System.out.format("| %-15s | %-35f | %n", "Credit", account.getCredit());
-        createCustomLine();
-    }
-
-    private void createCustomLine(){
-        System.out.println("+-----------------+-------------------------------------+");
+        printCustomLine();
     }
 
     private void printWithNullChecking(String fieldName, String fieldValue){
@@ -78,6 +74,10 @@ public class RegisterMenu extends ListicOptionMenu {
             System.out.format("| %-15s | %-35s | %n", fieldName, "Not Assigned");
         else
             System.out.format("| %-15s | %-35s | %n", fieldName, fieldValue);
+    }
+
+    private void printCustomLine(){
+        System.out.println("+-----------------+-------------------------------------+");
     }
 
     public void setAccount(Account account) {

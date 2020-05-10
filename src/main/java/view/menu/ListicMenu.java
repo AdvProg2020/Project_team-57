@@ -84,6 +84,7 @@ public class ListicMenu extends Menu {
                         return Menu.makeMenu(parentName);
                     }
                     //return listicProcessor.getProductMenu(listicProcessor.chooseProductMenuType(), listicOptionPrimaryKeys.get(command + (pageNumber * pageSize)), this);
+                    //System.out.println("Primary Key = " + listicOptionPrimaryKeys.get(command + (pageNumber * pageSize)));
                     return Processor.findProcessorWithName(this.processorName).
                             executeTheFunctionWithName("Open Functioning Option",
                             listicOptionPrimaryKeys.get(command + (pageNumber * pageSize)), this);

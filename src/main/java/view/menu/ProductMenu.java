@@ -33,8 +33,11 @@ public class ProductMenu extends ListicOptionMenu {
                 System.out.println(e.getMessage());
             }
         }
-
-        if(input != 0 && processor.isThereFunctionWithName(options.get(input - 1)))
+        if(input == 0)
+        {
+         nextMenu = parentMenu;
+        }
+        else if(processor.isThereFunctionWithName(options.get(input - 1)))
         {
             nextMenu = processor.executeTheFunctionWithName(options.get(input - 1), this, product);
         }
@@ -42,25 +45,25 @@ public class ProductMenu extends ListicOptionMenu {
         return nextMenu;
     }
 
-    public void printProductSpecs(){
+    public void printOptionSpecs(){
         printCustomLine();
 
         printCustomStatus(product.getStatus());
         printCustomLine();
 
-        System.out.format("| %-20s | %-35s | %n", "Name", product.getName());
+        printWithNullChecking("Name", product.getName());
         printCustomLine();
 
-        System.out.format("| %-20s | %-35s | %n", "Brand Name", product.getBrand());
+        printWithNullChecking("Brand Name", product.getBrand());
         printCustomLine();
 
-        System.out.format("| %-20s | %-35s | %n", "Seller Name", product.getSellerUserName());
+        printWithNullChecking("Seller Name", product.getSellerUserName());
         printCustomLine();
 
         printCustomCount(product);
         printCustomLine();
 
-        System.out.format("| %-20s | %-35s | %n", "Category", product.getCategory());
+        printWithNullChecking("Category", product.getCategory());
         printCustomLine();
 
         printCustomDescription(product.getDescription());
@@ -75,6 +78,13 @@ public class ProductMenu extends ListicOptionMenu {
 
     public void printCustomLine(){
         System.out.println("+----------------------+-------------------------------------+");
+    }
+
+    private void printWithNullChecking(String fieldName, String fieldValue){
+        if(fieldValue == null)
+            System.out.format("| %-20s | %-35s | %n", fieldName, "Not Assigned");
+        else
+            System.out.format("| %-20s | %-35s | %n", fieldName, fieldValue);
     }
 
     public void printCustomStatus(int status){
