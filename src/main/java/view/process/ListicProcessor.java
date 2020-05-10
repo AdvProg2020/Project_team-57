@@ -10,15 +10,12 @@ import view.menu.Menu;
 import java.util.HashMap;
 
 public class ListicProcessor extends Processor {
-    private static ProductControl productControl;
-    private static AccountControl accountControl;
-    private static VendorControl vendorControl;
+    private static ProductControl productControl = ProductControl.getController();
+    private static AccountControl accountControl = AccountControl.getController();
+    private static VendorControl vendorControl = VendorControl.getController();
     private static ListicProcessor processor = null;
 
     public ListicProcessor() {
-        productControl = ProductControl.getController();
-        accountControl = AccountControl.getController();
-        vendorControl = VendorControl.getController();
         this.functionsHashMap = new HashMap<>();
         this.functionsHashMap.put("Open Functioning Option", new FunctioningOption() {
             @Override
@@ -66,6 +63,10 @@ public class ListicProcessor extends Processor {
         {
             return ListicOptionMenu.makeMenu("Edit Product Request Menu", parentMenu, primaryKey);
         }
+        else if(parentMenu.getName().equals("Manage All Users"))
+        {
+            return ListicOptionMenu.makeMenu("User Menu", parentMenu, primaryKey);
+        }
         //TODO(OTHERS)
         return null;
     }
@@ -91,7 +92,14 @@ public class ListicProcessor extends Processor {
             initManageAddProductRequests(listicMenu);
         else if(listicMenu.getName().equals("Manage Edit Product Requests"))
             initManageEditProductRequests(listicMenu);
+        else if(listicMenu.getName().equals("Manage All Users"))
+            initManageAllUsers(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initManageAllUsers(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(accountControl.getAllUsernames());
+        listicMenu.setListicOptionPrimaryKeys(accountControl.getAllUsernames());
     }
 
     private static void initManageEditProductRequests(ListicMenu listicMenu) {

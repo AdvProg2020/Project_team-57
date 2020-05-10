@@ -1,10 +1,7 @@
 package view.menu;
 
-import com.google.gson.GsonBuilder;
-import view.process.ListicOptionProcessor;
-import view.process.Processor;
 import view.process.ProductProcessor;
-import view.process.RegisterProcessor;
+import view.process.UserProcessor;
 
 import java.io.FileNotFoundException;
 
@@ -24,8 +21,8 @@ public class ListicOptionMenu extends Menu {
 
         if(menuName.contains("Product")) {
             menu = ProductProcessor.setMenu(json, optionID);
-        } else if(menuName.contains("Register")) {
-            menu = RegisterProcessor.setMenu(json, optionID);
+        } else {
+            menu = UserProcessor.setMenu(json, optionID);
         }
         //TODO(OTHERS)
 

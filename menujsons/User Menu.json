@@ -1,0 +1,9 @@
+{
+  "options" : [
+    "Remove User"
+  ],
+  "name" : "User Menu",
+  "parentName" : "Request Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "RegisterRequestProcessor"
+}

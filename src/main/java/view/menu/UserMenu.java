@@ -4,7 +4,7 @@ import controller.Control;
 import model.existence.Account;
 import view.process.Processor;
 
-public class RegisterMenu extends ListicOptionMenu {
+public class UserMenu extends ListicOptionMenu {
     private Account account;
 
     public Menu execute(){
@@ -60,13 +60,15 @@ public class RegisterMenu extends ListicOptionMenu {
         printWithNullChecking("Email", account.getEmail());
         printCustomLine();
 
-        if(Control.getType().equals("Vendor")){
+        if(account.getType().equals("Vendor")){
             printWithNullChecking("Brand", account.getBrand());
             printCustomLine();
         }
-
-        System.out.format("| %-15s | %-35f | %n", "Credit", account.getCredit());
-        printCustomLine();
+        if(!account.getType().equals("Admin"))
+        {
+            System.out.format("| %-15s | %-35f | %n", "Credit", account.getCredit());
+            printCustomLine();
+        }
     }
 
     private void printWithNullChecking(String fieldName, String fieldValue){

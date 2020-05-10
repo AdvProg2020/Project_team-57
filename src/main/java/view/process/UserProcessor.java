@@ -3,15 +3,15 @@ package view.process;
 import com.google.gson.GsonBuilder;
 import controller.account.AccountControl;
 import view.menu.Menu;
-import view.menu.RegisterMenu;
+import view.menu.UserMenu;
 
 import java.util.HashMap;
 
-public class RegisterProcessor extends ListicOptionProcessor {
+public class UserProcessor extends ListicOptionProcessor {
     private static AccountControl accountControl = AccountControl.getController();
-    private static RegisterProcessor registerProcessor = null;
+    private static UserProcessor userProcessor = null;
 
-    private RegisterProcessor(){
+    private UserProcessor(){
         this.functionsHashMap = new HashMap<>();
         functionsHashMap.put("Accept Request", new FunctioningOption() {
             @Override
@@ -28,17 +28,17 @@ public class RegisterProcessor extends ListicOptionProcessor {
 
     }
 
-    public static RegisterProcessor getInstance(){
-        if(registerProcessor == null)
-            registerProcessor = new RegisterProcessor();
+    public static UserProcessor getInstance(){
+        if(userProcessor == null)
+            userProcessor = new UserProcessor();
 
-        return registerProcessor;
+        return userProcessor;
     }
 
-    public static RegisterMenu setMenu(String json, String ID){
-        RegisterMenu registerMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, RegisterMenu.class);
-        registerMenu.setAccount(accountControl.getAccountByUsername(ID));
-        return registerMenu;
+    public static UserMenu setMenu(String json, String ID){
+        UserMenu userMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, UserMenu.class);
+        userMenu.setAccount(accountControl.getAccountByUsername(ID));
+        return userMenu;
     }
 
     public Menu acceptRequest(Object... objects){
