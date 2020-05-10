@@ -6,12 +6,12 @@ import controller.account.AdminControl;
 import controller.product.ProductControl;
 import model.existence.Product;
 import view.menu.Menu;
-import view.menu.PrintProductSpecs;
+import view.PrintOptionSpecs;
 import view.menu.ProductMenu;
 
 import java.util.HashMap;
 
-public class ProductProcessor extends ListicOptionProcessor implements PrintProductSpecs {
+public class ProductProcessor extends ListicOptionProcessor implements PrintOptionSpecs {
     private static ProductProcessor productProcessor = null;
     private static ProductControl productControl = ProductControl.getController();
     private static AdminControl adminControl = AdminControl.getController();

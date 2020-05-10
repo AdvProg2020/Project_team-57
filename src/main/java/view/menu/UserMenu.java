@@ -1,10 +1,10 @@
 package view.menu;
 
-import controller.Control;
 import model.existence.Account;
+import view.PrintOptionSpecs;
 import view.process.Processor;
 
-public class UserMenu extends ListicOptionMenu {
+public class UserMenu extends ListicOptionMenu implements PrintOptionSpecs {
     private Account account;
 
     public Menu execute(){
@@ -42,7 +42,7 @@ public class UserMenu extends ListicOptionMenu {
     }
 
     protected void printOptionSpecs(){
-        printCustomLine();
+        /*printCustomLine();
 
         printWithNullChecking("UserName", account.getUsername());
         printCustomLine();
@@ -70,18 +70,9 @@ public class UserMenu extends ListicOptionMenu {
         {
             System.out.format("| %-15s | %-35f | %n", "Credit", account.getCredit());
             printCustomLine();
-        }
-    }
+        }*/
 
-    private void printWithNullChecking(String fieldName, String fieldValue){
-        if(fieldValue == null)
-            System.out.format("| %-15s | %-35s | %n", fieldName, "Not Assigned");
-        else
-            System.out.format("| %-15s | %-35s | %n", fieldName, fieldValue);
-    }
-
-    private void printCustomLine(){
-        System.out.println("+-----------------+-------------------------------------+");
+        printAccountSpecs(account);
     }
 
     public void setAccount(Account account) {
