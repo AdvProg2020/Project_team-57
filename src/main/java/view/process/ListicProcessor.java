@@ -1,8 +1,10 @@
 package view.process;
 
+import controller.IOControl;
 import controller.account.AccountControl;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
+import model.existence.Account;
 import view.menu.ListicMenu;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
@@ -13,6 +15,7 @@ public class ListicProcessor extends Processor {
     private static ProductControl productControl = ProductControl.getController();
     private static AccountControl accountControl = AccountControl.getController();
     private static VendorControl vendorControl = VendorControl.getController();
+    private static IOControl ioControl = IOControl.getController();
     private static ListicProcessor processor = null;
 
     public ListicProcessor() {
@@ -27,6 +30,12 @@ public class ListicProcessor extends Processor {
             @Override
             public Menu doTheThing(Object... objects) {
                 return addProduct(objects);
+            }
+        });
+        this.functionsHashMap.put("Create Another Manager Profile", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addManagerProfile(objects);
             }
         });
     }
@@ -77,6 +86,20 @@ public class ListicProcessor extends Processor {
         AddProductProcessor.getInstance((ListicMenu) allObjects[0]);
         Menu menu = Menu.makeMenu("Add Product Menu");
         return menu;
+    }
+
+    public Menu addManagerProfile(Object... objects)
+    {
+        Account account = new Account();
+        account.setType("Admin");
+        System.out.println("Please Enter Your UserName :");
+        account.setUsername(scanner.nextLine().trim());
+
+        System.out.println("Please Enter Your PassWord :");
+        account.setPassword(scanner.nextLine().trim());
+
+        System.out.println(ioControl.register(account).getMessage());
+        return ((ListicMenu) objects[0]);
     }
 
 

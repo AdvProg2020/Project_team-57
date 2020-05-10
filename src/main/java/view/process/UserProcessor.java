@@ -6,6 +6,7 @@ import view.menu.Menu;
 import view.menu.UserMenu;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class UserProcessor extends ListicOptionProcessor {
     private static AccountControl accountControl = AccountControl.getController();
@@ -23,6 +24,12 @@ public class UserProcessor extends ListicOptionProcessor {
             @Override
             public Menu doTheThing(Object... objects) {
                 return declineRequest(objects);
+            }
+        });
+        functionsHashMap.put("Delete User", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return deleteUser(objects);
             }
         });
 
@@ -56,6 +63,15 @@ public class UserProcessor extends ListicOptionProcessor {
         String userName = (String)objects[1];
 
         accountControl.modifyApprove(userName, 0);
+        return menu;
+    }
+
+    public Menu deleteUser(Object... objects)
+    {
+        Object[] parameters = objects.clone();
+        Menu menu = (Menu)parameters[0];
+        String userName = (String)parameters[1];
+        accountControl.deleteUserWithUsername(userName);
         return menu;
     }
 }

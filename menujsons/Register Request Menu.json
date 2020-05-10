@@ -4,7 +4,7 @@
     "Decline Request"
   ],
   "name" : "Register Request Menu",
-  "parentName" : "Request Menu",
+  "parentName" : "Manage Register Requests Listic Menu",
   "isThereParentMenu" : "true",
   "processorName" : "RegisterRequestProcessor"
 }

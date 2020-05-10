@@ -1,5 +1,5 @@
 {
-  "name" : "Manage Products",
+  "name" : "Manage All Users",
   "parentName" : "Admin Menu",
   "isThereParentMenu" : true,
   "processorName" : "ListicProcessor",

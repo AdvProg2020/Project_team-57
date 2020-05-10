@@ -39,7 +39,7 @@ public class RequestProcessor extends Processor{
 
     public Menu manageRegistration()
     {
-        return ListicMenu.makeListicMenu("Manage Registration Requests Menu");
+        return ListicMenu.makeListicMenu("Manage Register Requests Listic Menu");
     }
 
     public Menu manageAddProductRequests(){
