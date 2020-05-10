@@ -2,8 +2,8 @@
   "options" : [
     "View Personal Info",
     "Edit Field",
-    "Edit Credit",
     "Change Password",
+    "Manage All Users",
     "Manage All Products",
     "Manage All Requests"
   ],
