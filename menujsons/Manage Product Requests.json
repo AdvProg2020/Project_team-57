@@ -4,7 +4,7 @@
     "Edit Product Requests"
   ],
   "name" : "Manage Product Requests",
-  "parentName" : "ءManage All Requests",
+  "parentName" : "Manage All Requests",
   "isThereParentMenu" : "true",
   "processorName" : "RequestProcessor"
 }

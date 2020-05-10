@@ -17,6 +17,12 @@ public class RequestProcessor extends Processor{
                 return manageRegistration();
             }
         });
+        this.functionsHashMap.put("Add Product Requests", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return manageAddProductRequests();
+            }
+        });
     }
 
     public static RequestProcessor getInstance() {

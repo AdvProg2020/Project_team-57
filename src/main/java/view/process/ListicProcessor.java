@@ -58,6 +58,14 @@ public class ListicProcessor extends Processor {
         {
             return ListicOptionMenu.makeMenu("Vendor Product Menu", parentMenu, primaryKey);
         }
+        else if(parentMenu.getName().equals("Manage Add Product Requests"))
+        {
+            return ListicOptionMenu.makeMenu("Add Product Request Menu", parentMenu, primaryKey);
+        }
+        else if(parentMenu.getName().equals("Manage Edit Product Requests"))
+        {
+            //TODO
+        }
         //TODO(OTHERS)
         return null;
     }
