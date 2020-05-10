@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "Accept Adding Product",
+    "Decline Adding Product"
+  ],
+  "name" : "Add Product Request Menu",
+  "parentName" : "Manage Add Product Requests Listic Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "ProductProcessor"
+}
