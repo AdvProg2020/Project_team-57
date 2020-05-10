@@ -214,4 +214,33 @@ public class ProductControl extends Control {
         }
         return unApprovedProducts;
     }
+
+    public ArrayList<String> getAllEditingProductNames() {
+        ArrayList<String> editingProducts = new ArrayList<>();
+        try {
+            for (Product editingProduct : EditingProductTable.getAllEditingProducts()) {
+                editingProducts.add(editingProduct.getName());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return editingProducts;
+    }
+
+
+    public ArrayList<String> getAllEditingProductIDs() {
+        ArrayList<String> editingProducts = new ArrayList<>();
+        try {
+            for (Product editingProduct : EditingProductTable.getAllEditingProducts()) {
+                editingProducts.add(editingProduct.getID());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return editingProducts;
+    }
 }

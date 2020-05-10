@@ -23,6 +23,12 @@ public class RequestProcessor extends Processor{
                 return manageAddProductRequests();
             }
         });
+        this.functionsHashMap.put("Edit Product Requests", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return manageEditProductRequests();
+            }
+        });
     }
 
     public static RequestProcessor getInstance() {
@@ -39,5 +45,11 @@ public class RequestProcessor extends Processor{
     public Menu manageAddProductRequests(){
         return ListicMenu.makeListicMenu("Manage Add Product Requests Listic Menu");
     }
+
+    public Menu manageEditProductRequests()
+    {
+        return ListicMenu.makeListicMenu("Manage Edit Product Reuests Listic Menu");
+    }
+
 
 }

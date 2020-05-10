@@ -89,7 +89,14 @@ public class ListicProcessor extends Processor {
             initManageProducts(listicMenu);
         else if(listicMenu.getName().equals("Manage Add Product Requests"))
             initManageAddProductRequests(listicMenu);
+        else if(listicMenu.getName().equals("Manage Edit Product Requests"))
+            initManageEditProductRequests(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initManageEditProductRequests(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(productControl.getAllEditingProductNames());
+        listicMenu.setListicOptionPrimaryKeys(productControl.getAllEditingProductIDs());
     }
 
     private static void initManageAddProductRequests(ListicMenu listicMenu) {
