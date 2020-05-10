@@ -132,7 +132,7 @@ public class AccountControl extends Control implements ValidPassword{
     public ArrayList<String> getAllUsernames() {
         ArrayList<String> allUsernames = new ArrayList<>();
         try {
-            for (Account account : AccountTable.getAllAccounts()) {
+            for (Account account : AccountTable.getAllUsers()) {
                 allUsernames.add(account.getUsername());
             }
             return allUsernames;
@@ -153,6 +153,22 @@ public class AccountControl extends Control implements ValidPassword{
            return Notification.UNKNOWN_ERROR;
         } catch (ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
+        }
+    }
+
+    public ArrayList<String> getAdminsUsernames(){
+        ArrayList<String> adminsUsernames = new ArrayList<>();
+        try {
+            for (Account admin : AccountTable.getAllAdmins()) {
+                adminsUsernames.add(admin.getUsername());
+            }
+            return adminsUsernames;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            return new ArrayList<>();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 }
