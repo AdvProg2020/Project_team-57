@@ -40,7 +40,12 @@ public class ProductProcessor extends ListicOptionProcessor{
 
     public static ProductMenu setMenu(String json, String ID){
         ProductMenu productMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ProductMenu.class);
-        productMenu.setProduct(productControl.getEditedProductByID(ID));
+        //TODO(OTHERS)
+        if(json.contains("Manage All Products Listic Menu")) {
+            productMenu.setProduct(productControl.getProductById(ID));
+        } else {
+            productMenu.setProduct(productControl.getEditedProductByID(ID));
+        }
         return productMenu;
     }
 
