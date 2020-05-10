@@ -1,0 +1,11 @@
+{
+  "options" : [
+    "View Product Last Approved Version",
+    "Accept Editing Product",
+    "Decline Editing Product"
+  ],
+  "name" : "Edit Product Request Menu",
+  "parentName" : "Manage Edit Product Requests Listic Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "ProductProcessor"
+}

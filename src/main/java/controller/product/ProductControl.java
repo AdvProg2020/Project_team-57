@@ -243,4 +243,16 @@ public class ProductControl extends Control {
         }
         return editingProducts;
     }
+
+    public void removeEditingProductById(String editingProductID) {
+        try {
+            EditingProductTable.removeProductById(editingProductID);
+            ProductTable.setProductStatus(editingProductID, 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

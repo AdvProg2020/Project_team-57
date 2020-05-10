@@ -25,7 +25,8 @@ public enum Notification {
     USER_NOT_APPROVED("Wait for The Lord to Prove your Account, may the 4th be with you.\uD83D\uDE08"),
     PRODUCT_NOT_AVAILABLE("This Product is Unavailable. You can't Edit its Specs."),
     ADD_PRODUCT("Successfully Added. Hope You Will Have A Good Sale If The Lord Accepts your Product"),
-    ACCEPT_ADDING_PRODUCT("Product added to store successfully\uD83D\uDC8B");
+    ACCEPT_ADDING_PRODUCT("Product added to store successfully \uD83D\uDC8B"),
+    ACCEPT_EDITING_PRODUCT("Product Editing Accepter. \uD83E\uDD11");
 
     private String message;
 
