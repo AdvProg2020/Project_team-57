@@ -2,15 +2,15 @@ package view.process.person;
 
 import controller.Control;
 import controller.account.AccountControl;
-import model.existence.Account;
 import view.menu.Menu;
+import view.PrintOptionSpecs;
 import view.process.FunctioningOption;
 import view.process.Processor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AccountProcessor extends Processor {
+public class AccountProcessor extends Processor implements PrintOptionSpecs {
     private static AccountControl accountControl = AccountControl.getController();
 
     protected AccountProcessor(){
@@ -43,7 +43,7 @@ public class AccountProcessor extends Processor {
     }
 
     public Menu showPersonalInfo(){
-        Account account = accountControl.getAccount();
+        /*Account account = accountControl.getAccount();
         createCustomLine();
 
         printWithNullChecking("UserName", account.getUsername());
@@ -70,20 +70,10 @@ public class AccountProcessor extends Processor {
         }
 
         System.out.format("| %-15s | %-35f | %n", "Credit", account.getCredit());
-        createCustomLine();
+        createCustomLine();*/
 
+        printAccountSpecs(accountControl.getAccount());
         return Menu.makeMenu(Control.getType() + " Menu");
-    }
-
-    private void createCustomLine(){
-        System.out.println("+-----------------+-------------------------------------+");
-    }
-
-    private void printWithNullChecking(String fieldName, String fieldValue){
-        if(fieldValue == null)
-            System.out.format("| %-15s | %-35s | %n", fieldName, "Not Assigned");
-        else
-            System.out.format("| %-15s | %-35s | %n", fieldName, fieldValue);
     }
 
     public Menu editField(){

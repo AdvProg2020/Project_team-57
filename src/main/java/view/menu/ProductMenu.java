@@ -1,13 +1,10 @@
 package view.menu;
 
-import com.google.gson.GsonBuilder;
 import model.existence.Product;
+import view.PrintOptionSpecs;
 import view.process.Processor;
-import view.process.ProductProcessor;
 
-import java.io.FileNotFoundException;
-
-public class ProductMenu extends ListicOptionMenu implements PrintProductSpecs{
+public class ProductMenu extends ListicOptionMenu implements PrintOptionSpecs {
     private Product product;
 
     public Menu execute(){
@@ -47,7 +44,7 @@ public class ProductMenu extends ListicOptionMenu implements PrintProductSpecs{
 
     public void printOptionSpecs()
     {
-        printSpecificProductSpecs(this.product);
+        printSpecificProductSpecs(product);
     }
 
     public void setProduct(Product product) {

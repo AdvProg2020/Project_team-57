@@ -1,5 +1,6 @@
 package view.menu;
 
+import controller.Control;
 import view.process.ProductProcessor;
 import view.process.UserProcessor;
 
@@ -12,6 +13,14 @@ public class ListicOptionMenu extends Menu {
         String json = "";
 
         try {
+            if(menuName.equals("Common Product Menu")) {
+                if(Control.isLoggedIn() && (Control.getType().equals("Vendor") || Control.getType().equals("Admin"))) {
+                    menuName = "Common Product Menu2";
+                } else {
+                    menuName = "Common Product Menu1";
+                }
+            }
+
             json = ProductMenu.getJsonFromDB(menuName);
         } catch (FileNotFoundException e) {
             System.out.println("ProductMenu File Couldn't Get Initialized! Please Contact Us As Soon As Possible :.(");

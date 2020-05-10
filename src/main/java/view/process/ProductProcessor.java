@@ -1,18 +1,17 @@
 package view.process;
 
 import com.google.gson.GsonBuilder;
+import controller.Control;
 import controller.account.AdminControl;
 import controller.product.ProductControl;
 import model.existence.Product;
-import view.menu.ListicOptionMenu;
 import view.menu.Menu;
-import view.menu.PrintProductSpecs;
+import view.PrintOptionSpecs;
 import view.menu.ProductMenu;
 
-import javax.swing.plaf.FontUIResource;
 import java.util.HashMap;
 
-public class ProductProcessor extends ListicOptionProcessor implements PrintProductSpecs {
+public class ProductProcessor extends ListicOptionProcessor implements PrintOptionSpecs {
     private static ProductProcessor productProcessor = null;
     private static ProductControl productControl = ProductControl.getController();
     private static AdminControl adminControl = AdminControl.getController();
@@ -59,6 +58,12 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintProd
             @Override
             public Menu doTheThing(Object... objects) {
                 return viewProductLastApproved(objects);
+            }
+        });
+        functionsHashMap.put("Add To Cart", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addToCart(objects);
             }
         });
 
@@ -154,5 +159,67 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintProd
             }
         }
     }
+    public Menu addToCart(Object... objects) {
+        Object[] parameters = objects.clone();
+        Product product = (Product) objects[1];
+        ProductMenu productMenu = (ProductMenu) objects[0];
 
+        if(product.isCountable()) {
+            int count = getCount(product);
+            System.out.println(adminControl.addToCartCountable(getUserNameForCart(), product.getID(), count).getMessage());
+        } else {
+            double amount = getAmount(product);
+            System.out.println(adminControl.addToCartUnCountable(getUserNameForCart(), product.getID(), amount).getMessage());
+        }
+
+        return productMenu;
+    }
+
+    public int getCount(Product product) {
+        int count = 0;
+        boolean flag = true;
+
+        while(flag) {
+            System.out.println("How Many Of These Do You Want ? :)");
+
+            try {
+                count = Integer.parseInt(scanner.nextLine().trim());
+                flag = false;
+            } catch (NumberFormatException e) {
+                System.out.println("Please Enter An Integer");
+            } catch (NullPointerException e) {
+                System.out.println("Please Enter An Integer");
+            }
+        }
+
+        return count;
+    }
+
+    public double getAmount(Product product) {
+        double amount = 0;
+        boolean flag = true;
+
+        while(flag) {
+            System.out.println("How Much Of These Do You Want ? :)");
+
+            try {
+                amount = Double.parseDouble(scanner.nextLine().trim());
+                flag = false;
+            } catch (NumberFormatException e) {
+                System.out.println("Please Enter A Double Number");
+            } catch (NullPointerException e) {
+                System.out.println("Please Enter A Double Number");
+            }
+        }
+
+        return amount;
+    }
+
+    public String getUserNameForCart() {
+        if(Control.isLoggedIn()) {
+            return Control.getUsername();
+        } else {
+            return "Temp";
+        }
+    }
 }
