@@ -209,6 +209,7 @@ public class AddProductProcessor extends Processor {
 
     public Menu confirm(){
         //TODO Seting Position for Parent Menu
+        vendorControl.addProduct(product);
         return back();
     }
 }
