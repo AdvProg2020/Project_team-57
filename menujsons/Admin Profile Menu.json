@@ -1,0 +1,8 @@
+{
+  "options" : [
+  ],
+  "name" : "Admin Profile Menu",
+  "parentName" : "View All Admins Listic Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "RegisterRequestProcessor"
+}
