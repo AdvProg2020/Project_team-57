@@ -25,6 +25,12 @@ public class AdminProcessor extends AccountProcessor {
                 return manageAllUsers();
             }
         });
+        functionsHashMap.put("View All Admins", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return veiwAllAdmins();
+            }
+        });
     }
 
     public static AccountProcessor getInstance(){
@@ -42,5 +48,10 @@ public class AdminProcessor extends AccountProcessor {
     public Menu manageAllUsers()
     {
         return ListicMenu.makeListicMenu("Manage All Users Listic Menu");
+    }
+
+    public Menu veiwAllAdmins()
+    {
+        return ListicMenu.makeListicMenu("View All Admins Listic Menu");
     }
 }
