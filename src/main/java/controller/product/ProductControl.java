@@ -25,7 +25,7 @@ public class ProductControl extends Control {
     public Notification removeProductById(String productId) {
         try {
             ProductTable.removeProductByID(productId);
-            if (EditingProductTable.isThereProductById(productId))
+            if (!EditingProductTable.isIDFree(productId))
                 EditingProductTable.removeProductById(productId);
             return Notification.REMOVE_PRODUCT_SUCCESSFULLY;
         } catch (Exception e) {

@@ -92,14 +92,6 @@ public class EditingProductTable extends Database{
         return allEditingProducts;
     }
 
-    public static boolean isThereProductById(String id) throws SQLException, ClassNotFoundException {
-        String command = "SELECT * FROM EditingProducts WHERE ID = ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, id);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        return resultSet.next();
-    }
-
     public static void removeProductById(String id) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM EditingProducts WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);

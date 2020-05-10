@@ -73,11 +73,11 @@ public class VendorControl extends AccountControl{
     private String generateProductID()
     {
         char[] validchars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
-        String ID = "p";
+        StringBuilder ID = new StringBuilder("p");
         for(int i = 0; i < 7; ++i)
         {
-            ID += validchars[((int)(Math.random() * 1000000)) % validchars.length];
+            ID.append(validchars[((int) (Math.random() * 1000000)) % validchars.length]);
         }
-        return ID;
+        return ID.toString();
     }
 }
