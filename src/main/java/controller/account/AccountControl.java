@@ -6,7 +6,6 @@ import model.db.VendorTable;
 import model.existence.Account;
 import notification.Notification;
 
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -116,5 +115,44 @@ public class AccountControl extends Control implements ValidPassword{
         if (customerControl == null)
             customerControl = new AccountControl();
         return customerControl;
+    }
+
+    public ArrayList<Account> getAllAccounts() {
+        try {
+            return AccountTable.getAllAccounts();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public ArrayList<String> getAllUsernames() {
+        ArrayList<String> allUsernames = new ArrayList<>();
+        try {
+            for (Account account : AccountTable.getAllAccounts()) {
+                allUsernames.add(account.getUsername());
+            }
+            return allUsernames;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public Notification deleteUserWithUsername(String username){
+        try {
+            AccountTable.deleteUserWithUsername(username);
+            return Notification.DELETE_USER;
+        } catch (SQLException e) {
+           return Notification.UNKNOWN_ERROR;
+        } catch (ClassNotFoundException e) {
+            return Notification.UNKNOWN_ERROR;
+        }
     }
 }

@@ -5,6 +5,7 @@ import model.existence.Account;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class AccountTable extends Database {
     public static boolean isUsernameFree(String username) throws SQLException, ClassNotFoundException {
@@ -101,5 +102,24 @@ public class AccountTable extends Database {
         ResultSet resultSet = preparedStatement.executeQuery();
         resultSet.next();
         return resultSet.getDouble("Credit");
+    }
+
+    public static ArrayList<Account> getAllAccounts() throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Accounts WHERE IsApproved = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setBoolean(1, true);
+        ArrayList<Account> allAccounts = new ArrayList<>();
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()){
+            allAccounts.add(Account.makeAccount(resultSet));
+        }
+        return allAccounts;
+    }
+
+    public static void deleteUserWithUsername(String username) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Accounts WHERE Username = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        preparedStatement.execute();
     }
 }
