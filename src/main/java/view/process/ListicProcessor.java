@@ -53,33 +53,21 @@ public class ListicProcessor extends Processor {
         String primaryKey = (String) allObjects[0];
         Menu parentMenu = (Menu) allObjects[1];
         if(parentMenu.getName().equals("Manage All Products"))
-        {
             return ListicOptionMenu.makeMenu("Admin Product Menu", parentMenu, primaryKey);
-        }
         else if(parentMenu.getName().equals("Manage Vendors Registration Requests"))
-        {
             return ListicOptionMenu.makeMenu("Register Request Menu", parentMenu, primaryKey);
-        }
         else if(parentMenu.getName().equals("Manage Products"))
-        {
             return ListicOptionMenu.makeMenu("Vendor Product Menu", parentMenu, primaryKey);
-        }
         else if(parentMenu.getName().equals("Manage Add Product Requests"))
-        {
             return ListicOptionMenu.makeMenu("Add Product Request Menu", parentMenu, primaryKey);
-        }
         else if(parentMenu.getName().equals("Manage Edit Product Requests"))
-        {
             return ListicOptionMenu.makeMenu("Edit Product Request Menu", parentMenu, primaryKey);
-        }
         else if(parentMenu.getName().equals("Manage All Users"))
-        {
             return ListicOptionMenu.makeMenu("User Menu", parentMenu, primaryKey);
-        }
         else if(parentMenu.getName().equals("View All Admins"))
-        {
             return ListicOptionMenu.makeMenu("Admin Profile Menu", parentMenu, primaryKey);
-        }
+        else if(parentMenu.getName().equals("Products Menu"))
+            return ListicOptionMenu.makeMenu("Common Product Menu", parentMenu, primaryKey);
         //TODO(OTHERS)
         return null;
     }
@@ -123,7 +111,14 @@ public class ListicProcessor extends Processor {
             initManageAllUsers(listicMenu);
         else if(listicMenu.getName().equals("View All Admins"))
             initViewAllAdmins(listicMenu);
+        else if(listicMenu.getName().equals("Products Menu"))
+            initProductsMenu(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initProductsMenu(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(productControl.getAllShowingProductNames());
+        listicMenu.setListicOptionNames(productControl.getAllShowingProductIDs());
     }
 
     private static void initViewAllAdmins(ListicMenu listicMenu) {

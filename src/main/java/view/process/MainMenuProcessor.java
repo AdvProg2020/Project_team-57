@@ -1,6 +1,7 @@
 package view.process;
 
 import controller.Control;
+import view.menu.ListicMenu;
 import view.menu.Menu;
 
 import java.util.HashMap;
@@ -13,6 +14,12 @@ public class MainMenuProcessor extends Processor {
         functionsHashMap.put("Account Menu", new FunctioningOption() {
             public Menu doTheThing(Object... objects) {
                 return iOManage();
+            }
+        });
+        functionsHashMap.put("Products Menu", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return productsMenu();
             }
         });
     }
@@ -32,5 +39,10 @@ public class MainMenuProcessor extends Processor {
         }
 
         return Menu.makeMenu("IO Menu");
+    }
+
+    public Menu productsMenu()
+    {
+        return ListicMenu.makeListicMenu("Products Listic Menu");
     }
 }

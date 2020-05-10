@@ -1,0 +1,11 @@
+{
+  "name" : "Products Menu",
+  "parentName" : "Main Menu",
+  "isThereParentMenu" : true,
+  "processorName" : "ListicProcessor",
+  "options" : [
+    "View Categories",
+    "Filtering",
+    "Sorting"
+  ]
+}

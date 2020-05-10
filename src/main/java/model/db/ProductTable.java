@@ -66,6 +66,19 @@ public class ProductTable extends Database {
         return products;
     }
 
+    public static ArrayList<Product> getAllShowingProducts() throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Products WHERE Status = ? OR Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, 1);
+        preparedStatement.setInt(2, 3);
+        ArrayList<Product> products = new ArrayList<>();
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()){
+            products.add(new Product(resultSet));
+        }
+        return products;
+    }
+
     public static void tempAddProducts() throws SQLException, ClassNotFoundException {
         String task = "INSERT INTO Products (ID, Status, ProductName, IsCountable, Description) " +
                                 "VALUES(?, ?, ?, ?, ?)";

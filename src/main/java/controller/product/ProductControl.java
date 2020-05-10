@@ -255,4 +255,32 @@ public class ProductControl extends Control {
         }
 
     }
+
+    public ArrayList<String> getAllShowingProductNames() {
+        ArrayList<String> showingProducts = new ArrayList<>();
+        try {
+            for (Product showingProduct : ProductTable.getAllShowingProducts()) {
+                showingProducts.add(showingProduct.getName());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return showingProducts;
+    }
+
+    public ArrayList<String> getAllShowingProductIDs() {
+        ArrayList<String> showingProducts = new ArrayList<>();
+        try {
+            for (Product showingProduct : ProductTable.getAllShowingProducts()) {
+                showingProducts.add(showingProduct.getID());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return showingProducts;
+    }
 }
