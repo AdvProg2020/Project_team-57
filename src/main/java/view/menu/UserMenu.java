@@ -31,7 +31,9 @@ public class UserMenu extends ListicOptionMenu {
             }
         }
 
-        if(input != 0 && processor.isThereFunctionWithName(options.get(input - 1)))
+        if(input == 0) {
+            nextMenu = parentMenu;
+        } else if(processor.isThereFunctionWithName(options.get(input - 1)))
         {
             nextMenu = processor.executeTheFunctionWithName(options.get(input - 1), this.getParentMenu(), account.getUsername());
         }

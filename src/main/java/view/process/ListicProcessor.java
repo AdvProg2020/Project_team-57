@@ -76,7 +76,7 @@ public class ListicProcessor extends Processor {
         {
             return ListicOptionMenu.makeMenu("User Menu", parentMenu, primaryKey);
         }
-        else if(parentMenu.getName().equals("Manage All Admins"))
+        else if(parentMenu.getName().equals("View All Admins"))
         {
             return ListicOptionMenu.makeMenu("Admin Profile Menu", parentMenu, primaryKey);
         }
@@ -121,14 +121,14 @@ public class ListicProcessor extends Processor {
             initManageEditProductRequests(listicMenu);
         else if(listicMenu.getName().equals("Manage All Users"))
             initManageAllUsers(listicMenu);
-        else if(listicMenu.getName().equals("Manage All Admins"))
+        else if(listicMenu.getName().equals("View All Admins"))
             initViewAllAdmins(listicMenu);
         //TODO(OTHERS)
     }
 
     private static void initViewAllAdmins(ListicMenu listicMenu) {
-        listicMenu.setListicOptionNames(accountControl.getAdminUsernames);
-        listicMenu.setListicOptionPrimaryKeys(accountControl.getAdminUsernames());
+        listicMenu.setListicOptionNames(accountControl.getAdminsUsernames());
+        listicMenu.setListicOptionPrimaryKeys(accountControl.getAdminsUsernames());
     }
 
     private static void initManageAllUsers(ListicMenu listicMenu) {

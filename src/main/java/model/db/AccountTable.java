@@ -124,10 +124,11 @@ public class AccountTable extends Database {
     }
 
     public static ArrayList<Account> getAllUsers() throws SQLException, ClassNotFoundException {
-        String command = "SELECT * FROM Accounts WHERE AccType != AND IsApproved = ?";
+        String command = "SELECT * FROM Accounts WHERE (AccType = ? OR AccType = ?) AND IsApproved = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, "Admin");
-        preparedStatement.setBoolean(2, true);
+        preparedStatement.setString(1, "Vendor");
+        preparedStatement.setString(2, "Customer");
+        preparedStatement.setBoolean(3, true);
         ArrayList<Account> allUsers = new ArrayList<>();
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
