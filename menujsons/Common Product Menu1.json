@@ -1,0 +1,9 @@
+{
+  "options" : [
+    "Add To Cart"
+  ],
+  "name" : "Product Menu",
+  "parentName" : "Products Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "ProductProcessor"
+}
