@@ -41,7 +41,7 @@ public class Database {
                     "ProductName varchar(20)," +
                     "Brand varchar(20)," +
                     "SellerUsername varchar(16)," +
-                    "Num int," +
+                    "Count int," +
                     "Amount double," +
                     "IsCountable BIT," +
                     "Category varchar(20)," +

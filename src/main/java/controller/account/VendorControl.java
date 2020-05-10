@@ -37,7 +37,7 @@ public class VendorControl extends AccountControl{
         ArrayList<String> productsIDs = new ArrayList<>();
         try {
             for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
-                productsIDs.add(product.getName());
+                productsIDs.add(product.getID());
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -53,6 +53,7 @@ public class VendorControl extends AccountControl{
             while (true) {
                 String productId = generateProductID();
                 if (ProductTable.isIDFree(productId)) {
+                    product.setID(productId);
                     break;
                 }
             }

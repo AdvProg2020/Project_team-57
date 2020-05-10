@@ -110,13 +110,20 @@ public class ProductMenu extends ListicOptionMenu {
     }
 
     public void printCustomDescription(String description){
-        String[] splitDescription = splitDescription(description);
+        if(description != null)
+        {
+            String[] splitDescription = splitDescription(description);
 
-        for(int i = 0; i < splitDescription.length; i++){
-            if(i == 0)
-                System.out.format("| %-20s | %-35s | %n", "Description", splitDescription[i]);
-            else
-                System.out.format("| %-20s | %-35s | %n", "", splitDescription[i]);
+            for(int i = 0; i < splitDescription.length; i++){
+                if(i == 0)
+                    System.out.format("| %-20s | %-35s | %n", "Description", splitDescription[i]);
+                else
+                    System.out.format("| %-20s | %-35s | %n", "", splitDescription[i]);
+            }
+        }
+        else
+        {
+            System.out.format("| %-20s | %-35s | %n", "Description", "Not Assigned");
         }
     }
 

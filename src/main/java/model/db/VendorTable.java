@@ -92,9 +92,9 @@ public class VendorTable extends Database {
 
     public static void addCountableProduct(Product product, String username) throws SQLException, ClassNotFoundException
     {
-        String command = "INSERT INTO Products (ID, ProductName, Brand, SellerUsername, Num, IsCountable, Category," +
-                "Description, Price, AverageScore)" +
-                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String command = "INSERT INTO Products (ID, ProductName, Brand, SellerUsername, Count, IsCountable, Category," +
+                "Description, Price, AverageScore, Status)" +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, product.getID());
         preparedStatement.setString(2, product.getName());
@@ -106,14 +106,15 @@ public class VendorTable extends Database {
         preparedStatement.setString(8, product.getDescription());
         preparedStatement.setDouble(9, product.getPrice());
         preparedStatement.setDouble(10, product.getAverageScore());
+        preparedStatement.setInt(11, 2);
         preparedStatement.execute();
     }
 
     public static void addUnCountableProduct(Product product, String username) throws SQLException, ClassNotFoundException
     {
         String command = "INSERT INTO Products (ID, ProductName, Brand, SellerUsername, Amount, IsCountable, Category," +
-                "Description, Price, AverageScore)" +
-                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "Description, Price, AverageScore, Status)" +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, product.getID());
         preparedStatement.setString(2, product.getName());
@@ -125,6 +126,7 @@ public class VendorTable extends Database {
         preparedStatement.setString(8, product.getDescription());
         preparedStatement.setDouble(9, product.getPrice());
         preparedStatement.setDouble(10, product.getAverageScore());
+        preparedStatement.setInt(11, 2);
         preparedStatement.execute();
     }
 
