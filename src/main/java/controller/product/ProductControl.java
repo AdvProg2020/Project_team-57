@@ -105,10 +105,13 @@ public class ProductControl extends Control {
                 EditingProductTable.addProduct(ProductTable.getProductByID(ID));
 
             editSpecificField(fieldName, newField, ID);
+
             return Notification.EDIT_FIELD_SUCCESSFULLY;
         } catch (SQLException e) {
+            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         }
     }
@@ -117,7 +120,11 @@ public class ProductControl extends Control {
         try {
             if(fieldName.equals("Name") || fieldName.equals("Brand") ||
                     fieldName.equals("Category") || fieldName.equals("Description"))
-                EditingProductTable.editFieldWithName(fieldName, newField, ID);
+            {
+                if(fieldName.equals("Name"))
+                    fieldName = "ProductName";
+                EditingProductTable.editFieldWithName(ID, fieldName, newField);
+            }
 
             else if(fieldName.equals("Count"))
                 EditingProductTable.changeProductCount(ID, Integer.parseInt(newField));
@@ -137,22 +144,30 @@ public class ProductControl extends Control {
         Product product = getEditedProductByID(ID);
 
         if(fieldName.equals("Name")) {
+            if(product.getName() == null)
+                return false;
             return product.getName().equals(newField);
         } else if(fieldName.equals("Brand")) {
+            if(product.getBrand() == null)
+                return false;
             return product.getBrand().equals(newField);
         } else if(fieldName.equals("Count")) {
             return Integer.parseInt(newField) == product.getCount();
         } else if(fieldName.equals("Amount")) {
             return Double.parseDouble(newField) == product.getAmount();
         } else if(fieldName.equals("Category")) {
+            if(product.getCategory() == null)
+                return false;
             return product.getCategory().equals(newField);
         } else if(fieldName.equals("Description")) {
+            if(product.getDescription() == null)
+                return false;
             return product.getDescription().equals(newField);
         } else if(fieldName.equals("Price")) {
             return Double.parseDouble(newField) == product.getPrice();
         }
 
-        return true;
+        return false;
     }
 
     public Product getEditedProductByID(String ID) {

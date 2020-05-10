@@ -38,6 +38,7 @@ public class Database {
         if(!resultSet.next()){
             statement.execute("CREATE TABLE EditingProducts(" +
                     "ID varchar(8)," +
+                    "Status int," +
                     "ProductName varchar(20)," +
                     "Brand varchar(20)," +
                     "SellerUsername varchar(16)," +

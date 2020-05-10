@@ -105,7 +105,7 @@ public class ProductMenu extends ListicOptionMenu {
         if(product.isCountable()){
             System.out.format("| %-20s | %-35d | %n", "Count", product.getCount());
         } else {
-            System.out.format("| %-20s | %-35f | %n", "Average Score", product.getAmount());
+            System.out.format("| %-20s | %-35f | %n", "Amount", product.getAmount());
         }
     }
 
