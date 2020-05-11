@@ -1,6 +1,7 @@
 package view;
 
 import model.existence.Account;
+import model.existence.Category;
 import model.existence.Product;
 
 public interface PrintOptionSpecs {
@@ -111,8 +112,7 @@ public interface PrintOptionSpecs {
     }
 
     default void printCustomDescriptionForProduct(String description){
-        if(description != null)
-        {
+        if(description != null) {
             String[] splitDescription = splitDescriptionForProduct(description);
 
             for(int i = 0; i < splitDescription.length; i++){
@@ -121,9 +121,7 @@ public interface PrintOptionSpecs {
                 else
                     System.out.format("| %-20s | %-35s | %n", "", splitDescription[i]);
             }
-        }
-        else
-        {
+        } else {
             System.out.format("| %-20s | %-35s | %n", "Description", "Not Assigned");
         }
     }
@@ -163,16 +161,29 @@ public interface PrintOptionSpecs {
     }
 
     default void printCustomLineForCategory() {
-        //TODO
         System.out.println("+----------------------+-------------------------------------+");
     }
 
     default void printWithNullCheckingForCategory(String fieldName, String fieldValue) {
-        //TODO
+        if(fieldValue == null)
+            System.out.format("| %-20s | %-35s | %n", fieldName, "Not Assigned");
+        else
+            System.out.format("| %-20s | %-35s | %n", fieldName, fieldValue);
     }
 
     default void printCustomFeaturesForCategory(String features) {
-        //TODO
+        if(features != null) {
+            String[] splitedFeatures = splitDescriptionForProduct(features);
+
+            for(int i = 0; i < splitedFeatures.length; i++){
+                if(i == 0)
+                    System.out.format("| %-20s | %-35s | %n", "Features", splitedFeatures[i]);
+                else
+                    System.out.format("| %-20s | %-35s | %n", "", splitedFeatures[i]);
+            }
+        } else {
+            System.out.format("| %-20s | %-35s | %n", "Features", "Not Assigned");
+        }
     }
 
     default String[] splitFeaturesForCategory(String features) {
