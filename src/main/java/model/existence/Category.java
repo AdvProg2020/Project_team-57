@@ -1,0 +1,44 @@
+package model.existence;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class Category {
+    private String name;
+    private String features;
+    private String parentCategory;
+
+
+    public Category(ResultSet resultSet) throws SQLException {
+        this.name = resultSet.getString("Name");
+        this.features = resultSet.getString("Features");
+        this.parentCategory = resultSet.getString("ParentCategory");
+    }
+
+    public Category() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(String features) {
+        this.features = features;
+    }
+
+    public String getParentCategory() {
+        return parentCategory;
+    }
+
+    public void setParentCategory(String parentCategory) {
+        this.parentCategory = parentCategory;
+    }
+}
