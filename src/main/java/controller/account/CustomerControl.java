@@ -5,7 +5,6 @@ import model.db.CartTable;
 import model.db.ProductTable;
 import model.existence.Product;
 import notification.Notification;
-import view.menu.Menu;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -101,11 +100,11 @@ public class CustomerControl extends AccountControl{
     public Notification increaseCount(String productID, String command) {
         try {
             int input = Integer.parseInt(command);
-            if(input < 0) {
+            if(input > 0) {
                 try {
                     if(CartTable.getCartProductByID(Control.getUsername(), productID).getCount() + input <= ProductTable.getProductByID(productID).getCount())
                     {
-                        CartTable.increaseCartProductCountable(Control.getUsername(), productID, input);
+                        CartTable.modifyCartProductCounts(Control.getUsername(), productID, input);
                         return Notification.INCREASED;
                     }
                     return Notification.MORE_THAN_INVENTORY_COUNTABLE;
@@ -119,15 +118,37 @@ public class CustomerControl extends AccountControl{
         return Notification.INVALID_COUNT;
     }
 
+    public Notification decreaseCount(String productID, String command) {
+        try {
+            int input = Integer.parseInt(command);
+            if(input > 0) {
+                try {
+                    if(CartTable.getCartProductByID(Control.getUsername(), productID).getCount() - input > 0)
+                    {
+                        CartTable.modifyCartProductCounts(Control.getUsername(), productID, ((-1) * input));
+                        return Notification.DECREASED;
+                    }
+                    return Notification.MORE_THAN_CART_COUNTABLE;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NumberFormatException e) { } catch (NullPointerException e) { }
+        return Notification.INVALID_COUNT;
+    }
+
     public Notification increaseAmount(String productID, String command) {
         try {
+            //System.out.println("Command = " + command);
             double input = Double.parseDouble(command);
-            if(input < 0)
+            if(input > 0)
             {
                 try {
                     if(CartTable.getCartProductByID(Control.getUsername(), productID).getAmount() + input <= ProductTable.getProductByID(productID).getAmount())
                     {
-                        CartTable.increaseCartProductUnCountable(Control.getUsername(), productID, input);
+                        CartTable.modifyCartProductAmount(Control.getUsername(), productID, input);
                         return Notification.INCREASED;
                     }
                 } catch (SQLException e) {
@@ -136,6 +157,29 @@ public class CustomerControl extends AccountControl{
                     e.printStackTrace();
                 }
                 return Notification.MORE_THAN_INVENTORY_UNCOUNTABLE;
+            }
+        } catch (NumberFormatException e) {} catch (NullPointerException e) {}
+        return Notification.INVALID_AMOUNT;
+    }
+
+    public Notification decreaseAmount(String productID, String command) {
+        try {
+            //System.out.println("Command = " + command);
+            double input = Double.parseDouble(command);
+            if(input > 0)
+            {
+                try {
+                    if(CartTable.getCartProductByID(Control.getUsername(), productID).getAmount() - input > 0)
+                    {
+                        CartTable.modifyCartProductAmount(Control.getUsername(), productID, ((-1) * input));
+                        return Notification.DECREASED;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                return Notification.MORE_THAN_CART_UNCOUNTABLE;
             }
         } catch (NumberFormatException e) {} catch (NullPointerException e) {}
         return Notification.INVALID_AMOUNT;
@@ -156,5 +200,17 @@ public class CustomerControl extends AccountControl{
             e.printStackTrace();
         }
         return totalPrice;
+    }
+
+    public Notification removeFromCartByID(String id) {
+        try {
+            if(CartTable.isThereCartProductForUsername(Control.getUsername(), id))
+            {
+                CartTable.deleteCartProduct(Control.getUsername(), id);
+                return Notification.CART_PRODUCT_REMOVED;
+            }
+            return Notification.NOT_YOUR_CART_PRODUCT;
+        } catch (SQLException e) { } catch (ClassNotFoundException e) { }
+        return Notification.UNKNOWN_ERROR;
     }
 }

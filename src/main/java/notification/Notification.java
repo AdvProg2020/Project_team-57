@@ -34,7 +34,13 @@ public enum Notification {
     ADD_TO_CART("Good added to cart successfully\uD83D\uDE09"),
     INVALID_COUNT("Please Enter A Positive Integer Dude \uD83D\uDE12"),
     INVALID_AMOUNT("Please Enter A Positive Real Number Dawg \uD83D\uDE20"),
-    INCREASED("Cart Product Increased \uD83D\uDE43");
+    INCREASED("Cart Product Increased \uD83D\uDE43"),
+    MORE_THAN_CART_COUNTABLE("You Are Subtracting The Counts More Than Your Cart. Use The Remove Option If you Want."),
+    DECREASED("Cart Product Decreased \uD83D\uDE2D"),
+    MORE_THAN_CART_UNCOUNTABLE("You Are Subtracting The Amount More Than Or Equal To Your Cart.\nUse The Remove Option If you Want."),
+    CART_PRODUCT_REMOVED("SuccessFully Deleted This Product From Your Cart.\nBut Don't Do That Again. Man Ghahram \uD83D\uDE2D\uD83D\uDE2D"),
+    NOT_YOUR_CART_PRODUCT("Wait WTF \uD83D\uDE10 This is Product Isn't in your cart");
+
 
     private String message;
 

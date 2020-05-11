@@ -68,6 +68,24 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
                 return addToCart(objects);
             }
         });
+        functionsHashMap.put("Increase", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return increaseQuantityCart(objects);
+            }
+        });
+        functionsHashMap.put("Decrease", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return decreaseQuantityCart(objects);
+            }
+        });
+        functionsHashMap.put("Remove From Cart", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return removeCartProduct(objects);
+            }
+        });
 
     }
 
@@ -233,22 +251,65 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         Product product = (Product) objects[1];
         ProductMenu productMenu = (ProductMenu) objects[0];
         System.out.println("0. Back");
-        String command = scanner.nextLine().trim();
-        if(command.equals("0"))
-            return productMenu;
 
         if(product.isCountable())
         {
             System.out.println("Enter Additional Number, You Want From This Product: ");
+            System.out.println("* " + productControl.getProductById(product.getID()).getCount() + " At Stock *");
+            String command = scanner.nextLine().trim();
+            if(command.equals("0"))
+                return productMenu;
             System.out.println(customerControl.increaseCount(product.getID(), command).getMessage());
         }
         else
         {
-            System.out.println("Enter Additional Amount In Kilogram, You Tend To Buy From This Product: ");
+            System.out.println("Enter Additional Amount You Tend To Buy From This Product, In Kilogram: ");
+            System.out.println("* " + productControl.getProductById(product.getID()).getAmount() + " Kg At Stock *");
+            String command = scanner.nextLine().trim();
+            if(command.equals("0"))
+                return productMenu;
             System.out.println(customerControl.increaseAmount(product.getID(), command).getMessage());
         }
         productMenu.setProduct(customerControl.getCartProductByID(product.getID()));
-        return productMenu;
+        return productMenu.getParentMenu();
 
     }
+
+    public Menu decreaseQuantityCart(Object... objects)
+    {
+        Product product = (Product) objects[1];
+        ProductMenu productMenu = (ProductMenu) objects[0];
+        System.out.println("0. Back");
+
+        if(product.isCountable())
+        {
+            System.out.println("Enter subtractive Number, You Want From This Product: ");
+            System.out.println("* " + productControl.getProductById(product.getID()).getCount() + " At Stock *");
+            String command = scanner.nextLine().trim();
+            if(command.equals("0"))
+                return productMenu;
+            System.out.println(customerControl.decreaseCount(product.getID(), command).getMessage());
+        }
+        else
+        {
+            System.out.println("Enter subtractive Amount You Tend To Buy From This Product, In Kilogram: ");
+            System.out.println("* " + productControl.getProductById(product.getID()).getAmount() + " Kg At Stock *");
+            String command = scanner.nextLine().trim();
+            if(command.equals("0"))
+                return productMenu;
+            System.out.println(customerControl.decreaseAmount(product.getID(), command).getMessage());
+        }
+        productMenu.setProduct(customerControl.getCartProductByID(product.getID()));
+        return productMenu.getParentMenu();
+
+    }
+
+    public Menu removeCartProduct(Object... objects)
+    {
+        Product product = (Product) objects[1];
+        ProductMenu productMenu = (ProductMenu) objects[0];
+        System.out.println(customerControl.removeFromCartByID(product.getID()).getMessage());
+        return productMenu.getParentMenu();
+    }
+
 }

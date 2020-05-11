@@ -85,7 +85,7 @@ public class CartTable extends Database{
         return product;
     }
 
-    public static void increaseCartProductCountable(String username, String productID, int input) throws SQLException, ClassNotFoundException {
+    public static void modifyCartProductCounts(String username, String productID, int input) throws SQLException, ClassNotFoundException {
         int firstCount = getCartProductByID(username, productID).getCount();
         String command = "UPDATE Carts SET Count = ? Where CustomerUsername = ? AND ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -95,7 +95,7 @@ public class CartTable extends Database{
         preparedStatement.execute();
     }
 
-    public static void increaseCartProductUnCountable(String username, String productID, double input) throws SQLException, ClassNotFoundException {
+    public static void modifyCartProductAmount(String username, String productID, double input) throws SQLException, ClassNotFoundException {
         double firstAmount = getCartProductByID(username, productID).getAmount();
         String command = "UPDATE Carts SET Amount = ? Where CustomerUsername = ? AND ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
