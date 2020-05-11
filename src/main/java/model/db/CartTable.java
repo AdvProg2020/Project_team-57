@@ -29,17 +29,20 @@ public class CartTable extends Database{
     public static void addTempToUsername(String customerUsername) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Carts WHERE CustomerUsername = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, customerUsername);
+        preparedStatement.setString(1, "temp");
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next())
         {
-            String nextCommand = "INSERT INTO Carts (ID, CustomerUsername, Count, Amount) VALUES (?, ?, ?, ?)";
-            preparedStatement = getConnection().prepareStatement(nextCommand);
-            preparedStatement.setString(1, resultSet.getString("ID"));
-            preparedStatement.setString(2, resultSet.getString("CustomerUsername"));
-            preparedStatement.setInt(3, resultSet.getInt("Count"));
-            preparedStatement.setDouble(4, resultSet.getDouble("Amount"));
-            preparedStatement.execute();
+            if(!isThereCartProductForUsername(customerUsername, resultSet.getString("ID")))
+            {
+                String nextCommand = "INSERT INTO Carts (ID, CustomerUsername, Count, Amount) VALUES (?, ?, ?, ?)";
+                preparedStatement = getConnection().prepareStatement(nextCommand);
+                preparedStatement.setString(1, resultSet.getString("ID"));
+                preparedStatement.setString(2, customerUsername);
+                preparedStatement.setInt(3, resultSet.getInt("Count"));
+                preparedStatement.setDouble(4, resultSet.getDouble("Amount"));
+                preparedStatement.execute();
+            }
         }
     }
 
@@ -80,5 +83,41 @@ public class CartTable extends Database{
         else
             product.setAmount(resultSet.getDouble("Amount"));
         return product;
+    }
+
+    public static void increaseCartProductCountable(String username, String productID, int input) throws SQLException, ClassNotFoundException {
+        int firstCount = getCartProductByID(username, productID).getCount();
+        String command = "UPDATE Carts SET Count = ? Where CustomerUsername = ? AND ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, (firstCount + input));
+        preparedStatement.setString(2, username);
+        preparedStatement.setString(3, productID);
+        preparedStatement.execute();
+    }
+
+    public static void increaseCartProductUnCountable(String username, String productID, double input) throws SQLException, ClassNotFoundException {
+        double firstAmount = getCartProductByID(username, productID).getAmount();
+        String command = "UPDATE Carts SET Amount = ? Where CustomerUsername = ? AND ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setDouble(1, (firstAmount + input));
+        preparedStatement.setString(2, username);
+        preparedStatement.setString(3, productID);
+        preparedStatement.execute();
+    }
+
+    public static boolean isThereCartProductForUsername(String username, String productID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Carts WHERE CustomerUserName = ? And ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        preparedStatement.setString(2, productID);
+        return preparedStatement.executeQuery().next();
+    }
+
+    public static void deleteCartProduct(String username, String id) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Carts WHERE CustomerUsername = ? And ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        preparedStatement.setString(2, id);
+        preparedStatement.execute();
     }
 }

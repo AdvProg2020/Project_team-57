@@ -50,8 +50,7 @@ public class Database {
                     "ID varchar(8)," +
                     "CustomerUsername varchar(16)," +
                     "Count int," +
-                    "Amount double," +
-                    "primary key(CustomerUsername));");
+                    "Amount double);");
         }
         statement.close();
         resultSet.close();

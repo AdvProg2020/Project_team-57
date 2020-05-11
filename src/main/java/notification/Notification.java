@@ -31,7 +31,10 @@ public enum Notification {
     MORE_THAN_INVENTORY_COUNTABLE("Dude where are you looking??\uD83D\uDE15\nThe number entered is greater than the inventory"),
     MORE_THAN_INVENTORY_UNCOUNTABLE("Dude where are you looking??😕The number entered is greater than the inventory"),
     NEGATIVE_NUMBER("Hey where are you going?\uD83D\uDE10 Enter a positive number"),
-    ADD_TO_CART("Good added to cart successfully\uD83D\uDE09");
+    ADD_TO_CART("Good added to cart successfully\uD83D\uDE09"),
+    INVALID_COUNT("Please Enter A Positive Integer Dude \uD83D\uDE12"),
+    INVALID_AMOUNT("Please Enter A Positive Real Number Dawg \uD83D\uDE20"),
+    INCREASED("Cart Product Increased \uD83D\uDE43");
 
     private String message;
 

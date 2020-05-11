@@ -1,6 +1,8 @@
 {
   "options" : [
-    "Add To Cart"
+    "Add To Cart",
+    "Compare To",
+    "Comments"
   ],
   "name" : "Product Menu",
   "parentName" : "Products Menu",

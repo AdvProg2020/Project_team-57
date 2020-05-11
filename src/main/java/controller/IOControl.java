@@ -65,6 +65,7 @@ public class IOControl extends Control implements ValidPassword {
             } else
                 return Notification.ERROR_FREE_USERNAME;
         } catch (SQLException e) {
+            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         } catch (ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;

@@ -26,6 +26,9 @@ public class CustomerControl extends AccountControl{
                 return Notification.MORE_THAN_INVENTORY_COUNTABLE;
             if (count < 0)
                 return Notification.NEGATIVE_NUMBER;
+            if(CartTable.isThereCartProductForUsername(username, id)) {
+                CartTable.deleteCartProduct(username, id);
+            }
             CartTable.addToCartCountable(username, id, count);
             return Notification.ADD_TO_CART;
         } catch (SQLException throwable) {
@@ -41,9 +44,13 @@ public class CustomerControl extends AccountControl{
                 return Notification.MORE_THAN_INVENTORY_UNCOUNTABLE;
             if (amount < 0)
                 return Notification.NEGATIVE_NUMBER;
+            if(CartTable.isThereCartProductForUsername(username, id)) {
+                CartTable.deleteCartProduct(username, id);
+            }
             CartTable.addToCartUnCountable(username, id, amount);
             return Notification.ADD_TO_CART;
-        } catch (SQLException throwable) {
+        } catch (SQLException e) {
+            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         } catch (ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
@@ -98,7 +105,8 @@ public class CustomerControl extends AccountControl{
                 try {
                     if(CartTable.getCartProductByID(Control.getUsername(), productID).getCount() + input <= ProductTable.getProductByID(productID).getCount())
                     {
-                        //TODO
+                        CartTable.increaseCartProductCountable(Control.getUsername(), productID, input);
+                        return Notification.INCREASED;
                     }
                     return Notification.MORE_THAN_INVENTORY_COUNTABLE;
                 } catch (SQLException e) {
@@ -109,5 +117,44 @@ public class CustomerControl extends AccountControl{
             }
         } catch (NumberFormatException e) { } catch (NullPointerException e) { }
         return Notification.INVALID_COUNT;
+    }
+
+    public Notification increaseAmount(String productID, String command) {
+        try {
+            double input = Double.parseDouble(command);
+            if(input < 0)
+            {
+                try {
+                    if(CartTable.getCartProductByID(Control.getUsername(), productID).getAmount() + input <= ProductTable.getProductByID(productID).getAmount())
+                    {
+                        CartTable.increaseCartProductUnCountable(Control.getUsername(), productID, input);
+                        return Notification.INCREASED;
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                return Notification.MORE_THAN_INVENTORY_UNCOUNTABLE;
+            }
+        } catch (NumberFormatException e) {} catch (NullPointerException e) {}
+        return Notification.INVALID_AMOUNT;
+    }
+
+    public double calculateCartTotalPrice() {
+        double totalPrice = 0;
+        try {
+            for (Product product : CartTable.getAllCartWithUsername(Control.getUsername())) {
+                if(product.isCountable())
+                    totalPrice += product.getPrice() * product.getCount();
+                else
+                    totalPrice += product.getPrice() * product.getAmount();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return totalPrice;
     }
 }

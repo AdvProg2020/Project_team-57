@@ -4,7 +4,7 @@
     "Decrease",
     "Remove From Cart"
   ],
-  "name" : "Cart Product",
+  "name" : "Cart Product Menu",
   "parentName" : "View Cart Listic Menu",
   "isThereParentMenu" : "true",
   "processorName" : "ProductProcessor"

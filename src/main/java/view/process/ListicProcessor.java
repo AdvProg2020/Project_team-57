@@ -40,6 +40,12 @@ public class ListicProcessor extends Processor {
                 return addManagerProfile(objects);
             }
         });
+        this.functionsHashMap.put("Show Total Price", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return showCartTotalPrice(objects);
+            }
+        });
     }
 
     public static ListicProcessor getInstance()
@@ -96,6 +102,14 @@ public class ListicProcessor extends Processor {
 
         System.out.println(ioControl.register(account).getMessage());
         return ((ListicMenu) objects[0]);
+    }
+
+    public Menu showCartTotalPrice(Object... objects)
+    {
+        ListicMenu parentMenu = (ListicMenu) objects[0];
+        System.out.println("Total Price: \n" +
+                customerControl.calculateCartTotalPrice() + "$");
+        return parentMenu;
     }
 
 

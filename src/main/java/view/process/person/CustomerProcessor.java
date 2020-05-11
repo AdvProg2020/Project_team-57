@@ -29,6 +29,7 @@ public class CustomerProcessor extends AccountProcessor {
 
     public Menu viewCart()
     {
-        return ListicMenu.makeMenu("View Cart Listic Menu");
+        //System.out.println(":|");
+        return ListicMenu.makeListicMenu("View Cart Listic Menu");
     }
 }

@@ -27,18 +27,25 @@ public class ListicMenu extends Menu {
             System.out.println("Menu File Couldn't Get Initialized! Please Contact Us As Soon As Possible :.(");
         }
         ListicMenu listicMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicMenu.class);
+        //System.out.println("What the fuck is happening : " + listicMenu.getName());
         return listicMenu;
     }
 
     @Override
     public void show() {
+        //System.out.println("Hello Fucking World");
         ListicProcessor.initListicMenu(this);
         pageLim = (listicOptionNames.size() / pageSize);
         if(listicOptionNames.size() % 5 != 0)
             ++pageLim;
         setMaxOption();
         System.out.println("0. Cancel");
-        System.out.println("Page " + (pageNumber + 1));
+        int showingPageLim = pageLim;
+        if(pageNumber + 1 > showingPageLim)
+            showingPageLim = pageNumber + 1;
+        System.out.println("Page " + (pageNumber + 1) + " From " + showingPageLim);
+        if(maxOption == 0)
+            System.out.println("**No Items To Show**");
         for(int j = 0; j < maxOption; ++j)
         {
             System.out.println((j + 1) + ". " + listicOptionNames.get((pageNumber * pageSize) + j));
@@ -56,7 +63,7 @@ public class ListicMenu extends Menu {
 
         if(options != null && options.size() > 0)
         {
-
+            System.out.println("+------Options------+");
             for(int j = maxOption; j < options.size() + (maxOption); ++j)
             {
                 System.out.println((j + 1) + ". " + options.get(j - maxOption));
@@ -67,8 +74,10 @@ public class ListicMenu extends Menu {
 
     @Override
     public Menu execute() {
+        //System.out.println("1");
         if(getInput())
         {
+            //System.out.println("2");
             if(input.equals("+"))
                 ++pageNumber;
             else if(input.equals("-"))
@@ -78,6 +87,7 @@ public class ListicMenu extends Menu {
                 int command = Integer.parseInt(input) - 1;
                 if(command < maxOption)
                 {
+                    //System.out.println("3");
                     if (command == -1)
                     {
                         return Menu.makeMenu(parentName);
@@ -88,7 +98,9 @@ public class ListicMenu extends Menu {
                 }
                 else
                 {
+                    //System.out.println("4");
                     command -= maxOption;
+                    //System.out.println("Hello World command = " + command);
                     return Processor.findProcessorWithName(this.processorName).
                             executeTheFunctionWithName(options.get(command), this);
                 }

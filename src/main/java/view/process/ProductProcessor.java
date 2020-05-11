@@ -83,7 +83,8 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         //TODO(OTHERS)
         if(json.contains("Manage All Products Listic Menu") || json.contains("Manage Add Product Requests Listic Menu")) {
             productMenu.setProduct(productControl.getProductById(ID));
-        } else if(json.contains("Cart")) {
+        } else if(json.contains("Cart Product Menu")) {
+            //System.out.println("json = " + json);
             productMenu.setProduct(customerControl.getCartProductByID(ID));
         }
         else {
@@ -244,7 +245,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         else
         {
             System.out.println("Enter Additional Amount In Kilogram, You Tend To Buy From This Product: ");
-
+            System.out.println(customerControl.increaseAmount(product.getID(), command).getMessage());
         }
         productMenu.setProduct(customerControl.getCartProductByID(product.getID()));
         return productMenu;

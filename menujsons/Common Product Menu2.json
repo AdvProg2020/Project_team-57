@@ -1,5 +1,7 @@
 {
   "options" : [
+    "Compare To",
+    "Comments"
   ],
   "name" : "Product Menu",
   "parentName" : "Products Menu",
