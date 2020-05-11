@@ -2,15 +2,15 @@ package view.process;
 
 import controller.product.ProductControl;
 import model.existence.Product;
+import view.menu.ListicOptionMenu;
 import view.menu.Menu;
-import view.menu.ProductMenu;
 
 import java.util.HashMap;
 
 public class EditProductProcessor extends Processor {
     private static ProductControl productControl = ProductControl.getController();
     private static EditProductProcessor editProductProcessor = null;
-    private static ProductMenu parentMenu;
+    private static ListicOptionMenu parentMenu;
     private static Product product;
 
     private EditProductProcessor(){
@@ -69,7 +69,7 @@ public class EditProductProcessor extends Processor {
         return editProductProcessor;
     }
 
-    public static EditProductProcessor getInstance(ProductMenu parentMenu, Product product) {
+    public static EditProductProcessor getInstance(ListicOptionMenu parentMenu, Product product) {
         if(editProductProcessor == null)
             editProductProcessor = new EditProductProcessor();
 

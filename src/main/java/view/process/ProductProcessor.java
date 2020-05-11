@@ -6,9 +6,9 @@ import controller.account.AdminControl;
 import controller.account.CustomerControl;
 import controller.product.ProductControl;
 import model.existence.Product;
+import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 import view.PrintOptionSpecs;
-import view.menu.ProductMenu;
 
 import java.util.HashMap;
 
@@ -96,8 +96,8 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         return productProcessor;
     }
 
-    public static ProductMenu setMenu(String json, String ID){
-        ProductMenu productMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ProductMenu.class);
+    public static ListicOptionMenu setMenu(String json, String ID){
+        ListicOptionMenu productMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicOptionMenu.class);
         //TODO(OTHERS)
         if(json.contains("Manage All Products Listic Menu") || json.contains("Manage Add Product Requests Listic Menu")) {
             productMenu.setOption(productControl.getProductById(ID));
@@ -114,7 +114,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
     public Menu editProduct(Object... objects){
         //Todo
         Object[] parameters = objects.clone();
-        ProductMenu productMenu = (ProductMenu)objects[0];
+        ListicOptionMenu productMenu = (ListicOptionMenu) objects[0];
         Product product = (Product)objects[1];
         EditProductProcessor.getInstance(productMenu, product);
         return EditProductProcessor.getInstance().editProductMenuManage(product);
@@ -127,39 +127,39 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
     public Menu removeProduct(Object... objects){
         Object[] parameters = objects.clone();
         System.out.println(productControl.removeProductById(((Product)parameters[1]).getID()).getMessage());
-        return ((ProductMenu)parameters[0]).getParentMenu();
+        return ((ListicOptionMenu)parameters[0]).getParentMenu();
     }
 
     public Menu acceptAddingProduct(Object... objects) {
         Object[] parameters = objects.clone();
         System.out.println(adminControl.approveProductByID(((Product)parameters[1]).getID()).getMessage());
-        return ((ProductMenu)parameters[0]).getParentMenu();
+        return ((ListicOptionMenu)parameters[0]).getParentMenu();
     }
 
     public Menu declineAddingProduct(Object... objects) {
         Object[] parameters = objects.clone();
         productControl.removeProductById(((Product)parameters[1]).getID());
         System.out.println("Adding Product Declined Successfully. \uD83D\uDE2C");
-        return ((ProductMenu)parameters[0]).getParentMenu();
+        return ((ListicOptionMenu)parameters[0]).getParentMenu();
     }
 
     public Menu acceptEditingProduct(Object... objects) {
         Object[] parameters = objects.clone();
         System.out.println(adminControl.acceptEditingProductByID(((Product)parameters[1]).getID()).getMessage());
-        return ((ProductMenu)parameters[0]).getParentMenu();
+        return ((ListicOptionMenu)parameters[0]).getParentMenu();
     }
 
     public Menu declineEditingProduct(Object... objects) {
         Object[] parameters = objects.clone();
         productControl.removeEditingProductById(((Product)parameters[1]).getID());
         System.out.println("Product Editing Declined Successfully. \uD83D\uDE2C");
-        return ((ProductMenu)parameters[0]).getParentMenu();
+        return ((ListicOptionMenu)parameters[0]).getParentMenu();
     }
 
     public Menu viewProductLastApproved(Object... objects)
     {
         Object[] parameters = objects.clone();
-        ProductMenu productMenu = ((ProductMenu) parameters[0]);
+        ListicOptionMenu productMenu = ((ListicOptionMenu) parameters[0]);
         Product product = ((Product) parameters[1]);
         printProductSpecs(productControl.getProductById(product.getID()));
         while(true)
@@ -183,10 +183,11 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
             }
         }
     }
+
     public Menu addToCart(Object... objects) {
         Object[] parameters = objects.clone();
         Product product = (Product) objects[1];
-        ProductMenu productMenu = (ProductMenu) objects[0];
+        ListicOptionMenu productMenu = (ListicOptionMenu) objects[0];
         if(product.isCountable()) {
             int count = getCount(product);
             System.out.println(customerControl.addToCartCountable(getUserNameForCart(), product.getID(), count).getMessage());
@@ -249,7 +250,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
     public Menu increaseQuantityCart(Object... objects)
     {
         Product product = (Product) objects[1];
-        ProductMenu productMenu = (ProductMenu) objects[0];
+        ListicOptionMenu productMenu = (ListicOptionMenu) objects[0];
         System.out.println("0. Back");
 
         if(product.isCountable())
@@ -278,7 +279,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
     public Menu decreaseQuantityCart(Object... objects)
     {
         Product product = (Product) objects[1];
-        ProductMenu productMenu = (ProductMenu) objects[0];
+        ListicOptionMenu productMenu = (ListicOptionMenu) objects[0];
         System.out.println("0. Back");
 
         if(product.isCountable())
@@ -307,7 +308,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
     public Menu removeCartProduct(Object... objects)
     {
         Product product = (Product) objects[1];
-        ProductMenu productMenu = (ProductMenu) objects[0];
+        ListicOptionMenu productMenu = (ListicOptionMenu) objects[0];
         System.out.println(customerControl.removeFromCartByID(product.getID()).getMessage());
         return productMenu.getParentMenu();
     }

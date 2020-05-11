@@ -24,7 +24,7 @@ public class ListicOptionMenu extends Menu implements PrintOptionSpecs {
                 }
             }
 
-            json = ProductMenu.getJsonFromDB(menuName);
+            json = ListicOptionMenu.getJsonFromDB(menuName);
         } catch (FileNotFoundException e) {
             System.out.println("ProductMenu File Couldn't Get Initialized! Please Contact Us As Soon As Possible :.(");
         }

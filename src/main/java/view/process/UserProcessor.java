@@ -5,7 +5,6 @@ import controller.account.AccountControl;
 import model.existence.Account;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
-import view.menu.UserMenu;
 
 import java.util.HashMap;
 
@@ -43,8 +42,8 @@ public class UserProcessor extends ListicOptionProcessor {
         return userProcessor;
     }
 
-    public static UserMenu setMenu(String json, String ID){
-        UserMenu userMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, UserMenu.class);
+    public static ListicOptionMenu setMenu(String json, String ID){
+        ListicOptionMenu userMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicOptionMenu.class);
         userMenu.setOption(accountControl.getAccountByUsername(ID));
         return userMenu;
     }
