@@ -30,12 +30,10 @@ public class ProductMenu extends ListicOptionMenu implements PrintOptionSpecs {
                 System.out.println(e.getMessage());
             }
         }
-        if(input == 0)
-        {
-         nextMenu = parentMenu;
-        }
-        else if(processor.isThereFunctionWithName(options.get(input - 1)))
-        {
+
+        if(input == 0) {
+            nextMenu = parentMenu;
+        } else if(processor.isThereFunctionWithName(options.get(input - 1))) {
             nextMenu = processor.executeTheFunctionWithName(options.get(input - 1), this, product);
         }
 

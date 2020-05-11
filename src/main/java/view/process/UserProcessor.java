@@ -2,6 +2,8 @@ package view.process;
 
 import com.google.gson.GsonBuilder;
 import controller.account.AccountControl;
+import model.existence.Account;
+import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 import view.menu.UserMenu;
 
@@ -50,24 +52,23 @@ public class UserProcessor extends ListicOptionProcessor {
 
     public Menu acceptRequest(Object... objects){
         Object[] parameters = objects.clone();
-        Menu menu = (Menu)objects[0];
-        String userName = (String)objects[1];
+        ListicOptionMenu menu = (ListicOptionMenu)objects[0];
+        Account account = (Account)objects[1];
 
-        System.out.println(accountControl.modifyApprove(userName, 1).getMessage());
-        return menu;
+        System.out.println(accountControl.modifyApprove(account.getUsername(), 1).getMessage());
+        return menu.getParentMenu();
     }
 
     public Menu declineRequest(Object... objects){
         Object[] parameters = objects.clone();
-        Menu menu = (Menu)objects[0];
-        String userName = (String)objects[1];
+        ListicOptionMenu menu = (ListicOptionMenu)objects[0];
+        Account account = (Account)objects[1];
 
-        System.out.println(accountControl.modifyApprove(userName, 0).getMessage());
-        return menu;
+        System.out.println(accountControl.modifyApprove(account.getUsername(), 0).getMessage());
+        return menu.getParentMenu();
     }
 
-    public Menu deleteUser(Object... objects)
-    {
+    public Menu deleteUser(Object... objects) {
         Object[] parameters = objects.clone();
         Menu menu = (Menu)parameters[0];
         String userName = (String)parameters[1];
