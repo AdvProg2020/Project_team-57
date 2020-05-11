@@ -30,6 +30,8 @@ public class ListicOptionMenu extends Menu {
 
         if(menuName.contains("Product")) {
             menu = ProductProcessor.setMenu(json, optionID);
+        } else if(menuName.contains("Category")){
+
         } else {
             menu = UserProcessor.setMenu(json, optionID);
         }
