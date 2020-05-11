@@ -1,10 +1,14 @@
 package controller.account;
 
+import controller.Control;
 import model.db.CartTable;
 import model.db.ProductTable;
+import model.existence.Product;
 import notification.Notification;
+import view.menu.Menu;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class CustomerControl extends AccountControl{
     private static CustomerControl customerControl = null;
@@ -46,4 +50,64 @@ public class CustomerControl extends AccountControl{
         }
     }
 
+    public ArrayList<String> getCartProductNames() {
+        ArrayList<String> cartProducts = new ArrayList<>();
+        try {
+            for(Product product : CartTable.getAllCartWithUsername(Control.getUsername()))
+            {
+                cartProducts.add(product.getName());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return cartProducts;
+    }
+
+    public ArrayList<String> getCartProductIDs() {
+        ArrayList<String> cartProducts = new ArrayList<>();
+        try {
+            for(Product product : CartTable.getAllCartWithUsername(Control.getUsername()))
+            {
+                cartProducts.add(product.getID());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return cartProducts;
+    }
+
+    public Product getCartProductByID(String ID) {
+        try {
+            return CartTable.getCartProductByID(Control.getUsername(), ID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Notification increaseCount(String productID, String command) {
+        try {
+            int input = Integer.parseInt(command);
+            if(input < 0) {
+                try {
+                    if(CartTable.getCartProductByID(Control.getUsername(), productID).getCount() + input <= ProductTable.getProductByID(productID).getCount())
+                    {
+                        //TODO
+                    }
+                    return Notification.MORE_THAN_INVENTORY_COUNTABLE;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NumberFormatException e) { } catch (NullPointerException e) { }
+        return Notification.INVALID_COUNT;
+    }
 }

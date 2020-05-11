@@ -1,0 +1,10 @@
+{
+  "name" : "View Cart",
+  "parentName" : "Customer Menu",
+  "isThereParentMenu" : true,
+  "processorName" : "ListicProcessor",
+  "options" : [
+    "Show Total Price",
+    "Purchase"
+  ]
+}

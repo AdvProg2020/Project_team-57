@@ -28,21 +28,30 @@ public class Database {
         initProductTable(initConnection.createStatement());
         initEditingProductTable(initConnection.createStatement());
         initCartsTable(initConnection.createStatement());
+        removeTempAccountsFromCarts(initConnection);
 
         isDBInit = true;
         initConnection.close();
+    }
+
+    private static void removeTempAccountsFromCarts(Connection initConnection) throws SQLException {
+        String command = "DELETE FROM Carts WHERE CustomerUsername = ? ";
+        PreparedStatement preparedStatement = initConnection.prepareStatement(command);
+        preparedStatement.setString(1, "temp");
+        preparedStatement.execute();
+        preparedStatement.close();
     }
 
     private static void initCartsTable(Statement statement) throws SQLException {
         String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'Carts'";
         ResultSet resultSet = statement.executeQuery(command);
         if (!resultSet.next()) {
-            statement.execute("CREATE TABLE CartsTable(" +
-                    "ID varchar(8))," +
-                    "CustomerName varchar(20)," +
+            statement.execute("CREATE TABLE Carts(" +
+                    "ID varchar(8)," +
+                    "CustomerUsername varchar(16)," +
                     "Count int," +
                     "Amount double," +
-                    "primary key(CustomerName);");
+                    "primary key(CustomerUsername));");
         }
         statement.close();
         resultSet.close();
@@ -65,6 +74,8 @@ public class Database {
                     "Description varchar(100)," +
                     "Price double," +
                     "AverageScore double," +
+                    "ApprovalDate DATE, " +
+                    "Seen int," +
                     "primary key(ID)" +
                     ");");
         }
@@ -89,6 +100,8 @@ public class Database {
                     "Description varchar(100)," +
                     "Price double," +
                     "AverageScore double," +
+                    "ApprovalDate DATE, " +
+                    "Seen int," +
                     "primary key(ID)" +
                     ");");
         }

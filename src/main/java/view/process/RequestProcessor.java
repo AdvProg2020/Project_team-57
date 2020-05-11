@@ -48,7 +48,7 @@ public class RequestProcessor extends Processor{
 
     public Menu manageEditProductRequests()
     {
-        return ListicMenu.makeListicMenu("Manage Edit Product Reuests Listic Menu");
+        return ListicMenu.makeListicMenu("Manage Edit Product Requests Listic Menu");
     }
 
 

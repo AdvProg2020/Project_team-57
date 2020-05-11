@@ -2,6 +2,7 @@ package view.process;
 
 import controller.IOControl;
 import controller.account.AccountControl;
+import controller.account.CustomerControl;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
 import model.existence.Account;
@@ -16,6 +17,7 @@ public class ListicProcessor extends Processor {
     private static AccountControl accountControl = AccountControl.getController();
     private static VendorControl vendorControl = VendorControl.getController();
     private static IOControl ioControl = IOControl.getController();
+    private static CustomerControl customerControl = CustomerControl.getController();
     private static ListicProcessor processor = null;
 
     public ListicProcessor() {
@@ -68,6 +70,8 @@ public class ListicProcessor extends Processor {
             return ListicOptionMenu.makeMenu("Admin Profile Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("Products Menu"))
             return ListicOptionMenu.makeMenu("Common Product Menu", parentMenu, primaryKey);
+        else if(parentMenu.getName().equals("View Cart"))
+            return ListicOptionMenu.makeMenu("Cart Product Menu", parentMenu, primaryKey);
         //TODO(OTHERS)
         return null;
     }
@@ -113,12 +117,19 @@ public class ListicProcessor extends Processor {
             initViewAllAdmins(listicMenu);
         else if(listicMenu.getName().equals("Products Menu"))
             initProductsMenu(listicMenu);
+        else if(listicMenu.getName().equals("View Cart"))
+            initViewCart(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initViewCart(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(customerControl.getCartProductNames());
+        listicMenu.setListicOptionPrimaryKeys(customerControl.getCartProductIDs());
     }
 
     private static void initProductsMenu(ListicMenu listicMenu) {
         listicMenu.setListicOptionNames(productControl.getAllShowingProductNames());
-        listicMenu.setListicOptionNames(productControl.getAllShowingProductIDs());
+        listicMenu.setListicOptionPrimaryKeys(productControl.getAllShowingProductIDs());
     }
 
     private static void initViewAllAdmins(ListicMenu listicMenu) {

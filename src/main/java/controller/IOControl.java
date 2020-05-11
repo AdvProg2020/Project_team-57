@@ -2,6 +2,7 @@ package controller;
 
 import controller.account.ValidPassword;
 import model.db.AccountTable;
+import model.db.CartTable;
 import model.existence.Account;
 import notification.Notification;
 
@@ -50,6 +51,11 @@ public class IOControl extends Control implements ValidPassword {
                         Control.setType(AccountTable.getTypeByUsername(account.getUsername()));
                         Control.setUsername(account.getUsername());
                         Control.setLoggedIn(true);
+                        if(Control.getType().equals("Customer"))
+                        {
+                            CartTable.addTempToUsername(account.getUsername());
+                        }
+                        CartTable.removeTemp();
                         return Notification.LOGIN_SUCCESSFUL;
                     } else {
                         return Notification.USER_NOT_APPROVED;

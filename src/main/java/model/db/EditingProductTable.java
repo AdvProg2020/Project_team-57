@@ -2,6 +2,7 @@ package model.db;
 
 import model.existence.Product;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -58,7 +59,8 @@ public class EditingProductTable extends Database{
 
     public static void addProduct(Product product) throws SQLException, ClassNotFoundException {
         String command =  "INSERT INTO EditingProducts (ID, ProductName, Brand, SellerUsername, Count, Amount, " +
-                "IsCountable, Category, Description, Price, AverageScore, Status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "IsCountable, Category, Description, Price, AverageScore, Status, ApprovalDate, Seen) " +
+                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, product.getID());
         preparedStatement.setString(2, product.getName());
@@ -78,6 +80,8 @@ public class EditingProductTable extends Database{
         preparedStatement.setDouble(10, product.getPrice());
         preparedStatement.setDouble(11, product.getAverageScore());
         preparedStatement.setInt(12, 3);
+        preparedStatement.setDate(13, product.getApprovalDate());
+        preparedStatement.setInt(14, product.getSeen());
         preparedStatement.execute();
     }
 

@@ -3,7 +3,8 @@
     "View Personal Info",
     "Edit Field",
     "Edit Credit",
-    "Change Password"
+    "Change Password",
+    "View Cart"
   ],
   "name" : "Customer Menu",
   "parentName" : "Main Menu",

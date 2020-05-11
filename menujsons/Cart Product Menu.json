@@ -1,0 +1,11 @@
+{
+  "options" : [
+    "Increase",
+    "Decrease",
+    "Remove From Cart"
+  ],
+  "name" : "Cart Product",
+  "parentName" : "View Cart Listic Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "ProductProcessor"
+}

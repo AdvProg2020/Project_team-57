@@ -53,7 +53,7 @@ public class UserProcessor extends ListicOptionProcessor {
         Menu menu = (Menu)objects[0];
         String userName = (String)objects[1];
 
-        accountControl.modifyApprove(userName, 1);
+        System.out.println(accountControl.modifyApprove(userName, 1).getMessage());
         return menu;
     }
 
@@ -62,7 +62,7 @@ public class UserProcessor extends ListicOptionProcessor {
         Menu menu = (Menu)objects[0];
         String userName = (String)objects[1];
 
-        accountControl.modifyApprove(userName, 0);
+        System.out.println(accountControl.modifyApprove(userName, 0).getMessage());
         return menu;
     }
 

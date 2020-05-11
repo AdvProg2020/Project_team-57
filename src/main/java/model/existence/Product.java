@@ -1,5 +1,6 @@
 package model.existence;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -16,6 +17,8 @@ public class Product {
     private String description;
     private double price;
     private double averageScore;
+    private Date approvalDate;
+    private int seen;
 
     public Product(ResultSet resultSet) throws SQLException {
         this.ID = resultSet.getString("ID");
@@ -30,6 +33,8 @@ public class Product {
         this.description = resultSet.getString("Description");
         this.price = resultSet.getDouble("Price");
         this.averageScore = resultSet.getDouble("AverageScore");
+        this.approvalDate = resultSet.getDate("ApprovalDate");
+        this.seen = resultSet.getInt("Seen");
     }
 
     public Product() {
@@ -129,5 +134,21 @@ public class Product {
 
     public void setAverageScore(double averageScore) {
         this.averageScore = averageScore;
+    }
+
+    public Date getApprovalDate() {
+        return approvalDate;
+    }
+
+    public int getSeen() {
+        return seen;
+    }
+
+    public void setApprovalDate(Date approvalDate) {
+        this.approvalDate = approvalDate;
+    }
+
+    public void setSeen(int seen) {
+        this.seen = seen;
     }
 }

@@ -26,7 +26,7 @@ public enum Notification {
     PRODUCT_NOT_AVAILABLE("This Product is Unavailable. You can't Edit its Specs."),
     ADD_PRODUCT("Successfully Added. Hope You Will Have A Good Sale If The Lord Accepts your Product"),
     ACCEPT_ADDING_PRODUCT("Product added to store successfully \uD83D\uDC8B"),
-    ACCEPT_EDITING_PRODUCT("Product Editing Accepter. \uD83E\uDD11"),
+    ACCEPT_EDITING_PRODUCT("Product Editing Accepted. \uD83E\uDD11"),
     DELETE_USER("User was deleted successfully"),
     MORE_THAN_INVENTORY_COUNTABLE("Dude where are you looking??\uD83D\uDE15\nThe number entered is greater than the inventory"),
     MORE_THAN_INVENTORY_UNCOUNTABLE("Dude where are you looking??😕The number entered is greater than the inventory"),

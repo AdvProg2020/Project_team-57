@@ -2,6 +2,7 @@ package model.db;
 
 import model.existence.Product;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -77,6 +78,14 @@ public class ProductTable extends Database {
             products.add(new Product(resultSet));
         }
         return products;
+    }
+
+    public static void setProductApprovalDate(String productId) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Products SET Approval Date = ? WHERE ProductID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setDate(1, new Date(System.currentTimeMillis()));
+        preparedStatement.setString(2, productId);
+        preparedStatement.execute();
     }
 
     public static void tempAddProducts() throws SQLException, ClassNotFoundException {

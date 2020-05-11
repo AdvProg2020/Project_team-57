@@ -3,6 +3,7 @@ package view.process;
 import com.google.gson.GsonBuilder;
 import controller.Control;
 import controller.account.AdminControl;
+import controller.account.CustomerControl;
 import controller.product.ProductControl;
 import model.existence.Product;
 import view.menu.Menu;
@@ -15,6 +16,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
     private static ProductProcessor productProcessor = null;
     private static ProductControl productControl = ProductControl.getController();
     private static AdminControl adminControl = AdminControl.getController();
+    private static CustomerControl customerControl = CustomerControl.getController();
 
     private ProductProcessor(){
         this.functionsHashMap = new HashMap<>();
@@ -81,7 +83,10 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         //TODO(OTHERS)
         if(json.contains("Manage All Products Listic Menu") || json.contains("Manage Add Product Requests Listic Menu")) {
             productMenu.setProduct(productControl.getProductById(ID));
-        } else {
+        } else if(json.contains("Cart")) {
+            productMenu.setProduct(customerControl.getCartProductByID(ID));
+        }
+        else {
             productMenu.setProduct(productControl.getEditedProductByID(ID));
         }
         return productMenu;
@@ -163,13 +168,12 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         Object[] parameters = objects.clone();
         Product product = (Product) objects[1];
         ProductMenu productMenu = (ProductMenu) objects[0];
-
         if(product.isCountable()) {
             int count = getCount(product);
-            System.out.println(adminControl.addToCartCountable(getUserNameForCart(), product.getID(), count).getMessage());
+            System.out.println(customerControl.addToCartCountable(getUserNameForCart(), product.getID(), count).getMessage());
         } else {
             double amount = getAmount(product);
-            System.out.println(adminControl.addToCartUnCountable(getUserNameForCart(), product.getID(), amount).getMessage());
+            System.out.println(customerControl.addToCartUnCountable(getUserNameForCart(), product.getID(), amount).getMessage());
         }
 
         return productMenu;
@@ -219,7 +223,31 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         if(Control.isLoggedIn()) {
             return Control.getUsername();
         } else {
-            return "Temp";
+            return "temp";
         }
+    }
+
+    public Menu increaseQuantityCart(Object... objects)
+    {
+        Product product = (Product) objects[1];
+        ProductMenu productMenu = (ProductMenu) objects[0];
+        System.out.println("0. Back");
+        String command = scanner.nextLine().trim();
+        if(command.equals("0"))
+            return productMenu;
+
+        if(product.isCountable())
+        {
+            System.out.println("Enter Additional Number, You Want From This Product: ");
+            System.out.println(customerControl.increaseCount(product.getID(), command).getMessage());
+        }
+        else
+        {
+            System.out.println("Enter Additional Amount In Kilogram, You Tend To Buy From This Product: ");
+
+        }
+        productMenu.setProduct(customerControl.getCartProductByID(product.getID()));
+        return productMenu;
+
     }
 }

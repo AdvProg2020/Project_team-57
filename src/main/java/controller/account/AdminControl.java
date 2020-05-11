@@ -22,6 +22,7 @@ public class AdminControl extends AccountControl{
     public Notification approveProductByID(String id){
         try {
             ProductTable.setProductStatus(id, 1);
+            ProductTable.setProductApprovalDate(id);
             return Notification.ACCEPT_ADDING_PRODUCT;
         } catch (SQLException throwable) {
             return Notification.UNKNOWN_ERROR;
@@ -34,12 +35,12 @@ public class AdminControl extends AccountControl{
         try {
             Product editingProduct = EditingProductTable.getEditingProductWithID(editingProductID);
             EditingProductTable.removeProductById(editingProductID);
-            editingProduct.setStatus(1);
             ProductTable.removeProductByID(editingProduct.getID());
             if(editingProduct.isCountable())
                 VendorTable.addCountableProduct(editingProduct, editingProduct.getSellerUserName());
             else
                 VendorTable.addUnCountableProduct(editingProduct, editingProduct.getSellerUserName());
+            ProductTable.setProductStatus(editingProduct.getID(), 1);
             return Notification.ACCEPT_EDITING_PRODUCT;
         } catch (SQLException e) {
             e.printStackTrace();
