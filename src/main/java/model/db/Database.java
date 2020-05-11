@@ -6,7 +6,7 @@ import java.sql.*;
 public class Database {
     private static boolean isDBInit = false;
     private static Connection connection = null;
-    private static String localDBUrl = "jdbc:sqlite:database\\database.sqlite";
+    private static final String localDBUrl = "jdbc:sqlite:database\\database.sqlite";
 
     protected static Connection getConnection() throws SQLException, ClassNotFoundException {
         if(!isDBInit)
@@ -28,6 +28,7 @@ public class Database {
         initProductTable(initConnection.createStatement());
         initEditingProductTable(initConnection.createStatement());
         initCartsTable(initConnection.createStatement());
+        initCategoriesTable(initConnection.createStatement());
         removeTempAccountsFromCarts(initConnection);
 
         isDBInit = true;
@@ -51,6 +52,25 @@ public class Database {
                     "CustomerUsername varchar(16)," +
                     "Count int," +
                     "Amount double);");
+        }
+        statement.close();
+        resultSet.close();
+    }
+
+    private static void initCategoriesTable(Statement statement) throws SQLException, ClassNotFoundException {
+        String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'Categories'";
+        ResultSet resultSet = statement.executeQuery(command);
+        if (!resultSet.next()) {
+            statement.execute("CREATE TABLE Categories(" +
+                    "Name varchar(16)," +
+                    "Features varchar(100)," +
+                    "ParentCategory varchar(100));");
+            String SQL = "INSERT INTO Categories(Name, Features, ParentCategory) VALUES(?, ?, ?)";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(SQL);
+            preparedStatement.setString(1, "AllProducts");
+            preparedStatement.setString(2, "This category contains all of product that exist in store");
+            preparedStatement.setString(3, null);
+            preparedStatement.execute();
         }
         statement.close();
         resultSet.close();
