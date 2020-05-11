@@ -38,38 +38,4 @@ public class UserMenu extends ListicOptionMenu implements PrintOptionSpecs {
         return nextMenu;
     }
 
-    protected void printOptionSpecs(){
-        /*printCustomLine();
-
-        printWithNullChecking("UserName", account.getUsername());
-        printCustomLine();
-
-        printWithNullChecking("PassWord", "************");
-        printCustomLine();
-
-        printWithNullChecking("Account Type", account.getType());
-        printCustomLine();
-
-        printWithNullChecking("FirstName", account.getFirstName());
-        printCustomLine();
-
-        printWithNullChecking("LastName", account.getLastName());
-        printCustomLine();
-
-        printWithNullChecking("Email", account.getEmail());
-        printCustomLine();
-
-        if(account.getType().equals("Vendor")){
-            printWithNullChecking("Brand", account.getBrand());
-            printCustomLine();
-        }
-        if(!account.getType().equals("Admin"))
-        {
-            System.out.format("| %-15s | %-35f | %n", "Credit", account.getCredit());
-            printCustomLine();
-        }*/
-
-        printAccountSpecs((Account)option);
-    }
-
 }

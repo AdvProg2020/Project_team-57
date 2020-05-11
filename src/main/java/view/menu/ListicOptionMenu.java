@@ -1,12 +1,13 @@
 package view.menu;
 
 import controller.Control;
+import view.PrintOptionSpecs;
 import view.process.ProductProcessor;
 import view.process.UserProcessor;
 
 import java.io.FileNotFoundException;
 
-public class ListicOptionMenu extends Menu {
+public class ListicOptionMenu extends Menu implements PrintOptionSpecs {
     protected Menu parentMenu;
     protected Object option;
 
@@ -43,7 +44,7 @@ public class ListicOptionMenu extends Menu {
     }
 
     public void show(){
-        printOptionSpecs();
+        printOptionSpecs(option);
 
         System.out.println("0. back");
 

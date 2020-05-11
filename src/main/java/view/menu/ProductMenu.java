@@ -38,9 +38,4 @@ public class ProductMenu extends ListicOptionMenu implements PrintOptionSpecs {
         return nextMenu;
     }
 
-    public void printOptionSpecs()
-    {
-        printSpecificProductSpecs((Product)option);
-    }
-
 }

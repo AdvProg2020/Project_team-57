@@ -161,7 +161,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         Object[] parameters = objects.clone();
         ProductMenu productMenu = ((ProductMenu) parameters[0]);
         Product product = ((Product) parameters[1]);
-        printSpecificProductSpecs(productControl.getProductById(product.getID()));
+        printProductSpecs(productControl.getProductById(product.getID()));
         while(true)
         {
             System.out.println("0. Back");

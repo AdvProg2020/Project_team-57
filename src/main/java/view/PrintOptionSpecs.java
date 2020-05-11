@@ -4,7 +4,17 @@ import model.existence.Account;
 import model.existence.Product;
 
 public interface PrintOptionSpecs {
-    default void printSpecificProductSpecs(Product product){
+    default void printOptionSpecs(Object option) {
+        if(option instanceof Account) {
+            printAccountSpecs((Account) option);
+        } else if(option instanceof Product) {
+            printProductSpecs((Product) option);
+        } /*else if(option instanceof Category) {
+            printProductSpecs((Category) option);
+        }*/
+    }
+
+    default void printProductSpecs(Product product){
         this.printCustomLineForProduct();
 
         printCustomStatus(product.getStatus());
@@ -25,7 +35,7 @@ public interface PrintOptionSpecs {
         printWithNullCheckingForProduct("Category", product.getCategory());
         this.printCustomLineForProduct();
 
-        printCustomDescription(product.getDescription());
+        printCustomDescriptionForProduct(product.getDescription());
         this.printCustomLineForProduct();
 
         System.out.format("| %-20s | %-35f | %n", "Price", product.getPrice());
@@ -68,10 +78,10 @@ public interface PrintOptionSpecs {
         }
     }
 
-    default void printCustomDescription(String description){
+    default void printCustomDescriptionForProduct(String description){
         if(description != null)
         {
-            String[] splitDescription = splitDescription(description);
+            String[] splitDescription = splitDescriptionForProduct(description);
 
             for(int i = 0; i < splitDescription.length; i++){
                 if(i == 0)
@@ -86,7 +96,7 @@ public interface PrintOptionSpecs {
         }
     }
 
-    default String[] splitDescription(String description){
+    default String[] splitDescriptionForProduct(String description){
         if(description.length() <= 35){
             return new String[]{description};
         } else if(description.length() > 35 && description.length() <= 70){
