@@ -100,13 +100,13 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         ProductMenu productMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ProductMenu.class);
         //TODO(OTHERS)
         if(json.contains("Manage All Products Listic Menu") || json.contains("Manage Add Product Requests Listic Menu")) {
-            productMenu.setProduct(productControl.getProductById(ID));
+            productMenu.setOption(productControl.getProductById(ID));
         } else if(json.contains("Cart Product Menu")) {
             //System.out.println("json = " + json);
-            productMenu.setProduct(customerControl.getCartProductByID(ID));
+            productMenu.setOption(customerControl.getCartProductByID(ID));
         }
         else {
-            productMenu.setProduct(productControl.getEditedProductByID(ID));
+            productMenu.setOption(productControl.getEditedProductByID(ID));
         }
         return productMenu;
     }
@@ -270,7 +270,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
                 return productMenu;
             System.out.println(customerControl.increaseAmount(product.getID(), command).getMessage());
         }
-        productMenu.setProduct(customerControl.getCartProductByID(product.getID()));
+        productMenu.setOption(customerControl.getCartProductByID(product.getID()));
         return productMenu.getParentMenu();
 
     }
@@ -299,7 +299,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
                 return productMenu;
             System.out.println(customerControl.decreaseAmount(product.getID(), command).getMessage());
         }
-        productMenu.setProduct(customerControl.getCartProductByID(product.getID()));
+        productMenu.setOption(customerControl.getCartProductByID(product.getID()));
         return productMenu.getParentMenu();
 
     }

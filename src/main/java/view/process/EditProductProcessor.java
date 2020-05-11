@@ -94,7 +94,7 @@ public class EditProductProcessor extends Processor {
     }
 
     public Menu back(){
-        parentMenu.setProduct(product);
+        parentMenu.setOption(product);
         return parentMenu;
     }
 

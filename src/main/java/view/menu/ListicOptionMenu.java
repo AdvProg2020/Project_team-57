@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 
 public class ListicOptionMenu extends Menu {
     protected Menu parentMenu;
+    protected Object option;
 
     public static ListicOptionMenu makeMenu(String menuName, Menu parentMenu, String optionID) {
         String json = "";
@@ -59,5 +60,9 @@ public class ListicOptionMenu extends Menu {
 
     public Menu getParentMenu() {
         return parentMenu;
+    }
+
+    public void setOption(Object option) {
+        this.option = option;
     }
 }

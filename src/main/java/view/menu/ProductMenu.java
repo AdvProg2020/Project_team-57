@@ -5,8 +5,6 @@ import view.PrintOptionSpecs;
 import view.process.Processor;
 
 public class ProductMenu extends ListicOptionMenu implements PrintOptionSpecs {
-    private Product product;
-
     public Menu execute(){
         processor = Processor.findProcessorWithName(processorName);
         Menu nextMenu = this;
@@ -34,7 +32,7 @@ public class ProductMenu extends ListicOptionMenu implements PrintOptionSpecs {
         if(input == 0) {
             nextMenu = parentMenu;
         } else if(processor.isThereFunctionWithName(options.get(input - 1))) {
-            nextMenu = processor.executeTheFunctionWithName(options.get(input - 1), this, product);
+            nextMenu = processor.executeTheFunctionWithName(options.get(input - 1), this, option);
         }
 
         return nextMenu;
@@ -42,11 +40,7 @@ public class ProductMenu extends ListicOptionMenu implements PrintOptionSpecs {
 
     public void printOptionSpecs()
     {
-        printSpecificProductSpecs(product);
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
+        printSpecificProductSpecs((Product)option);
     }
 
 }

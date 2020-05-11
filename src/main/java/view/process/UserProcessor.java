@@ -8,7 +8,6 @@ import view.menu.Menu;
 import view.menu.UserMenu;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class UserProcessor extends ListicOptionProcessor {
     private static AccountControl accountControl = AccountControl.getController();
@@ -46,7 +45,7 @@ public class UserProcessor extends ListicOptionProcessor {
 
     public static UserMenu setMenu(String json, String ID){
         UserMenu userMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, UserMenu.class);
-        userMenu.setAccount(accountControl.getAccountByUsername(ID));
+        userMenu.setOption(accountControl.getAccountByUsername(ID));
         return userMenu;
     }
 

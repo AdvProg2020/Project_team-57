@@ -5,8 +5,6 @@ import view.PrintOptionSpecs;
 import view.process.Processor;
 
 public class UserMenu extends ListicOptionMenu implements PrintOptionSpecs {
-    private Account account;
-
     public Menu execute(){
         processor = Processor.findProcessorWithName(processorName);
         Menu nextMenu = this;
@@ -34,7 +32,7 @@ public class UserMenu extends ListicOptionMenu implements PrintOptionSpecs {
         if(input == 0) {
             nextMenu = parentMenu;
         } else if(processor.isThereFunctionWithName(options.get(input - 1))) {
-            nextMenu = processor.executeTheFunctionWithName(options.get(input - 1), this, account);
+            nextMenu = processor.executeTheFunctionWithName(options.get(input - 1), this, option);
         }
 
         return nextMenu;
@@ -71,11 +69,7 @@ public class UserMenu extends ListicOptionMenu implements PrintOptionSpecs {
             printCustomLine();
         }*/
 
-        printAccountSpecs(account);
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
+        printAccountSpecs((Account)option);
     }
 
 }
