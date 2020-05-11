@@ -9,9 +9,52 @@ public interface PrintOptionSpecs {
             printAccountSpecs((Account) option);
         } else if(option instanceof Product) {
             printProductSpecs((Product) option);
-        } /*else if(option instanceof Category) {
-            printProductSpecs((Category) option);
-        }*/
+        } else if(option instanceof Category) {
+            printCategorySpecs((Category) option);
+        }
+    }
+
+    default void printAccountSpecs(Account account){
+        this.printCustomLineForAccount();
+
+        printWithNullCheckingForAccount("UserName", account.getUsername());
+        this.printCustomLineForAccount();
+
+        printWithNullCheckingForAccount("PassWord", "************");
+        this.printCustomLineForAccount();
+
+        printWithNullCheckingForAccount("Account Type", account.getType());
+        this.printCustomLineForAccount();
+
+        printWithNullCheckingForAccount("FirstName", account.getFirstName());
+        this.printCustomLineForAccount();
+
+        printWithNullCheckingForAccount("LastName", account.getLastName());
+        this.printCustomLineForAccount();
+
+        printWithNullCheckingForAccount("Email", account.getEmail());
+        this.printCustomLineForAccount();
+
+        if(account.getType().equals("Vendor")){
+            printWithNullCheckingForAccount("Brand", account.getBrand());
+            this.printCustomLineForAccount();
+        }
+        if(!account.getType().equals("Admin"))
+        {
+            System.out.format("| %-15s | %-35f | %n", "Credit", account.getCredit());
+            this.printCustomLineForAccount();
+        }
+    }
+
+    default void printWithNullCheckingForAccount(String fieldName, String fieldValue){
+        if(fieldValue == null)
+            System.out.format("| %-15s | %-35s | %n", fieldName, "Not Assigned");
+        else
+            System.out.format("| %-15s | %-35s | %n", fieldName, fieldValue);
+    }
+
+    default void printCustomLineForAccount(){
+        System.out.println("+-----------------+-------------------------------------+");
     }
 
     default void printProductSpecs(Product product){
@@ -43,17 +86,6 @@ public interface PrintOptionSpecs {
 
         System.out.format("| %-20s | %-35f | %n", "Average Score", product.getAverageScore());
         this.printCustomLineForProduct();
-    }
-
-    default void printCustomLineForProduct(){
-        System.out.println("+----------------------+-------------------------------------+");
-    }
-
-    default void printWithNullCheckingForProduct(String fieldName, String fieldValue){
-        if(fieldValue == null)
-            System.out.format("| %-20s | %-35s | %n", fieldName, "Not Assigned");
-        else
-            System.out.format("| %-20s | %-35s | %n", fieldName, fieldValue);
     }
 
     default void printCustomStatus(int status){
@@ -106,46 +138,46 @@ public interface PrintOptionSpecs {
         }
     }
 
-    default void printAccountSpecs(Account account){
-        this.printCustomLineForAccount();
-
-        printWithNullCheckingForAccount("UserName", account.getUsername());
-        this.printCustomLineForAccount();
-
-        printWithNullCheckingForAccount("PassWord", "************");
-        this.printCustomLineForAccount();
-
-        printWithNullCheckingForAccount("Account Type", account.getType());
-        this.printCustomLineForAccount();
-
-        printWithNullCheckingForAccount("FirstName", account.getFirstName());
-        this.printCustomLineForAccount();
-
-        printWithNullCheckingForAccount("LastName", account.getLastName());
-        this.printCustomLineForAccount();
-
-        printWithNullCheckingForAccount("Email", account.getEmail());
-        this.printCustomLineForAccount();
-
-        if(account.getType().equals("Vendor")){
-            printWithNullCheckingForAccount("Brand", account.getBrand());
-            this.printCustomLineForAccount();
-        }
-        if(!account.getType().equals("Admin"))
-        {
-            System.out.format("| %-15s | %-35f | %n", "Credit", account.getCredit());
-            this.printCustomLineForAccount();
-        }
+    default void printCustomLineForProduct(){
+        System.out.println("+----------------------+-------------------------------------+");
     }
 
-    default void printWithNullCheckingForAccount(String fieldName, String fieldValue){
+    default void printWithNullCheckingForProduct(String fieldName, String fieldValue){
         if(fieldValue == null)
-            System.out.format("| %-15s | %-35s | %n", fieldName, "Not Assigned");
+            System.out.format("| %-20s | %-35s | %n", fieldName, "Not Assigned");
         else
-            System.out.format("| %-15s | %-35s | %n", fieldName, fieldValue);
+            System.out.format("| %-20s | %-35s | %n", fieldName, fieldValue);
     }
 
-    default void printCustomLineForAccount(){
-        System.out.println("+-----------------+-------------------------------------+");
+    default void printCategorySpecs(Category category) {
+        printCustomLineForCategory();
+
+        printWithNullCheckingForCategory("Name", category.getName());
+        printCustomLineForCategory();
+
+        printWithNullCheckingForCategory("ParentName", category.getParentName());
+        printCustomLineForCategory();
+
+        printCustomFeaturesForCategory(category.getFeatures());
+        printCustomLineForCategory();
     }
+
+    default void printCustomLineForCategory() {
+        //TODO
+        System.out.println("+----------------------+-------------------------------------+");
+    }
+
+    default void printWithNullCheckingForCategory(String fieldName, String fieldValue) {
+        //TODO
+    }
+
+    default void printCustomFeaturesForCategory(String features) {
+        //TODO
+    }
+
+    default String[] splitFeaturesForCategory(String features) {
+        //TODO
+        return null;
+    }
+
 }
