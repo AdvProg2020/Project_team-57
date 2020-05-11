@@ -6,8 +6,11 @@ import model.db.ProductTable;
 import model.db.VendorTable;
 import model.existence.Product;
 import notification.Notification;
+import model.db.CategoryTable;
+import model.existence.Category;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class AdminControl extends AccountControl{
     private static AdminControl adminControl = null;
@@ -48,5 +51,48 @@ public class AdminControl extends AccountControl{
             e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;
+    }
+
+    public ArrayList<String> getAllCategoryNames() {
+        ArrayList<String> categories = new ArrayList<>();
+        for(Category category : CategoryTable.getAllCategories())
+        {
+            categories.add(categories.getName());
+        }
+        return categories;
+    }
+
+    public Notification addCategory(Category category)
+    {
+        if(!CategoryTable.isThereCategoryWithName(category.getName()))
+        {
+            if(!category.getParentName() != null && !CategoryTable.isThereCategoryWithName(category.getParentName()))
+                return Notification.PARENT_CATEGORY_NOT_FOUND;
+            if(category.getParentCategory() == null)
+                category.setParentCategory("All Products");
+            CategoryTable.addCategory(category);
+            return Notification.CATEGORY_ADDED;
+        }
+        return Notification.DUPLICATE_CATEGORY_NAME;
+    }
+
+    public Notification removeCategory(Category category)
+    {
+        if(CategoryTable.isThereCategoryWithName(category.getName()))
+        {
+            ArrayList<Category> subCategories = CategoryTable.getAllSubCategories(category.getName());
+            for (Category subCategory : subCategories) {
+                CategoryTable.setCategoryParentName(subCategory.getName(), category.getParentName());
+            }
+            CategoryTable.removeCategoryWithName(category.getName());
+            ArrayList<Product> products = ProductTable.getProductsWithCategory(category.getName());
+            for (Product product : products) {
+                ProductTable.removeProductByID(product.getID());
+                if(!EditingProductTable.isIDFree(product.getID()))
+                    EditingProductTable.removeProductById(product.getID());
+            }
+            return Notification.CATEGORY_DELETED;
+        }
+        return Notification.CATEGORY_NOT_FOUND;
     }
 }

@@ -2,6 +2,7 @@ package view.process;
 
 import controller.IOControl;
 import controller.account.AccountControl;
+import controller.account.AdminControl;
 import controller.account.CustomerControl;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
@@ -9,6 +10,7 @@ import model.existence.Account;
 import view.menu.ListicMenu;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
+import view.process.person.AdminProcessor;
 
 import java.util.HashMap;
 
@@ -18,6 +20,7 @@ public class ListicProcessor extends Processor {
     private static VendorControl vendorControl = VendorControl.getController();
     private static IOControl ioControl = IOControl.getController();
     private static CustomerControl customerControl = CustomerControl.getController();
+    private static AdminControl adminControl = AdminControl.getController();
     private static ListicProcessor processor = null;
 
     public ListicProcessor() {
@@ -78,6 +81,8 @@ public class ListicProcessor extends Processor {
             return ListicOptionMenu.makeMenu("Common Product Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("View Cart"))
             return ListicOptionMenu.makeMenu("Cart Product Menu", parentMenu, primaryKey);
+        else if(parentMenu.getName().equals("Manage Categories"))
+            return ListicOptionMenu.makeMenu("Category Menu", parentMenu, primaryKey);
         //TODO(OTHERS)
         return null;
     }
@@ -112,6 +117,12 @@ public class ListicProcessor extends Processor {
         return parentMenu;
     }
 
+    public Menu addCategory(Object... objects)
+    {
+        AdminProcessor.newCategory();
+        return Menu.makeMenu("Add Category Menu");
+    }
+
 
     public static void initListicMenu(ListicMenu listicMenu)
     {
@@ -133,7 +144,14 @@ public class ListicProcessor extends Processor {
             initProductsMenu(listicMenu);
         else if(listicMenu.getName().equals("View Cart"))
             initViewCart(listicMenu);
+        else if(listicMenu.getName().equals("Manage Categories"))
+            initManageCategories(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initManageCategories(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(adminControl.getAllCategoryNames());
+        listicMenu.setListicOptionPrimaryKeys(adminControl.getAllCategoryNames());
     }
 
     private static void initViewCart(ListicMenu listicMenu) {

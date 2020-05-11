@@ -10,6 +10,7 @@ import view.process.FunctioningOption;
 public class AdminProcessor extends AccountProcessor {
     private static AdminControl adminControl = AdminControl.getController();
     private static AdminProcessor adminProcessor = null;
+    private static Category category;
 
     private AdminProcessor(){
         super();
@@ -29,6 +30,36 @@ public class AdminProcessor extends AccountProcessor {
             @Override
             public Menu doTheThing(Object... objects) {
                 return veiwAllAdmins();
+            }
+        });
+        functionsHashMap.put("Manage Categories", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return manageCategories();
+            }
+        });
+        functionsHashMap.put("Add Category Name", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addCategoryName();
+            }
+        });
+        functionsHashMap.put("Add Category Features", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addCategoryFeatures();
+            }
+        });
+        functionsHashMap.put("Add Category Parent Name", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addCategoryParent();
+            }
+        });
+        functionsHashMap.put("Confirm Adding Category", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return confirmCategory();
             }
         });
     }
@@ -53,5 +84,47 @@ public class AdminProcessor extends AccountProcessor {
     public Menu veiwAllAdmins()
     {
         return ListicMenu.makeListicMenu("View All Admins Listic Menu");
+    }
+
+    public Menu manageCategories()
+    {
+        return ListicMenu.makeListicMenu("Manage Categories Listic Menu");
+    }
+
+    public Menu addCategoryName()
+    {
+        System.out.println("Please Enter Category Name: ");
+        category.setName(scanner.nextLine());
+        return Menu.makeMenu("Add Category Menu");
+    }
+
+    public Menu addCategoryFeatures()
+    {
+        System.out.println("Please Enter Features Of This Category: ");
+        category.setFeatures(scanner.nextLine());
+        return Menu.makeMenu("Add Category Menu");
+    }
+
+    public Menu addCategoryParent()
+    {
+        System.out.println("Please Enter Parent Category Of This Category: ");
+        category.setParentName(scanner.nextLine());
+        return Menu.makeMenu("Add Category Menu");
+    }
+
+    public Menu confirmCategory()
+    {
+        if(category.getName() != null && category.getFeatures() != null) {
+            System.out.println(adminControl.addCategory(category).getMessage());
+            return Menu.makeMenu("Manage Categories Listic Menun");
+        } else {
+            System.out.println("You Should First Fill Category Name And Features");
+            return Menu.makeMenu("Add Category Menu");
+        }
+    }
+
+    public static void newCategory()
+    {
+        category = new Category();
     }
 }

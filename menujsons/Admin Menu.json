@@ -6,7 +6,8 @@
     "View All Admins",
     "Manage All Users",
     "Manage All Products",
-    "Manage All Requests"
+    "Manage All Requests",
+    "Manage Categories"
   ],
   "name" : "Admin Menu",
   "parentName" : "Main Menu",

@@ -22,6 +22,8 @@ public class Menu {
     }
 
     public static Menu makeMenu(String menuName) {
+        if(menuName.contains("Listic Menu"))
+            return ListicMenu.makeListicMenu(menuName);
         String json = "";
 
         try {

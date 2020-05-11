@@ -88,6 +88,17 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
+    public static ArrayList<Product> getProductsWithCategory(String categoryName) throws SQLException, ClassNotFoundException {
+        ArrayList<Product> products = new ArrayList<>();
+        String command = "SELECT * FROM Products WHERE Category = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, categoryName);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next())
+            products.add(new Product(resultSet));
+        return products;
+    }
+
     public static void tempAddProducts() throws SQLException, ClassNotFoundException {
         String task = "INSERT INTO Products (ID, Status, ProductName, IsCountable, Description) " +
                                 "VALUES(?, ?, ?, ?, ?)";

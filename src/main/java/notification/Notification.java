@@ -39,7 +39,10 @@ public enum Notification {
     DECREASED("Cart Product Decreased \uD83D\uDE2D"),
     MORE_THAN_CART_UNCOUNTABLE("You Are Subtracting The Amount More Than Or Equal To Your Cart.\nUse The Remove Option If you Want."),
     CART_PRODUCT_REMOVED("SuccessFully Deleted This Product From Your Cart.\nBut Don't Do That Again. Man Ghahram \uD83D\uDE2D\uD83D\uDE2D"),
-    NOT_YOUR_CART_PRODUCT("Wait WTF \uD83D\uDE10 This is Product Isn't in your cart");
+    NOT_YOUR_CART_PRODUCT("Wait WTF \uD83D\uDE10 This is Product Isn't in your cart."),
+    CATEGORY_ADDED("SuccessFully Added The Category."),
+    DUPLICATE_CATEGORY_NAME("This Category Name Is Already Used. \uD83D\uDE36"),
+    CATEGORY_DELETED("Category And It's Product Deleted In Whole. \uD83D\uDE0E");
 
 
     private String message;

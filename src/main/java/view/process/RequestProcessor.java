@@ -8,7 +8,6 @@ import java.util.HashMap;
 public class RequestProcessor extends Processor{
     private static RequestProcessor processor = null;
 
-
     private RequestProcessor() {
         this.functionsHashMap = new HashMap<>();
         this.functionsHashMap.put("Manage Vendors Registration Requests", new FunctioningOption() {
