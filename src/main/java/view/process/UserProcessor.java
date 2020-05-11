@@ -51,7 +51,6 @@ public class UserProcessor extends ListicOptionProcessor {
     }
 
     public Menu acceptRequest(Object... objects){
-        Object[] parameters = objects.clone();
         ListicOptionMenu menu = (ListicOptionMenu)objects[0];
         Account account = (Account)objects[1];
 
@@ -60,7 +59,6 @@ public class UserProcessor extends ListicOptionProcessor {
     }
 
     public Menu declineRequest(Object... objects){
-        Object[] parameters = objects.clone();
         ListicOptionMenu menu = (ListicOptionMenu)objects[0];
         Account account = (Account)objects[1];
 
@@ -69,10 +67,11 @@ public class UserProcessor extends ListicOptionProcessor {
     }
 
     public Menu deleteUser(Object... objects) {
-        Object[] parameters = objects.clone();
-        Menu menu = (Menu)parameters[0];
-        String userName = (String)parameters[1];
-        accountControl.deleteUserWithUsername(userName);
-        return menu;
+        ListicOptionMenu menu = (ListicOptionMenu) objects[0];
+        Account account = (Account) objects[1];
+
+        System.out.println(accountControl.deleteUserWithUsername(account.getUsername()).getMessage());
+        return menu.getParentMenu();
     }
+
 }
