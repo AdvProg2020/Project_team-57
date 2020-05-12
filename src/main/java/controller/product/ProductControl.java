@@ -1,8 +1,10 @@
 package controller.product;
 
 import controller.Control;
+import model.db.CategoryTable;
 import model.db.EditingProductTable;
 import model.db.ProductTable;
+import model.existence.Category;
 import model.existence.Product;
 import notification.Notification;
 
@@ -34,34 +36,28 @@ public class ProductControl extends Control {
     }
 
 
-    public String getProductMenuType()
-    {
-        if(isLoggedIn())
-        {
-            if(getType().equals("Admin"))
+    public String getProductMenuType() {
+        if (isLoggedIn()) {
+            if (getType().equals("Admin"))
                 return "Admin Product Menu";
-            else if(getType().equals("Customer")) {
+            else if (getType().equals("Customer")) {
+                //TODO
+            } else {
                 //TODO
             }
-            else{
-                //TODO
-            }
-        }
-        else
-        {
+        } else {
             return "Not Logged In Product Menu";
         }
         return null;
     }
 
-    public static ProductControl getController(){
+    public static ProductControl getController() {
         if (productControl == null)
             productControl = new ProductControl();
         return productControl;
     }
 
-    public ArrayList<String> getAllProductNames()
-    {
+    public ArrayList<String> getAllProductNames() {
         ArrayList<String> allProductNames = new ArrayList<>();
         try {
             for (Product product : ProductTable.getAllProducts()) {
@@ -75,8 +71,7 @@ public class ProductControl extends Control {
         return allProductNames;
     }
 
-    public ArrayList<String> getAllProductIDs()
-    {
+    public ArrayList<String> getAllProductIDs() {
         ArrayList<String> allProductIDs = new ArrayList<>();
         try {
             for (Product product : ProductTable.getAllProducts()) {
@@ -92,13 +87,13 @@ public class ProductControl extends Control {
 
     public Notification editField(String fieldName, String newField, String ID) {
         try {
-            if(ProductTable.getProductByID(ID).getStatus() == 2)
+            if (ProductTable.getProductByID(ID).getStatus() == 2)
                 return Notification.PRODUCT_NOT_AVAILABLE;
 
             if (checkFieldEquality(fieldName, newField, ID))
                 return Notification.SAME_FIELD_ERROR;
 
-            if(ProductTable.getProductByID(ID).getStatus() == 1)
+            if (ProductTable.getProductByID(ID).getStatus() == 1)
                 ProductTable.setProductStatus(ID, 3);
 
             if (EditingProductTable.isIDFree(ID))
@@ -118,24 +113,20 @@ public class ProductControl extends Control {
 
     private void editSpecificField(String fieldName, String newField, String ID) {
         try {
-            if(fieldName.equals("Name") || fieldName.equals("Brand") ||
-                    fieldName.equals("Category") || fieldName.equals("Description"))
-            {
-                if(fieldName.equals("Name"))
+            if (fieldName.equals("Name") || fieldName.equals("Brand") ||
+                    fieldName.equals("Category") || fieldName.equals("Description")) {
+                if (fieldName.equals("Name"))
                     fieldName = "ProductName";
                 EditingProductTable.editFieldWithName(ID, fieldName, newField);
-            }
-
-            else if(fieldName.equals("Count"))
+            } else if (fieldName.equals("Count"))
                 EditingProductTable.changeProductCount(ID, Integer.parseInt(newField));
 
-            else if(fieldName.equals("Amount"))
+            else if (fieldName.equals("Amount"))
                 EditingProductTable.changeProductAmount(ID, Double.parseDouble(newField));
 
-            else if(fieldName.equals("Price"))
+            else if (fieldName.equals("Price"))
                 EditingProductTable.changeProductPrice(ID, Double.parseDouble(newField));
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -143,27 +134,27 @@ public class ProductControl extends Control {
     private boolean checkFieldEquality(String fieldName, String newField, String ID) {
         Product product = getEditedProductByID(ID);
 
-        if(fieldName.equals("Name")) {
-            if(product.getName() == null)
+        if (fieldName.equals("Name")) {
+            if (product.getName() == null)
                 return false;
             return product.getName().equals(newField);
-        } else if(fieldName.equals("Brand")) {
-            if(product.getBrand() == null)
+        } else if (fieldName.equals("Brand")) {
+            if (product.getBrand() == null)
                 return false;
             return product.getBrand().equals(newField);
-        } else if(fieldName.equals("Count")) {
+        } else if (fieldName.equals("Count")) {
             return Integer.parseInt(newField) == product.getCount();
-        } else if(fieldName.equals("Amount")) {
+        } else if (fieldName.equals("Amount")) {
             return Double.parseDouble(newField) == product.getAmount();
-        } else if(fieldName.equals("Category")) {
-            if(product.getCategory() == null)
+        } else if (fieldName.equals("Category")) {
+            if (product.getCategory() == null)
                 return false;
             return product.getCategory().equals(newField);
-        } else if(fieldName.equals("Description")) {
-            if(product.getDescription() == null)
+        } else if (fieldName.equals("Description")) {
+            if (product.getDescription() == null)
                 return false;
             return product.getDescription().equals(newField);
-        } else if(fieldName.equals("Price")) {
+        } else if (fieldName.equals("Price")) {
             return Double.parseDouble(newField) == product.getPrice();
         }
 
@@ -172,7 +163,7 @@ public class ProductControl extends Control {
 
     public Product getEditedProductByID(String ID) {
         try {
-            if(EditingProductTable.isIDFree(ID)) {
+            if (EditingProductTable.isIDFree(ID)) {
                 return ProductTable.getProductByID(ID);
             } else {
                 return EditingProductTable.getEditingProductWithID(ID);
@@ -188,8 +179,7 @@ public class ProductControl extends Control {
     public ArrayList<String> getAllUnApprovedProductNames() {
         ArrayList<String> unApprovedProducts = new ArrayList<>();
         try {
-            for(Product product : ProductTable.getAllUnApprovedProducts())
-            {
+            for (Product product : ProductTable.getAllUnApprovedProducts()) {
                 unApprovedProducts.add(product.getName());
             }
         } catch (SQLException e) {
@@ -203,8 +193,7 @@ public class ProductControl extends Control {
     public ArrayList<String> getAllUnApprovedProductIDs() {
         ArrayList<String> unApprovedProducts = new ArrayList<>();
         try {
-            for(Product product : ProductTable.getAllUnApprovedProducts())
-            {
+            for (Product product : ProductTable.getAllUnApprovedProducts()) {
                 unApprovedProducts.add(product.getID());
             }
         } catch (SQLException e) {
@@ -259,8 +248,8 @@ public class ProductControl extends Control {
     public ArrayList<String> getAllShowingProductNames() {
         ArrayList<String> showingProducts = new ArrayList<>();
         try {
-            for (Product showingProduct : ProductTable.getAllShowingProducts()) {
-                showingProducts.add(showingProduct.getName());
+            for (String showingProductId : filterProducts()) {
+                showingProducts.add(ProductTable.getProductByID(showingProductId).getName());
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -273,8 +262,8 @@ public class ProductControl extends Control {
     public ArrayList<String> getAllShowingProductIDs() {
         ArrayList<String> showingProducts = new ArrayList<>();
         try {
-            for (Product showingProduct : ProductTable.getAllShowingProducts()) {
-                showingProducts.add(showingProduct.getID());
+            for (String showingProductId : filterProducts()) {
+                showingProducts.add(showingProductId);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -282,5 +271,53 @@ public class ProductControl extends Control {
             e.printStackTrace();
         }
         return showingProducts;
+    }
+
+    private ArrayList<String> filterProducts() throws SQLException, ClassNotFoundException {
+        ArrayList<String> filteredProductIds = new ArrayList<>();
+        Control.Filter filter = Control.getFilter();
+        if (filter.getFilterCategories().size() != 0) {
+            for (String category : filter.getFilterCategories()) {
+                for (String productId : filterOnCategory(category)) {
+                    if (!filteredProductIds.contains(productId))
+                        filteredProductIds.add(productId);
+                }
+            }
+        } else {
+            for (Product product : ProductTable.getAllShowingProducts()) {
+                filteredProductIds.add(product.getID());
+            }
+        }
+        if (filter.getFilterNames().size() != 0) {
+            for (String filterName : filter.getFilterNames()) {
+                filterOnName(filteredProductIds, filterName);
+            }
+        }
+        return filteredProductIds;
+    }
+
+    private ArrayList<String> filterOnCategory(String category) throws SQLException, ClassNotFoundException {
+        if (!CategoryTable.isThereSubCategories(category) &&
+                !ProductTable.isThereProductWithSpecificCategory(category)) {
+            return new ArrayList<>();
+        }
+        ArrayList<String> productIds = new ArrayList<>();
+        for (Product product : ProductTable.getProductsWithCategory(category)) {
+            if (product.getStatus() != 2)
+                productIds.add(product.getID());
+        }
+        for (Category subCategory : CategoryTable.getSubCategories(category)) {
+            productIds.addAll(filterOnCategory(subCategory.getName()));
+        }
+        return productIds;
+    }
+
+    private void filterOnName(ArrayList<String> filteredProductIds, String filterName) throws SQLException, ClassNotFoundException {
+        for (int i = 0; i < filteredProductIds.size(); i++) {
+            if (!ProductTable.getProductByID(filteredProductIds.get(i)).getName().contains(filterName)) {
+                filteredProductIds.remove(i);
+                i--;
+            }
+        }
     }
 }

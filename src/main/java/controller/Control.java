@@ -11,12 +11,29 @@ public class Control {
     private static boolean isFiltered;
     private static Filter filter;
 
+    //INNER CLASS
     public static class Filter{
         ArrayList<String> filterCategories;
         ArrayList<String> filterNames;
 
         public Filter(ArrayList<String> filterCategories, ArrayList<String> filterNames) {
             this.filterCategories = filterCategories;
+            this.filterNames = filterNames;
+        }
+
+        public ArrayList<String> getFilterCategories() {
+            return filterCategories;
+        }
+
+        public void setFilterCategories(ArrayList<String> filterCategories) {
+            this.filterCategories = filterCategories;
+        }
+
+        public ArrayList<String> getFilterNames() {
+            return filterNames;
+        }
+
+        public void setFilterNames(ArrayList<String> filterNames) {
             this.filterNames = filterNames;
         }
     }
