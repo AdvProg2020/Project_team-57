@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.PropertyResourceBundle;
 
 public class CategoryTable extends Database {
     public static boolean isThereCategoryWithName(String name) throws SQLException, ClassNotFoundException {
@@ -67,5 +68,21 @@ public class CategoryTable extends Database {
             allCategories.add(new Category(resultSet));
         }
         return allCategories;
+    }
+
+    public static void changeCategoryName(String initialName, String newName) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Categories SET Name = ? WHERE Name = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, newName);
+        preparedStatement.setString(2, initialName);
+        preparedStatement.execute();
+    }
+
+    public static void changeCategoryFeatures(String categoryName, String newFeatures) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Categories SET Features = ? WHERE Name = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, newFeatures);
+        preparedStatement.setString(2, categoryName);
+        preparedStatement.execute();
     }
 }
