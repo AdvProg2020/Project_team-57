@@ -1,11 +1,25 @@
 package controller;
 
+import java.util.ArrayList;
+
 public class Control {
     private static Control control = null;
     private static boolean isLoggedIn = false;
     private static String username;
     private static String type;
 
+    private static boolean isFiltered;
+    private static Filter filter;
+
+    public static class Filter{
+        ArrayList<String> filterCategories;
+        ArrayList<String> filterNames;
+
+        public Filter(ArrayList<String> filterCategories, ArrayList<String> filterNames) {
+            this.filterCategories = filterCategories;
+            this.filterNames = filterNames;
+        }
+    }
 
     public static Control getController(){
         if (control == null){
@@ -36,5 +50,13 @@ public class Control {
 
     public static void setType(String type) {
         Control.type = type;
+    }
+
+    public static boolean isIsFiltered() {
+        return isFiltered;
+    }
+
+    public static Filter getFilter() {
+        return filter;
     }
 }
