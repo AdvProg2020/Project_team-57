@@ -85,4 +85,11 @@ public class CategoryTable extends Database {
         preparedStatement.setString(2, categoryName);
         preparedStatement.execute();
     }
+
+    public static boolean isThereSubCategories(String categoryName) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Categories WHERE ParentCategory = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, categoryName);
+        return preparedStatement.executeQuery().next();
+    }
 }

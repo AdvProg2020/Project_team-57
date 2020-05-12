@@ -8,11 +8,9 @@ import model.existence.Product;
 import notification.Notification;
 import model.db.CategoryTable;
 import model.existence.Category;
-import view.menu.ListicOptionMenu;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class AdminControl extends AccountControl{
     private static AdminControl adminControl = null;

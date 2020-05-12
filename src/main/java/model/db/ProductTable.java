@@ -202,4 +202,11 @@ public class ProductTable extends Database {
         preparedStatement.setString(5, "She is my favorite. She is the best. She She She ...");
         preparedStatement.execute();
     }
+
+    public static boolean isThereProductWithSpecificCategory(String categoryName) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Products WHERE Category = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, categoryName);
+        return preparedStatement.executeQuery().next();
+    }
 }
