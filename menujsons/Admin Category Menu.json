@@ -1,0 +1,11 @@
+{
+  "options" : [
+    "Edit Category",
+    "Remove Category"
+  ],
+
+  "name" : "Category Menu",
+  "parentName" : "Manage Categories Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "CategoryProcessor"
+}

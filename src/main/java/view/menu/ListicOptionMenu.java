@@ -1,13 +1,16 @@
 package view.menu;
 
 import controller.Control;
+import view.PrintOptionSpecs;
+import view.process.Processor;
 import view.process.ProductProcessor;
 import view.process.UserProcessor;
 
 import java.io.FileNotFoundException;
 
-public class ListicOptionMenu extends Menu {
+public class ListicOptionMenu extends Menu implements PrintOptionSpecs {
     protected Menu parentMenu;
+    protected Object option;
 
     public static ListicOptionMenu makeMenu(String menuName, Menu parentMenu, String optionID) {
         String json = "";
@@ -21,7 +24,7 @@ public class ListicOptionMenu extends Menu {
                 }
             }
 
-            json = ProductMenu.getJsonFromDB(menuName);
+            json = ListicOptionMenu.getJsonFromDB(menuName);
         } catch (FileNotFoundException e) {
             System.out.println("ProductMenu File Couldn't Get Initialized! Please Contact Us As Soon As Possible :.(");
         }
@@ -30,6 +33,8 @@ public class ListicOptionMenu extends Menu {
 
         if(menuName.contains("Product")) {
             menu = ProductProcessor.setMenu(json, optionID);
+        } else if(menuName.contains("Category")){
+
         } else {
             menu = UserProcessor.setMenu(json, optionID);
         }
@@ -40,7 +45,7 @@ public class ListicOptionMenu extends Menu {
     }
 
     public void show(){
-        printOptionSpecs();
+        printOptionSpecs(option);
 
         System.out.println("0. back");
 
@@ -49,7 +54,38 @@ public class ListicOptionMenu extends Menu {
 
     }
 
-    protected void printOptionSpecs(){}
+    public Menu execute(){
+        processor = Processor.findProcessorWithName(processorName);
+        Menu nextMenu = this;
+        boolean flag = true;
+        int input = 0;
+
+        while(flag){
+            try {
+                input = Integer.parseInt(scanner.nextLine().trim());
+
+                if (input > options.size() || input < 0)
+                    throw new InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
+                else
+                    flag = false;
+
+            } catch (NumberFormatException e) {
+                System.out.println("Please Enter An Integer");
+            } catch (NullPointerException e) {
+                System.out.println("Please Enter An Integer");
+            } catch (InputIsBiggerThanExistingNumbers e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        if(input == 0) {
+            nextMenu = parentMenu;
+        } else if(processor.isThereFunctionWithName(options.get(input - 1))) {
+            nextMenu = processor.executeTheFunctionWithName(options.get(input - 1), this, option);
+        }
+
+        return nextMenu;
+    }
 
     public void setParentMenu(Menu parentMenu) {
         this.parentMenu = parentMenu;
@@ -57,5 +93,9 @@ public class ListicOptionMenu extends Menu {
 
     public Menu getParentMenu() {
         return parentMenu;
+    }
+
+    public void setOption(Object option) {
+        this.option = option;
     }
 }
