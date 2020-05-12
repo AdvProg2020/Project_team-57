@@ -233,6 +233,6 @@ public interface PrintOptionSpecs {
 
     default void printFilteringOptionSpecs(String filteringOption) {
         //TODO
-        System.out.println("********\t" + filteringOption + "\t********");
+        System.out.println("********    " + filteringOption + "    ********");
     }
 }

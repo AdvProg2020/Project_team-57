@@ -163,7 +163,7 @@ public class ListicProcessor extends Processor {
             initProductsMenu(listicMenu);
         else if(listicMenu.getName().equals("View Cart"))
             initViewCart(listicMenu);
-        else if(listicMenu.getName().equals("Manage Categories") || listicMenu.getName().equals("Categories Listic Menu"))
+        else if(listicMenu.getName().equals("Manage Categories") || listicMenu.getName().equals("Categories"))
             initCategories(listicMenu);
         else if(listicMenu.getName().equals("Current Categories"))
             initCurrentCategories(listicMenu);
@@ -177,6 +177,7 @@ public class ListicProcessor extends Processor {
 
 
     private static void initCategories(ListicMenu listicMenu) {
+        //System.out.println("WTF!!!");
         listicMenu.setListicOptionNames(adminControl.getAllCategoryNames());
         listicMenu.setListicOptionPrimaryKeys(adminControl.getAllCategoryNames());
     }
@@ -187,7 +188,6 @@ public class ListicProcessor extends Processor {
     }
 
     private static void initProductsMenu(ListicMenu listicMenu) {
-        customerControl.initFilter();
         listicMenu.setListicOptionNames(productControl.getAllShowingProductNames());
         listicMenu.setListicOptionPrimaryKeys(productControl.getAllShowingProductIDs());
     }

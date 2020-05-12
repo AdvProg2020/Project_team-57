@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class MainMenuProcessor extends Processor {
     private static MainMenuProcessor mainMenuProcessor = null;
-
+    private static Control control = Control.getController();
     private MainMenuProcessor(){
         functionsHashMap = new HashMap<>();
         functionsHashMap.put("Account Menu", new FunctioningOption() {
@@ -43,6 +43,7 @@ public class MainMenuProcessor extends Processor {
 
     public Menu productsMenu()
     {
+        control.initFilter();
         return ListicMenu.makeListicMenu("Products Listic Menu");
     }
 }

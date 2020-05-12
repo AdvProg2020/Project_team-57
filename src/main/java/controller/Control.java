@@ -33,6 +33,10 @@ public class Control {
 
     public Notification addToFilterCategoryList(String categoryName) {
         filter.addToCategories(categoryName);
+        System.out.println("Categories: ");
+        for (String category : filter.getFilterCategories()) {
+            System.out.println(category);
+        }
         return Notification.CATEGORY_FILTERED;
     }
 
