@@ -2,6 +2,7 @@ package view.process;
 
 import com.google.gson.GsonBuilder;
 import controller.Control;
+import controller.account.CustomerControl;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 
@@ -9,6 +10,7 @@ import java.util.HashMap;
 
 public class FilteringProcessor extends Processor {
     private static FilteringProcessor filteringProcessor = null;
+    private static CustomerControl customerControl = CustomerControl.getController();
 
     private FilteringProcessor() {
         functionsHashMap = new HashMap<>();
@@ -43,9 +45,9 @@ public class FilteringProcessor extends Processor {
         String filterName = (String) objects[1];
 
         if(menu.getName().equals("Filtering Category Menu")) {
-            System.out.println(Control.addToFilterCategoryList(filterName).getMessage());
+            System.out.println(customerControl.addToFilterCategoryList(filterName).getMessage());
         } else if(menu.getName().equals("Filtering Name Menu")) {
-            System.out.println(Control.addToFilterNameList(filterName).getMessage());
+            System.out.println(customerControl.addToFilterNameList(filterName).getMessage());
         }
 
         return menu.getParentMenu();
@@ -56,9 +58,9 @@ public class FilteringProcessor extends Processor {
         String filterName = (String) objects[1];
 
         if(menu.getName().equals("Filtering Category Menu")) {
-            System.out.println(Control.removeFromFilterCategoryList(filterName).getMessage());
+            System.out.println(customerControl.removeFromFilterCategoryList(filterName).getMessage());
         } else if(menu.getName().equals("Filtering Name Menu")) {
-            System.out.println(Control.removeFromFilterNameList(filterName).getMessage());
+            System.out.println(customerControl.removeFromFilterNameList(filterName).getMessage());
         }
 
         return menu.getParentMenu();

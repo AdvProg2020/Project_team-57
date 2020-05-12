@@ -180,7 +180,14 @@ public class AddProductProcessor extends Processor {
     }
 
     public Menu getCategory(){
-        //TODO Getting Category
+        System.out.println("Please Enter The Category Name");
+        String categoryName = scanner.nextLine();
+        if(vendorControl.isThereCategoryWithName(categoryName))
+        {
+            product.setCategory(categoryName);
+        }
+        else
+            System.out.println("No Category With Such Name!");
         return getThisMenu();
     }
 
@@ -208,7 +215,8 @@ public class AddProductProcessor extends Processor {
     }
 
     public Menu confirm(){
-        //TODO Seting Position for Parent Menu
+        if(product.getCategory() == null)
+            product.setCategory("All Products");
         vendorControl.addProduct(product);
         return back();
     }

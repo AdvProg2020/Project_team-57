@@ -55,6 +55,12 @@ public class ListicProcessor extends Processor {
                 return addCategory(objects);
             }
         });
+        this.functionsHashMap.put("Filtering", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return filtering(objects);
+            }
+        });
     }
 
     public static ListicProcessor getInstance()
@@ -89,6 +95,8 @@ public class ListicProcessor extends Processor {
             return ListicOptionMenu.makeMenu("Cart Product Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("Manage Categories"))
             return ListicOptionMenu.makeMenu("Admin Category Menu", parentMenu, primaryKey);
+        else if(parentMenu.getName().equals("Categories") || parentMenu.getName().equals("Current Categories"))
+            return ListicOptionMenu.makeMenu("Filtering Category Menu", parentMenu, primaryKey);
         //TODO(OTHERS)
         return null;
     }
@@ -129,6 +137,11 @@ public class ListicProcessor extends Processor {
         return Menu.makeMenu("Add Category Menu");
     }
 
+    public Menu filtering(Object... objects)
+    {
+        return Menu.makeMenu("Filter Menu");
+    }
+
 
     public static void initListicMenu(ListicMenu listicMenu)
     {
@@ -150,12 +163,20 @@ public class ListicProcessor extends Processor {
             initProductsMenu(listicMenu);
         else if(listicMenu.getName().equals("View Cart"))
             initViewCart(listicMenu);
-        else if(listicMenu.getName().equals("Manage Categories"))
-            initManageCategories(listicMenu);
+        else if(listicMenu.getName().equals("Manage Categories") || listicMenu.getName().equals("Categories Listic Menu"))
+            initCategories(listicMenu);
+        else if(listicMenu.getName().equals("Current Categories"))
+            initCurrentCategories(listicMenu);
         //TODO(OTHERS)
     }
 
-    private static void initManageCategories(ListicMenu listicMenu) {
+    private static void initCurrentCategories(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(customerControl.getCurrentCategories());
+        listicMenu.setListicOptionPrimaryKeys(customerControl.getCurrentCategories());
+    }
+
+
+    private static void initCategories(ListicMenu listicMenu) {
         listicMenu.setListicOptionNames(adminControl.getAllCategoryNames());
         listicMenu.setListicOptionPrimaryKeys(adminControl.getAllCategoryNames());
     }
@@ -166,6 +187,7 @@ public class ListicProcessor extends Processor {
     }
 
     private static void initProductsMenu(ListicMenu listicMenu) {
+        customerControl.initFilter();
         listicMenu.setListicOptionNames(productControl.getAllShowingProductNames());
         listicMenu.setListicOptionPrimaryKeys(productControl.getAllShowingProductIDs());
     }

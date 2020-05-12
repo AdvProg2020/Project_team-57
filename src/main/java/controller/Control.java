@@ -1,5 +1,10 @@
 package controller;
 
+import model.db.CategoryTable;
+import model.existence.Category;
+import notification.Notification;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Control {
@@ -8,10 +13,45 @@ public class Control {
     private static String username;
     private static String type;
 
-    private static boolean isFiltered;
     private static Filter filter;
 
-    //INNER CLASS
+    public ArrayList<String> getCurrentCategories() {
+        return filter.getFilterCategories();
+    }
+
+    public boolean isThereFilteringCategoryWithName(String optionID) {
+        return filter.getFilterCategories().contains(optionID);
+    }
+
+    public boolean isThereFilteringNameWithName(String optionID) {
+        return filter.getFilterNames().contains(optionID);
+    }
+
+    public void initFilter() {
+        filter = new Control.Filter(new ArrayList<>(), new ArrayList<>());
+    }
+
+    public Notification addToFilterCategoryList(String categoryName) {
+        filter.addToCategories(categoryName);
+        return Notification.CATEGORY_FILTERED;
+    }
+
+    public Notification addToFilterNameList(String name) {
+        filter.addToNames(name);
+        return Notification.NAME_FILTERED;
+    }
+
+    public Notification removeFromFilterCategoryList(String categoryName) {
+        filter.removeFromCategories(categoryName);
+        return Notification.CATEGORY_FILTER_DELETED;
+    }
+
+    public Notification removeFromFilterNameList(String name) {
+        filter.removeFromNames(name);
+        return Notification.NAME_FILTER_DELETED;
+    }
+
+    //START INNER CLASS
     public static class Filter{
         ArrayList<String> filterCategories;
         ArrayList<String> filterNames;
@@ -36,7 +76,28 @@ public class Control {
         public void setFilterNames(ArrayList<String> filterNames) {
             this.filterNames = filterNames;
         }
+
+        public void addToCategories(String categoryName)
+        {
+            filterCategories.add(categoryName);
+        }
+
+        public void addToNames(String name)
+        {
+            filterNames.add(name);
+        }
+
+        public void removeFromCategories(String categoryName)
+        {
+            filterCategories.remove(categoryName);
+        }
+
+        public void removeFromNames(String name)
+        {
+            filterNames.remove(name);
+        }
     }
+    //END INNER CLASS
 
     public static Control getController(){
         if (control == null){
@@ -67,10 +128,6 @@ public class Control {
 
     public static void setType(String type) {
         Control.type = type;
-    }
-
-    public static boolean isIsFiltered() {
-        return isFiltered;
     }
 
     public static Filter getFilter() {

@@ -1,0 +1,6 @@
+{
+  "name" : "Current Categories",
+  "parentName" : "Filter Menu",
+  "isThereParentMenu" : true,
+  "processorName" : "ListicProcessor"
+}

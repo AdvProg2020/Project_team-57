@@ -1,0 +1,68 @@
+package view.process;
+
+import controller.account.CustomerControl;
+import view.menu.ListicMenu;
+import view.menu.Menu;
+
+import java.util.HashMap;
+
+public class FilterProcessor extends Processor {
+    private static FilterProcessor processor = null;
+    private CustomerControl customerControl = null;
+
+    public FilterProcessor() {
+        customerControl = CustomerControl.getController();
+        this.functionsHashMap = new HashMap<>();
+        this.functionsHashMap.put("Filter By Category", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return filterByCategory();
+            }
+        });
+        this.functionsHashMap.put("Current Filters", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return currentFilters();
+            }
+        });
+    }
+
+    public static FilterProcessor getInstance() {
+        return processor;
+    }
+
+    public Menu filterByCategory() {
+        return ListicMenu.makeListicMenu("Categories Listic Menu");
+    }
+
+    /*public Menu filterByName()
+    {
+        System.out.println("0. Back");
+        System.out.println("Enter The Name You Want To Filter The Products By: ");
+
+    }*/
+
+    public Menu currentFilters() {
+        while (true)
+        {
+            System.out.println("0. Back");
+            System.out.println("1. Current Category Filters");
+            System.out.println("2. Current Name Filters");
+            try {
+                int input = Integer.parseInt(scanner.nextLine().trim());
+                if(input == 0)
+                    return Menu.makeMenu("Filter Menu");
+                else if(input == 1)
+                    return ListicMenu.makeListicMenu("Current Category Filters");
+                else if(input == 2) {
+                    //TODO
+                }
+                System.out.println("Invalid Number!!! \nWhat are you doing, man?!");
+            } catch (NumberFormatException e) {
+                System.out.println("Please Enter An Integer");
+            } catch (NullPointerException e) {
+                System.out.println("Please Enter An Integer");
+            }
+        }
+    }
+}

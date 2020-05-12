@@ -1,6 +1,7 @@
 package controller.account;
 
 import controller.Control;
+import model.db.CategoryTable;
 import model.db.ProductTable;
 import model.db.VendorTable;
 import model.existence.Product;
@@ -79,5 +80,16 @@ public class VendorControl extends AccountControl{
             ID.append(validchars[((int) (Math.random() * 1000000)) % validchars.length]);
         }
         return ID.toString();
+    }
+
+    public boolean isThereCategoryWithName(String categoryName) {
+        try {
+            return CategoryTable.isThereCategoryWithName(categoryName);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

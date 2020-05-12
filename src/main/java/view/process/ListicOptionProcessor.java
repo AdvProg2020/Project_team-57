@@ -1,11 +1,12 @@
 package view.process;
 
 import controller.Control;
+import controller.account.CustomerControl;
 import view.menu.ListicOptionMenu;
 
 public class ListicOptionProcessor extends Processor{
     private static ListicOptionProcessor listicOptionProcessor = null;
-
+    private static CustomerControl customerControl = CustomerControl.getController();
     public static ListicOptionProcessor getInstance() {
         if(listicOptionProcessor == null)
             listicOptionProcessor = new ListicOptionProcessor();
@@ -41,7 +42,8 @@ public class ListicOptionProcessor extends Processor{
     public static String changeMenuNameForFilteringCategoryMenu(String optionID) {
         String menuName = null;
 
-        if(Control.getFilter().isThereFilteringCategoryWithName(optionID)) {
+        if(customerControl.isThereFilteringCategoryWithName(optionID))
+        {
             menuName = "Filtering Category Menu2";
         } else {
             menuName = "Filtering Category Menu1";
@@ -53,7 +55,7 @@ public class ListicOptionProcessor extends Processor{
     public static String changeMenuNameForFilteringNameMenu(String optionID) {
         String menuName = null;
 
-        if(Control.getFilter().isThereFilteringNameWithName(optionID)) {
+        if(customerControl.isThereFilteringNameWithName(optionID)) {
             menuName = "Filtering Category Menu2";
         } else {
             menuName = "Filtering Category Menu1";
