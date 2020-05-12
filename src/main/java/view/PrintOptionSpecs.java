@@ -15,6 +15,8 @@ public interface PrintOptionSpecs {
             printProductSpecs((Product) option);
         } else if(option instanceof Category) {
             printCategorySpecs((Category) option);
+        } else if(option instanceof String) {
+            System.out.println("********" + (String)option + "********");
         }
     }
 

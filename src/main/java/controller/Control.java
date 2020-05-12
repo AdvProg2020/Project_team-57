@@ -59,4 +59,5 @@ public class Control {
     public static Filter getFilter() {
         return filter;
     }
+
 }
