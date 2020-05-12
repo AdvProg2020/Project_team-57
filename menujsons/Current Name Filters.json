@@ -1,0 +1,6 @@
+{
+  "name" : "Current Name Filters",
+  "parentName" : "Filter Menu",
+  "isThereParentMenu" : true,
+  "processorName" : "ListicProcessor"
+}

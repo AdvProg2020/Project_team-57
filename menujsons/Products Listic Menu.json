@@ -4,7 +4,6 @@
   "isThereParentMenu" : true,
   "processorName" : "ListicProcessor",
   "options" : [
-    "View Categories",
     "Filtering",
     "Sorting"
   ]
