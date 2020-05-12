@@ -41,8 +41,11 @@ public class Control {
     }
 
     public Notification addToFilterNameList(String name) {
+        if(!isThereFilteringNameWithName(name)) {
         filter.addToNames(name);
         return Notification.NAME_FILTERED;
+        }
+        return Notification.NAME_FILTERED_DUPLICATE;
     }
 
     public Notification removeFromFilterCategoryList(String categoryName) {

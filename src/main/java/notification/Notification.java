@@ -52,7 +52,8 @@ public enum Notification {
             "\nJust Kidding. Category Successfully Filtered \uD83D\uDE06"),
     NAME_FILTERED("Avoid Fast Food, It Can Cause Gastric Cancer.\nAnd Name Successfully Filtered \uD83D\uDE44"),
     CATEGORY_FILTER_DELETED("Brush Your Teeth Every Night.\nAnd Be Sure That Your Category Filter Is Deleted."),
-    NAME_FILTER_DELETED("Once Upon A Time In WinterFall... O' Sorry\n Your Filtered Name Deleted Successfully.");
+    NAME_FILTER_DELETED("Once Upon A Time In WinterFall... O' Sorry\n Your Filtered Name Deleted Successfully."),
+    NAME_FILTERED_DUPLICATE("You Already Filtered This Name Kiddo \uD83D\uDE44");
 
 
     private String message;

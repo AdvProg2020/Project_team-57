@@ -25,6 +25,12 @@ public class FilterProcessor extends Processor {
                 return currentFilters();
             }
         });
+        this.functionsHashMap.put("Filter By Name", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return filterByName();
+            }
+        });
     }
 
     public static FilterProcessor getInstance() {
@@ -38,12 +44,13 @@ public class FilterProcessor extends Processor {
         return ListicMenu.makeListicMenu("Categories Listic Menu");
     }
 
-    /*public Menu filterByName()
+    public Menu filterByName()
     {
         System.out.println("0. Back");
         System.out.println("Enter The Name You Want To Filter The Products By: ");
-
-    }*/
+        System.out.println(customerControl.addToFilterNameList(scanner.nextLine()));
+        return Menu.makeMenu("Filter Menu");
+    }
 
     public Menu currentFilters() {
         while (true)
@@ -58,7 +65,7 @@ public class FilterProcessor extends Processor {
                 else if(input == 1)
                     return ListicMenu.makeListicMenu("Current Category Filters");
                 else if(input == 2) {
-                    //TODO
+                    return ListicMenu.makeListicMenu("Current Name Filters");
                 }
                 System.out.println("Invalid Number!!! \nWhat are you doing, man?!");
             } catch (NumberFormatException e) {
