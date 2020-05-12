@@ -21,8 +21,6 @@ public class ListicOptionProcessor extends Processor{
             menuName = changeMenuNameForCommonProductMenu();
         } else if(menuName.equals("Filtering Category Menu")) {
             menuName = changeMenuNameForFilteringCategoryMenu(optionID);
-        } else if(menuName.equals("Filtering Name Menu")) {
-            menuName = changeMenuNameForFilteringNameMenu(optionID);
         }
 
         return menuName;
@@ -45,18 +43,6 @@ public class ListicOptionProcessor extends Processor{
 
         if(customerControl.isThereFilteringCategoryWithName(optionID))
         {
-            menuName = "Filtering Category Menu2";
-        } else {
-            menuName = "Filtering Category Menu1";
-        }
-
-        return menuName;
-    }
-
-    public static String changeMenuNameForFilteringNameMenu(String optionID) {
-        String menuName = null;
-
-        if(customerControl.isThereFilteringNameWithName(optionID)) {
             menuName = "Filtering Category Menu2";
         } else {
             menuName = "Filtering Category Menu1";

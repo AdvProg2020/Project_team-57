@@ -3,7 +3,6 @@
     "Remove Filter"
   ],
   "name" : "Filtering Name Menu",
-  //TODO Parent Name
   "parentName" : "Filter Name Menu",
   "isThereParentMenu" : "true",
   "processorName" : "FilteringProcessor"
