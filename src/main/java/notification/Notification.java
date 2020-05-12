@@ -42,7 +42,9 @@ public enum Notification {
     NOT_YOUR_CART_PRODUCT("Wait WTF \uD83D\uDE10 This is Product Isn't in your cart."),
     CATEGORY_ADDED("SuccessFully Added The Category."),
     DUPLICATE_CATEGORY_NAME("This Category Name Is Already Used. \uD83D\uDE36"),
-    CATEGORY_DELETED("Category And It's Product Deleted In Whole. \uD83D\uDE0E");
+    CATEGORY_DELETED("Category And It's Product Deleted In Whole. \uD83D\uDE0E"),
+    CATEGORY_MODIFIED("Category Modified Successfuly."),
+    CATEGORY_NOT_FOUND("Category With This Name Not Found. \uD83E\uDD2B");
 
 
     private String message;

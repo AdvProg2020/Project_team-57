@@ -99,6 +99,14 @@ public class ProductTable extends Database {
         return products;
     }
 
+    public static void changeProductCategoryByID(String ID, String category) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Products SET Category = ? WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, category);
+        preparedStatement.setString(2, ID);
+        preparedStatement.execute();
+    }
+
     public static void tempAddProducts() throws SQLException, ClassNotFoundException {
         String task = "INSERT INTO Products (ID, Status, ProductName, IsCountable, Description) " +
                                 "VALUES(?, ?, ?, ?, ?)";

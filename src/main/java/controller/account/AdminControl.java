@@ -11,6 +11,7 @@ import model.existence.Category;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class AdminControl extends AccountControl{
     private static AdminControl adminControl = null;
@@ -57,7 +58,7 @@ public class AdminControl extends AccountControl{
         ArrayList<String> categories = new ArrayList<>();
         for(Category category : CategoryTable.getAllCategories())
         {
-            categories.add(categories.getName());
+            categories.add(category.getName());
         }
         return categories;
     }
@@ -94,5 +95,57 @@ public class AdminControl extends AccountControl{
             return Notification.CATEGORY_DELETED;
         }
         return Notification.CATEGORY_NOT_FOUND;
+    }
+
+    public Notification editCategoryName(Category oldCategory, Category newCategory)
+    {
+        try {
+            if(!oldCategory.getName().equals(newCategory))
+            {
+                if(!CategoryTable.isThereCategoryWithName(newCategory.getName()))
+                {
+                    for (Product product : ProductTable.getProductsWithCategory(oldCategory.getName())) {
+                        ProductTable.changeProductCategoryByID(product.getID(), newCategory.getName());
+                    }
+                    for (Category subcategory : CategoryTable.getSubcategories(oldCategory.getName())) {
+                        CategoryTable.setCategoryParentName(subcategory.getName(), newCategory.getName());
+                    }
+                    CategoryTable.changeCategoryName(oldCategory.getName(), newCategory.getName());
+                }
+                return Notification.DUPLICATE_CATEGORY_NAME;
+            }
+            return Notification.SAME_FIELD_ERROR
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
+    }
+
+    public Notification editCategoryFeatures(Category oldCategory, Category newCategory)
+    {
+        if(!oldCategory.getFeatures().equals(newCategory.getFeatures()))
+        {
+            CategoryTable.changeCategoryFeatures(oldCategory.getName(), newCategory.getFeatures());
+            return Notification.CATEGORY_MODIFIED;
+        }
+        return Notification.SAME_FIELD_ERROR;
+    }
+
+    public Notification editCategoryParentName(Category oldCategory, Category newCategory)
+    {
+        if(!oldCategory.getParentCategory().equals(newCategory.equals(newCategory)))
+        {
+            try {
+                CategoryTable.setCategoryParentName(oldCategory.getName(), newCategory.getName());
+                return Notification.CATEGORY_MODIFIED;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return Notification.SAME_FIELD_ERROR;
     }
 }
