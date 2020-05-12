@@ -114,7 +114,25 @@ public class FilterProcessor extends Processor {
     }
 
     public Menu sortBy(String sort) {
-        System.out.println(customerControl.setSort(sort).getMessage());
+        int input = 0;
+        while(true)
+        {
+
+            System.out.println("0. Back\n1. Ascending\n2. Descending");
+            try{
+                input = Integer.parseInt(scanner.nextLine().trim());
+                if(input == 0)
+                    return Menu.makeMenu("Sorting Menu");
+                if(input == 1 || input == 2)
+                    break;
+                System.out.println("Invalid Number");
+            }catch (NumberFormatException e) {
+                System.out.println("Please Enter An Integer");
+            }catch (NullPointerException e) {
+                System.out.println("Please Enter An Integer");
+            }
+        }
+        System.out.println(customerControl.setSort(sort, input == 1).getMessage());
         return ListicMenu.makeListicMenu("Products Listic Menu");
     }
 

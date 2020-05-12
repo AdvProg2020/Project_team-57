@@ -113,24 +113,38 @@ public class Control {
         sort = new Sort();
     }
 
-    public Notification setSort(String sort) {
-        if(sort.equalsIgnoreCase("View"))
+    public Notification setSort(String sort, boolean isAscending) {
+        if(sort.equalsIgnoreCase("View")) {
+            Control.sort.setAscending(isAscending);
             Control.sort.setSortType(Sort.SortType.VIEW);
-        else if(sort.equalsIgnoreCase("Name"))
+        }
+        else if(sort.equalsIgnoreCase("Name")){
+            Control.sort.setAscending(isAscending);
             Control.sort.setSortType(Sort.SortType.NAME);
-        else if(sort.equalsIgnoreCase("Time"))
+        }
+        else if(sort.equalsIgnoreCase("Time")) {
+            Control.sort.setAscending(isAscending);
             Control.sort.setSortType(Sort.SortType.TIME);
-        else if(sort.equalsIgnoreCase("Score"))
+        }
+        else if(sort.equalsIgnoreCase("Score")) {
+            Control.sort.setAscending(isAscending);
             Control.sort.setSortType(Sort.SortType.SCORE);
+        }
         return Notification.SORTED;
     }
 
     public String getCurrentSort() {
-        return sort.getSortType().getMessage();
+        String currentSort = sort.getSortType().getMessage();
+        if(sort.isAscending())
+            currentSort += ", Ascending";
+        else
+            currentSort += ", Descending";
+        return currentSort;
     }
 
     public Notification disableSore() {
         sort.setSortType(Sort.SortType.VIEW);
+        sort.setAscending(false);
         return Notification.SORT_DISABLED;
     }
 

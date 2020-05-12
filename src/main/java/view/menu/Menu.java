@@ -78,7 +78,6 @@ public class Menu {
         while(flag){
             try {
                 input = Integer.parseInt(scanner.nextLine().trim());
-
                 if (input > options.size() || input < 0)
                     throw new InputIsBiggerThanExistingNumbers("Invalid Number!!! \nWhat are you doing, man?!");
                 else
