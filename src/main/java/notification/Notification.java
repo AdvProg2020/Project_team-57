@@ -48,11 +48,11 @@ public enum Notification {
     PARENT_CATEGORY_NOT_FOUND("There Is No Parent Category With This Name. \uD83E\uDD2B"),
     INVALID_CATEGORY_NAME("Length Of Category Name Must Be Between 6 & 16."),
     INVALID_FEATURES("Length Of Category Features Must Be Less Than 100."),
-    CATEGORY_FILTERED("Your Computer Just Hack By A Russian Group." +
+    CATEGORY_FILTERED("Your Computer Just Hacked By A Russian Group." +
             "\nJust Kidding. Category Successfully Filtered \uD83D\uDE06"),
     NAME_FILTERED("Avoid Fast Food, It Can Cause Gastric Cancer.\nAnd Name Successfully Filtered \uD83D\uDE44"),
     CATEGORY_FILTER_DELETED("Brush Your Teeth Every Night.\nAnd Be Sure That Your Category Filter Is Deleted."),
-    NAME_FILTER_DELETED("Once Upon A Time In WinterFall... O' Sorry\n Your Filtered Name Deleted Successfully."),
+    NAME_FILTER_DELETED("Once Upon A Time In WinterFall... O' Sorry\nYour Filtered Name Deleted Successfully."),
     NAME_FILTERED_DUPLICATE("You Already Filtered This Name Kiddo \uD83D\uDE44");
 
 

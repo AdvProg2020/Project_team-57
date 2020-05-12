@@ -97,6 +97,8 @@ public class ListicProcessor extends Processor {
             return ListicOptionMenu.makeMenu("Admin Category Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("Categories") || parentMenu.getName().equals("Current Categories"))
             return ListicOptionMenu.makeMenu("Filtering Category Menu", parentMenu, primaryKey);
+        else if(parentMenu.getName().equals("Current Name Filters"))
+            return ListicOptionMenu.makeMenu("Filtering Name Menu", parentMenu, primaryKey);
         //TODO(OTHERS)
         return null;
     }
@@ -167,7 +169,14 @@ public class ListicProcessor extends Processor {
             initCategories(listicMenu);
         else if(listicMenu.getName().equals("Current Categories"))
             initCurrentCategories(listicMenu);
+        else if(listicMenu.getName().equals("Current Name Filters"))
+            initCurrentNameFilters(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initCurrentNameFilters(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(customerControl.getCurrentNameFilters());
+        listicMenu.setListicOptionPrimaryKeys(customerControl.getCurrentNameFilters());
     }
 
     private static void initCurrentCategories(ListicMenu listicMenu) {

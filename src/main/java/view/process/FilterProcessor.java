@@ -48,7 +48,7 @@ public class FilterProcessor extends Processor {
     {
         System.out.println("0. Back");
         System.out.println("Enter The Name You Want To Filter The Products By: ");
-        System.out.println(customerControl.addToFilterNameList(scanner.nextLine()));
+        System.out.println(customerControl.addToFilterNameList(scanner.nextLine()).getMessage());
         return Menu.makeMenu("Filter Menu");
     }
 
@@ -63,9 +63,9 @@ public class FilterProcessor extends Processor {
                 if(input == 0)
                     return Menu.makeMenu("Filter Menu");
                 else if(input == 1)
-                    return ListicMenu.makeListicMenu("Current Category Filters");
+                    return ListicMenu.makeListicMenu("Current Category Filters Listic Menu");
                 else if(input == 2) {
-                    return ListicMenu.makeListicMenu("Current Name Filters");
+                    return ListicMenu.makeListicMenu("Current Name Filters Listic Menu");
                 }
                 System.out.println("Invalid Number!!! \nWhat are you doing, man?!");
             } catch (NumberFormatException e) {

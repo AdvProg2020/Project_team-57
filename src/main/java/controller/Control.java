@@ -58,6 +58,10 @@ public class Control {
         return Notification.NAME_FILTER_DELETED;
     }
 
+    public ArrayList<String> getCurrentNameFilters() {
+        return filter.getFilterNames();
+    }
+
     //START INNER CLASS
     public static class Filter{
         ArrayList<String> filterCategories;
