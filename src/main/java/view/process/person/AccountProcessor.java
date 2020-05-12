@@ -5,6 +5,7 @@ import controller.account.AccountControl;
 import view.menu.Menu;
 import view.PrintOptionSpecs;
 import view.process.FunctioningOption;
+import view.process.MainMenuProcessor;
 import view.process.Processor;
 
 import java.util.ArrayList;
@@ -37,6 +38,12 @@ public class AccountProcessor extends Processor implements PrintOptionSpecs {
             @Override
             public Menu doTheThing(Object... objects) {
                 return editCredit();
+            }
+        });
+        functionsHashMap.put("Logout", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return logOut();
             }
         });
 
@@ -163,4 +170,9 @@ public class AccountProcessor extends Processor implements PrintOptionSpecs {
         return Menu.makeMenu(Control.getType() + " Menu");
     }
 
+    public Menu logOut() {
+        Control.setLoggedIn(false);
+        Control.setUsername(null);
+        return MainMenuProcessor.getInstance().iOManage();
+    }
 }

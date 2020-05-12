@@ -4,7 +4,8 @@
     "Edit Field",
     "Edit Credit",
     "Change Password",
-    "View Cart"
+    "View Cart",
+    "Logout"
   ],
   "name" : "Customer Menu",
   "parentName" : "Main Menu",

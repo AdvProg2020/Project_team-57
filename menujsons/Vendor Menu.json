@@ -4,7 +4,8 @@
     "Edit Field",
     "Edit Credit",
     "Change Password",
-    "Manage Products"
+    "Manage Products",
+    "Logout"
   ],
   "name" : "Vendor Menu",
   "parentName" : "Main Menu",
