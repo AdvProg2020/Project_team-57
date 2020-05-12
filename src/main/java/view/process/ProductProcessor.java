@@ -96,19 +96,18 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         return productProcessor;
     }
 
-    public static ListicOptionMenu setMenu(String json, String ID){
-        ListicOptionMenu productMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicOptionMenu.class);
+    public static void setMenu(ListicOptionMenu productMenu, String ID){
         //TODO(OTHERS)
-        if(json.contains("Manage All Products Listic Menu") || json.contains("Manage Add Product Requests Listic Menu")) {
+        if(productMenu.getParentName().contains("Manage All Products Listic Menu") ||
+                productMenu.getParentName().contains("Manage Add Product Requests Listic Menu")) {
+
             productMenu.setOption(productControl.getProductById(ID));
-        } else if(json.contains("Cart Product Menu")) {
-            //System.out.println("json = " + json);
+        } else if(productMenu.getName().contains("Cart Product Menu")) {
             productMenu.setOption(customerControl.getCartProductByID(ID));
-        }
-        else {
+        } else {
             productMenu.setOption(productControl.getEditedProductByID(ID));
         }
-        return productMenu;
+
     }
 
     public Menu editProduct(Object... objects){

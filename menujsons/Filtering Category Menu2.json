@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "Remove Filter"
+  ],
+  "name" : "Filtering Category Menu",
+  //TODO Parent Name
+  "parentName" : "Filter Category Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "FilteringProcessor"
+}

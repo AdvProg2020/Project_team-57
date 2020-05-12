@@ -16,7 +16,7 @@ public interface PrintOptionSpecs {
         } else if(option instanceof Category) {
             printCategorySpecs((Category) option);
         } else if(option instanceof String) {
-            System.out.println("********" + (String)option + "********");
+            printFilteringOptionSpecs((String) option);
         }
     }
 
@@ -231,4 +231,8 @@ public interface PrintOptionSpecs {
         return splitFeatures;
     }
 
+    default void printFilteringOptionSpecs(String filteringOption) {
+        //TODO
+        System.out.println("********\t" + filteringOption + "\t********");
+    }
 }

@@ -1,6 +1,7 @@
 package view.process;
 
 import com.google.gson.GsonBuilder;
+import controller.Control;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 
@@ -33,19 +34,33 @@ public class FilteringProcessor extends Processor {
         return filteringProcessor;
     }
 
-    public static ListicOptionMenu setMenu(String json, String filterName) {
-        ListicOptionMenu filteringMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicOptionMenu.class);
+    public static void setMenu(ListicOptionMenu filteringMenu, String filterName) {
         filteringMenu.setOption(filterName);
-        return filteringMenu;
     }
 
     public Menu addFilter(Object... objects) {
-        //TODO
-        return null;
+        ListicOptionMenu menu = (ListicOptionMenu) objects[0];
+        String filterName = (String) objects[1];
+
+        if(menu.getName().equals("Filtering Category Menu")) {
+            System.out.println(Control.addToFilterCategoryList(filterName).getMessage());
+        } else if(menu.getName().equals("Filtering Name Menu")) {
+            System.out.println(Control.addToFilterNameList(filterName).getMessage());
+        }
+
+        return menu.getParentMenu();
     }
 
     public Menu removeFilter(Object... objects) {
-        //TODO
-        return null;
+        ListicOptionMenu menu = (ListicOptionMenu) objects[0];
+        String filterName = (String) objects[1];
+
+        if(menu.getName().equals("Filtering Category Menu")) {
+            System.out.println(Control.removeFromFilterCategoryList(filterName).getMessage());
+        } else if(menu.getName().equals("Filtering Name Menu")) {
+            System.out.println(Control.removeFromFilterNameList(filterName).getMessage());
+        }
+
+        return menu.getParentMenu();
     }
 }

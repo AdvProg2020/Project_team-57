@@ -38,10 +38,8 @@ public class CategoryProcessor extends ListicOptionProcessor {
         return categoryProcessor;
     }
 
-    public static ListicOptionMenu setMenu(String json, String categoryName) {
-        ListicOptionMenu categoryMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicOptionMenu.class);
+    public static void setMenu(ListicOptionMenu categoryMenu, String categoryName) {
         categoryMenu.setOption(adminControl.getCategoryByName(categoryName));
-        return categoryMenu;
     }
 
     public Menu editCategory(Object... objects) {

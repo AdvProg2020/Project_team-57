@@ -42,10 +42,8 @@ public class UserProcessor extends ListicOptionProcessor {
         return userProcessor;
     }
 
-    public static ListicOptionMenu setMenu(String json, String ID){
-        ListicOptionMenu userMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicOptionMenu.class);
+    public static void setMenu(ListicOptionMenu userMenu, String ID){
         userMenu.setOption(accountControl.getAccountByUsername(ID));
-        return userMenu;
     }
 
     public Menu acceptRequest(Object... objects){

@@ -119,13 +119,18 @@ public class Menu {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getParentName() {
+        return parentName;
+    }
+
     public static class InputIsBiggerThanExistingNumbers extends Exception {
         public InputIsBiggerThanExistingNumbers(String message) {
             super(message);
         }
     }
 
-    public String getName() {
-        return name;
-    }
 }

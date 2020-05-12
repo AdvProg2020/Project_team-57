@@ -1,47 +1,33 @@
 package view.menu;
 
+import com.google.gson.GsonBuilder;
 import controller.Control;
 import view.PrintOptionSpecs;
-import view.process.CategoryProcessor;
-import view.process.Processor;
-import view.process.ProductProcessor;
-import view.process.UserProcessor;
+import view.process.*;
 
 import java.io.FileNotFoundException;
 
 public class ListicOptionMenu extends Menu implements PrintOptionSpecs {
+    private static ListicOptionProcessor listicOptionProcessor = ListicOptionProcessor.getInstance();
     protected Menu parentMenu;
     protected Object option;
 
     public static ListicOptionMenu makeMenu(String menuName, Menu parentMenu, String optionID) {
+        listicOptionProcessor.changeMenuNameForDifferentPurposes(menuName, optionID);
+
         String json = "";
 
         try {
-            if(menuName.equals("Common Product Menu")) {
-                if(Control.isLoggedIn() && (Control.getType().equals("Vendor") || Control.getType().equals("Admin"))) {
-                    menuName = "Common Product Menu2";
-                } else {
-                    menuName = "Common Product Menu1";
-                }
-            }
-
             json = ListicOptionMenu.getJsonFromDB(menuName);
         } catch (FileNotFoundException e) {
             System.out.println("ProductMenu File Couldn't Get Initialized! Please Contact Us As Soon As Possible :.(");
         }
 
-        ListicOptionMenu menu = null;
+        ListicOptionMenu listicOptionMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicOptionMenu.class);
+        listicOptionProcessor.setMenuForDifferentPurposes(menuName, listicOptionMenu, optionID);
 
-        if(menuName.contains("Product")) {
-            menu = ProductProcessor.setMenu(json, optionID);
-        } else if(menuName.contains("Category")){
-            menu = CategoryProcessor.setMenu(json, optionID);
-        } else {
-            menu = UserProcessor.setMenu(json, optionID);
-        }
-
-        menu.setParentMenu(parentMenu);
-        return menu;
+        listicOptionMenu.setParentMenu(parentMenu);
+        return listicOptionMenu;
     }
 
     public void show(){
