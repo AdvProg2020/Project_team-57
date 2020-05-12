@@ -116,27 +116,42 @@ public interface PrintOptionSpecs {
 
     default void printCustomDescriptionForProduct(String description){
         if(description != null) {
-            String[] splitDescription = splitDescriptionForProduct(description);
+            ArrayList<String> splitDescription = splitDescriptionForProduct(description);
 
-            for(int i = 0; i < splitDescription.length; i++){
+            for(int i = 0; i < splitDescription.size(); i++){
                 if(i == 0)
-                    System.out.format("| %-20s | %-35s | %n", "Description", splitDescription[i]);
+                    System.out.format("| %-20s | %-35s | %n", "Description", splitDescription.get(i));
                 else
-                    System.out.format("| %-20s | %-35s | %n", "", splitDescription[i]);
+                    System.out.format("| %-20s | %-35s | %n", "", splitDescription.get(i));
             }
         } else {
             System.out.format("| %-20s | %-35s | %n", "Description", "Not Assigned");
         }
     }
 
-    default String[] splitDescriptionForProduct(String description){
-        if(description.length() <= 35){
-            return new String[]{description};
-        } else if(description.length() > 35 && description.length() <= 70){
-            return new String[]{description.substring(0, 35), description.substring(35)};
+    default ArrayList<String> splitDescriptionForProduct(String description){
+        ArrayList<String> splitDescription = new ArrayList<>();
+
+        if(description.length() > 35) {
+            Character[] splitCharacters = new Character[] {' ', '\t', '.', ',', '!', '\n'};
+            ArrayList<Character> characters = new ArrayList<>(Arrays.asList(splitCharacters));
+
+            int splitIndex = 0;
+
+            for(int i = 34; i > 0; i--) {
+                if(characters.contains(description.charAt(i))) {
+                    splitIndex = i;
+                    break;
+                }
+            }
+
+            splitDescription.add(description.substring(0, splitIndex + 1));
+            splitDescription.addAll(splitFeaturesForCategory(description.substring(splitIndex + 1)));
         } else {
-            return new String[]{description.substring(0, 35), description.substring(35, 70), description.substring(70)};
+            splitDescription.add(description);
         }
+
+        return splitDescription;
     }
 
     default void printCustomLineForProduct(){
@@ -190,7 +205,6 @@ public interface PrintOptionSpecs {
     }
 
     default ArrayList<String> splitFeaturesForCategory(String features) {
-        //TODO
         ArrayList<String> splitFeatures = new ArrayList<>();
 
         if(features.length() > 35) {
@@ -199,7 +213,7 @@ public interface PrintOptionSpecs {
 
             int splitIndex = 0;
 
-            for(int i = 35; i > 0; i++) {
+            for(int i = 35; i > 0; i--) {
                 if(characters.contains(features.charAt(i))) {
                     splitIndex = i;
                     break;

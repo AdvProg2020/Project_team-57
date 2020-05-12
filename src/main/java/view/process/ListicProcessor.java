@@ -49,6 +49,12 @@ public class ListicProcessor extends Processor {
                 return showCartTotalPrice(objects);
             }
         });
+        this.functionsHashMap.put("Add Category", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addCategory(objects);
+            }
+        });
     }
 
     public static ListicProcessor getInstance()
@@ -82,7 +88,7 @@ public class ListicProcessor extends Processor {
         else if(parentMenu.getName().equals("View Cart"))
             return ListicOptionMenu.makeMenu("Cart Product Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("Manage Categories"))
-            return ListicOptionMenu.makeMenu("Category Menu", parentMenu, primaryKey);
+            return ListicOptionMenu.makeMenu("Admin Category Menu", parentMenu, primaryKey);
         //TODO(OTHERS)
         return null;
     }

@@ -23,7 +23,7 @@ public class CategoryTable extends Database {
         return new Category(preparedStatement.executeQuery());
     }
 
-    public static ArrayList<Category> getSubcategories(String parentCategoryName) throws SQLException, ClassNotFoundException {
+    public static ArrayList<Category> getSubCategories(String parentCategoryName) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Categories WHERE ParentCategory = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, parentCategoryName);

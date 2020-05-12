@@ -2,6 +2,7 @@ package view.menu;
 
 import controller.Control;
 import view.PrintOptionSpecs;
+import view.process.CategoryProcessor;
 import view.process.Processor;
 import view.process.ProductProcessor;
 import view.process.UserProcessor;
@@ -34,11 +35,10 @@ public class ListicOptionMenu extends Menu implements PrintOptionSpecs {
         if(menuName.contains("Product")) {
             menu = ProductProcessor.setMenu(json, optionID);
         } else if(menuName.contains("Category")){
-
+            menu = CategoryProcessor.setMenu(json, optionID);
         } else {
             menu = UserProcessor.setMenu(json, optionID);
         }
-        //TODO(OTHERS)
 
         menu.setParentMenu(parentMenu);
         return menu;

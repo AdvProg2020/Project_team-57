@@ -18,6 +18,12 @@ public class Category {
     public Category() {
     }
 
+    public Category(Category category) {
+        this.name = category.name;
+        this.features = category.features;
+        this.parentCategory = category.parentCategory;
+    }
+
     public String getName() {
         return name;
     }

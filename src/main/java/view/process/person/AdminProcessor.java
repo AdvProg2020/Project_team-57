@@ -2,6 +2,7 @@ package view.process.person;
 
 
 import controller.account.AdminControl;
+import model.existence.Category;
 import view.menu.ListicMenu;
 import view.menu.Menu;
 import view.process.FunctioningOption;
@@ -108,7 +109,7 @@ public class AdminProcessor extends AccountProcessor {
     public Menu addCategoryParent()
     {
         System.out.println("Please Enter Parent Category Of This Category: ");
-        category.setParentName(scanner.nextLine());
+        category.setParentCategory(scanner.nextLine());
         return Menu.makeMenu("Add Category Menu");
     }
 
@@ -116,7 +117,7 @@ public class AdminProcessor extends AccountProcessor {
     {
         if(category.getName() != null && category.getFeatures() != null) {
             System.out.println(adminControl.addCategory(category).getMessage());
-            return Menu.makeMenu("Manage Categories Listic Menun");
+            return Menu.makeMenu("Manage Categories Listic Menu");
         } else {
             System.out.println("You Should First Fill Category Name And Features");
             return Menu.makeMenu("Add Category Menu");

@@ -67,7 +67,7 @@ public class Database {
                     "ParentCategory varchar(100));");
             String SQL = "INSERT INTO Categories(Name, Features, ParentCategory) VALUES(?, ?, ?)";
             PreparedStatement preparedStatement = getConnection().prepareStatement(SQL);
-            preparedStatement.setString(1, "AllProducts");
+            preparedStatement.setString(1, "All Products");
             preparedStatement.setString(2, "This category contains all of product that exist in store");
             preparedStatement.setString(3, null);
             preparedStatement.execute();

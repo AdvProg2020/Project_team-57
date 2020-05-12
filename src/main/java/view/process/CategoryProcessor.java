@@ -2,16 +2,20 @@ package view.process;
 
 import com.google.gson.GsonBuilder;
 import controller.account.AdminControl;
+import model.existence.Category;
+import notification.Notification;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CategoryProcessor extends ListicOptionProcessor {
-    CategoryProcessor categoryProcessor = null;
-    AdminControl adminControl = AdminControl.getController();
+    private static CategoryProcessor categoryProcessor = null;
+    private static AdminControl adminControl = AdminControl.getController();
 
     private CategoryProcessor() {
+        functionsHashMap = new HashMap<>();
         functionsHashMap.put("Edit Category", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
@@ -34,9 +38,9 @@ public class CategoryProcessor extends ListicOptionProcessor {
         return categoryProcessor;
     }
 
-    ListicOptionMenu setMenu(String json, String categoryName) {
+    public static ListicOptionMenu setMenu(String json, String categoryName) {
         ListicOptionMenu categoryMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicOptionMenu.class);
-        categoryMenu.setOption(adminControl.getCategoryByName(categoryMenu));
+        categoryMenu.setOption(adminControl.getCategoryByName(categoryName));
         return categoryMenu;
     }
 
@@ -66,17 +70,26 @@ public class CategoryProcessor extends ListicOptionProcessor {
         System.out.println("Please Enter The New Value Of Your Field :");
         fieldValue = scanner.nextLine().trim();
 
-        Category newCategory = new Category();
+        Category newCategory = new Category(oldCategory);
+        Notification notification = null;
 
         if(fieldName.equals("Name")) {
             newCategory.setName(fieldValue);
-            System.out.println(adminControl.editCategoryName(oldCategory, newCategory).getMessage());
+            notification = adminControl.editCategoryName(oldCategory, newCategory);
         } else if(fieldName.equals("Features")) {
             newCategory.setFeatures(fieldValue);
-            System.out.println(adminControl.editCategoryFeatures(oldCategory, newCategory).getMessage());
+            notification = adminControl.editCategoryFeatures(oldCategory, newCategory);
         } else if(fieldName.equals("ParentName")) {
-            newCategory.setParentName(fieldValue);
-            System.out.println(adminControl.editCategoryParentName(oldCategory, newCategory).getMessage());
+            newCategory.setParentCategory(fieldValue);
+            notification = adminControl.editCategoryParentName(oldCategory, newCategory);
+        }
+
+        System.out.println(notification.getMessage());
+
+        if(notification.equals(Notification.CATEGORY_MODIFIED)) {
+            menu.setOption(newCategory);
+        } else {
+            menu.setOption(oldCategory);
         }
 
         return menu;

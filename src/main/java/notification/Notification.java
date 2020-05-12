@@ -44,7 +44,10 @@ public enum Notification {
     DUPLICATE_CATEGORY_NAME("This Category Name Is Already Used. \uD83D\uDE36"),
     CATEGORY_DELETED("Category And It's Product Deleted In Whole. \uD83D\uDE0E"),
     CATEGORY_MODIFIED("Category Modified Successfuly."),
-    CATEGORY_NOT_FOUND("Category With This Name Not Found. \uD83E\uDD2B");
+    CATEGORY_NOT_FOUND("Category With This Name Not Found. \uD83E\uDD2B"),
+    PARENT_CATEGORY_NOT_FOUND("There Is No Parent Category With This Name. \uD83E\uDD2B"),
+    INVALID_CATEGORY_NAME("Length Of Category Name Must Be Between 6 & 16."),
+    INVALID_FEATURES("Length Of Category Features Must Be Less Than 100.");
 
 
     private String message;
