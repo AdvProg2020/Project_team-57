@@ -4,6 +4,9 @@ import model.existence.Account;
 import model.existence.Category;
 import model.existence.Product;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public interface PrintOptionSpecs {
     default void printOptionSpecs(Object option) {
         if(option instanceof Account) {
@@ -153,7 +156,7 @@ public interface PrintOptionSpecs {
         printWithNullCheckingForCategory("Name", category.getName());
         printCustomLineForCategory();
 
-        printWithNullCheckingForCategory("ParentName", category.getParentName());
+        printWithNullCheckingForCategory("ParentName", category.getParentCategory());
         printCustomLineForCategory();
 
         printCustomFeaturesForCategory(category.getFeatures());
@@ -173,22 +176,43 @@ public interface PrintOptionSpecs {
 
     default void printCustomFeaturesForCategory(String features) {
         if(features != null) {
-            String[] splitedFeatures = splitDescriptionForProduct(features);
+            ArrayList<String> splitFeatures = splitFeaturesForCategory(features);
 
-            for(int i = 0; i < splitedFeatures.length; i++){
+            for(int i = 0; i < splitFeatures.size(); i++){
                 if(i == 0)
-                    System.out.format("| %-20s | %-35s | %n", "Features", splitedFeatures[i]);
+                    System.out.format("| %-20s | %-35s | %n", "Features", splitFeatures.get(i));
                 else
-                    System.out.format("| %-20s | %-35s | %n", "", splitedFeatures[i]);
+                    System.out.format("| %-20s | %-35s | %n", "", splitFeatures.get(i));
             }
         } else {
             System.out.format("| %-20s | %-35s | %n", "Features", "Not Assigned");
         }
     }
 
-    default String[] splitFeaturesForCategory(String features) {
+    default ArrayList<String> splitFeaturesForCategory(String features) {
         //TODO
-        return null;
+        ArrayList<String> splitFeatures = new ArrayList<>();
+
+        if(features.length() > 35) {
+            Character[] splitCharacters = new Character[] {' ', '\t', '.', ',', '!', '\n'};
+            ArrayList<Character> characters = new ArrayList<>(Arrays.asList(splitCharacters));
+
+            int splitIndex = 0;
+
+            for(int i = 35; i > 0; i++) {
+                if(characters.contains(features.charAt(i))) {
+                    splitIndex = i;
+                    break;
+                }
+            }
+
+            splitFeatures.add(features.substring(0, splitIndex + 1));
+            splitFeatures.addAll(splitFeaturesForCategory(features.substring(splitIndex + 1)));
+        } else {
+            splitFeatures.add(features);
+        }
+
+        return splitFeatures;
     }
 
 }
