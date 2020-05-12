@@ -28,6 +28,8 @@ public abstract class Processor {
         processesHashMap.put("EditProductProcessor", EditProductProcessor.getInstance());
         processesHashMap.put("AddProductProcessor", AddProductProcessor.getInstance());
         processesHashMap.put("CategoryProcessor", CategoryProcessor.getInstance());
+        processesHashMap.put("FilterProcessor", FilterProcessor.getInstance());
+        processesHashMap.put("FilteringProcessor", FilteringProcessor.getInstance());
 
     }
 

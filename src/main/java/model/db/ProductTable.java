@@ -81,7 +81,7 @@ public class ProductTable extends Database {
     }
 
     public static void setProductApprovalDate(String productId) throws SQLException, ClassNotFoundException {
-        String command = "UPDATE Products SET Approval Date = ? WHERE ProductID = ?";
+        String command = "UPDATE Products SET ApprovalDate = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDate(1, new Date(System.currentTimeMillis()));
         preparedStatement.setString(2, productId);

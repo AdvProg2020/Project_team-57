@@ -14,7 +14,7 @@ public class ListicOptionProcessor extends Processor{
         return listicOptionProcessor;
     }
 
-    public static void changeMenuNameForDifferentPurposes(String menuName, String optionID) {
+    public static String changeMenuNameForDifferentPurposes(String menuName, String optionID) {
 
         //TODO
         if(menuName.equals("Common Product Menu")) {
@@ -25,6 +25,7 @@ public class ListicOptionProcessor extends Processor{
             menuName = changeMenuNameForFilteringNameMenu(optionID);
         }
 
+        return menuName;
     }
 
     public static String changeMenuNameForCommonProductMenu() {

@@ -13,7 +13,7 @@ public class ListicOptionMenu extends Menu implements PrintOptionSpecs {
     protected Object option;
 
     public static ListicOptionMenu makeMenu(String menuName, Menu parentMenu, String optionID) {
-        listicOptionProcessor.changeMenuNameForDifferentPurposes(menuName, optionID);
+        menuName = listicOptionProcessor.changeMenuNameForDifferentPurposes(menuName, optionID);
 
         String json = "";
 
@@ -24,6 +24,7 @@ public class ListicOptionMenu extends Menu implements PrintOptionSpecs {
         }
 
         ListicOptionMenu listicOptionMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicOptionMenu.class);
+        System.out.println(listicOptionMenu.getName());
         listicOptionProcessor.setMenuForDifferentPurposes(menuName, listicOptionMenu, optionID);
 
         listicOptionMenu.setParentMenu(parentMenu);

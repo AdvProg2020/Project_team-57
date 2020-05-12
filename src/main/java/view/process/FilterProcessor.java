@@ -10,7 +10,7 @@ public class FilterProcessor extends Processor {
     private static FilterProcessor processor = null;
     private CustomerControl customerControl = null;
 
-    public FilterProcessor() {
+    private FilterProcessor() {
         customerControl = CustomerControl.getController();
         this.functionsHashMap = new HashMap<>();
         this.functionsHashMap.put("Filter By Category", new FunctioningOption() {
@@ -28,6 +28,9 @@ public class FilterProcessor extends Processor {
     }
 
     public static FilterProcessor getInstance() {
+        if(processor == null)
+            processor = new FilterProcessor();
+
         return processor;
     }
 

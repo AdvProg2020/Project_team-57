@@ -28,10 +28,12 @@ public class AdminControl extends AccountControl{
             ProductTable.setProductApprovalDate(id);
             return Notification.ACCEPT_ADDING_PRODUCT;
         } catch (SQLException throwable) {
-            return Notification.UNKNOWN_ERROR;
+            throwable.printStackTrace();
         } catch (ClassNotFoundException throwable) {
-            return Notification.UNKNOWN_ERROR;
+            throwable.printStackTrace();
         }
+
+        return Notification.UNKNOWN_ERROR;
     }
 
     public Notification acceptEditingProductByID(String editingProductID) {

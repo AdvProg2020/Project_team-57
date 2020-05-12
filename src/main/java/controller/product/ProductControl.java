@@ -87,6 +87,9 @@ public class ProductControl extends Control {
 
     public Notification editField(String fieldName, String newField, String ID) {
         try {
+            if(fieldName.equals("Category") && !CategoryTable.isThereCategoryWithName(newField))
+                return Notification.INVALID_CATEGORY_NAME;
+
             if (ProductTable.getProductByID(ID).getStatus() == 2)
                 return Notification.PRODUCT_NOT_AVAILABLE;
 
