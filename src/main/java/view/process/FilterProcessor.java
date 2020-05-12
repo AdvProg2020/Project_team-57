@@ -1,5 +1,6 @@
 package view.process;
 
+import controller.Control;
 import controller.account.CustomerControl;
 import view.menu.ListicMenu;
 import view.menu.Menu;
@@ -29,6 +30,42 @@ public class FilterProcessor extends Processor {
             @Override
             public Menu doTheThing(Object... objects) {
                 return filterByName();
+            }
+        });
+        this.functionsHashMap.put("Sort By View", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return sortBy("View");
+            }
+        });
+        this.functionsHashMap.put("Sort By Time", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return sortBy("Time");
+            }
+        });
+        this.functionsHashMap.put("Sort By Name", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return sortBy("Name");
+            }
+        });
+        this.functionsHashMap.put("Sort By Score", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return sortBy("Score");
+            }
+        });
+        this.functionsHashMap.put("Current Sort", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return showCurrentSort();
+            }
+        });
+        this.functionsHashMap.put("Disable Current Sort", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return disableCurrenSort();
             }
         });
     }
@@ -74,5 +111,21 @@ public class FilterProcessor extends Processor {
                 System.out.println("Please Enter An Integer");
             }
         }
+    }
+
+    public Menu sortBy(String sort) {
+        System.out.println(customerControl.setSort(sort).getMessage());
+        return ListicMenu.makeListicMenu("Products Listic Menu");
+    }
+
+    public Menu showCurrentSort()
+    {
+        System.out.println("Current Sort: " + customerControl.getCurrentSort());
+        return Menu.makeMenu("Sorting Menu");
+    }
+
+    public Menu disableCurrenSort() {
+        System.out.println(customerControl.disableSore().getMessage());
+        return ListicMenu.makeListicMenu("Products Listic Menu");
     }
 }

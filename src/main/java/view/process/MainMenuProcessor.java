@@ -44,6 +44,7 @@ public class MainMenuProcessor extends Processor {
     public Menu productsMenu()
     {
         control.initFilter();
+        control.initSort();
         return ListicMenu.makeListicMenu("Products Listic Menu");
     }
 }

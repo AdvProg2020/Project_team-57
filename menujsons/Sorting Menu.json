@@ -1,0 +1,14 @@
+{
+  "options" : [
+    "Sort By View",
+    "Sort By Time",
+    "Sort By Name",
+    "Sort By Score",
+    "Current Sort",
+    "Disable Current Sort"
+  ],
+  "name" : "Sorting",
+  "isThereParentMenu" : true,
+  "parentName" : "Products Listic Menu",
+  "processorName" : "FilterProcessor"
+}

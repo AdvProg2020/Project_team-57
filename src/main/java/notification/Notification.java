@@ -53,7 +53,11 @@ public enum Notification {
     NAME_FILTERED("Avoid Fast Food, It Can Cause Gastric Cancer.\nAnd Name Successfully Filtered \uD83D\uDE44"),
     CATEGORY_FILTER_DELETED("Brush Your Teeth Every Night.\nAnd Be Sure That Your Category Filter Is Deleted."),
     NAME_FILTER_DELETED("Once Upon A Time In WinterFall... O' Sorry\nYour Filtered Name Deleted Successfully."),
-    NAME_FILTERED_DUPLICATE("You Already Filtered This Name Kiddo \uD83D\uDE44");
+    NAME_FILTERED_DUPLICATE("You Already Filtered This Name Kiddo \uD83D\uDE44"),
+    SORT_DISABLED("In A Wold Without Money Group 57 Would Have Been Heroes \uD83E\uDD25" +
+            "\nYou Disabled The Current Sort Successfully"),
+    SORTED("Have You Ever Seen John Cena? I Haven't \uD83D\uDE44" +
+            "\nAlso, Your Sort Is Done");
 
 
     private String message;

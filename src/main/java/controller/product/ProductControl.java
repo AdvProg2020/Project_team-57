@@ -35,22 +35,6 @@ public class ProductControl extends Control {
         }
     }
 
-
-    public String getProductMenuType() {
-        if (isLoggedIn()) {
-            if (getType().equals("Admin"))
-                return "Admin Product Menu";
-            else if (getType().equals("Customer")) {
-                //TODO
-            } else {
-                //TODO
-            }
-        } else {
-            return "Not Logged In Product Menu";
-        }
-        return null;
-    }
-
     public static ProductControl getController() {
         if (productControl == null)
             productControl = new ProductControl();
@@ -321,6 +305,16 @@ public class ProductControl extends Control {
                 filteredProductIds.remove(i);
                 i--;
             }
+        }
+    }
+
+    public void addSeenToProduct(String productID) {
+        try {
+            ProductTable.addSeenToProductWithID(productID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }

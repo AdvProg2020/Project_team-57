@@ -61,6 +61,13 @@ public class ListicProcessor extends Processor {
                 return filtering(objects);
             }
         });
+
+        this.functionsHashMap.put("Sorting", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return sorting();
+            }
+        });
     }
 
     public static ListicProcessor getInstance()
@@ -89,8 +96,10 @@ public class ListicProcessor extends Processor {
             return ListicOptionMenu.makeMenu("User Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("View All Admins"))
             return ListicOptionMenu.makeMenu("Admin Profile Menu", parentMenu, primaryKey);
-        else if(parentMenu.getName().equals("Products Menu"))
+        else if(parentMenu.getName().equals("Products Menu")) {
+            productControl.addSeenToProduct(primaryKey);
             return ListicOptionMenu.makeMenu("Common Product Menu", parentMenu, primaryKey);
+        }
         else if(parentMenu.getName().equals("View Cart"))
             return ListicOptionMenu.makeMenu("Cart Product Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("Manage Categories"))
@@ -144,6 +153,7 @@ public class ListicProcessor extends Processor {
         return Menu.makeMenu("Filter Menu");
     }
 
+    public Menu sorting(){ return Menu.makeMenu("Sorting Menu"); }
 
     public static void initListicMenu(ListicMenu listicMenu)
     {

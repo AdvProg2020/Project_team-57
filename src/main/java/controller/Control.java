@@ -1,10 +1,7 @@
 package controller;
 
-import model.db.CategoryTable;
-import model.existence.Category;
 import notification.Notification;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Control {
@@ -14,6 +11,7 @@ public class Control {
     private static String type;
 
     private static Filter filter;
+    private static Sort sort;
 
     public ArrayList<String> getCurrentCategories() {
         return filter.getFilterCategories();
@@ -63,7 +61,7 @@ public class Control {
     }
 
     //START INNER CLASS
-    public static class Filter{
+    protected static class Filter{
         ArrayList<String> filterCategories;
         ArrayList<String> filterNames;
 
@@ -106,6 +104,71 @@ public class Control {
         public void removeFromNames(String name)
         {
             filterNames.remove(name);
+        }
+    }
+    //END INNER CLASS
+
+    public void initSort()
+    {
+        sort = new Sort();
+    }
+
+    public Notification setSort(String sort) {
+        if(sort.equalsIgnoreCase("View"))
+            Control.sort.setSortType(Sort.SortType.VIEW);
+        else if(sort.equalsIgnoreCase("Name"))
+            Control.sort.setSortType(Sort.SortType.NAME);
+        else if(sort.equalsIgnoreCase("Time"))
+            Control.sort.setSortType(Sort.SortType.TIME);
+        else if(sort.equalsIgnoreCase("Score"))
+            Control.sort.setSortType(Sort.SortType.SCORE);
+        return Notification.SORTED;
+    }
+
+    public String getCurrentSort() {
+        return sort.getSortType().getMessage();
+    }
+
+    public Notification disableSore() {
+        sort.setSortType(Sort.SortType.VIEW);
+        return Notification.SORT_DISABLED;
+    }
+
+    //START INNER CLASS
+    protected static class Sort
+    {
+        public enum SortType {
+            VIEW("View"), NAME("Name"), TIME("Time"), SCORE("Score");
+            private String message;
+            SortType(String message) {
+                this.message = message;
+            }
+            public String getMessage() {
+                return message;
+            }
+        }
+        private SortType sortType;
+        private boolean isAscending;
+
+        public Sort() {
+            this.sortType = SortType.VIEW;
+            this.isAscending = false;
+        }
+
+        public boolean isAscending() {
+            return isAscending;
+        }
+
+        public void setAscending(boolean ascending) {
+            isAscending = ascending;
+        }
+
+        public SortType getSortType() {
+            return sortType;
+        }
+
+        public void setSortType(SortType sortType) {
+            this.sortType = sortType;
         }
     }
     //END INNER CLASS
