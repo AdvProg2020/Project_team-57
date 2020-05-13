@@ -139,7 +139,7 @@ public interface PrintOptionSpecs {
         }
     }
 
-    default ArrayList<String> splitDescriptionForProduct(String description){
+    default ArrayList<String> splitDescriptionForProduct(String description) {
         ArrayList<String> splitDescription = new ArrayList<>();
 
         if(description.length() > 35) {
@@ -223,7 +223,7 @@ public interface PrintOptionSpecs {
 
             int splitIndex = 0;
 
-            for(int i = 35; i > 0; i--) {
+            for(int i = 34; i > 0; i--) {
                 if(characters.contains(features.charAt(i))) {
                     splitIndex = i;
                     break;
@@ -282,23 +282,27 @@ public interface PrintOptionSpecs {
     }
 
     default void printCustomDateForDiscount(String fieldName, Date date) {
-        if(date == null)
+        if(date == null) {
             System.out.format("| %-22s | %-35s | %n", fieldName, "Not Assigned");
-        else {
+        } else {
             java.util.Date date1 = new java.util.Date(date.getTime());
             System.out.format("| %-22s | %-35s | %n", fieldName, date1.toString());
         }
     }
 
     default void printCustomersListForDiscount(HashMap<String, Integer> customersHashMap) {
-        HashMap<String, Integer> clonedCustomersHashMap = (HashMap<String, Integer>) customersHashMap.clone();
-        ArrayList<String> splitCustomers = splitCustomers(clonedCustomersHashMap);
+        if(customersHashMap == null) {
+            System.out.format("| %-22s | %-35s |", "Customers", "Not Assigned");
+        } else {
+            HashMap<String, Integer> clonedCustomersHashMap = (HashMap<String, Integer>) customersHashMap.clone();
+            ArrayList<String> splitCustomers = splitCustomers(clonedCustomersHashMap);
 
-        for (String customerLine : splitCustomers) {
-            if(customerLine.equals(splitCustomers.get(0))) {
-                System.out.format("| %-22s | %-35s |", "Customers", customerLine);
-            } else
-                System.out.format("| %-22s | %-35s |", "", customerLine);
+            for (String customerLine : splitCustomers) {
+                if (customerLine.equals(splitCustomers.get(0))) {
+                    System.out.format("| %-22s | %-35s |", "Customers", customerLine);
+                } else
+                    System.out.format("| %-22s | %-35s |", "", customerLine);
+            }
         }
     }
 
