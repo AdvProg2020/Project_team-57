@@ -156,7 +156,7 @@ public interface PrintOptionSpecs {
             }
 
             splitDescription.add(description.substring(0, splitIndex + 1));
-            splitDescription.addAll(splitFeaturesForCategory(description.substring(splitIndex + 1)));
+            splitDescription.addAll(splitDescriptionForProduct(description.substring(splitIndex + 1)));
         } else {
             splitDescription.add(description);
         }
