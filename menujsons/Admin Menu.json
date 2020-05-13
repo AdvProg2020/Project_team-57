@@ -8,6 +8,7 @@
     "Manage All Products",
     "Manage All Requests",
     "Manage Categories",
+    "Manage Discount Codes",
     "Logout"
   ],
   "name" : "Admin Menu",

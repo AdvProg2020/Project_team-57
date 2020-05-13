@@ -1,6 +1,6 @@
 package controller;
 
-import controller.account.ValidPassword;
+import controller.account.IOValidity;
 import model.db.AccountTable;
 import model.db.CartTable;
 import model.existence.Account;
@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class IOControl extends Control implements ValidPassword {
+public class IOControl extends Control implements IOValidity {
     private static IOControl ioControl = null;
 
     public Notification register(Account account) {
@@ -36,14 +36,6 @@ public class IOControl extends Control implements ValidPassword {
     }
 
     public Notification login(Account account){
-        if (account.getUsername().length() < 6 || account.getUsername().length() > 16)
-            return Notification.ERROR_USERNAME_LENGTH;
-        if (!isUsernameValid(account.getUsername()))
-            return Notification.ERROR_USERNAME_FORMAT;
-        if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
-            return Notification.ERROR_PASSWORD_LENGTH;
-        if (!this.isPasswordValid(account.getPassword()))
-            return Notification.ERROR_PASSWORD_FORMAT;
         try {
             if (!AccountTable.isUsernameFree(account.getUsername())) {
                 if (AccountTable.isPasswordCorrect(account.getUsername(), account.getPassword())) {
@@ -70,19 +62,6 @@ public class IOControl extends Control implements ValidPassword {
         } catch (ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
-    }
-
-    private boolean isUsernameValid(String username)
-    {
-        Character[] validChars = {'-', '_', '$', '%', '@', '.', '*', '&', '+'};
-        ArrayList<Character> validCharacters = new ArrayList<Character>(Arrays.asList(validChars));
-        for (int i = 0; i < username.length(); ++i) {
-            char c = username.charAt(i);
-            if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') &&
-                    !(c >= '0' && c <= '9') && !(validCharacters.contains(c)))
-                return false;
-        }
-        return true;
     }
 
     public boolean isThereAdmin() {

@@ -52,7 +52,8 @@ public class ListicProcessor extends Processor {
         this.functionsHashMap.put("Add Category", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return addCategory(objects);
+                AdminProcessor.newCategory();
+                return Menu.makeMenu("Add Category Menu");
             }
         });
         this.functionsHashMap.put("Filtering", new FunctioningOption() {
@@ -61,13 +62,20 @@ public class ListicProcessor extends Processor {
                 return filtering(objects);
             }
         });
-
         this.functionsHashMap.put("Sorting", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
                 return sorting();
             }
         });
+        this.functionsHashMap.put("Create Discount Code", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                AdminProcessor.newDiscount();
+                return Menu.makeMenu("Create Discount Code Menu");
+            }
+        });
+
     }
 
     public static ListicProcessor getInstance()
@@ -108,6 +116,11 @@ public class ListicProcessor extends Processor {
             return ListicOptionMenu.makeMenu("Filtering Category Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("Current Name Filters"))
             return ListicOptionMenu.makeMenu("Filtering Name Menu", parentMenu, primaryKey);
+        else if(parentMenu.getName().equals("Manage Discount Codes"))
+            return ListicOptionMenu.makeMenu("View Discount Menu", parentMenu, primaryKey);
+        else if(parentMenu.getName().equals("Add Customers To Discount Code")) {
+            //TODO(LISTICOPTIONMENU)
+        }
         //TODO(OTHERS)
         return null;
     }
@@ -140,12 +153,6 @@ public class ListicProcessor extends Processor {
         System.out.println("Total Price: \n" +
                 customerControl.calculateCartTotalPrice() + "$");
         return parentMenu;
-    }
-
-    public Menu addCategory(Object... objects)
-    {
-        AdminProcessor.newCategory();
-        return Menu.makeMenu("Add Category Menu");
     }
 
     public Menu filtering(Object... objects)
@@ -181,7 +188,21 @@ public class ListicProcessor extends Processor {
             initCurrentCategories(listicMenu);
         else if(listicMenu.getName().equals("Current Name Filters"))
             initCurrentNameFilters(listicMenu);
+        else if(listicMenu.getName().equals("Manage Discount Codes"))
+            initManageDiscountCodes(listicMenu);
+        else if(listicMenu.getName().equals("Add Customers To Discount Code"))
+            initAddCustomersToDiscount(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initAddCustomersToDiscount(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(accountControl.getAllCustomerNames());
+        listicMenu.setListicOptionPrimaryKeys(accountControl.getAllCustomerNames());
+    }
+
+    private static void initManageDiscountCodes(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(adminControl.getAllDiscountCodes());
+        listicMenu.setListicOptionPrimaryKeys(adminControl.getAllDiscountIDs());
     }
 
     private static void initCurrentNameFilters(ListicMenu listicMenu) {
@@ -193,7 +214,6 @@ public class ListicProcessor extends Processor {
         listicMenu.setListicOptionNames(customerControl.getCurrentCategories());
         listicMenu.setListicOptionPrimaryKeys(customerControl.getCurrentCategories());
     }
-
 
     private static void initCategories(ListicMenu listicMenu) {
         //System.out.println("WTF!!!");

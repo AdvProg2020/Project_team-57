@@ -13,7 +13,7 @@ public class Discount {
     private double discountPercent;
     private double maxDiscount;
     private int maxRepetition;
-    private HashMap<String, Integer> customersWithRepetition;
+    private HashMap<String, Integer> customersWithRepetition = new HashMap<>();
 
     public Discount(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
@@ -31,6 +31,9 @@ public class Discount {
             this.customersWithRepetition.put(resultSet.getString("CustomerUsername"),
                     resultSet.getInt("Repetition"));
         }
+    }
+
+    public Discount() {
     }
 
     public String getID() {

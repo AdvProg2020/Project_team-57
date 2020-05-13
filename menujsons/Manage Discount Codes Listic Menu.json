@@ -1,0 +1,9 @@
+{
+  "name" : "Manage Discount Codes",
+  "parentName" : "Admin Menu",
+  "isThereParentMenu" : true,
+  "processorName" : "ListicProcessor",
+  "options" : [
+    "Create Discount Code"
+  ]
+}

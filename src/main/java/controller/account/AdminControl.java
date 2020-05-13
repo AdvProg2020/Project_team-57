@@ -1,12 +1,10 @@
 package controller.account;
 
 
-import model.db.EditingProductTable;
-import model.db.ProductTable;
-import model.db.VendorTable;
+import model.db.*;
+import model.existence.Discount;
 import model.existence.Product;
 import notification.Notification;
-import model.db.CategoryTable;
 import model.existence.Category;
 
 import java.sql.SQLException;
@@ -206,5 +204,57 @@ public class AdminControl extends AccountControl{
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<String> getAllDiscountCodes() {
+        ArrayList<String> discountCodes = new ArrayList<>();
+        try {
+            for (Discount discountCode : DiscountTable.getAllDiscountCodes()) {
+                discountCodes.add(discountCode.getCode());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return discountCodes;
+    }
+
+
+    public ArrayList<String> getAllDiscountIDs() {
+        ArrayList<String> discountCodes = new ArrayList<>();
+        try {
+            for (Discount discountCode : DiscountTable.getAllDiscountCodes()) {
+                discountCodes.add(discountCode.getID());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return discountCodes;
+    }
+
+    public Discount getDiscountByID(String ID) {
+        try {
+            return DiscountTable.getDiscountByID(ID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Notification removeDiscountByID(String ID)
+    {
+        try {
+            DiscountTable.removeDiscountCode(ID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.DELETED_DISCOUNT;
     }
 }

@@ -29,10 +29,10 @@ public class DiscountTable extends Database {
         }
     }
 
-    public static void removeDiscountCode(String discountCode) throws SQLException, ClassNotFoundException {
-        String command = "DELETE FROM Discounts WHERE Code = ?";
+    public static void removeDiscountCode(String ID) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Discounts WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, discountCode);
+        preparedStatement.setString(1, ID);
         preparedStatement.execute();
     }
 
@@ -69,13 +69,24 @@ public class DiscountTable extends Database {
     }
 
     public static ArrayList<Discount> getAllDiscountCodes() throws SQLException, ClassNotFoundException {
-        String command = "SELECT DISTINCT Code FROM Discounts";
+        String command = "SELECT DISTINCT ID FROM Discounts";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Discount> allDiscountCodes = new ArrayList<>();
+        command = "SELECT * FROM Discounts WHERE ID = ?";
         while (resultSet.next()) {
-            allDiscountCodes.add(new Discount(resultSet));
+            preparedStatement = getConnection().prepareStatement(command);
+            preparedStatement.setString(1, resultSet.getString("ID"));
+            allDiscountCodes.add(new Discount(preparedStatement.executeQuery()));
         }
         return allDiscountCodes;
     }
+
+    public static Discount getDiscountByID(String ID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Discounts WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, ID);
+        return new Discount(preparedStatement.executeQuery());
+    }
+
 }

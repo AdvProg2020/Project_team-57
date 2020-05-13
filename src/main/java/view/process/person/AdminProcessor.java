@@ -3,6 +3,7 @@ package view.process.person;
 
 import controller.account.AdminControl;
 import model.existence.Category;
+import model.existence.Discount;
 import view.menu.ListicMenu;
 import view.menu.Menu;
 import view.process.FunctioningOption;
@@ -12,31 +13,32 @@ public class AdminProcessor extends AccountProcessor {
     private static AdminControl adminControl = AdminControl.getController();
     private static AdminProcessor adminProcessor = null;
     private static Category category;
+    private static Discount discount;
 
     private AdminProcessor(){
         super();
         functionsHashMap.put("Manage All Products", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return manageAllProducts();
+                return ListicMenu.makeListicMenu("Manage All Products Listic Menu");
             }
         });
         functionsHashMap.put("Manage All Users", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return manageAllUsers();
+                return ListicMenu.makeListicMenu("Manage All Users Listic Menu");
             }
         });
         functionsHashMap.put("View All Admins", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return veiwAllAdmins();
+                return ListicMenu.makeListicMenu("View All Admins Listic Menu");
             }
         });
         functionsHashMap.put("Manage Categories", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return manageCategories();
+                return ListicMenu.makeListicMenu("Manage Categories Listic Menu");
             }
         });
         functionsHashMap.put("Add Category Name", new FunctioningOption() {
@@ -63,6 +65,18 @@ public class AdminProcessor extends AccountProcessor {
                 return confirmCategory();
             }
         });
+        this.functionsHashMap.put("Manage Discount Codes", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return ListicMenu.makeListicMenu("Manage Discount Codes Listic Menu");
+            }
+        });
+        this.functionsHashMap.put("Add Customer To Discount Code", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return ListicMenu.makeListicMenu("Add Customers To Discount Code Listic Menu");
+            }
+        });
     }
 
     public static AccountProcessor getInstance(){
@@ -70,26 +84,6 @@ public class AdminProcessor extends AccountProcessor {
             adminProcessor = new AdminProcessor();
 
         return adminProcessor;
-    }
-
-    public Menu manageAllProducts()
-    {
-        return ListicMenu.makeListicMenu("Manage All Products Listic Menu");
-    }
-
-    public Menu manageAllUsers()
-    {
-        return ListicMenu.makeListicMenu("Manage All Users Listic Menu");
-    }
-
-    public Menu veiwAllAdmins()
-    {
-        return ListicMenu.makeListicMenu("View All Admins Listic Menu");
-    }
-
-    public Menu manageCategories()
-    {
-        return ListicMenu.makeListicMenu("Manage Categories Listic Menu");
     }
 
     public Menu addCategoryName()
@@ -128,4 +122,10 @@ public class AdminProcessor extends AccountProcessor {
     {
         category = new Category();
     }
+
+    public static void newDiscount(){
+        discount = new Discount();
+    }
+
+
 }

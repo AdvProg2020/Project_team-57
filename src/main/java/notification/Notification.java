@@ -57,7 +57,8 @@ public enum Notification {
     SORT_DISABLED("In A Wold Without Money Group 57 Would Have Been Heroes \uD83E\uDD25" +
             "\nYou Disabled The Current Sort Successfully"),
     SORTED("Have You Ever Seen John Cena? I Haven't \uD83D\uDE44" +
-            "\nAlso, Your Sort Is Done");
+            "\nAlso, Your Sort Is Done"),
+    DELETED_DISCOUNT("Successfully Deleted The Discount Code.\nToss A Coin To Your Witcher O' Valley Of Plenty. \uD83E\uDD11");
 
 
     private String message;

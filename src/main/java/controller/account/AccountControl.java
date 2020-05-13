@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-public class AccountControl extends Control implements ValidPassword{
+public class AccountControl extends Control implements IOValidity {
     private static AccountControl customerControl = null;
 
     public Account getAccount() {
@@ -170,5 +170,20 @@ public class AccountControl extends Control implements ValidPassword{
             e.printStackTrace();
             return new ArrayList<>();
         }
+    }
+
+    public ArrayList<String> getAllCustomerNames() {
+        ArrayList<String> allCustomers = new ArrayList<>();
+        try {
+            for(Account account : AccountTable.getAllCustomers())
+            {
+                allCustomers.add(account.getUsername());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return allCustomers;
     }
 }

@@ -1,6 +1,9 @@
 package controller.account;
 
-public interface ValidPassword {
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public interface IOValidity {
 
     default boolean isPasswordValid(String password) {
 
@@ -30,6 +33,19 @@ public interface ValidPassword {
         }
         if (!flag)
             return false;
+        return true;
+    }
+
+    default boolean isUsernameValid(String username)
+    {
+        Character[] validChars = {'-', '_', '$', '%', '@', '.', '*', '&', '+'};
+        ArrayList<Character> validCharacters = new ArrayList<Character>(Arrays.asList(validChars));
+        for (int i = 0; i < username.length(); ++i) {
+            char c = username.charAt(i);
+            if (!(c >= 'a' && c <= 'z') && !(c >= 'A' && c <= 'Z') &&
+                    !(c >= '0' && c <= '9') && !(validCharacters.contains(c)))
+                return false;
+        }
         return true;
     }
 }
