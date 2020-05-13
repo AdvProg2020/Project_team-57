@@ -1,7 +1,6 @@
 package view.menu;
 
 import com.google.gson.GsonBuilder;
-import controller.Control;
 import view.PrintOptionSpecs;
 import view.process.*;
 
@@ -13,7 +12,7 @@ public class ListicOptionMenu extends Menu implements PrintOptionSpecs {
     protected Object option;
 
     public static ListicOptionMenu makeMenu(String menuName, Menu parentMenu, String optionID) {
-        menuName = listicOptionProcessor.changeMenuNameForDifferentPurposes(menuName, optionID);
+        menuName = listicOptionProcessor.setMenuName(menuName, optionID);
 
         String json = "";
 
@@ -25,7 +24,7 @@ public class ListicOptionMenu extends Menu implements PrintOptionSpecs {
 
         ListicOptionMenu listicOptionMenu = new GsonBuilder().setPrettyPrinting().create().fromJson(json, ListicOptionMenu.class);
         System.out.println(listicOptionMenu.getName());
-        listicOptionProcessor.setMenuForDifferentPurposes(menuName, listicOptionMenu, optionID);
+        listicOptionProcessor.setMenu(menuName, listicOptionMenu, optionID);
 
         listicOptionMenu.setParentMenu(parentMenu);
         return listicOptionMenu;
