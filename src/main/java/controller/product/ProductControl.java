@@ -10,10 +10,10 @@ import notification.Notification;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ProductControl extends Control {
     private static ProductControl productControl = null;
-
 
     public Product getProductById(String productId) {
         try {
@@ -233,31 +233,35 @@ public class ProductControl extends Control {
     }
 
     public ArrayList<String> getAllShowingProductNames() {
-        ArrayList<String> showingProducts = new ArrayList<>();
+        ArrayList<String> showingProductNames = new ArrayList<>();
         try {
-            for (String showingProductId : filterProducts()) {
-                showingProducts.add(ProductTable.getProductByID(showingProductId).getName());
+            ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts());
+            sortProducts(showingProducts);
+            for (Product showingProduct : showingProducts) {
+                showingProductNames.add(showingProduct.getName());
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return showingProducts;
+        return showingProductNames;
     }
 
     public ArrayList<String> getAllShowingProductIDs() {
-        ArrayList<String> showingProducts = new ArrayList<>();
+        ArrayList<String> showingProductIDs = new ArrayList<>();
         try {
-            for (String showingProductId : filterProducts()) {
-                showingProducts.add(showingProductId);
+            ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts());
+            sortProducts(showingProducts);
+            for (Product showingProduct : showingProducts) {
+                showingProductIDs.add(showingProduct.getID());
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return showingProducts;
+        return showingProductIDs;
     }
 
     private ArrayList<String> filterProducts() throws SQLException, ClassNotFoundException {
@@ -281,6 +285,34 @@ public class ProductControl extends Control {
             }
         }
         return filteredProductIds;
+    }
+
+    private ArrayList<Product> convertIDsToProducts(ArrayList<String> productIDs) throws SQLException, ClassNotFoundException {
+        ArrayList<Product> products = new ArrayList<>();
+        for (String productID : productIDs) {
+            products.add(ProductTable.getProductByID(productID));
+        }
+        return products;
+    }
+
+    private void sortProducts(ArrayList<Product> products)
+    {
+        if(Control.getSort().getSortType() == Sort.SortType.VIEW && Control.getSort().isAscending())
+            Collections.sort(products, new Sorting.ViewSortAscending());
+        else if(Control.getSort().getSortType() == Sort.SortType.VIEW && !Control.getSort().isAscending())
+            Collections.sort(products, new Sorting.ViewSortDescending());
+        else if(Control.getSort().getSortType() == Sort.SortType.NAME && Control.getSort().isAscending())
+            Collections.sort(products, new Sorting.NameSortAscending());
+        else if(Control.getSort().getSortType() == Sort.SortType.NAME && !Control.getSort().isAscending())
+            Collections.sort(products, new Sorting.NameSortDescending());
+        else if(Control.getSort().getSortType() == Sort.SortType.TIME && Control.getSort().isAscending())
+            Collections.sort(products, new Sorting.TimeSortAscending());
+        else if(Control.getSort().getSortType() == Sort.SortType.TIME && !Control.getSort().isAscending())
+            Collections.sort(products, new Sorting.TimeSortDescending());
+        else if(Control.getSort().getSortType() == Sort.SortType.SCORE && Control.getSort().isAscending())
+            Collections.sort(products, new Sorting.ScoreSortAscending());
+        else if(Control.getSort().getSortType() == Sort.SortType.SCORE && !Control.getSort().isAscending())
+            Collections.sort(products, new Sorting.ScoreSortDescending());
     }
 
     private ArrayList<String> filterOnCategory(String category) throws SQLException, ClassNotFoundException {

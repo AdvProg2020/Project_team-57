@@ -90,6 +90,9 @@ public interface PrintOptionSpecs {
         System.out.format("| %-20s | %-35f | %n", "Price", product.getPrice());
         this.printCustomLineForProduct();
 
+        System.out.format("| %-20s | %-35d | %n", "View", product.getSeen());
+        this.printCustomLineForProduct();
+
         System.out.format("| %-20s | %-35f | %n", "Average Score", product.getAverageScore());
         this.printCustomLineForProduct();
     }

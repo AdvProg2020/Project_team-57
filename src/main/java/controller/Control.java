@@ -222,4 +222,7 @@ public class Control {
         return filter;
     }
 
+    public static Sort getSort() {
+        return sort;
+    }
 }
