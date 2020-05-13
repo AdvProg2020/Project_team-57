@@ -2,10 +2,13 @@ package view;
 
 import model.existence.Account;
 import model.existence.Category;
+import model.existence.Discount;
 import model.existence.Product;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public interface PrintOptionSpecs {
     default void printOptionSpecs(Object option) {
@@ -17,6 +20,8 @@ public interface PrintOptionSpecs {
             printCategorySpecs((Category) option);
         } else if(option instanceof String) {
             printFilteringOptionSpecs((String) option);
+        } else if(option instanceof Discount) {
+            printDiscountSpecs((Discount) option);
         }
     }
 
@@ -151,7 +156,7 @@ public interface PrintOptionSpecs {
             }
 
             splitDescription.add(description.substring(0, splitIndex + 1));
-            splitDescription.addAll(splitFeaturesForCategory(description.substring(splitIndex + 1)));
+            splitDescription.addAll(splitDescriptionForProduct(description.substring(splitIndex + 1)));
         } else {
             splitDescription.add(description);
         }
@@ -237,5 +242,81 @@ public interface PrintOptionSpecs {
     default void printFilteringOptionSpecs(String filteringOption) {
         //TODO
         System.out.println("********    " + filteringOption + "    ********");
+    }
+
+    default void printDiscountSpecs(Discount discount) {
+        printCustomLineForDiscount();
+
+        printWithNullCheckingForDiscount("Discount Code", discount.getCode());
+        printCustomLineForDiscount();
+
+        printCustomDateForDiscount("Start Date", discount.getStartDate());
+        printCustomLineForDiscount();
+
+        printCustomDateForDiscount("Finish Date", discount.getFinishDate());
+        printCustomLineForDiscount();
+
+        System.out.format("| %-22s | %-35f |", "Discount Percent", discount.getDiscountPercent());
+        printCustomLineForDiscount();
+
+        System.out.format("| %-22s | %-35f |", "Maximum Discount", discount.getMaxDiscount());
+        printCustomLineForDiscount();
+
+        System.out.format("| %-22s | %-35d |", "Maximum Repetition", discount.getMaxRepetition());
+        printCustomLineForDiscount();
+
+        printCustomersListForDiscount(discount.getCustomersWithRepetition());
+        printCustomLineForDiscount();
+
+    }
+
+    default void printCustomLineForDiscount() {
+        System.out.println("+------------------------+-------------------------------------+");
+    }
+
+    default void printWithNullCheckingForDiscount(String fieldName, String fieldValue) {
+        if(fieldValue == null)
+            System.out.format("| %-22s | %-35s | %n", fieldName, "Not Assigned");
+        else
+            System.out.format("| %-22s | %-35s | %n", fieldName, fieldValue);
+    }
+
+    default void printCustomDateForDiscount(String fieldName, Date date) {
+        if(date == null)
+            System.out.format("| %-22s | %-35s | %n", fieldName, "Not Assigned");
+        else {
+            java.util.Date date1 = new java.util.Date(date.getTime());
+            System.out.format("| %-22s | %-35s | %n", fieldName, date1.toString());
+        }
+    }
+
+    default void printCustomersListForDiscount(HashMap<String, Integer> customersHashMap) {
+        HashMap<String, Integer> clonedCustomersHashMap = (HashMap<String, Integer>) customersHashMap.clone();
+        ArrayList<String> splitCustomers = splitCustomers(clonedCustomersHashMap);
+
+        for (String customerLine : splitCustomers) {
+            if(customerLine.equals(splitCustomers.get(0))) {
+                System.out.format("| %-22s | %-35s |", "Customers", customerLine);
+            } else
+                System.out.format("| %-22s | %-35s |", "", customerLine);
+        }
+    }
+
+    default ArrayList<String> splitCustomers(HashMap<String, Integer> customersHashMap) {
+        ArrayList<String> splitCustomers = new ArrayList<>();
+        StringBuilder customersLine = new StringBuilder("");
+        boolean flag = true;
+
+        for(String customer : customersHashMap.keySet()) {
+            if(customersLine.length() + customer.length() > 33) {
+                break;
+            }
+            customersLine.insert(customersLine.length() - 1, customer + ", ");
+            customersHashMap.remove(customer);
+        }
+
+        splitCustomers.add(customersLine.toString());
+        splitCustomers.addAll(splitCustomers(customersHashMap));
+        return splitCustomers;
     }
 }

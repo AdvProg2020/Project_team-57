@@ -7,6 +7,7 @@ import view.menu.ListicOptionMenu;
 public class ListicOptionProcessor extends Processor{
     private static ListicOptionProcessor listicOptionProcessor = null;
     private static CustomerControl customerControl = CustomerControl.getController();
+
     public static ListicOptionProcessor getInstance() {
         if(listicOptionProcessor == null)
             listicOptionProcessor = new ListicOptionProcessor();
@@ -14,19 +15,19 @@ public class ListicOptionProcessor extends Processor{
         return listicOptionProcessor;
     }
 
-    public static String changeMenuNameForDifferentPurposes(String menuName, String optionID) {
+    public static String setMenuName(String menuName, String optionID) {
 
         //TODO
         if(menuName.equals("Common Product Menu")) {
-            menuName = changeMenuNameForCommonProductMenu();
+            menuName = setMenuNameForCommonProductMenu();
         } else if(menuName.equals("Filtering Category Menu")) {
-            menuName = changeMenuNameForFilteringCategoryMenu(optionID);
+            menuName = setMenuNameForFilteringCategoryMenu(optionID);
         }
 
         return menuName;
     }
 
-    public static String changeMenuNameForCommonProductMenu() {
+    public static String setMenuNameForCommonProductMenu() {
         String menuName = null;
 
         if(Control.isLoggedIn() && (Control.getType().equals("Vendor") || Control.getType().equals("Admin"))) {
@@ -38,7 +39,7 @@ public class ListicOptionProcessor extends Processor{
         return menuName;
     }
 
-    public static String changeMenuNameForFilteringCategoryMenu(String optionID) {
+    public static String setMenuNameForFilteringCategoryMenu(String optionID) {
         String menuName = null;
 
         if(customerControl.isThereFilteringCategoryWithName(optionID))
@@ -51,14 +52,16 @@ public class ListicOptionProcessor extends Processor{
         return menuName;
     }
 
-    public static void setMenuForDifferentPurposes(String menuName, ListicOptionMenu listicOptionMenu, String optionID) {
+    public static void setMenu(String menuName, ListicOptionMenu listicOptionMenu, String optionID) {
 
         if(menuName.contains("Product")) {
             ProductProcessor.setMenu(listicOptionMenu, optionID);
         } else if(menuName.contains("Filtering")) {
             FilteringProcessor.setMenu(listicOptionMenu, optionID);
-        } else if(menuName.contains("Category")){
+        } else if(menuName.contains("Category")) {
             CategoryProcessor.setMenu(listicOptionMenu, optionID);
+        } else if(menuName.contains("Discount")) {
+            DiscountProcessor.setMenu(listicOptionMenu, optionID);
         } else {
             UserProcessor.setMenu(listicOptionMenu, optionID);
         }

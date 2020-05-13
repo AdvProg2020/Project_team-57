@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "Edit Discount",
+    "Remove Discount"
+  ],
+  "name" : "Discount Menu",
+  "parentName" : "Manage Discount Codes Listic Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "DiscountProcessor"
+}
