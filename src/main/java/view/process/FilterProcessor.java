@@ -1,6 +1,5 @@
 package view.process;
 
-import controller.Control;
 import controller.account.CustomerControl;
 import view.menu.ListicMenu;
 import view.menu.Menu;

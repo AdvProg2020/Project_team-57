@@ -1,7 +1,6 @@
 package controller.product;
 
 import controller.Control;
-import model.db.ProductTable;
 import model.existence.Product;
 
 import java.util.Comparator;
@@ -82,6 +81,4 @@ public class Sorting extends Control {
             return (-1 * o1.getName().compareTo(o2.getName()));
         }
     }
-
-
 }

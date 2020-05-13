@@ -1,6 +1,5 @@
 package view.process;
 
-import com.google.gson.GsonBuilder;
 import controller.account.AccountControl;
 import model.existence.Account;
 import view.menu.ListicOptionMenu;

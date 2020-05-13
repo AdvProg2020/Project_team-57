@@ -29,6 +29,7 @@ public class Database {
         initEditingProductTable(initConnection.createStatement());
         initCartsTable(initConnection.createStatement());
         initCategoriesTable(initConnection.createStatement());
+        initDiscountTable(initConnection.createStatement());
         removeTempAccountsFromCarts(initConnection);
 
         isDBInit = true;
@@ -41,6 +42,24 @@ public class Database {
         preparedStatement.setString(1, "temp");
         preparedStatement.execute();
         preparedStatement.close();
+    }
+
+    private static void initDiscountTable(Statement statement) throws SQLException {
+        String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'Discounts'";
+        ResultSet resultSet = statement.executeQuery(command);
+        if (!resultSet.next()){
+            statement.execute("CREATE TABLE Discounts(" +
+                    "Code varchar(16)," +
+                    "StartDate DATE," +
+                    "FinishDate DATE," +
+                    "DiscountPercent double(100)," +
+                    "MaxDiscount double," +
+                    "Repetition int," +
+                    "MaxRepetition int," +
+                    "CustomerUsername varchar(16));");
+        }
+        statement.close();
+        resultSet.close();
     }
 
     private static void initCartsTable(Statement statement) throws SQLException {

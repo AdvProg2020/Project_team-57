@@ -1,6 +1,5 @@
 package view.process;
 
-import com.google.gson.GsonBuilder;
 import controller.account.AdminControl;
 import model.existence.Category;
 import notification.Notification;

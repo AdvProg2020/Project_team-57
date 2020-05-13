@@ -1,7 +1,6 @@
 package view.process;
 
 import controller.account.VendorControl;
-import controller.product.ProductControl;
 import model.existence.Product;
 import view.menu.ListicMenu;
 import view.menu.Menu;

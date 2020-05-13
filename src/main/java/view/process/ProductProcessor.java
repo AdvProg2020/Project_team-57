@@ -1,6 +1,5 @@
 package view.process;
 
-import com.google.gson.GsonBuilder;
 import controller.Control;
 import controller.account.AdminControl;
 import controller.account.CustomerControl;
