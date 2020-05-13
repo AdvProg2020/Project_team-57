@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class Discount {
+    private String ID;
     private String code;
     private Date startDate;
     private Date finishDate;
@@ -16,6 +17,7 @@ public class Discount {
 
     public Discount(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
+            this.ID = resultSet.getString("ID");
             this.code = resultSet.getString("Code");
             this.startDate = resultSet.getDate("StartDate");
             this.finishDate = resultSet.getDate("FinishDate");
@@ -31,7 +33,13 @@ public class Discount {
         }
     }
 
+    public String getID() {
+        return ID;
+    }
 
+    public void setID(String ID) {
+        this.ID = ID;
+    }
 
     public String getCode() {
         return code;

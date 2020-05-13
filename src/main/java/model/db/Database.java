@@ -49,6 +49,7 @@ public class Database {
         ResultSet resultSet = statement.executeQuery(command);
         if (!resultSet.next()){
             statement.execute("CREATE TABLE Discounts(" +
+                    "ID varchar (8)," +
                     "Code varchar(16)," +
                     "StartDate DATE," +
                     "FinishDate DATE," +

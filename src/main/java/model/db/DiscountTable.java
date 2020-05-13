@@ -14,7 +14,7 @@ public class DiscountTable extends Database {
         PreparedStatement preparedStatement;
         for (String customer : discount.getCustomersWithRepetition().keySet()) {
             command = "INSERT INTO Discounts(Code, StartDate, FinishDate, DiscountPercent, MaxDiscount," +
-                    "Repetition, MaxRepetition, CustomerUsername) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+                    "Repetition, MaxRepetition, CustomerUsername, ID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             preparedStatement = getConnection().prepareStatement(command);
             preparedStatement.setString(1, discount.getCode());
             preparedStatement.setDate(2, discount.getStartDate());
@@ -24,37 +24,15 @@ public class DiscountTable extends Database {
             preparedStatement.setInt(6, discount.getCustomersWithRepetition().get(customer));
             preparedStatement.setInt(7, discount.getMaxRepetition());
             preparedStatement.setString(8, customer);
+            preparedStatement.setString(9, discount.getID());
             preparedStatement.execute();
         }
-    }
-
-    public static void addCustomerToDiscount(Discount discount, String username) throws SQLException, ClassNotFoundException {
-        String command = "INSERT INTO Discounts(Code, StartDate, FinishDate, DiscountPercent, MaxDiscount," +
-                "Repetition, MaxRepetition, CustomerUsername) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, discount.getCode());
-        preparedStatement.setDate(2, discount.getStartDate());
-        preparedStatement.setDate(3, discount.getFinishDate());
-        preparedStatement.setDouble(4, discount.getDiscountPercent());
-        preparedStatement.setDouble(5, discount.getMaxDiscount());
-        preparedStatement.setInt(6, 0);
-        preparedStatement.setInt(7, discount.getMaxRepetition());
-        preparedStatement.setString(8, username);
-        preparedStatement.execute();
     }
 
     public static void removeDiscountCode(String discountCode) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Discounts WHERE Code = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, discountCode);
-        preparedStatement.execute();
-    }
-
-    public static void removeCustomerFromDiscount(String discountCode, String username) throws SQLException, ClassNotFoundException {
-        String command = "DELETE FROM Discounts WHERE Code = ? AND CustomerUsername = ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, discountCode);
-        preparedStatement.setString(2, username);
         preparedStatement.execute();
     }
 
@@ -98,5 +76,6 @@ public class DiscountTable extends Database {
         while (resultSet.next()) {
             allDiscountCodes.add(new Discount(resultSet));
         }
+        return allDiscountCodes;
     }
 }
