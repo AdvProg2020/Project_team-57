@@ -133,6 +133,7 @@ public class VendorControl extends AccountControl{
        off.setOffID(setOffID());
        off.setVendorUsername(Control.getUsername());
        try {
+           off.setStatus(2);
            OffTable.addOff(off);
            return Notification.ADD_OFF;
        } catch (SQLException e) {
