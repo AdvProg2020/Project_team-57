@@ -5,6 +5,7 @@
     "Edit Credit",
     "Change Password",
     "View Cart",
+    "View Discount Codes",
     "Logout"
   ],
   "name" : "Customer Menu",

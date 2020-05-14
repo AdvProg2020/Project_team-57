@@ -2,7 +2,9 @@ package controller.account;
 
 import controller.Control;
 import model.db.CartTable;
+import model.db.DiscountTable;
 import model.db.ProductTable;
+import model.existence.Discount;
 import model.existence.Product;
 import notification.Notification;
 
@@ -213,4 +215,34 @@ public class CustomerControl extends AccountControl{
         } catch (SQLException e) { } catch (ClassNotFoundException e) { }
         return Notification.UNKNOWN_ERROR;
     }
+
+    public ArrayList<String> getDiscountCodes() {
+        ArrayList<String> discountCodes = new ArrayList<>();
+        try {
+            for (Discount discountCode : DiscountTable.getCustomerDiscountCodes(Control.getUsername())) {
+                discountCodes.add(discountCode.getCode());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return discountCodes;
+    }
+
+    public ArrayList<String> getDiscountIDs() {
+        ArrayList<String> discountIDs = new ArrayList<>();
+        try {
+            for (Discount discountCode : DiscountTable.getCustomerDiscountCodes(Control.getUsername())) {
+                discountIDs.add(discountCode.getID());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return discountIDs;
+    }
+
+
 }
