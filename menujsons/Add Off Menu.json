@@ -1,0 +1,12 @@
+{
+  "options" : [
+    "Name",
+    "Start Date",
+    "Finish Date",
+    "Off Percent",
+    "Confirm"
+  ],
+  "name" : "Add Off Menu",
+  "isThereParentMenu" : "false",
+  "processorName" : "VendorProcessor"
+}
