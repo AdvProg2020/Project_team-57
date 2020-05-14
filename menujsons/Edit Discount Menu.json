@@ -1,0 +1,12 @@
+{
+  "options" : [
+    "Edit Code",
+    "Edit Finish Date",
+    "Edit Discount Percentage",
+    "Edit Maximum Discount Value",
+    "Edit Maximum Repetition"
+  ],
+  "name" : "Edit Discount Menu",
+  "isThereParentMenu" : false,
+  "processorName" : "AdminProcessor"
+}
