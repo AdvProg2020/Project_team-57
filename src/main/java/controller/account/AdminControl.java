@@ -210,6 +210,7 @@ public class AdminControl extends AccountControl{
     public ArrayList<String> getAllDiscountCodes() {
         ArrayList<String> discountCodes = new ArrayList<>();
         try {
+            DiscountTable.updateDiscountCodes();
             for (Discount discountCode : DiscountTable.getAllDiscountCodes()) {
                 discountCodes.add(discountCode.getCode());
             }

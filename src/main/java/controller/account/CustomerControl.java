@@ -219,6 +219,7 @@ public class CustomerControl extends AccountControl{
     public ArrayList<String> getDiscountCodes() {
         ArrayList<String> discountCodes = new ArrayList<>();
         try {
+            DiscountTable.updateDiscountCodes();
             for (Discount discountCode : DiscountTable.getCustomerDiscountCodes(Control.getUsername())) {
                 discountCodes.add(discountCode.getCode());
             }

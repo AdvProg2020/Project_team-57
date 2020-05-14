@@ -82,9 +82,11 @@ public class DiscountTable extends Database {
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Discount> allDiscountCodes = new ArrayList<>();
-        command = "SELECT * FROM Discounts WHERE ID = ?";
+
+        String command2 = "SELECT * FROM Discounts WHERE ID = ?";
         while (resultSet.next()) {
-            preparedStatement = getConnection().prepareStatement(command);
+
+            preparedStatement = getConnection().prepareStatement(command2);
             preparedStatement.setString(1, resultSet.getString("ID"));
             allDiscountCodes.add(new Discount(preparedStatement.executeQuery()));
         }
@@ -128,5 +130,13 @@ public class DiscountTable extends Database {
         }
         //System.out.println("discounts.size :" + discounts.size());
         return discounts;
+    }
+
+    public static void updateDiscountCodes() throws SQLException, ClassNotFoundException {
+        ArrayList<Discount> allDiscountCodes = getAllDiscountCodes();
+        for (Discount discountCode : allDiscountCodes) {
+            if(discountCode.getFinishDate().compareTo(new Date(System.currentTimeMillis())) != 1)
+                removeDiscountCode(discountCode.getID());
+        }
     }
 }
