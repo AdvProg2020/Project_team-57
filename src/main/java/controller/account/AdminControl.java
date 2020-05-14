@@ -413,5 +413,43 @@ public class AdminControl extends AccountControl{
         return null;
     }
 
+    public ArrayList<String> getAllUnApprovedOffNames(){
+        try {
+            return OffTable.getAllUnApprovedOffNames();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 
+    public ArrayList<String> getAllUnApprovedOffIDs(){
+        try {
+            return OffTable.getAllUnApprovedOffIDs();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public Notification modifyOffApprove(String offID, boolean flag){
+        try {
+            if (flag){
+                OffTable.acceptOffRequest(offID);
+                return Notification.ACCEPT_OFF_REQUEST;
+            } else{
+                OffTable.declineOffRequest(offID);
+                return Notification.DECLINE_REQUEST;
+            }
+        } catch (SQLException e) {
+            return Notification.UNKNOWN_ERROR;
+        } catch (ClassNotFoundException e) {
+            return Notification.UNKNOWN_ERROR;
+        }
+    }
 }

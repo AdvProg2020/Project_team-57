@@ -77,7 +77,8 @@ public enum Notification {
     UNCOMPLETED_OFF_NAME("Name of Off is empty!"),
     NOT_SET_FINISH_DATE("Finish time of off must be set"),
     OUT_BOUND_OF_PERCENT("Percent must be between 0 to 100"),
-    ADD_OFF("Off added successfully");
+    ADD_OFF("Off added successfully"),
+    ACCEPT_OFF_REQUEST("Offs were applied successfully");
 
 
     private String message;
