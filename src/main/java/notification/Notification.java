@@ -72,7 +72,12 @@ public enum Notification {
     INVALID_FINISH_DATE_EARLIER_THAN_CURRENT_DATE("The Date You Entered Is Earlier Than The Current Date."),
     INVALID_DISCOUNT_PERCENT("Discount Percentage Must Be Between 0 And 100 Obviously \uD83D\uDE15"),
     INVALID_MAX_DISCOUNT("Max Discount Must Be A Positive Amount"),
-    INVALID_MAX_REPETITION("Max Repetition Must Be A Positive Amount");
+    INVALID_MAX_REPETITION("Max Repetition Must Be A Positive Amount"),
+    CHANGE_OFF_NAME("Name of Off successfully changed"),
+    UNCOMPLETED_OFF_NAME("Name of Off is empty!"),
+    NOT_SET_FINISH_DATE("Finish time of off must be set"),
+    OUT_BOUND_OF_PERCENT("Percent must be between 0 to 100"),
+    ADD_OFF("Off added successfully");
 
 
     private String message;

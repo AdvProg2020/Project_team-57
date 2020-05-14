@@ -2,10 +2,13 @@ package controller.account;
 
 import controller.Control;
 import model.db.CategoryTable;
+import model.db.OffTable;
 import model.db.ProductTable;
 import model.db.VendorTable;
+import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
+import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -73,11 +76,11 @@ public class VendorControl extends AccountControl{
 
     private String generateProductID()
     {
-        char[] validchars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
+        char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
         StringBuilder ID = new StringBuilder("p");
         for(int i = 0; i < 7; ++i)
         {
-            ID.append(validchars[((int) (Math.random() * 1000000)) % validchars.length]);
+            ID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
         }
         return ID.toString();
     }
@@ -91,5 +94,69 @@ public class VendorControl extends AccountControl{
             e.printStackTrace();
         }
         return false;
+    }
+
+    public ArrayList<String> getAllOffNames(){
+        try {
+            return OffTable.allOffNames(Control.getUsername());
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            return new ArrayList<>();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public ArrayList<String> getAllOffIDs(){
+        try {
+            return OffTable.allOffIDs(Control.getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public Notification addOff(Off off){
+       if (off.getOffName() == null)
+           return Notification.UNCOMPLETED_OFF_NAME;
+       if (off.getFinishDate() == null)
+           return Notification.NOT_SET_FINISH_DATE;
+       if (off.getOffPercent() <= 0 || off.getOffPercent() >= 100)
+           return Notification.OUT_BOUND_OF_PERCENT;
+       off.setOffID(setOffID());
+       off.setVendorUsername(Control.getUsername());
+       try {
+           OffTable.addOff(off);
+           return Notification.ADD_OFF;
+       } catch (SQLException e) {
+           return Notification.UNKNOWN_ERROR;
+       } catch (ClassNotFoundException e) {
+           return Notification.UNKNOWN_ERROR;
+       }
+    }
+
+    public Notification editOffNAme(Off off, String offName){
+        try {
+            OffTable.editOffName(off, offName);
+            return Notification.CHANGE_OFF_NAME;
+        } catch (SQLException throwables) {
+            return Notification.UNKNOWN_ERROR;
+        } catch (ClassNotFoundException e) {
+            return Notification.UNKNOWN_ERROR;
+        }
+    }
+
+    private String setOffID(){
+        char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
+        StringBuilder offID = new StringBuilder("o");
+
+        for(int i = 0; i < 7; ++i)
+            offID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
+
+        return offID.toString();
     }
 }
