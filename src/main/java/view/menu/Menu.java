@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 public class Menu {
     protected static Scanner scanner = new Scanner(System.in);
+    private Menu derivedMenu;
     protected String processorName;
     protected Processor processor;
     protected ArrayList<String> options;
@@ -124,6 +125,14 @@ public class Menu {
 
     public String getParentName() {
         return parentName;
+    }
+
+    public Menu getDerivedMenu() {
+        return derivedMenu;
+    }
+
+    public void setDerivedMenu(Menu derivedMenu) {
+        this.derivedMenu = derivedMenu;
     }
 
     public static class InputIsBiggerThanExistingNumbers extends Exception {

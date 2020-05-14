@@ -36,35 +36,43 @@ public class DiscountTable extends Database {
         preparedStatement.execute();
     }
 
-    public static void editFinishDate(String discountCode, Date newFinishDate) throws SQLException, ClassNotFoundException {
-        String command = "UPDATE Discounts SET FinishDate = ? WHERE Code = ?";
+    public static void editCode(String ID, String code) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Discounts SET Code = ? WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, code);
+        preparedStatement.setString(2,  ID);
+        preparedStatement.execute();
+    }
+
+    public static void editFinishDate(String ID, Date newFinishDate) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Discounts SET FinishDate = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDate(1, newFinishDate);
-        preparedStatement.setString(2,  discountCode);
+        preparedStatement.setString(2,  ID);
         preparedStatement.execute();
     }
 
-    public static void editMaxRepetition(String discountCode, int newMaxRepetition) throws SQLException, ClassNotFoundException {
-        String command = "UPDATE Discounts SET MaxRepetition = ? WHERE Code = ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setInt(1, newMaxRepetition);
-        preparedStatement.setString(2, discountCode);
-        preparedStatement.execute();
-    }
-
-    public static void editMaxDiscount(String discountCode, double newMaxDiscount) throws SQLException, ClassNotFoundException {
-        String command = "UPDATE Discounts SET MaxDiscount = ? WHERE Code = ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setDouble(1, newMaxDiscount);
-        preparedStatement.setString(2, discountCode);
-        preparedStatement.execute();
-    }
-
-    public static void editDiscountPercent(String discountCode, double newDiscountPercent) throws SQLException, ClassNotFoundException {
-        String command = "UPDATE Discounts SET DiscountPrcent = ? WHERE Code = ?";
+    public static void editDiscountPercent(String ID, double newDiscountPercent) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Discounts SET DiscountPrcent = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDouble(1, newDiscountPercent);
-        preparedStatement.setString(2, discountCode);
+        preparedStatement.setString(2, ID);
+        preparedStatement.execute();
+    }
+
+    public static void editMaxDiscount(String ID, double newMaxDiscount) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Discounts SET MaxDiscount = ? WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setDouble(1, newMaxDiscount);
+        preparedStatement.setString(2, ID);
+        preparedStatement.execute();
+    }
+
+    public static void editMaxRepetition(String ID, int newMaxRepetition) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Discounts SET MaxRepetition = ? WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, newMaxRepetition);
+        preparedStatement.setString(2, ID);
         preparedStatement.execute();
     }
 
@@ -95,4 +103,5 @@ public class DiscountTable extends Database {
         preparedStatement.setString(1, ID);
         return preparedStatement.executeQuery().next();
     }
+
 }

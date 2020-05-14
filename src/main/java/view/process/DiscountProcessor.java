@@ -4,6 +4,7 @@ import controller.account.AdminControl;
 import model.existence.Discount;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
+import view.process.person.AdminProcessor;
 
 import java.util.HashMap;
 
@@ -43,8 +44,10 @@ public class DiscountProcessor extends Processor {
         ListicOptionMenu menu = (ListicOptionMenu) objects[0];
         Discount discount = (Discount) objects[1];
 
-        //TODO
-        return menu;
+        AdminProcessor.setEditingDiscount(discount.getID());
+        Menu nextMenu = Menu.makeMenu("Edit Discount Menu");
+        nextMenu.setDerivedMenu(menu);
+        return nextMenu;
     }
 
     public static Menu removeDiscount(Object... objects) {

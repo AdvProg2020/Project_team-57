@@ -7,6 +7,7 @@ import model.existence.Product;
 import notification.Notification;
 import model.existence.Category;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -302,8 +303,7 @@ public class AdminControl extends AccountControl{
         return notification;
     }
 
-    private String generateDiscountID()
-    {
+    private String generateDiscountID() {
         char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
         StringBuilder ID = new StringBuilder("d");
 
@@ -312,4 +312,105 @@ public class AdminControl extends AccountControl{
 
         return ID.toString();
     }
+
+    public Notification editCode(String ID, String code) {
+        try {
+            if (code.length() > 16 || code.length() < 6)
+                return Notification.INVALID_CODE;
+            else if (DiscountTable.getDiscountByID(ID).getCode().equals(code))
+                return Notification.SAME_FIELD_ERROR;
+            else
+                DiscountTable.editCode(ID, code);
+
+                return Notification.EDIT_FIELD_SUCCESSFULLY;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Notification editFinishDate(String ID, Date finishDate) {
+        try {
+            Date currentDate = new Date(new java.util.Date().getTime());
+
+            if (finishDate.compareTo(DiscountTable.getDiscountByID(ID).getStartDate()) != -1)
+                return Notification.INVALID_FINISH_DATE_EARLIER_THAN_START_DATE;
+            else if (finishDate.compareTo(currentDate) != -1)
+                return Notification.INVALID_FINISH_DATE_EARLIER_THAN_CURRENT_DATE;
+            else if (DiscountTable.getDiscountByID(ID).getFinishDate().equals(finishDate))
+                return Notification.SAME_FIELD_ERROR;
+            else
+                DiscountTable.editFinishDate(ID, finishDate);
+
+                return Notification.EDIT_FIELD_SUCCESSFULLY;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Notification editDiscountPercent(String ID, double discountPercent) {
+        try {
+            if (discountPercent > 100 || discountPercent <= 0)
+                return Notification.INVALID_DISCOUNT_CODE;
+            else if (DiscountTable.getDiscountByID(ID).getDiscountPercent() == discountPercent)
+                return Notification.SAME_FIELD_ERROR;
+            else
+                DiscountTable.editDiscountPercent(ID, discountPercent);
+
+                return Notification.EDIT_FIELD_SUCCESSFULLY;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Notification editMaxDiscount(String ID, double maxDiscount) {
+        try {
+            if (maxDiscount <= 0)
+                return Notification.INVALID_MAX_DISCOUNT;
+            else if (DiscountTable.getDiscountByID(ID).getMaxDiscount() == maxDiscount)
+                return Notification.SAME_FIELD_ERROR;
+            else
+                DiscountTable.editMaxDiscount(ID, maxDiscount);
+
+                return Notification.EDIT_FIELD_SUCCESSFULLY;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Notification editMaxRepetition(String ID, int maxRepetition) {
+        try {
+            if (maxRepetition <= 0)
+                return Notification.INVALID_CODE;
+            else if (DiscountTable.getDiscountByID(ID).getMaxRepetition() == maxRepetition)
+                return Notification.SAME_FIELD_ERROR;
+            else
+                DiscountTable.editMaxRepetition(ID, maxRepetition);
+
+                return Notification.EDIT_FIELD_SUCCESSFULLY;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
 }
