@@ -8,12 +8,19 @@ import view.menu.ListicMenu;
 import view.menu.Menu;
 import view.process.FunctioningOption;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class AdminProcessor extends AccountProcessor {
     private static AdminControl adminControl = AdminControl.getController();
     private static AdminProcessor adminProcessor = null;
     private static Category category;
     private static Discount discount;
+    private static Date currentDateForDiscount;
 
     private AdminProcessor(){
         super();
@@ -77,9 +84,45 @@ public class AdminProcessor extends AccountProcessor {
                 return ListicMenu.makeListicMenu("Add Customers To Discount Code Listic Menu");
             }
         });
+        this.functionsHashMap.put("Add Code", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addCodeToDiscount();
+            }
+        });
+        this.functionsHashMap.put("Add Start Date", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addDateDiscount(true);
+            }
+        });
+        this.functionsHashMap.put("Add Finish Date", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addDateDiscount(false);
+            }
+        });
+        this.functionsHashMap.put("Add Maximum Value", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addPercentToDiscount();
+            }
+        });
+        this.functionsHashMap.put("Add Maximum Repetition", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addMaxRepetition();
+            }
+        });
+        this.functionsHashMap.put("Confirm Creating Discount", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return confirmDiscount();
+            }
+        });
     }
 
-    public static AccountProcessor getInstance(){
+    public static AdminProcessor getInstance(){
         if(adminProcessor == null)
             adminProcessor = new AdminProcessor();
 
@@ -125,7 +168,135 @@ public class AdminProcessor extends AccountProcessor {
 
     public static void newDiscount(){
         discount = new Discount();
+        currentDateForDiscount = new Date(System.currentTimeMillis());
+        discount.setStartDate(new Date(System.currentTimeMillis()));
     }
 
+    public static boolean isThereCustomerInDiscount(String username)
+    {
+        return discount.getCustomersWithRepetition().keySet().contains(username);
+    }
+
+    public static void addCustomerToDiscount(String username)
+    {
+        discount.addCustomerWithRepetition(username, 0);
+    }
+
+    public static void removeCustomerFromDiscount(String username)
+    {
+        discount.removeCustomer(username);
+    }
+
+    public Menu addCodeToDiscount()
+    {
+        Menu nextMenu = Menu.makeMenu("Create Discount Code Menu");
+        System.out.println("0. Back");
+        System.out.println("Please Enter The Discount Code: ");
+        String command = scanner.nextLine().trim();
+        if(command.equals("0"))
+            return nextMenu;
+        discount.setCode(command);
+        return nextMenu;
+    }
+
+    public Menu addDateDiscount(boolean isStart)
+    {
+        Menu nextMenu = Menu.makeMenu("Create Discount Code Menu");
+        System.out.println("0.Back");
+        if(isStart)
+            System.out.println("* If You Leave The Start Date Free, It Will Automatically Set To Creating Date *");
+        System.out.println("Please Enter The Date In This Format:");
+        System.out.println("dd/MM/yyyy HH:mm:ss");
+        String command = scanner.nextLine().trim();
+        if(command.equals("0"))
+            return nextMenu;
+        System.out.println(setDate(command, isStart));
+        return nextMenu;
+    }
+
+    private String setDate(String command, boolean isStart) {
+        String regex = "dd/MM/yyyy HH:mm:ss";
+        try {
+            Date date = new Date(new SimpleDateFormat(regex).parse(command).getTime());
+            if(isStart) {
+                if((discount.getFinishDate() != null && discount.getFinishDate().compareTo(date) != 1) || (date.compareTo(currentDateForDiscount) != 1))
+                    return "Starting Date Must Be Before Finishing Date and After Current Date";
+                discount.setStartDate(date);
+                return "Date Set";
+            } else {
+                if(discount.getStartDate().compareTo(date) != -1)
+                    return "Finish Date Must Be After Start Date";
+                discount.setFinishDate(date);
+                return "Date Set";
+            }
+        } catch (ParseException e) {
+            return "!Wrong Date Format!";
+        }
+    }
+
+    public Menu addPercentToDiscount()
+    {
+        Menu nextMenu = Menu.makeMenu("Create Discount Code Menu");
+        System.out.println("0. Back");
+        System.out.println("Please Enter The Discount Percentage More Than 0, Less Than Or Equal To 100: ");
+        try {
+            String command = scanner.nextLine().trim();
+            if(command.equals("0"))
+                return nextMenu;
+            double percent = Double.parseDouble(command);
+            if(percent > 0 && percent <= 100)
+            {
+                discount.setDiscountPercent(percent);
+                return nextMenu;
+            }
+        } catch (NumberFormatException e) {}
+        System.out.println("!Wrong Percentage Format!");
+        return nextMenu;
+    }
+
+    public Menu addMaxValue()
+    {
+        Menu nextMenu = Menu.makeMenu("Create Discount Code Menu");
+        System.out.println("0. Back");
+        System.out.println("Please Enter Discount Code Maximum Value (Must Be More Than 0): ");
+        String command = scanner.nextLine().trim();
+        if(command.equals("0"))
+            return nextMenu;
+        try {
+            double maxVal = Double.parseDouble(command);
+            if(maxVal > 0) {
+                discount.setMaxDiscount(maxVal);
+                return nextMenu;
+            }
+        } catch (NumberFormatException e) {}
+        System.out.println("!Wrong Value Format!");
+        return nextMenu;
+    }
+
+    public Menu addMaxRepetition()
+    {
+        Menu nextMenu = Menu.makeMenu("Create Discount Code Menu");
+        System.out.println("0. Back");
+        System.out.println("Please Enter Discount Code Maximum Repetition (Must Be More Than 0): ");
+        String command = scanner.nextLine().trim();
+        if(command.equals("0"))
+            return nextMenu;
+        try {
+            int maxRep = Integer.parseInt(command);
+            if(maxRep > 0) {
+                discount.setMaxRepetition(maxRep);
+                return nextMenu;
+            }
+        } catch (NumberFormatException e) {}
+        System.out.println("!Wrong Value Format!");
+        return nextMenu;
+    }
+
+    public Menu confirmDiscount()
+    {
+        Menu nextMenu = Menu.makeMenu("Create Discount Code Menu");
+        System.out.println(adminControl.addDiscount(discount).getMessage);
+        return nextMenu;
+    }
 
 }

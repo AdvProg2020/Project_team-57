@@ -99,4 +99,12 @@ public class Discount {
     public void setCustomersWithRepetition(HashMap<String, Integer> customerWithRepetition) {
         this.customersWithRepetition = customerWithRepetition;
     }
+
+    public void addCustomerWithRepetition(String username, int repetition) {
+        this.customersWithRepetition.put(username, repetition);
+    }
+
+    public void removeCustomer(String username) {
+        this.customersWithRepetition.remove(username);
+    }
 }

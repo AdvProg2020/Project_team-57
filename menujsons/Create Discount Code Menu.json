@@ -6,7 +6,8 @@
     "Add Discount Percent",
     "Add Maximum Value",
     "Add Maximum Repetition",
-    "Add Customers To Discount Code"
+    "Add Customers To Discount Code",
+    "Confirm Creating Discount"
   ],
   "name" : "Create Discount Code",
   "parentName" : "Manage Discount Codes Listic Menu",
