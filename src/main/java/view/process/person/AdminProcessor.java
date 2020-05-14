@@ -6,6 +6,7 @@ import model.existence.Category;
 import model.existence.Discount;
 import notification.Notification;
 import view.menu.ListicMenu;
+import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 import view.process.FunctioningOption;
 
@@ -22,6 +23,8 @@ public class AdminProcessor extends AccountProcessor {
     private static Category category;
     private static Discount discount;
     private static Date currentDateForDiscount;
+    private static String editingDiscount;
+    private static ListicOptionMenu editDiscountParentMenu;
 
     private AdminProcessor(){
         super();
@@ -127,6 +130,120 @@ public class AdminProcessor extends AccountProcessor {
                 return confirmDiscount();
             }
         });
+        this.functionsHashMap.put("Back", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                editDiscountParentMenu.setOption(adminControl.getDiscountByID(editingDiscount));
+                return editDiscountParentMenu;
+            }
+        });
+        this.functionsHashMap.put("Edit Code", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return editCodeDiscount();
+            }
+        });
+        this.functionsHashMap.put("Edit Finish Date", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return editFinishDateDiscount();
+            }
+        });
+        this.functionsHashMap.put("Edit Discount Percentage", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return editPercentDiscount();
+            }
+        });
+        this.functionsHashMap.put("Edit Maximum Discount Value", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return editMaxValDiscount();
+            }
+        });
+        this.functionsHashMap.put("Edit Maximum Repetition", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return editMaxRepetitionDiscount();
+            }
+        });
+    }
+
+    public Menu editMaxRepetitionDiscount() {
+        Menu nextMenu = Menu.makeMenu("Edit Discount Menu");
+        System.out.println("0. Back");
+        System.out.println("Please Enter New Discount Maximum Repetition More Than 0: ");
+        String command = scanner.nextLine().trim();
+        if(command.equals("0"))
+            return nextMenu;
+        try {
+            System.out.println(adminControl.editMaxRepetition(editingDiscount, Integer.parseInt(command)).getMessage());
+        } catch (NumberFormatException e)
+        {
+            System.out.println("!Wrong Repetition Format!");
+        }
+        return nextMenu;
+    }
+
+    public Menu editMaxValDiscount() {
+        Menu nextMenu = Menu.makeMenu("Edit Discount Menu");
+        System.out.println("0. Back");
+        System.out.println("Please Enter New Discount Maximum Value: ");
+        String command = scanner.nextLine().trim();
+        if(command.equals("0"))
+            return nextMenu;
+        try {
+            System.out.println(adminControl.editMaxDiscount(editingDiscount, Double.parseDouble(command)).getMessage());
+        } catch (NumberFormatException e)
+        {
+            System.out.println("!Wrong Value Format!");
+        }
+        return nextMenu;
+    }
+
+    public Menu editPercentDiscount() {
+        Menu nextMenu = Menu.makeMenu("Edit Discount Menu");
+        System.out.println("0. Back");
+        System.out.println("Please Enter New Discount Percentage More Than 0 And Less Than Or Equal To 100: ");
+        String command = scanner.nextLine().trim();
+        if(command.equals("0"))
+            return nextMenu;
+        try {
+            System.out.println(adminControl.editDiscountPercent(editingDiscount, Double.parseDouble(command)).getMessage());
+        } catch (NumberFormatException e)
+        {
+            System.out.println("!Wrong Percentage Format!");
+        }
+        return nextMenu;
+    }
+
+    public Menu editFinishDateDiscount() {
+        Menu nextMenu = Menu.makeMenu("Edit Discount Menu");
+        String regex = "yyyy/MM/dd HH:mm:ss";
+        System.out.println("0. Back");
+        System.out.println("Please Enter New Finish Code In This Format: ");
+        System.out.println(regex);
+        try {
+            String command = scanner.nextLine().trim();
+            if(command.equals("0"))
+                return nextMenu;
+            Date date = new Date(new SimpleDateFormat(regex).parse(command).getTime());
+            System.out.println(adminControl.editFinishDate(editingDiscount, date).getMessage());
+        } catch (ParseException e) {
+            System.out.println("!Wrong Date Format!");
+        }
+        return nextMenu;
+    }
+
+    public Menu editCodeDiscount() {
+        Menu nextMenu = Menu.makeMenu("Edit Discount Menu");
+        System.out.println("0. Back");
+        System.out.println("Please Enter New Discount Code: ");
+        String command = scanner.nextLine().trim();
+        if(command.equals("0"))
+            return nextMenu;
+        System.out.println(adminControl.editCode(editingDiscount, command).getMessage());
+        return nextMenu;
     }
 
     public static AdminProcessor getInstance(){
@@ -314,4 +431,11 @@ public class AdminProcessor extends AccountProcessor {
         return nextMenu;
     }
 
+    public static void setEditingDiscount(String editingDiscount) {
+        AdminProcessor.editingDiscount = editingDiscount;
+    }
+
+    public static void setEditDiscountParentMenu(ListicOptionMenu editDiscountParentMenu) {
+        AdminProcessor.editDiscountParentMenu = editDiscountParentMenu;
+    }
 }

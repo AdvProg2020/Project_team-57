@@ -54,7 +54,7 @@ public class DiscountTable extends Database {
     }
 
     public static void editDiscountPercent(String ID, double newDiscountPercent) throws SQLException, ClassNotFoundException {
-        String command = "UPDATE Discounts SET DiscountPrcent = ? WHERE ID = ?";
+        String command = "UPDATE Discounts SET DiscountPercent = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDouble(1, newDiscountPercent);
         preparedStatement.setString(2, ID);

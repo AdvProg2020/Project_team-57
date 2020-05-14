@@ -336,9 +336,9 @@ public class AdminControl extends AccountControl{
         try {
             Date currentDate = new Date(new java.util.Date().getTime());
 
-            if (finishDate.compareTo(DiscountTable.getDiscountByID(ID).getStartDate()) != -1)
+            if (finishDate.compareTo(DiscountTable.getDiscountByID(ID).getStartDate()) != +1)
                 return Notification.INVALID_FINISH_DATE_EARLIER_THAN_START_DATE;
-            else if (finishDate.compareTo(currentDate) != -1)
+            else if (finishDate.compareTo(currentDate) != +1)
                 return Notification.INVALID_FINISH_DATE_EARLIER_THAN_CURRENT_DATE;
             else if (DiscountTable.getDiscountByID(ID).getFinishDate().equals(finishDate))
                 return Notification.SAME_FIELD_ERROR;

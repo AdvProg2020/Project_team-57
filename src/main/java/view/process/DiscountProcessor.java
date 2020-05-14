@@ -45,8 +45,8 @@ public class DiscountProcessor extends Processor {
         Discount discount = (Discount) objects[1];
 
         AdminProcessor.setEditingDiscount(discount.getID());
+        AdminProcessor.setEditDiscountParentMenu(menu);
         Menu nextMenu = Menu.makeMenu("Edit Discount Menu");
-        nextMenu.setDerivedMenu(menu);
         return nextMenu;
     }
 
