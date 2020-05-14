@@ -154,13 +154,13 @@ public interface PrintOptionSpecs {
                     break;
                 }
             }
-            if(splitIndex == 0) {
-                splitDescription.add(description.substring(0, 35));
-                splitDescription.addAll(splitDescriptionForProduct(description.substring(35)));
-            } else {
-                splitDescription.add(description.substring(0, splitIndex + 1));
-                splitDescription.addAll(splitDescriptionForProduct(description.substring(splitIndex + 1)));
-            }
+
+            if(splitIndex == 0)
+                splitIndex = 34;
+
+            splitDescription.add(description.substring(0, splitIndex + 1));
+            splitDescription.addAll(splitDescriptionForProduct(description.substring(splitIndex + 1)));
+
         } else {
             splitDescription.add(description);
         }
@@ -233,6 +233,9 @@ public interface PrintOptionSpecs {
                     break;
                 }
             }
+
+            if(splitIndex == 0)
+                splitIndex = 34;
 
             splitFeatures.add(features.substring(0, splitIndex + 1));
             splitFeatures.addAll(splitFeaturesForCategory(features.substring(splitIndex + 1)));

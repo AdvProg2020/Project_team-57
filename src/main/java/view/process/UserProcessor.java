@@ -4,6 +4,7 @@ import controller.account.AccountControl;
 import model.existence.Account;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
+import view.process.person.AdminProcessor;
 
 import java.util.HashMap;
 
@@ -29,6 +30,18 @@ public class UserProcessor extends ListicOptionProcessor {
             @Override
             public Menu doTheThing(Object... objects) {
                 return deleteUser(objects);
+            }
+        });
+        functionsHashMap.put("Add To Customers List", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addToCustomersList(objects);
+            }
+        });
+        functionsHashMap.put("Remove From Customers List", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return removeFromCustomersList(objects);
             }
         });
 
@@ -69,4 +82,19 @@ public class UserProcessor extends ListicOptionProcessor {
         return menu.getParentMenu();
     }
 
+    public Menu addToCustomersList(Object... objects) {
+        ListicOptionMenu menu = (ListicOptionMenu) objects[0];
+        Account account = (Account) objects[1];
+
+        AdminProcessor.addToCustomersList(account.getUsername());
+        return menu.getParentMenu();
+    }
+
+    public Menu removeFromCustomersList(Object... objects) {
+        ListicOptionMenu menu = (ListicOptionMenu) objects[0];
+        Account account = (Account) objects[1];
+
+        AdminProcessor.removeFromCustomersList(account.getUsername());
+        return menu.getParentMenu();
+    }
 }

@@ -1,8 +1,10 @@
 package view.process;
 
 import controller.Control;
+import controller.account.AdminControl;
 import controller.account.CustomerControl;
 import view.menu.ListicOptionMenu;
+import view.process.person.AdminProcessor;
 
 public class ListicOptionProcessor extends Processor{
     private static ListicOptionProcessor listicOptionProcessor = null;
@@ -22,7 +24,8 @@ public class ListicOptionProcessor extends Processor{
             menuName = setMenuNameForCommonProductMenu();
         } else if(menuName.equals("Filtering Category Menu")) {
             menuName = setMenuNameForFilteringCategoryMenu(optionID);
-        }
+        } else if(menuName.equals("Discount User Menu"))
+            menuName = setMenuNameForDiscountUserMenu(optionID);
 
         return menuName;
     }
@@ -48,6 +51,17 @@ public class ListicOptionProcessor extends Processor{
         } else {
             menuName = "Filtering Category Menu1";
         }
+
+        return menuName;
+    }
+
+    public static String setMenuNameForDiscountUserMenu(String userName) {
+        String menuName = null;
+
+        if(AdminProcessor.isThereUserInDiscountWithName(userName))
+            menuName = "Discount User Menu2";
+        else
+            menuName = "Discount User Menu1";
 
         return menuName;
     }
