@@ -4,6 +4,7 @@
     "Start Date",
     "Finish Date",
     "Off Percent",
+    "Add Off Products",
     "Confirm"
   ],
   "name" : "Add Off Menu",

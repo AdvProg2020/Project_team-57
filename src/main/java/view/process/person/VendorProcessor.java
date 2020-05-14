@@ -55,6 +55,12 @@ public class VendorProcessor extends AccountProcessor {
                 return addOffPercent();
             }
         });
+        this.functionsHashMap.put("Add Off Products", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return ListicMenu.makeListicMenu("Add Products To Off Listic Menu");
+            }
+        });
         this.functionsHashMap.put("Confirm", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
@@ -159,5 +165,9 @@ public class VendorProcessor extends AccountProcessor {
         }
 
         return Menu.makeMenu("Add Off Menu");
+    }
+
+    public static Off getOff() {
+        return off;
     }
 }
