@@ -15,7 +15,13 @@ public class CustomerProcessor extends AccountProcessor {
         this.functionsHashMap.put("View Cart", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return viewCart();
+                return ListicMenu.makeListicMenu("View Cart Listic Menu");
+            }
+        });
+        this.functionsHashMap.put("View Discount Codes", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return ListicMenu.makeListicMenu("View Customer Discount Codes Listic Menu");
             }
         });
     }
@@ -27,9 +33,4 @@ public class CustomerProcessor extends AccountProcessor {
         return customerProcessor;
     }
 
-    public Menu viewCart()
-    {
-        //System.out.println(":|");
-        return ListicMenu.makeListicMenu("View Cart Listic Menu");
-    }
 }

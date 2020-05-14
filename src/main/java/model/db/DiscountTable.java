@@ -1,6 +1,7 @@
 package model.db;
 
 import model.existence.Discount;
+import org.omg.CORBA.ARG_IN;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -104,4 +105,16 @@ public class DiscountTable extends Database {
         return preparedStatement.executeQuery().next();
     }
 
+    public static ArrayList<Discount> getCustomerDiscountCodes(String username) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Discounts WHERE CustomerUsername = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<Discount> discounts = new ArrayList<>();
+        while (resultSet.next())
+        {
+            discounts.add(new Discount(resultSet));
+        }
+        return discounts;
+    }
 }
