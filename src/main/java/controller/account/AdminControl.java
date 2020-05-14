@@ -316,7 +316,7 @@ public class AdminControl extends AccountControl{
     public Notification editCode(String ID, String code) {
         try {
             if (code.length() > 16 || code.length() < 6)
-                return Notification.INVALID_CODE;
+                return Notification.INVALID_DISCOUNT_CODE;
             else if (DiscountTable.getDiscountByID(ID).getCode().equals(code))
                 return Notification.SAME_FIELD_ERROR;
             else
@@ -358,7 +358,7 @@ public class AdminControl extends AccountControl{
     public Notification editDiscountPercent(String ID, double discountPercent) {
         try {
             if (discountPercent > 100 || discountPercent <= 0)
-                return Notification.INVALID_DISCOUNT_CODE;
+                return Notification.INVALID_DISCOUNT_PERCENT;
             else if (DiscountTable.getDiscountByID(ID).getDiscountPercent() == discountPercent)
                 return Notification.SAME_FIELD_ERROR;
             else
@@ -396,7 +396,7 @@ public class AdminControl extends AccountControl{
     public Notification editMaxRepetition(String ID, int maxRepetition) {
         try {
             if (maxRepetition <= 0)
-                return Notification.INVALID_CODE;
+                return Notification.INVALID_MAX_REPETITION;
             else if (DiscountTable.getDiscountByID(ID).getMaxRepetition() == maxRepetition)
                 return Notification.SAME_FIELD_ERROR;
             else

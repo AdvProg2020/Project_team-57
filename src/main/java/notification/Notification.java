@@ -66,8 +66,13 @@ public enum Notification {
     EMPTY_DISCOUNT_PERCENT("Do You Call YourSelf An Admin ?!!! \uD83E\uDD28 \nYour Discount Code Doesn't Have A Discount Percent. \uD83D\uDE11"),
     EMPTY_MAX_DISCOUNT("Do You Think I'll Think You Will Be That Generous That You Won't Enter The Max Discount? \uD83E\uDD28 \nStop This Fucking Feint Show And Enter The Fucking Max Discount. \uD83D\uDE12"),
     EMPTY_DISCOUNT_MAX_REPETITION("Do You Think I'll Think You Will Be That Generous That You Won't Enter The Max Repetition? \uD83E\uDD28 \nStop This Fucking Feint Show And Enter The Fucking Max Repetition. \uD83D\uDE12"),
-    EMPTY_DISCOUNT_CUSTOMERS_LIST("You Want to Create Discount Without Adding Customers In It ? \nGuessed So  \uD83D\uDE11 ");
-
+    EMPTY_DISCOUNT_CUSTOMERS_LIST("You Want to Create Discount Without Adding Customers In It ? \nGuessed So  \uD83D\uDE11 "),
+    INVALID_DISCOUNT_CODE("Your Code Is Invalid. \nRemember! Its Length Must Be Between 6 And 16"),
+    INVALID_FINISH_DATE_EARLIER_THAN_START_DATE("The Date You Entered Is Earlier Than The Starting Date Of Discount."),
+    INVALID_FINISH_DATE_EARLIER_THAN_CURRENT_DATE("The Date You Entered Is Earlier Than The Current Date."),
+    INVALID_DISCOUNT_PERCENT("Discount Percentage Must Be Between 0 And 100 Obviously \uD83D\uDE15"),
+    INVALID_MAX_DISCOUNT("Max Discount Must Be A Positive Amount"),
+    INVALID_MAX_REPETITION("Max Repetition Must Be A Positive Amount");
 
 
     private String message;
