@@ -257,4 +257,59 @@ public class AdminControl extends AccountControl{
         }
         return Notification.DELETED_DISCOUNT;
     }
+
+    public Notification addDiscount(Discount discount) {
+        if(isDiscountComplete(discount) != null)
+            return isDiscountComplete(discount);
+
+        String ID = "";
+
+        try {
+            do {
+                ID = generateDiscountID();
+            } while (DiscountTable.isThereDiscountWithID(ID));
+
+            discount.setID(ID);
+            DiscountTable.addDiscount(discount);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return Notification.ADD_DISCOUNT;
+    }
+
+    public Notification isDiscountComplete(Discount discount) {
+        Notification notification = null;
+
+        if(discount.getCode() == null)
+            notification = Notification.EMPTY_DISCOUNT_CODE;
+        else if(discount.getStartDate() == null)
+            notification = Notification.EMPTY_DISCOUNT_START_DATE;
+        else if(discount.getFinishDate() == null)
+            notification = Notification.EMPTY_DISCOUNT_FINISH_DATE;
+        else if(discount.getDiscountPercent() == 0)
+            notification = Notification.EMPTY_DISCOUNT_PERCENT;
+        else if(discount.getMaxDiscount() == 0)
+            notification = Notification.EMPTY_MAX_DISCOUNT;
+        else if(discount.getMaxRepetition() == 0)
+            notification = Notification.EMPTY_DISCOUNT_MAX_REPETITION;
+        else if(discount.getCustomersWithRepetition().keySet().size() == 0 ||
+                discount.getCustomersWithRepetition() == null)
+            notification = Notification.EMPTY_DISCOUNT_CUSTOMERS_LIST;
+
+        return notification;
+    }
+
+    private String generateDiscountID()
+    {
+        char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
+        StringBuilder ID = new StringBuilder("d");
+
+        for(int i = 0; i < 7; ++i)
+            ID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
+
+        return ID.toString();
+    }
 }

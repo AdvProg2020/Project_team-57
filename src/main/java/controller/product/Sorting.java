@@ -57,14 +57,14 @@ public class Sorting extends Control {
     public static class TimeSortAscending implements Comparator<Product> {
         @Override
         public int compare(Product o1, Product o2) {
-            return ((-1) * o1.getApprovalDate().compareTo(o2.getApprovalDate()));
+            return o1.getApprovalDate().compareTo(o2.getApprovalDate());
         }
     }
 
     public static class TimeSortDescending implements Comparator<Product> {
         @Override
         public int compare(Product o1, Product o2) {
-            return o1.getApprovalDate().compareTo(o2.getApprovalDate());
+            return -o1.getApprovalDate().compareTo(o2.getApprovalDate());
         }
     }
 
