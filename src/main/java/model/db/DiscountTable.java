@@ -89,4 +89,10 @@ public class DiscountTable extends Database {
         return new Discount(preparedStatement.executeQuery());
     }
 
+    public static boolean isThereDiscountWithID(String ID) throws SQLException, ClassNotFoundException {
+        String sqlQuery = "SELECT * FROM Discounts WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(sqlQuery);
+        preparedStatement.setString(1, ID);
+        return preparedStatement.executeQuery().next();
+    }
 }
