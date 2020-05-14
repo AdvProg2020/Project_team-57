@@ -1,5 +1,6 @@
 package view;
 
+import controller.Control;
 import model.existence.Account;
 import model.existence.Category;
 import model.existence.Discount;
@@ -272,7 +273,11 @@ public interface PrintOptionSpecs {
         System.out.format("| %-22s | %-35d |%n", "Maximum Repetition", discount.getMaxRepetition());
         printCustomLineForDiscount();
 
-        printCustomersListForDiscount(discount.getCustomersWithRepetition());
+        if(Control.getType().equals("Admin"))
+            printCustomersListForDiscount(discount.getCustomersWithRepetition());
+        else
+            printCustomersRepetitionForDiscount(discount);
+
         printCustomLineForDiscount();
 
     }
@@ -339,5 +344,10 @@ public interface PrintOptionSpecs {
         splitCustomers.add(customersLine.toString());
         splitCustomers.addAll(splitCustomers(customersHashMap));
         return splitCustomers;
+    }
+
+    default void printCustomersRepetitionForDiscount(Discount discount) {
+        int repetition = discount.getCustomersWithRepetition().get(Control.getUsername());
+        System.out.format("| %-20s | %-35d | %n", "Repetition", repetition);
     }
 }
