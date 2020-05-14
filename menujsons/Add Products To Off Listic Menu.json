@@ -1,0 +1,8 @@
+{
+  "name" : "Add Products To Off",
+  "parentName" : "Add Off Menu",
+  "isThereParentMenu" : true,
+  "processorName" : "ListicProcessor",
+  "options" : [
+  ]
+}

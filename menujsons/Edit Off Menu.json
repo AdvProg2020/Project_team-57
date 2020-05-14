@@ -1,0 +1,11 @@
+{
+  "options" : [
+    "Edit Off Name",
+    "Edit Off Finish Date",
+    "Edit Off Percentage"
+  ],
+  "name" : "Edit Off Menu",
+  "parentName" : "Main Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "VendorProcessor"
+}

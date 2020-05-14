@@ -6,6 +6,7 @@ import controller.account.CustomerControl;
 import controller.account.VendorControl;
 import view.menu.ListicOptionMenu;
 import view.process.person.AdminProcessor;
+import view.process.person.VendorProcessor;
 
 public class ListicOptionProcessor extends Processor{
     private static ListicOptionProcessor listicOptionProcessor = null;
@@ -73,7 +74,7 @@ public class ListicOptionProcessor extends Processor{
     public static String setMenuNameForOffProductMenu(String productID) {
         String menuName = "";
 
-        if(vendorControl.isThereProductInOff(productID))
+        if(VendorProcessor.getOff().isThereProductInOff(productID))
             menuName = "Off Product Menu2";
         else
             menuName = "Off Product Menu1";

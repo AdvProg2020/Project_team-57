@@ -7,10 +7,12 @@ import controller.account.CustomerControl;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
 import model.existence.Account;
+import model.existence.Off;
 import view.menu.ListicMenu;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 import view.process.person.AdminProcessor;
+import view.process.person.VendorProcessor;
 
 import java.util.HashMap;
 
@@ -75,6 +77,13 @@ public class ListicProcessor extends Processor {
                 return Menu.makeMenu("Create Discount Code Menu");
             }
         });
+        this.functionsHashMap.put("Add Off", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                VendorProcessor.setOff(new Off());
+                return Menu.makeMenu("Add Off Menu");
+            }
+        });
 
     }
 
@@ -122,6 +131,10 @@ public class ListicProcessor extends Processor {
             return ListicOptionMenu.makeMenu("Discount User Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("View Discount Codes"))
             return ListicOptionMenu.makeMenu("Customer View Discount Menu", parentMenu, primaryKey);
+        else if(parentMenu.getName().equals("Manage Offs"))
+            return ListicOptionMenu.makeMenu("Vendor View Off Menu", parentMenu, primaryKey);
+        else if(parentMenu.getName().equals("Add Products To Off"))
+            return ListicOptionMenu.makeMenu("Off Product Menu", parentMenu,primaryKey);
         //TODO(OTHERS)
         return null;
     }
@@ -195,7 +208,21 @@ public class ListicProcessor extends Processor {
             initAddCustomersToDiscount(listicMenu);
         else if(listicMenu.getName().equals("View Discount Codes"))
             initViewDiscountCodes(listicMenu);
+        else if(listicMenu.getName().equals("Manage Offs"))
+            initManageOffs(listicMenu);
+        else if(listicMenu.getName().equals("Add Products To Off"))
+            initProductsForOff(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initProductsForOff(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(vendorControl.getNonOffProductsNames());
+        listicMenu.setListicOptionPrimaryKeys(vendorControl.getNonOffProductsIDs());
+    }
+
+    private static void initManageOffs(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(vendorControl.getAllOffNames());
+        listicMenu.setListicOptionPrimaryKeys(vendorControl.getAllOffIDs());
     }
 
     private static void initViewDiscountCodes(ListicMenu listicMenu) {

@@ -1,0 +1,9 @@
+{
+  "name" : "Manage Offs",
+  "parentName" : "Vendor Menu",
+  "isThereParentMenu" : true,
+  "processorName" : "ListicProcessor",
+  "options" : [
+    "Add Off"
+  ]
+}

@@ -4,6 +4,7 @@ import controller.account.VendorControl;
 import model.existence.Product;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
+import view.process.person.VendorProcessor;
 
 import java.util.HashMap;
 
@@ -38,14 +39,14 @@ public class OffProcessor extends Processor{
     public Menu addToOff(Object... objects) {
         ListicOptionMenu menu = (ListicOptionMenu) objects[0];
         Product product = (Product) objects[1];
-        vendorControl.addProductToOff(product.getID());
+        VendorProcessor.getOff().addProductToOff(product.getID());
         return menu.getParentMenu();
     }
 
     public Menu removeFromOff(Object... objects) {
         ListicOptionMenu menu = (ListicOptionMenu) objects[0];
         Product product = (Product) objects[1];
-        vendorControl.removeProductFromOff(product.getID());
+        VendorProcessor.getOff().removeProductFromOff(product.getID());
         return menu.getParentMenu();
     }
 

@@ -16,20 +16,40 @@ public class Off {
 
     private ArrayList<String> productIDs = new ArrayList<>();
 
-    public Off(ResultSet resultSet) throws SQLException {
-        if (resultSet.next()) {
-            this.offID = resultSet.getString("OffID");
-            this.offName = resultSet.getString("OffName");
-            this.vendorUsername = resultSet.getString("VendorUsername");
-            this.status = resultSet.getInt("Status");
-            this.startDate = resultSet.getDate("StartDate");
-            this.finishDate = resultSet.getDate("FinishDate");
-            this.offPercent = resultSet.getDouble("OffPercent");
+    /*public Off(ResultSet resultSet) throws SQLException {
+        String offID = resultSet.getString("OffID");
+        this.offID = resultSet.getString("OffID");
+        this.offName = resultSet.getString("OffName");
+        this.vendorUsername = resultSet.getString("VendorUsername");
+        this.status = resultSet.getInt("Status");
+        this.startDate = resultSet.getDate("StartDate");
+        this.finishDate = resultSet.getDate("FinishDate");
+        this.offPercent = resultSet.getDouble("OffPercent");
+        productIDs.add(resultSet.getString("ProductID"));
+        while (resultSet.getString("OffID").equals(offID) && resultSet.next()) {
             productIDs.add(resultSet.getString("ProductID"));
         }
-        while (resultSet.next()) {
+    }*/
+
+    public static Off makeOffByID(ResultSet resultSet) throws SQLException {
+        Off off = new Off();
+        String offID = resultSet.getString("OffID");
+        off.setOffID(resultSet.getString("OffID"));
+        off.setOffName(resultSet.getString("OffName"));
+        off.setVendorUsername(resultSet.getString("VendorUsername"));
+        off.setStartDate(resultSet.getDate("StartDate"));
+        off.setFinishDate(resultSet.getDate("FinishDate"));
+        off.setStatus(resultSet.getInt("Status"));
+        off.setOffPercent(resultSet.getDouble("OffPercent"));
+        ArrayList<String> productIDs = new ArrayList<>();
+        productIDs.add(resultSet.getString("ProductID"));
+        while (resultSet.getString("OffID").equals(offID) && resultSet.next()) {
             productIDs.add(resultSet.getString("ProductID"));
         }
+        return off;
+    }
+
+    public Off() {
     }
 
     public String getOffID() {
@@ -94,5 +114,17 @@ public class Off {
 
     public void setVendorUsername(String vendorUsername) {
         this.vendorUsername = vendorUsername;
+    }
+
+    public void addProductToOff(String productID) {
+        this.productIDs.add(productID);
+    }
+
+    public void removeProductFromOff(String productID) {
+        this.productIDs.remove(productID);
+    }
+
+    public boolean isThereProductInOff(String productID) {
+        return this.productIDs.contains(productID);
     }
 }

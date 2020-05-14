@@ -31,6 +31,7 @@ public abstract class Processor {
         processesHashMap.put("FilterProcessor", FilterProcessor.getInstance());
         processesHashMap.put("FilteringProcessor", FilteringProcessor.getInstance());
         processesHashMap.put("DiscountProcessor", DiscountProcessor.getInstance());
+        processesHashMap.put("OffProcessor", OffProcessor.getInstance());
     }
 
     public static Processor findProcessorWithName(String name){

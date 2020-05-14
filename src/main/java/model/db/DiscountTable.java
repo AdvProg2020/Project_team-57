@@ -112,23 +112,12 @@ public class DiscountTable extends Database {
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
 
-/*
-        ResultSet reTemp = preparedStatement.executeQuery();
-
-        for(int i = 0; reTemp.next();)
-            System.out.print(i++ + " ");
-        System.out.println();
-*/
-
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Discount> discounts = new ArrayList<>();
-        int i = 0;
         while (resultSet.next())
         {
-            //System.out.println(++i);
             discounts.add(Discount.makeCustomerDiscount(resultSet));
         }
-        //System.out.println("discounts.size :" + discounts.size());
         return discounts;
     }
 

@@ -30,31 +30,20 @@ public class OffTable extends Database{
         String command = "SELECT * FROM Offs WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, offID);
-        return new Off(preparedStatement.executeQuery());
+        return Off.makeOffByID(preparedStatement.executeQuery());
     }
 
-    public static ArrayList<String> allOffNames(String loggedInUsername) throws SQLException, ClassNotFoundException {
-        String command = "SELECT * FROM Offs WHERE VendorUsername = ?";
+    public static ArrayList<Off> getVendorOffs(String username) throws SQLException, ClassNotFoundException {
+        ArrayList<Off> offs = new ArrayList<>();
+        String command = "SELECT DISTINCT OffID FROM Offs WHERE VendorUsername = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, loggedInUsername);
-        ArrayList<String> allOffNames = new ArrayList<>();
+        preparedStatement.setString(1, username);
         ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()){
-            allOffNames.add(resultSet.getString("OffName"));
+        while (resultSet.next())
+        {
+            offs.add(getSpecificOff(resultSet.getString("OffID")));
         }
-        return allOffNames;
-    }
-
-    public static ArrayList<String> allOffIDs(String loggedInUsername) throws SQLException, ClassNotFoundException {
-        String command = "SELECT * FROM Offs WHERE VendorUsername = ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, loggedInUsername);
-        ArrayList<String> allOffIDs = new ArrayList<>();
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()){
-            allOffIDs.add(resultSet.getString("OffID"));
-        }
-        return allOffIDs;
+        return offs;
     }
 
     public static void editOffName(Off off, String newOffName) throws SQLException, ClassNotFoundException {
@@ -97,5 +86,12 @@ public class OffTable extends Database{
         preparedStatement.setDouble(1, percent);
         preparedStatement.setString(2, offID);
         preparedStatement.execute();
+    }
+
+    public static boolean isThereProductInOff(String productID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Offs WHERE ProductID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productID);
+        return preparedStatement.executeQuery().next();
     }
 }

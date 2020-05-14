@@ -8,7 +8,6 @@ import model.db.VendorTable;
 import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -97,27 +96,31 @@ public class VendorControl extends AccountControl{
     }
 
     public ArrayList<String> getAllOffNames(){
+        ArrayList<String> offs = new ArrayList<>();
         try {
-            return OffTable.allOffNames(Control.getUsername());
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-            return new ArrayList<>();
+            for (Off vendorOff : OffTable.getVendorOffs(Control.getUsername())) {
+                offs.add(vendorOff.getOffName());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            return new ArrayList<>();
         }
+        return offs;
     }
 
     public ArrayList<String> getAllOffIDs(){
+        ArrayList<String> offs = new ArrayList<>();
         try {
-            return OffTable.allOffIDs(Control.getUsername());
+            for (Off vendorOff : OffTable.getVendorOffs(Control.getUsername())) {
+                offs.add(vendorOff.getOffID());
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<>();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            return new ArrayList<>();
         }
+        return offs;
     }
 
     public Notification addOff(Off off){
@@ -139,17 +142,6 @@ public class VendorControl extends AccountControl{
        }
     }
 
-    public Notification editOffNAme(Off off, String offName){
-        try {
-            OffTable.editOffName(off, offName);
-            return Notification.CHANGE_OFF_NAME;
-        } catch (SQLException throwables) {
-            return Notification.UNKNOWN_ERROR;
-        } catch (ClassNotFoundException e) {
-            return Notification.UNKNOWN_ERROR;
-        }
-    }
-
     private String setOffID(){
         char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
         StringBuilder offID = new StringBuilder("o");
@@ -158,5 +150,46 @@ public class VendorControl extends AccountControl{
             offID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
 
         return offID.toString();
+    }
+
+    public boolean isThereProductInOff(String productID) {
+        try {
+            return OffTable.isThereProductInOff(productID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public ArrayList<String> getNonOffProductsNames() {
+        ArrayList<String> nonOffProducts = new ArrayList<>();
+        try {
+            for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
+                if(!OffTable.isThereProductInOff(product.getID()))
+                    nonOffProducts.add(product.getName());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return nonOffProducts;
+    }
+
+    public ArrayList<String> getNonOffProductsIDs() {
+        ArrayList<String> nonOffProducts = new ArrayList<>();
+        try {
+            for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
+                if(!OffTable.isThereProductInOff(product.getID()))
+                    nonOffProducts.add(product.getID());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return nonOffProducts;
     }
 }
