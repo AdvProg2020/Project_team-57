@@ -154,9 +154,13 @@ public interface PrintOptionSpecs {
                     break;
                 }
             }
-
-            splitDescription.add(description.substring(0, splitIndex + 1));
-            splitDescription.addAll(splitDescriptionForProduct(description.substring(splitIndex + 1)));
+            if(splitIndex == 0) {
+                splitDescription.add(description.substring(0, 35));
+                splitDescription.addAll(splitDescriptionForProduct(description.substring(35)));
+            } else {
+                splitDescription.add(description.substring(0, splitIndex + 1));
+                splitDescription.addAll(splitDescriptionForProduct(description.substring(splitIndex + 1)));
+            }
         } else {
             splitDescription.add(description);
         }
@@ -256,13 +260,13 @@ public interface PrintOptionSpecs {
         printCustomDateForDiscount("Finish Date", discount.getFinishDate());
         printCustomLineForDiscount();
 
-        System.out.format("| %-22s | %-35f |", "Discount Percent", discount.getDiscountPercent());
+        System.out.format("| %-22s | %-35f |%n", "Discount Percent", discount.getDiscountPercent());
         printCustomLineForDiscount();
 
-        System.out.format("| %-22s | %-35f |", "Maximum Discount", discount.getMaxDiscount());
+        System.out.format("| %-22s | %-35f |%n", "Maximum Discount", discount.getMaxDiscount());
         printCustomLineForDiscount();
 
-        System.out.format("| %-22s | %-35d |", "Maximum Repetition", discount.getMaxRepetition());
+        System.out.format("| %-22s | %-35d |%n", "Maximum Repetition", discount.getMaxRepetition());
         printCustomLineForDiscount();
 
         printCustomersListForDiscount(discount.getCustomersWithRepetition());
@@ -291,34 +295,44 @@ public interface PrintOptionSpecs {
     }
 
     default void printCustomersListForDiscount(HashMap<String, Integer> customersHashMap) {
-        if(customersHashMap == null) {
-            System.out.format("| %-22s | %-35s |", "Customers", "Not Assigned");
+        if(customersHashMap == null || customersHashMap.size() == 0) {
+            System.out.format("| %-22s | %-35s |%n", "Customers", "Not Assigned");
         } else {
             HashMap<String, Integer> clonedCustomersHashMap = (HashMap<String, Integer>) customersHashMap.clone();
             ArrayList<String> splitCustomers = splitCustomers(clonedCustomersHashMap);
 
             for (String customerLine : splitCustomers) {
                 if (customerLine.equals(splitCustomers.get(0))) {
-                    System.out.format("| %-22s | %-35s |", "Customers", customerLine);
+                    System.out.format("| %-22s | %-35s |%n", "Customers", customerLine);
                 } else
-                    System.out.format("| %-22s | %-35s |", "", customerLine);
+                    System.out.format("| %-22s | %-35s |%n", "", customerLine);
             }
         }
     }
 
     default ArrayList<String> splitCustomers(HashMap<String, Integer> customersHashMap) {
+
+        if(customersHashMap.keySet().size() == 0)
+            return new ArrayList<>();
+
         ArrayList<String> splitCustomers = new ArrayList<>();
         StringBuilder customersLine = new StringBuilder("");
         boolean flag = true;
+        ArrayList<String> printedCustomers = new ArrayList<>();
 
         for(String customer : customersHashMap.keySet()) {
             if(customersLine.length() + customer.length() > 33) {
                 break;
             }
-            customersLine.insert(customersLine.length() - 1, customer + ", ");
-            customersHashMap.remove(customer);
+            customersLine.insert(customersLine.length(), customer + ", ");
+            printedCustomers.add(customer);
         }
 
+        for (String printedCustomer : printedCustomers) {
+            customersHashMap.remove(printedCustomer);
+        }
+        if(customersHashMap.keySet().size() == 0)
+            customersLine = new StringBuilder (customersLine.substring(0, customersLine.length() - 2));
         splitCustomers.add(customersLine.toString());
         splitCustomers.addAll(splitCustomers(customersHashMap));
         return splitCustomers;

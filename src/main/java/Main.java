@@ -57,6 +57,11 @@ public class Main {
         customers.put("Alexis", 3);
         customers.put("Molly", 0);
         customers.put("Arya Fae", 20);
+        customers.put("Sasha Grey", 15);
+        customers.put("Karla Kush", 20);
+        customers.put("Riley Reid", 2);
+        customers.put("Danni Daniels", 12);
+        customers.put("Aleta Ocean", 8);
         discount.setCustomersWithRepetition(customers);
         DiscountTable.addDiscount(discount);
     }
