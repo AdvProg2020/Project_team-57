@@ -200,7 +200,7 @@ public class ListicProcessor extends Processor {
 
     private static void initViewDiscountCodes(ListicMenu listicMenu) {
         listicMenu.setListicOptionNames(customerControl.getDiscountCodes());
-        listicMenu.setListicOptionNames(customerControl.getDiscountIDs());
+        listicMenu.setListicOptionPrimaryKeys(customerControl.getDiscountIDs());
     }
 
     private static void initAddCustomersToDiscount(ListicMenu listicMenu) {

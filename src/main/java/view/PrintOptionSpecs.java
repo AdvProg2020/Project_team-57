@@ -348,6 +348,6 @@ public interface PrintOptionSpecs {
 
     default void printCustomersRepetitionForDiscount(Discount discount) {
         int repetition = discount.getCustomersWithRepetition().get(Control.getUsername());
-        System.out.format("| %-20s | %-35d | %n", "Repetition", repetition);
+        System.out.format("| %-22s | %-35d | %n", "Repetition", repetition);
     }
 }

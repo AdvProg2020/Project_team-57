@@ -33,6 +33,22 @@ public class Discount {
         }
     }
 
+    public static Discount makeCustomerDiscount(ResultSet resultSet) throws SQLException {
+        Discount discount = new Discount();
+        discount.setID(resultSet.getString("ID"));
+        discount.setCode(resultSet.getString("Code"));
+        discount.setStartDate(resultSet.getDate("StartDate"));
+        discount.setFinishDate(resultSet.getDate("FinishDate"));
+        discount.setDiscountPercent(resultSet.getDouble("DiscountPercent"));
+        discount.setMaxDiscount(resultSet.getDouble("MaxDiscount"));
+        discount.setMaxRepetition(resultSet.getInt("MaxRepetition"));
+        HashMap <String, Integer> customersWithRepetition = new HashMap<>();
+        customersWithRepetition.put(resultSet.getString("CustomerUsername"),
+                resultSet.getInt("Repetition"));
+        discount.setCustomersWithRepetition(customersWithRepetition);
+        return discount;
+    }
+
     public Discount() {
     }
 
