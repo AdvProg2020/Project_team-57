@@ -3,12 +3,14 @@ package view.process;
 import controller.Control;
 import controller.account.AdminControl;
 import controller.account.CustomerControl;
+import controller.account.VendorControl;
 import view.menu.ListicOptionMenu;
 import view.process.person.AdminProcessor;
 
 public class ListicOptionProcessor extends Processor{
     private static ListicOptionProcessor listicOptionProcessor = null;
     private static CustomerControl customerControl = CustomerControl.getController();
+    private static VendorControl vendorControl = VendorControl.getController();
 
     public static ListicOptionProcessor getInstance() {
         if(listicOptionProcessor == null)
@@ -20,12 +22,14 @@ public class ListicOptionProcessor extends Processor{
     public static String setMenuName(String menuName, String optionID) {
 
         //TODO
-        if(menuName.equals("Common Product Menu")) {
+        if(menuName.equals("Common Product Menu"))
             menuName = setMenuNameForCommonProductMenu();
-        } else if(menuName.equals("Filtering Category Menu")) {
+        else if(menuName.equals("Filtering Category Menu"))
             menuName = setMenuNameForFilteringCategoryMenu(optionID);
-        } else if(menuName.equals("Discount User Menu"))
+        else if(menuName.equals("Discount User Menu"))
             menuName = setMenuNameForDiscountUserMenu(optionID);
+        else if(menuName.equals("Off Product Menu"))
+            menuName = setMenuNameForOffProductMenu(optionID);
 
         return menuName;
     }
@@ -62,6 +66,17 @@ public class ListicOptionProcessor extends Processor{
             menuName = "Discount User Menu2";
         else
             menuName = "Discount User Menu1";
+
+        return menuName;
+    }
+
+    public static String setMenuNameForOffProductMenu(String productID) {
+        String menuName = "";
+
+        if(vendorControl.isThereProductInOff(productID))
+            menuName = "Off Product Menu2";
+        else
+            menuName = "Off Product Menu1";
 
         return menuName;
     }
