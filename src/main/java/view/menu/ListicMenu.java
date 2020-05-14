@@ -39,7 +39,7 @@ public class ListicMenu extends Menu {
         if(listicOptionNames.size() % 5 != 0)
             ++pageLim;
         setMaxOption();
-        System.out.println("0. Cancel");
+        System.out.println("0. Back");
         int showingPageLim = pageLim;
         if(pageNumber + 1 > showingPageLim)
             showingPageLim = pageNumber + 1;
