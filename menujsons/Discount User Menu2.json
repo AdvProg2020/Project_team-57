@@ -5,5 +5,5 @@
   "name" : "Customer Menu",
   "parentName" : "View All Users For Discount Menu",
   "isThereParentMenu" : "true",
-  "processorName" : "UserProcessor"
+  "processorName" : "RegisterRequestProcessor"
 }

@@ -86,7 +86,8 @@ public class UserProcessor extends ListicOptionProcessor {
         ListicOptionMenu menu = (ListicOptionMenu) objects[0];
         Account account = (Account) objects[1];
 
-        AdminProcessor.addToCustomersList(account.getUsername());
+        AdminProcessor.addCustomerToDiscount(account.getUsername());
+        System.out.println(account.getUsername() + " Added To Discount");
         return menu.getParentMenu();
     }
 
@@ -94,7 +95,8 @@ public class UserProcessor extends ListicOptionProcessor {
         ListicOptionMenu menu = (ListicOptionMenu) objects[0];
         Account account = (Account) objects[1];
 
-        AdminProcessor.removeFromCustomersList(account.getUsername());
+        AdminProcessor.removeCustomerFromDiscount(account.getUsername());
+        System.out.println(account.getUsername() + " Removed From Discount");
         return menu.getParentMenu();
     }
 }

@@ -58,7 +58,7 @@ public class ListicOptionProcessor extends Processor{
     public static String setMenuNameForDiscountUserMenu(String userName) {
         String menuName = null;
 
-        if(AdminProcessor.isThereUserInDiscountWithName(userName))
+        if(AdminProcessor.isThereCustomerInDiscount(userName))
             menuName = "Discount User Menu2";
         else
             menuName = "Discount User Menu1";
@@ -74,7 +74,7 @@ public class ListicOptionProcessor extends Processor{
             FilteringProcessor.setMenu(listicOptionMenu, optionID);
         } else if(menuName.contains("Category")) {
             CategoryProcessor.setMenu(listicOptionMenu, optionID);
-        } else if(menuName.contains("Discount")) {
+        } else if(menuName.contains("Discount Menu")) {
             DiscountProcessor.setMenu(listicOptionMenu, optionID);
         } else {
             UserProcessor.setMenu(listicOptionMenu, optionID);

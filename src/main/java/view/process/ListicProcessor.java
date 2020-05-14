@@ -119,7 +119,7 @@ public class ListicProcessor extends Processor {
         else if(parentMenu.getName().equals("Manage Discount Codes"))
             return ListicOptionMenu.makeMenu("View Discount Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("Add Customers To Discount Code")) {
-            //TODO(LISTICOPTIONMENU)
+            return ListicOptionMenu.makeMenu("Discount User Menu", parentMenu, primaryKey);
         }
         //TODO(OTHERS)
         return null;

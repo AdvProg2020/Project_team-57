@@ -4,6 +4,7 @@ package view.process.person;
 import controller.account.AdminControl;
 import model.existence.Category;
 import model.existence.Discount;
+import notification.Notification;
 import view.menu.ListicMenu;
 import view.menu.Menu;
 import view.process.FunctioningOption;
@@ -78,7 +79,7 @@ public class AdminProcessor extends AccountProcessor {
                 return ListicMenu.makeListicMenu("Manage Discount Codes Listic Menu");
             }
         });
-        this.functionsHashMap.put("Add Customer To Discount Code", new FunctioningOption() {
+        this.functionsHashMap.put("Add Customers To Discount Code", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
                 return ListicMenu.makeListicMenu("Add Customers To Discount Code Listic Menu");
@@ -102,10 +103,16 @@ public class AdminProcessor extends AccountProcessor {
                 return addDateDiscount(false);
             }
         });
-        this.functionsHashMap.put("Add Maximum Value", new FunctioningOption() {
+        functionsHashMap.put("Add Discount Percent", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
                 return addPercentToDiscount();
+            }
+        });
+        this.functionsHashMap.put("Add Maximum Value", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addMaxValue();
             }
         });
         this.functionsHashMap.put("Add Maximum Repetition", new FunctioningOption() {
@@ -204,9 +211,9 @@ public class AdminProcessor extends AccountProcessor {
         Menu nextMenu = Menu.makeMenu("Create Discount Code Menu");
         System.out.println("0.Back");
         if(isStart)
-            System.out.println("* If You Leave The Start Date Free, It Will Automatically Set To Creating Date *");
+            System.out.println("* If You Leave The Start Date Free, It Will Automatically Set To Current Date *");
         System.out.println("Please Enter The Date In This Format:");
-        System.out.println("dd/MM/yyyy HH:mm:ss");
+        System.out.println("yyyy/MM/dd HH:mm:ss");
         String command = scanner.nextLine().trim();
         if(command.equals("0"))
             return nextMenu;
@@ -215,7 +222,7 @@ public class AdminProcessor extends AccountProcessor {
     }
 
     private String setDate(String command, boolean isStart) {
-        String regex = "dd/MM/yyyy HH:mm:ss";
+        String regex = "yyyy/MM/dd HH:mm:ss";
         try {
             Date date = new Date(new SimpleDateFormat(regex).parse(command).getTime());
             if(isStart) {
@@ -247,6 +254,7 @@ public class AdminProcessor extends AccountProcessor {
             if(percent > 0 && percent <= 100)
             {
                 discount.setDiscountPercent(percent);
+                System.out.println("Discount Percentage Set");
                 return nextMenu;
             }
         } catch (NumberFormatException e) {}
@@ -266,6 +274,7 @@ public class AdminProcessor extends AccountProcessor {
             double maxVal = Double.parseDouble(command);
             if(maxVal > 0) {
                 discount.setMaxDiscount(maxVal);
+                System.out.println("Maximum Value Set");
                 return nextMenu;
             }
         } catch (NumberFormatException e) {}
@@ -285,17 +294,23 @@ public class AdminProcessor extends AccountProcessor {
             int maxRep = Integer.parseInt(command);
             if(maxRep > 0) {
                 discount.setMaxRepetition(maxRep);
+                System.out.println("Maximum Repetition Set");
                 return nextMenu;
             }
         } catch (NumberFormatException e) {}
-        System.out.println("!Wrong Value Format!");
+        System.out.println("!Wrong Repetition Format!");
         return nextMenu;
     }
 
     public Menu confirmDiscount()
     {
         Menu nextMenu = Menu.makeMenu("Create Discount Code Menu");
-        System.out.println(adminControl.addDiscount(discount).getMessage);
+        Notification notification = adminControl.addDiscount(discount);
+        System.out.println(notification.getMessage());
+
+        if(notification.equals(Notification.ADD_DISCOUNT))
+            nextMenu = ListicMenu.makeListicMenu("Manage Discount Codes Listic Menu");
+
         return nextMenu;
     }
 
