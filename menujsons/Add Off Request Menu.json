@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "Accept Request",
+    "Decline Request"
+  ],
+  "name" : "Add Off Request Menu",
+  "parentName" : "Manage Offs Add Requests Listic Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "OffProcessor"
+}

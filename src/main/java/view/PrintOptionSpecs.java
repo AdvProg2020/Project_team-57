@@ -1,10 +1,8 @@
 package view;
 
 import controller.Control;
-import model.existence.Account;
-import model.existence.Category;
-import model.existence.Discount;
-import model.existence.Product;
+import controller.product.ProductControl;
+import model.existence.*;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -23,6 +21,8 @@ public interface PrintOptionSpecs {
             printFilteringOptionSpecs((String) option);
         } else if(option instanceof Discount) {
             printDiscountSpecs((Discount) option);
+        } else if(option instanceof Off) {
+            printOffSpecs((Off) option);
         }
     }
 
@@ -72,7 +72,7 @@ public interface PrintOptionSpecs {
     default void printProductSpecs(Product product){
         this.printCustomLineForProduct();
 
-        printCustomStatus(product.getStatus());
+        printCustomStatusForProduct(product.getStatus());
         this.printCustomLineForProduct();
 
         printWithNullCheckingForProduct("Name", product.getName());
@@ -103,7 +103,7 @@ public interface PrintOptionSpecs {
         this.printCustomLineForProduct();
     }
 
-    default void printCustomStatus(int status){
+    default void printCustomStatusForProduct(int status){
         String state = null;
 
         if(status == 1){
@@ -349,5 +349,123 @@ public interface PrintOptionSpecs {
     default void printCustomersRepetitionForDiscount(Discount discount) {
         int repetition = discount.getCustomersWithRepetition().get(Control.getUsername());
         System.out.format("| %-22s | %-35d | %n", "Repetition", repetition);
+    }
+
+    default void printOffSpecs(Off off) {
+        printCustomLineForOff();
+
+        printWithNullCheckingForOff("Off ID", off.getOffID());
+        printCustomLineForOff();
+
+        printWithNullCheckingForOff("Off Name", off.getOffName());
+        printCustomLineForOff();
+
+        printCustomStatusForOff(off.getStatus());
+        printCustomLineForOff();
+
+        printWithNullCheckingForOff("Vendor UserName", off.getVendorUsername());
+        printCustomLineForOff();
+
+        printCustomDateForOff("Start Date", off.getStartDate());
+        printCustomLineForOff();
+
+        printCustomDateForOff("Finish Date", off.getFinishDate());
+        printCustomLineForOff();
+
+        printCustomDoubleForOff("Off Percentage", off.getOffPercent());
+        printCustomLineForOff();
+
+        printCustomProductsForOff(off.getProductIDs());
+        printCustomLineForOff();
+    }
+
+    default void printCustomLineForOff() {
+        System.out.println("+----------------------+-------------------------------+");
+    }
+
+    default void printWithNullCheckingForOff(String fieldName, String fieldValue) {
+        if(fieldValue == null)
+            System.out.format("| %-20s | %-29s | %n", fieldName, "Not Assigned");
+        else
+            System.out.format("| %-20s | %-29s | %n", fieldName, fieldValue);
+    }
+
+    default void printCustomStatusForOff(int status) {
+        switch (status) {
+            case 0:
+                System.out.format("| %-20s | %-29s | %n", "Status", "Not Assigned");
+                break;
+            case 1:
+                System.out.format("| %-20s | %-29s | %n", "Status", "Approved");
+                break;
+            case 2:
+                System.out.format("| %-20s | %-29s | %n", "Status", "Waiting For Adding Approve");
+                break;
+            case 3:
+                System.out.format("| %-20s | %-29s | %n", "Status", "Waiting For Editing Approve");
+                break;
+            default:
+                System.out.println("What The Fuck ? Error In Off Printing");
+        }
+    }
+
+    default void printCustomDateForOff(String fieldName, Date date) {
+        if(date == null)
+            System.out.format("| %-20s | %-29s | %n", fieldName, "Not Assigned");
+        else {
+            java.util.Date printingDate = new java.util.Date(date.getTime());
+            System.out.format("| %-20s | %-29s | %n", fieldName, date);
+        }
+    }
+
+    default void printCustomDoubleForOff(String fieldName, double doubleValue) {
+        if(doubleValue == 0)
+            System.out.format("| %-20s | %-29s | %n", fieldName, "Not Assigned");
+        else
+            System.out.format("| %-20s | %-29f | %n", fieldName, doubleValue);
+    }
+
+    default void printCustomProductsForOff(ArrayList<String> productIDs) {
+        if(productIDs == null)
+            System.out.format("| %-20s | %-29s | %n", "Product Names", "Not Assigned");
+        else {
+            ArrayList<String> splitProducts = splitProductsForOff(getProductNamesForOff(productIDs), 0);
+
+            for (String splitProduct : splitProducts) {
+                if(splitProducts.indexOf(splitProduct) == 0)
+                    System.out.format("| %-20s | %-29s | %n", "Products", splitProduct);
+                else
+                    System.out.format("| %-20s | %-29s | %n", "", splitProduct);
+            }
+        }
+    }
+
+    default ArrayList<String> getProductNamesForOff(ArrayList<String> productIDs) {
+        ProductControl productControl = ProductControl.getController();
+        ArrayList<String> productNames = new ArrayList<>();
+
+        for (String productID : productIDs)
+            productNames.add(productControl.getProductById(productID).getName());
+
+        return productNames;
+    }
+
+    default ArrayList<String> splitProductsForOff(ArrayList<String> productNames, int index) {
+        ArrayList<String> splitProducts = new ArrayList<>();
+        StringBuilder nextLine = new StringBuilder("");
+
+        while(index != productNames.size() && nextLine.length() + productNames.get(index).length() < 28) {
+            nextLine.insert(nextLine.length(), productNames.get(index));
+            index++;
+        }
+
+        if(index == productNames.size())
+            splitProducts.add(nextLine.substring(0, nextLine.length() - 2));
+        else {
+            splitProducts.add(nextLine.toString());
+            splitProducts.addAll(splitProductsForOff(productNames, index));
+        }
+
+        return splitProducts;
     }
 }
