@@ -211,4 +211,28 @@ public class OffTable extends Database{
         preparedStatement.setString(1, offID);
         preparedStatement.execute();
     }
+
+    public static ArrayList<String> getEditingOffNames() throws SQLException, ClassNotFoundException {
+        String command = "SELECT DISTINCT OffName FROM EditingOffs WHERE Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, 3);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<String> editingOffNames = new ArrayList<>();
+        while (resultSet.next()){
+            editingOffNames.add(resultSet.getString("OffName"));
+        }
+        return editingOffNames;
+    }
+
+    public static ArrayList<String> geteditingOffIDs() throws SQLException, ClassNotFoundException {
+        String command = "SELECT DISTINCT OffID FROM EditingOffs WHERE Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, 3);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<String> editingOffIDs = new ArrayList<>();
+        while (resultSet.next()){
+            editingOffIDs.add(resultSet.getString("OffID"));
+        }
+        return editingOffIDs;
+    }
 }

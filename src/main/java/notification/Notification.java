@@ -84,7 +84,11 @@ public enum Notification {
             "Isn't This The Best Store Management Program You've Ever Seen? \uD83D\uDE07"),
     WRONG_OFF_FINISH_DATE("Finish Date Must Be After Current And Off Start Date \uD83D\uDE12"),
     INVALID_OFF_PERCENT("Off Percentage Must Be Between 0 And 100 Obviously. \uD83D\uDE23"),
-    OFF_REMOVED("-After All This Time Severus?\n+Always\nHarry Potter And Deathly Hallows\n(Off Removed Successfully Too)");
+    OFF_REMOVED("-After All This Time Severus?\n+Always\n*Harry Potter And Deathly Hallows\n(Off Removed Successfully Too)"),
+    OFF_EDITING_ACCEPTED("+I May Not Be A Smart Man, But I Know What Love Is.\n*Forrest Gump\n(You Accepted Editing Off) "),
+    OFF_EDITING_DECLINED("+Sometimes This Program Makes Me Wonder, Which Would Be Worse,\n" +
+            "To Live As A Monster Or Die As A Good Man.\n*Shutter Island\n" +
+            "(You Successfully Declined Editing Off Request.)");
 
 
 

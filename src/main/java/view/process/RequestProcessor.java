@@ -34,6 +34,12 @@ public class RequestProcessor extends Processor{
                 return ListicMenu.makeListicMenu("Manage Add Off Requests Listic Menu");
             }
         });
+        this.functionsHashMap.put("Edit Off Requests", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return ListicMenu.makeListicMenu("Manage Edit Off Requests Listic Menu");
+            }
+        });
     }
 
     public static RequestProcessor getInstance() {

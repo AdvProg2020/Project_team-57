@@ -3,6 +3,7 @@ package controller.account;
 
 import model.db.*;
 import model.existence.Discount;
+import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
 import model.existence.Category;
@@ -451,5 +452,53 @@ public class AdminControl extends AccountControl{
         } catch (ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
+    }
+
+    public ArrayList<String> getAllEditingOffNames() {
+        try {
+            return OffTable.getEditingOffNames();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public ArrayList<String> getAllEditingOffIDs() {
+        try {
+            return OffTable.geteditingOffIDs();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public Notification modifyOffEditingApprove(String offID, boolean isAccepted)
+    {
+        try {
+            Off editingOff = OffTable.getSpecificEditingOffByID(offID);
+            if(isAccepted)
+            {
+                OffTable.removeOffByID(editingOff.getOffID());
+                editingOff.setStatus(1);
+                OffTable.addOff(editingOff);
+                OffTable.removeEditingOff(editingOff.getOffID());
+                return Notification.OFF_EDITING_ACCEPTED;
+            } else {
+                OffTable.removeEditingOff(offID);
+                OffTable.changeOffStatus(offID, 1);
+                return Notification.OFF_EDITING_DECLINED;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
     }
 }

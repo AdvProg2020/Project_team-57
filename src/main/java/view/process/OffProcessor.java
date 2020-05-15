@@ -227,7 +227,7 @@ public class OffProcessor extends Processor implements PrintOptionSpecs {
         System.out.println("0. Back");
         String command = scanner.nextLine().trim();
 
-        while(command.equals("0")) {
+        while(!command.equals("0")) {
             System.out.println("Invalid Command");
             command = scanner.nextLine().trim();
         }
