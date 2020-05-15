@@ -1,6 +1,7 @@
 package model.db;
 
 import model.existence.Off;
+import sun.security.mscapi.PRNG;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -93,5 +94,44 @@ public class OffTable extends Database{
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
         return preparedStatement.executeQuery().next();
+    }
+
+    public static ArrayList<String> getAllUnApprovedOffNames() throws SQLException, ClassNotFoundException {
+        String command = "SELECT DISTINCT OffName FROM Offs WHERE Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, 2);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<String> allUnApprovedOffNames = new ArrayList<>();
+        while (resultSet.next()){
+            allUnApprovedOffNames.add(resultSet.getString("OffName"));
+        }
+        return allUnApprovedOffNames;
+    }
+
+    public static ArrayList<String> getAllUnApprovedOffIDs() throws SQLException, ClassNotFoundException {
+        String command = "SELECT DISTINCT OffID FROM Offs WHERE Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, 2);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<String> allUnApprovedOffIDs = new ArrayList<>();
+        while (resultSet.next()){
+            allUnApprovedOffIDs.add(resultSet.getString("OffID"));
+        }
+        return allUnApprovedOffIDs;
+    }
+
+    public static void declineOffRequest(String offID) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Offs WHERE OffID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, offID);
+        preparedStatement.execute();
+    }
+
+    public static void acceptOffRequest(String offID) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Offs SET Status = ? WHERE OffID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(2, offID);
+        preparedStatement.setInt(1, 1);
+        preparedStatement.execute();
     }
 }
