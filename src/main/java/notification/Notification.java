@@ -78,7 +78,8 @@ public enum Notification {
     NOT_SET_FINISH_DATE("Finish time of off must be set"),
     OUT_BOUND_OF_PERCENT("Percent must be between 0 to 100"),
     ADD_OFF("Off added successfully"),
-    ACCEPT_OFF_REQUEST("Offs were applied successfully");
+    ACCEPT_OFF_REQUEST("Offs were applied successfully"),
+    EMPTY_OFF_PRODUCTS("You haven't Entered Off Products");
 
 
     private String message;

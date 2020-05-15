@@ -42,10 +42,12 @@ public class Off {
         off.setStatus(resultSet.getInt("Status"));
         off.setOffPercent(resultSet.getDouble("OffPercent"));
         ArrayList<String> productIDs = new ArrayList<>();
-        productIDs.add(resultSet.getString("ProductID"));
-        while (resultSet.getString("OffID").equals(offID) && resultSet.next()) {
+        /*productIDs.add(resultSet.getString("ProductID"));*/
+        while (resultSet.next()) {
+            //System.out.println(resultSet.getString("ProductID"));
             productIDs.add(resultSet.getString("ProductID"));
         }
+        off.setProductIDs(productIDs);
         return off;
     }
 

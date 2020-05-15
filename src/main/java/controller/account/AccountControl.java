@@ -191,7 +191,9 @@ public class AccountControl extends Control implements IOValidity {
 
     public Off getOffByID(String offID) {
         try {
-            return OffTable.getSpecificOff(offID);
+            Off off = OffTable.getSpecificOff(offID);
+            //System.out.println(off.getProductIDs());
+            return off;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

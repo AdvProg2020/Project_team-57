@@ -414,7 +414,7 @@ public interface PrintOptionSpecs {
             System.out.format("| %-20s | %-29s | %n", fieldName, "Not Assigned");
         else {
             java.util.Date printingDate = new java.util.Date(date.getTime());
-            System.out.format("| %-20s | %-29s | %n", fieldName, date);
+            System.out.format("| %-20s | %-29s | %n", fieldName, printingDate);
         }
     }
 
@@ -444,9 +444,10 @@ public interface PrintOptionSpecs {
         ProductControl productControl = ProductControl.getController();
         ArrayList<String> productNames = new ArrayList<>();
 
-        for (String productID : productIDs)
+        for (String productID : productIDs) {
+            //System.out.println(productID);
             productNames.add(productControl.getProductById(productID).getName());
-
+        }
         return productNames;
     }
 
@@ -454,10 +455,13 @@ public interface PrintOptionSpecs {
         ArrayList<String> splitProducts = new ArrayList<>();
         StringBuilder nextLine = new StringBuilder("");
 
+        //System.out.println(productNames);
         while(index != productNames.size() && nextLine.length() + productNames.get(index).length() < 28) {
-            nextLine.insert(nextLine.length(), productNames.get(index));
+            nextLine.insert(nextLine.length(), productNames.get(index) + ", ");
+            //System.out.println(nextLine);
             index++;
         }
+        //System.out.println(productNames + " Size :" + productNames.size());
 
         if(index == productNames.size())
             splitProducts.add(nextLine.substring(0, nextLine.length() - 2));

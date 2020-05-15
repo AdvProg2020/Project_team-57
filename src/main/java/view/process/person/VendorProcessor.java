@@ -113,6 +113,7 @@ public class VendorProcessor extends AccountProcessor {
 
     public static void setOff(Off off) {
         VendorProcessor.off = off;
+        VendorProcessor.off.setStartDate(new Date(System.currentTimeMillis()));
     }
 
     public Menu manageProducts()
@@ -126,12 +127,19 @@ public class VendorProcessor extends AccountProcessor {
     }
 
     public Menu addOffName() {
+        System.out.println("0. Back");
         System.out.println("Please Enter The Name Of Your Off :");
-        off.setOffName(scanner.nextLine().trim());
+        String command = scanner.nextLine().trim();
+
+        if(command.equals("0"))
+            return Menu.makeMenu("Add Off Menu");
+
+        off.setOffName(command);
         return Menu.makeMenu("Add Off Menu");
     }
 
     public Menu addOffDate(boolean isStart) {
+        System.out.println("0. Back");
         if(isStart)
             System.out.println("* If You Leave The Start Date Free, It Will Automatically Set To Current Date *");
 
@@ -139,7 +147,8 @@ public class VendorProcessor extends AccountProcessor {
         System.out.println("yyyy/MM/dd HH:mm:ss");
         String dateString = scanner.nextLine().trim();
 
-        System.out.println(setOffDate(dateString, isStart));
+        if(!dateString.equals("0"))
+            System.out.println(setOffDate(dateString, isStart));
         return Menu.makeMenu("Add Off Menu");
     }
 
@@ -177,28 +186,27 @@ public class VendorProcessor extends AccountProcessor {
     public Menu addOffPercent() {
         double offPercent = 0;
 
+        System.out.println("0. Back");
         System.out.println("Please Enter The Off Percent : ");
+        String command = scanner.nextLine().trim();
+        if(!command.equals("0")) {
+            try {
+                offPercent = Double.parseDouble(command);
 
-        try {
-           offPercent = Double.parseDouble(scanner.nextLine().trim());
-
-           if(offPercent > 100 || offPercent <= 0)
-               System.out.println("Off Percent Must Be Between 0 And 100, Obviously 😐");
-           else
-               off.setOffPercent(offPercent);
-        } catch (NumberFormatException e) {
-            System.out.println("Wrong Percent Format");
+                if (offPercent > 100 || offPercent <= 0)
+                    System.out.println("Off Percent Must Be Between 0 And 100, Obviously 😐");
+                else
+                    off.setOffPercent(offPercent);
+            } catch (NumberFormatException e) {
+                System.out.println("Wrong Percent Format");
+            }
         }
-
         return Menu.makeMenu("Add Off Menu");
     }
 
     public Menu confirmOff() {
         Notification notification = vendorControl.addOff(off);
         System.out.println(notification.getMessage());
-
-        if(off.getStartDate() == null)
-            off.setStartDate(new Date(System.currentTimeMillis()));
 
         if(notification.equals(Notification.ADD_OFF)) {
             off = null;
