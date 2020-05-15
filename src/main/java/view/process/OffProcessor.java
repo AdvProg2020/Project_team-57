@@ -51,6 +51,10 @@ public class OffProcessor extends Processor{
         return offProcessor;
     }
 
+    public static void setMenu(ListicOptionMenu listicOptionMenu, String offID) {
+        listicOptionMenu.setOption(adminControl.getOffByID(offID));
+    }
+
     public Menu addToOff(Object... objects) {
         ListicOptionMenu menu = (ListicOptionMenu) objects[0];
         Product product = (Product) objects[1];
@@ -68,7 +72,7 @@ public class OffProcessor extends Processor{
     public Menu modifyRequest(boolean modification, Object... objects) {
         ListicOptionMenu menu = (ListicOptionMenu) objects[0];
         Off off = (Off) objects[1];
-        System.out.println(adminControl.modifyOffApprove(off.getOffID()).getMessage());
+        System.out.println(adminControl.modifyOffApprove(off.getOffID(), modification).getMessage());
         return menu.getParentMenu();
     }
 

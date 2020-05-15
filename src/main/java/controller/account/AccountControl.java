@@ -2,8 +2,10 @@ package controller.account;
 
 import controller.Control;
 import model.db.AccountTable;
+import model.db.OffTable;
 import model.db.VendorTable;
 import model.existence.Account;
+import model.existence.Off;
 import notification.Notification;
 
 import java.sql.SQLException;
@@ -185,5 +187,16 @@ public class AccountControl extends Control implements IOValidity {
             e.printStackTrace();
         }
         return allCustomers;
+    }
+
+    public Off getOffByID(String offID) {
+        try {
+            return OffTable.getSpecificOff(offID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -38,11 +38,15 @@ public class Database {
     }
 
     private static void removeTempAccountsFromCarts(Connection initConnection) throws SQLException {
+        //System.out.println("Hello");
         String command = "DELETE FROM Carts WHERE CustomerUsername = ? ";
         PreparedStatement preparedStatement = initConnection.prepareStatement(command);
         preparedStatement.setString(1, "temp");
+        //System.out.println("Before");
         preparedStatement.execute();
+        //System.out.println("After");
         preparedStatement.close();
+        //System.out.println("World");
     }
 
     private static void initOffTable(Statement statement) throws SQLException {

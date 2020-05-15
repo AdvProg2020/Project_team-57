@@ -135,6 +135,8 @@ public class ListicProcessor extends Processor {
             return ListicOptionMenu.makeMenu("Vendor View Off Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("Add Products To Off"))
             return ListicOptionMenu.makeMenu("Off Product Menu", parentMenu,primaryKey);
+        else if(parentMenu.getName().equals("Manage Add Off Requests"))
+            return ListicOptionMenu.makeMenu("Add Off Request Menu", parentMenu, primaryKey);
         //TODO(OTHERS)
         return null;
     }
@@ -212,7 +214,14 @@ public class ListicProcessor extends Processor {
             initManageOffs(listicMenu);
         else if(listicMenu.getName().equals("Add Products To Off"))
             initProductsForOff(listicMenu);
+        else if(listicMenu.getName().equals("Manage Add Off Requests"))
+            initManageAddOffRequest(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initManageAddOffRequest(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(adminControl.getAllUnApprovedOffNames());
+        listicMenu.setListicOptionPrimaryKeys(adminControl.getAllUnApprovedOffIDs());
     }
 
     private static void initProductsForOff(ListicMenu listicMenu) {

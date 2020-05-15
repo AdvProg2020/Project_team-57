@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "Add Off Requests",
+    "Edit Off Requests"
+  ],
+  "name" : "Manage Off Requests",
+  "parentName" : "Manage All Requests",
+  "isThereParentMenu" : "true",
+  "processorName" : "RequestProcessor"
+}

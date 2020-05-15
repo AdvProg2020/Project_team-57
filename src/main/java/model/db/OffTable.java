@@ -134,4 +134,11 @@ public class OffTable extends Database{
         preparedStatement.setInt(1, 1);
         preparedStatement.execute();
     }
+
+    public static boolean isThereOffWithID(String offID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Offs WHERE OffID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, offID);
+        return preparedStatement.executeQuery().next();
+    }
 }

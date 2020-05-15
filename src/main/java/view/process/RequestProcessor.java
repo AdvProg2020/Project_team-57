@@ -13,19 +13,25 @@ public class RequestProcessor extends Processor{
         this.functionsHashMap.put("Manage Vendors Registration Requests", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return manageRegistration();
+                return ListicMenu.makeListicMenu("Manage Register Requests Listic Menu");
             }
         });
         this.functionsHashMap.put("Add Product Requests", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return manageAddProductRequests();
+                return ListicMenu.makeListicMenu("Manage Add Product Requests Listic Menu");
             }
         });
         this.functionsHashMap.put("Edit Product Requests", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return manageEditProductRequests();
+                return ListicMenu.makeListicMenu("Manage Edit Product Requests Listic Menu");
+            }
+        });
+        this.functionsHashMap.put("Add Off Requests", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return ListicMenu.makeListicMenu("Manage Add Off Requests Listic Menu");
             }
         });
     }
@@ -35,20 +41,5 @@ public class RequestProcessor extends Processor{
             processor = new RequestProcessor();
         return processor;
     }
-
-    public Menu manageRegistration()
-    {
-        return ListicMenu.makeListicMenu("Manage Register Requests Listic Menu");
-    }
-
-    public Menu manageAddProductRequests(){
-        return ListicMenu.makeListicMenu("Manage Add Product Requests Listic Menu");
-    }
-
-    public Menu manageEditProductRequests()
-    {
-        return ListicMenu.makeListicMenu("Manage Edit Product Requests Listic Menu");
-    }
-
 
 }

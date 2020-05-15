@@ -130,9 +130,11 @@ public class VendorControl extends AccountControl{
            return Notification.NOT_SET_FINISH_DATE;
        if (off.getOffPercent() <= 0 || off.getOffPercent() >= 100)
            return Notification.OUT_BOUND_OF_PERCENT;
-       off.setOffID(setOffID());
        off.setVendorUsername(Control.getUsername());
        try {
+           do {
+               off.setOffID(setOffID());
+           } while (OffTable.isThereOffWithID(off.getOffID()));
            off.setStatus(2);
            OffTable.addOff(off);
            return Notification.ADD_OFF;

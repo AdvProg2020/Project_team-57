@@ -1,0 +1,6 @@
+{
+  "name" : "Manage Add Off Requests",
+  "parentName" : "Manage Off Requests",
+  "isThereParentMenu" : true,
+  "processorName" : "ListicProcessor"
+}
