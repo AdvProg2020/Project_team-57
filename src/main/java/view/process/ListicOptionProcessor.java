@@ -92,7 +92,7 @@ public class ListicOptionProcessor extends Processor{
             CategoryProcessor.setMenu(listicOptionMenu, optionID);
         } else if(menuName.contains("Discount Menu")) {
             DiscountProcessor.setMenu(listicOptionMenu, optionID);
-        } else if(menuName.equals("Add Off Request Menu") || menuName.equals("Vendor Off Menu"))
+        } else if(menuName.contains("Off Request Menu") || menuName.equals("Vendor Off Menu"))
             OffProcessor.setMenu(listicOptionMenu, optionID);
         else {
             UserProcessor.setMenu(listicOptionMenu, optionID);

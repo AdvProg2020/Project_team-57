@@ -1,7 +1,7 @@
 {
   "options" : [
-    "Accept Request",
-    "Decline Request"
+    "Accept Adding",
+    "Decline Adding"
   ],
   "name" : "Add Off Request Menu",
   "parentName" : "Manage Offs Add Requests Listic Menu",

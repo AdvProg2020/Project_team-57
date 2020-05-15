@@ -4,6 +4,7 @@ import controller.account.AdminControl;
 import controller.account.VendorControl;
 import model.existence.Off;
 import model.existence.Product;
+import view.PrintOptionSpecs;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 import view.process.person.VendorProcessor;
@@ -13,7 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
-public class OffProcessor extends Processor{
+public class OffProcessor extends Processor implements PrintOptionSpecs {
     private static OffProcessor offProcessor = null;
     private static VendorControl vendorControl = VendorControl.getController();
     private static AdminControl adminControl = AdminControl.getController();
@@ -34,16 +35,16 @@ public class OffProcessor extends Processor{
                 return removeFromOff(objects);
             }
         });
-        this.functionsHashMap.put("Accept Request", new FunctioningOption() {
+        this.functionsHashMap.put("Accept Adding", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return modifyRequest(true, objects);
+                return modifyAddingRequest(true, objects);
             }
         });
-        this.functionsHashMap.put("Decline Request", new FunctioningOption() {
+        this.functionsHashMap.put("Decline Adding", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return modifyRequest(false, objects);
+                return modifyAddingRequest(false, objects);
             }
         });
 
@@ -86,6 +87,24 @@ public class OffProcessor extends Processor{
             }
         });
 
+        this.functionsHashMap.put("Accept Editing", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return modifyEditingRequest(true, objects);
+            }
+        });
+        this.functionsHashMap.put("Decline Editing", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return modifyEditingRequest(false, objects);
+            }
+        });
+        this.functionsHashMap.put("Show Unedited Off", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return showUneditedOff(objects);
+            }
+        });
     }
 
     public static OffProcessor getInstance() {
@@ -116,7 +135,7 @@ public class OffProcessor extends Processor{
         return menu.getParentMenu();
     }
 
-    public Menu modifyRequest(boolean modification, Object... objects) {
+    public Menu modifyAddingRequest(boolean modification, Object... objects) {
         ListicOptionMenu menu = (ListicOptionMenu) objects[0];
         Off off = (Off) objects[1];
         System.out.println(adminControl.modifyOffApprove(off.getOffID(), modification).getMessage());
@@ -189,5 +208,30 @@ public class OffProcessor extends Processor{
             return nextMenu;
         System.out.println(vendorControl.editOffName(editingOff, command).getMessage());
         return nextMenu;
+    }
+
+
+    public Menu modifyEditingRequest(boolean modification, Object... objects) {
+        ListicOptionMenu menu = (ListicOptionMenu) objects[0];
+        Off off = (Off) objects[1];
+        System.out.println(adminControl.modifyOffEditingApprove(off.getOffID(), modification).getMessage());
+        return menu.getParentMenu();
+    }
+
+    public Menu showUneditedOff(Object... objects) {
+        ListicOptionMenu menu = (ListicOptionMenu) objects[0];
+        Off editedOff = (Off) objects[1];
+        Off unEditedOff = adminControl.getOffByID(editedOff.getOffID());
+        printOptionSpecs(unEditedOff);
+
+        System.out.println("0. Back");
+        String command = scanner.nextLine().trim();
+
+        while(command.equals("0")) {
+            System.out.println("Invalid Command");
+            command = scanner.nextLine().trim();
+        }
+
+        return menu;
     }
 }
