@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "Edit Off",
+    "Remove Off"
+  ],
+  "name" : "Off Menu",
+  "parentName" : "Manage Offs Listic Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "OffProcessor"
+}
