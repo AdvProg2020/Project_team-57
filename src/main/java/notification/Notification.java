@@ -73,13 +73,20 @@ public enum Notification {
     INVALID_DISCOUNT_PERCENT("Discount Percentage Must Be Between 0 And 100 Obviously \uD83D\uDE15"),
     INVALID_MAX_DISCOUNT("Max Discount Must Be A Positive Amount"),
     INVALID_MAX_REPETITION("Max Repetition Must Be A Positive Amount"),
-    CHANGE_OFF_NAME("Name of Off successfully changed"),
     UNCOMPLETED_OFF_NAME("Name of Off is empty!"),
-    NOT_SET_FINISH_DATE("Finish time of off must be set"),
+    NOT_SET_FINISH_DATE("Off Finish time must be set"),
     OUT_BOUND_OF_PERCENT("Percent must be between 0 to 100"),
     ADD_OFF("Off added successfully"),
     ACCEPT_OFF_REQUEST("Offs were applied successfully"),
-    EMPTY_OFF_PRODUCTS("You haven't Entered Off Products");
+    EMPTY_OFF_PRODUCTS("You haven't Entered Off Products"),
+    DUPLICATE_OFF_VALUE("This Value Is Duplicate To The Last One. Choose Another One \uD83E\uDD10"),
+    OFF_EDITED("You Successfully Modified Your Off Bro.\n" +
+            "Isn't This The Best Store Management Program You've Ever Seen? \uD83D\uDE07"),
+    WRONG_OFF_FINISH_DATE("Finish Date Must Be After Current And Off Start Date \uD83D\uDE12"),
+    INVALID_OFF_PERCENT("Off Percentage Must Be Between 0 And 100 Obviously. \uD83D\uDE23"),
+    OFF_REMOVED("-After All This Time Severus?\n+Always\nHarry Potter And Deathly Hallows\n(Off Removed Successfully Too)");
+
+
 
 
     private String message;

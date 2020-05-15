@@ -58,7 +58,7 @@ public class Menu {
     public void show() {
         System.out.println(this.name + ":");
 
-        if (this.isThereParentMenu)
+        if (!this.getName().equals("Main Menu"))
             System.out.println("0. Back");
           else
             System.out.println("0. Exit");

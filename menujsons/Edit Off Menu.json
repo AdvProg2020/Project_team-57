@@ -5,7 +5,7 @@
     "Edit Off Percentage"
   ],
   "name" : "Edit Off Menu",
-  "parentName" : "Main Menu",
-  "isThereParentMenu" : "true",
+  "parentName" : "Vendor Menu",
+  "isThereParentMenu" : false,
   "processorName" : "OffProcessor"
 }

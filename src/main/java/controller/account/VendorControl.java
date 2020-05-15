@@ -9,6 +9,7 @@ import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -196,5 +197,106 @@ public class VendorControl extends AccountControl{
             e.printStackTrace();
         }
         return nonOffProducts;
+    }
+
+    public Notification editOffName(String offID, String offName)
+    {
+        try {
+            if(OffTable.isThereEditingOffWithID(offID)) {
+                Off off = OffTable.getSpecificEditingOffByID(offID);
+                if(off.getOffName().equals(offName))
+                    return Notification.DUPLICATE_OFF_VALUE;
+                OffTable.editEditingOffName(off.getOffID() ,offName);
+            } else {
+                Off off = OffTable.getSpecificOff(offID);
+                if(off.getOffName().equals(offName))
+                    return Notification.DUPLICATE_OFF_VALUE;
+                OffTable.changeOffStatus(offID, 3);
+                off.setOffName(offName);
+                off.setStatus(3);
+                OffTable.addEditingOff(off);
+            }
+            return Notification.OFF_EDITED;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
+    }
+
+    public Notification editOffFinishDate(String offID, Date date)
+    {
+        try {
+            if(OffTable.isThereEditingOffWithID(offID)) {
+                Off off = OffTable.getSpecificEditingOffByID(offID);
+                if(off.getFinishDate().compareTo(date) == 0)
+                    return Notification.DUPLICATE_OFF_VALUE;
+                if(date.compareTo(new Date(System.currentTimeMillis())) != 1 || date.compareTo(off.getStartDate()) != 1)
+                    return Notification.WRONG_OFF_FINISH_DATE;
+                OffTable.editEditingOffFinishDate(off.getOffID() ,date);
+            } else {
+                Off off = OffTable.getSpecificOff(offID);
+                if(off.getFinishDate().compareTo(date) == 0)
+                    return Notification.DUPLICATE_OFF_VALUE;
+                if(date.compareTo(new Date(System.currentTimeMillis())) != 1 || date.compareTo(off.getStartDate()) != 1)
+                    return Notification.WRONG_OFF_FINISH_DATE;
+                OffTable.changeOffStatus(offID, 3);
+                off.setFinishDate(date);
+                off.setStatus(3);
+                OffTable.addEditingOff(off);
+            }
+            return Notification.OFF_EDITED;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
+    }
+
+    public Notification editOffPercent(String offID, Double percent)
+    {
+        try {
+            if(OffTable.isThereEditingOffWithID(offID)) {
+                Off off = OffTable.getSpecificEditingOffByID(offID);
+                if(off.getOffPercent() == percent)
+                    return Notification.DUPLICATE_OFF_VALUE;
+                if(!(percent > 0 && percent <= 100))
+                    return Notification.INVALID_OFF_PERCENT;
+                OffTable.editEditingOffPercent(off.getOffID(), percent);
+            } else {
+                Off off = OffTable.getSpecificOff(offID);
+                if(off.getOffPercent() == percent)
+                    return Notification.DUPLICATE_OFF_VALUE;
+                if(!(percent > 0 && percent <= 100))
+                    return Notification.INVALID_OFF_PERCENT;
+                OffTable.changeOffStatus(offID, 3);
+                off.setOffPercent(percent);
+                off.setStatus(3);
+                OffTable.addEditingOff(off);
+            }
+            return Notification.OFF_EDITED;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
+    }
+
+
+    public Notification removeOffWithID(String offID) {
+        try {
+            if(OffTable.isThereEditingOffWithID(offID))
+                OffTable.removeEditingOff(offID);
+            OffTable.removeOffByID(offID);
+            return Notification.OFF_REMOVED;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
     }
 }

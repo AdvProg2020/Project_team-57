@@ -31,10 +31,29 @@ public class Database {
         initCategoriesTable(initConnection.createStatement());
         initDiscountTable(initConnection.createStatement());
         initOffTable(initConnection.createStatement());
+        initEditingOffTable(initConnection.createStatement());
         removeTempAccountsFromCarts(initConnection);
 
         isDBInit = true;
         initConnection.close();
+    }
+
+    private static void initEditingOffTable(Statement statement) throws SQLException {
+        String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'EditingOffs'";
+        ResultSet resultSet = statement.executeQuery(command);
+        if (!resultSet.next()){
+            statement.execute("CREATE TABLE EditingOffs(" +
+                    "OffID varchar(16)," +
+                    "OffName varchar(16)," +
+                    "ProductID varchar(16)," +
+                    "Status int," +
+                    "StartDate DATE," +
+                    "FinishDate DATE," +
+                    "OffPercent double," +
+                    "VendorUsername varchar(16));");
+        }
+        statement.close();
+        resultSet.close();
     }
 
     private static void removeTempAccountsFromCarts(Connection initConnection) throws SQLException {

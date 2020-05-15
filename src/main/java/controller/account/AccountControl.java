@@ -201,4 +201,39 @@ public class AccountControl extends Control implements IOValidity {
         }
         return null;
     }
+
+    public boolean isThereOffInEditingTable(String offID) {
+        try {
+            return OffTable.isThereEditingOffWithID(offID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public Off getOffFromEditingTable(String offID) {
+        try {
+            return OffTable.getSpecificEditingOffByID(offID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Off getVendorOff(String offID) {
+        try {
+            if(OffTable.isThereEditingOffWithID(offID))
+                return OffTable.getSpecificEditingOffByID(offID);
+            return OffTable.getSpecificOff(offID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

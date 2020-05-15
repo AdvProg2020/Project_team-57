@@ -440,10 +440,10 @@ public class AdminControl extends AccountControl{
     public Notification modifyOffApprove(String offID, boolean flag){
         try {
             if (flag){
-                OffTable.acceptOffRequest(offID);
+                OffTable.approveOffByID(offID);
                 return Notification.ACCEPT_OFF_REQUEST;
             } else{
-                OffTable.declineOffRequest(offID);
+                OffTable.removeOffByID(offID);
                 return Notification.DECLINE_REQUEST;
             }
         } catch (SQLException e) {

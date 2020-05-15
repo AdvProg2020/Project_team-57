@@ -50,6 +50,7 @@ public class OffProcessor extends Processor{
         this.functionsHashMap.put("Back", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
+                editingOffParentMenu.setOption(vendorControl.getVendorOff(editingOff));
                 return editingOffParentMenu;
             }
         });
@@ -170,7 +171,7 @@ public class OffProcessor extends Processor{
             return nextMenu;
         try {
             Date date = new Date(new SimpleDateFormat(regex).parse(command).getTime());
-            System.out.println(vendorControl.editFinishDate(editingOff, date).getMessage());
+            System.out.println(vendorControl.editOffFinishDate(editingOff, date).getMessage());
             return nextMenu;
         } catch (ParseException e) {
             e.printStackTrace();

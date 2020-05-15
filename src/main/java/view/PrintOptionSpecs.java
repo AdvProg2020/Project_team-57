@@ -399,10 +399,10 @@ public interface PrintOptionSpecs {
                 System.out.format("| %-20s | %-29s | %n", "Status", "Approved");
                 break;
             case 2:
-                System.out.format("| %-20s | %-29s | %n", "Status", "Waiting For Adding Approve");
+                System.out.format("| %-20s | %-29s | %n", "Status", "Waiting For Adding Approval");
                 break;
             case 3:
-                System.out.format("| %-20s | %-29s | %n", "Status", "Waiting For Editing Approve");
+                System.out.format("| %-20s | %-29s | %n", "Status", "Waiting For Editing Approval");
                 break;
             default:
                 System.out.println("What The Fuck ? Error In Off Printing");

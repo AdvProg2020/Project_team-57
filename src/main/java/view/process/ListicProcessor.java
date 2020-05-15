@@ -132,7 +132,7 @@ public class ListicProcessor extends Processor {
         else if(parentMenu.getName().equals("View Discount Codes"))
             return ListicOptionMenu.makeMenu("Customer View Discount Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("Manage Offs"))
-            return ListicOptionMenu.makeMenu("Vendor View Off Menu", parentMenu, primaryKey);
+            return ListicOptionMenu.makeMenu("Vendor Off Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("Add Products To Off"))
             return ListicOptionMenu.makeMenu("Off Product Menu", parentMenu,primaryKey);
         else if(parentMenu.getName().equals("Manage Add Off Requests"))
