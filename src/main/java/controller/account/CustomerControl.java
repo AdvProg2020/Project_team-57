@@ -193,10 +193,16 @@ public class CustomerControl extends AccountControl{
         double totalPrice = 0;
         try {
             for (Product product : CartTable.getAllCartWithUsername(Control.getUsername())) {
-                if(product.isCountable())
-                    totalPrice += product.getPrice() * product.getCount();
+                double newPrice;
+                if(!OffTable.isThereProductInOff(product.getID()))
+                    newPrice = product.getPrice();
                 else
-                    totalPrice += product.getPrice() * product.getAmount();
+                    newPrice = product.getPrice() -
+                            (product.getPrice() * OffTable.getOffByProductID(product.getID()).getOffPercent() / 100);
+                if(product.isCountable())
+                    totalPrice += newPrice * product.getCount();
+                else
+                    totalPrice += newPrice * product.getAmount();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -247,11 +253,11 @@ public class CustomerControl extends AccountControl{
         return discountIDs;
     }
 
-    public ArrayList<String> getAllOffNames(){
+    public ArrayList<String> getAllShowingOffNames(){
         ArrayList<String> allOffNames = new ArrayList<>();
         try {
-            for (Off off : OffTable.getAllOffs()) {
-                allOffNames.add(off.getOffName())
+            for (Off off : OffTable.getAllShowingOffs()) {
+                allOffNames.add(off.getOffName());
             }
             return allOffNames;
         } catch (SQLException e) {
@@ -263,11 +269,11 @@ public class CustomerControl extends AccountControl{
         }
     }
 
-    public ArrayList<String> getAllOffIDs(){
+    public ArrayList<String> getAllShowingOffIDs(){
         ArrayList<String> allOffIds = new ArrayList<>();
         try {
-            for (Off off : OffTable.getAllOffs()) {
-                allOffIds.add(off.getOffID())
+            for (Off off : OffTable.getAllShowingOffs()) {
+                allOffIds.add(off.getOffID());
             }
             return allOffIds;
         } catch (SQLException e) {

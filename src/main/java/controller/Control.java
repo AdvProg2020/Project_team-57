@@ -1,7 +1,9 @@
 package controller;
 
+import model.db.OffTable;
 import notification.Notification;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Control {
@@ -31,10 +33,6 @@ public class Control {
 
     public Notification addToFilterCategoryList(String categoryName) {
         filter.addToCategories(categoryName);
-        System.out.println("Categories: ");
-        for (String category : filter.getFilterCategories()) {
-            System.out.println(category);
-        }
         return Notification.CATEGORY_FILTERED;
     }
 
@@ -224,5 +222,16 @@ public class Control {
 
     public static Sort getSort() {
         return sort;
+    }
+
+    public boolean isThereProductInOff(String productID) {
+        try {
+            return OffTable.isThereProductInOff(productID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

@@ -1,6 +1,8 @@
 package view.process;
 
 import controller.account.CustomerControl;
+import controller.product.ProductControl;
+import model.existence.Product;
 import view.menu.ListicMenu;
 import view.menu.Menu;
 
@@ -9,9 +11,11 @@ import java.util.HashMap;
 public class FilterProcessor extends Processor {
     private static FilterProcessor processor = null;
     private CustomerControl customerControl = null;
+    private ProductControl productControl = null;
 
     private FilterProcessor() {
         customerControl = CustomerControl.getController();
+        productControl = ProductControl.getController();
         this.functionsHashMap = new HashMap<>();
         this.functionsHashMap.put("Filter By Category", new FunctioningOption() {
             @Override
@@ -65,6 +69,14 @@ public class FilterProcessor extends Processor {
             @Override
             public Menu doTheThing(Object... objects) {
                 return disableCurrenSort();
+            }
+        });
+        this.functionsHashMap.put("Back", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                if(productControl.isOffListic())
+                    return ListicMenu.makeListicMenu("Off Products Listic Menu");
+                return ListicMenu.makeListicMenu("Products Listic Menu");
             }
         });
     }
@@ -132,7 +144,7 @@ public class FilterProcessor extends Processor {
             }
         }
         System.out.println(customerControl.setSort(sort, input == 1).getMessage());
-        return ListicMenu.makeListicMenu("Products Listic Menu");
+        return Menu.makeMenu("Sorting Menu");
     }
 
     public Menu showCurrentSort()
@@ -143,6 +155,6 @@ public class FilterProcessor extends Processor {
 
     public Menu disableCurrenSort() {
         System.out.println(customerControl.disableSore().getMessage());
-        return ListicMenu.makeListicMenu("Products Listic Menu");
+        return Menu.makeMenu("Sorting Menu");
     }
 }

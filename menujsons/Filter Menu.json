@@ -5,7 +5,7 @@
     "Current Filters"
   ],
   "name" : "Filter Menu",
-  "parentName" : "Products Listic Menu",
-  "isThereParentMenu" : "true",
+  "parentName" : "",
+  "isThereParentMenu" : false,
   "processorName" : "FilterProcessor"
 }

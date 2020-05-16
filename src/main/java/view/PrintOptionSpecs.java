@@ -139,12 +139,12 @@ public interface PrintOptionSpecs {
     default void printCustomPriceForProduct(Product product) {
         ProductControl productControl = ProductControl.getController();
 
-        if(productControl.isProductInOff(product.getID())) {
-            Off productOff = productControl.getOffByProduct(product.getID());
+        if(productControl.isThereProductInOff(product.getID())) {
+            Off productOff = productControl.getOffByProductID(product.getID());
             double oldPrice = product.getPrice();
-            double newPrice = oldPrice - oldPrice * productOff.getOffPercent();
+            double newPrice = oldPrice - (oldPrice * productOff.getOffPercent() / 100);
             System.out.format("| %-20s | %-16f => %-15f | %n", "Price", oldPrice, newPrice);
-            System.out.format("| %-20s | %-30f% Off | %n", "", productOff.getOffPercent());
+            System.out.format("| %-20s | %%%-34f | %n", "Off Percent", productOff.getOffPercent());
         } else {
             System.out.format("| %-20s | %-35f | %n", "Price", product.getPrice());
         }

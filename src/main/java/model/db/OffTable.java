@@ -90,9 +90,10 @@ public class OffTable extends Database{
     }
 
     public static boolean isThereProductInOff(String productID) throws SQLException, ClassNotFoundException {
-        String command = "SELECT * FROM Offs WHERE ProductID = ?";
+        String command = "SELECT * FROM Offs WHERE ProductID = ? AND Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
+        preparedStatement.setInt(2, 1);
         return preparedStatement.executeQuery().next();
     }
 
@@ -244,20 +245,29 @@ public class OffTable extends Database{
         return OffTable.getSpecificOff(off.getOffID());
     }
 
-    public static ArrayList<String> getAllProductNamesByOffID(String id) throws SQLException, ClassNotFoundException {
-        String command = "SELECT * FROM Offs WHERE OffID = ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, id);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        ArrayList<String> allProductNames = new ArrayList<>();
-        while (resultSet.next()){
-            allProductNames.add()
-        }
-    }
-
     public static ArrayList<Off> getAllOffs() throws SQLException, ClassNotFoundException {
         String command = "SELECT DISTINCT OffID FROM Offs";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<Off> allOffs = new ArrayList<>();
+        while (resultSet.next()){
+            allOffs.add(OffTable.getSpecificOff(resultSet.getString("OffID")));
+        }
+        return allOffs;
+    }
+
+    public static boolean isThereProductInSpecificOff(String offID, String productID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Offs WHERE ProductID = ? AND OffID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productID);
+        preparedStatement.setString(2, offID);
+        return preparedStatement.executeQuery().next();
+    }
+
+    public static ArrayList<Off> getAllShowingOffs() throws SQLException, ClassNotFoundException {
+        String command = "SELECT DISTINCT OffID FROM Offs WHERE Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, 1);
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Off> allOffs = new ArrayList<>();
         while (resultSet.next()){

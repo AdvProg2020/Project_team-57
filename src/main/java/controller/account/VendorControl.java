@@ -158,17 +158,6 @@ public class VendorControl extends AccountControl{
         return offID.toString();
     }
 
-    public boolean isThereProductInOff(String productID) {
-        try {
-            return OffTable.isThereProductInOff(productID);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     public ArrayList<String> getNonOffProductsNames() {
         ArrayList<String> nonOffProducts = new ArrayList<>();
         try {

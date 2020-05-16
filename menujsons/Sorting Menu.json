@@ -8,7 +8,7 @@
     "Disable Current Sort"
   ],
   "name" : "Sorting",
-  "isThereParentMenu" : true,
-  "parentName" : "Products Listic Menu",
+  "isThereParentMenu" : false,
+  "parentName" : "",
   "processorName" : "FilterProcessor"
 }

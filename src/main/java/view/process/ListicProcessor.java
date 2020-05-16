@@ -94,7 +94,7 @@ public class ListicProcessor extends Processor {
         return processor;
     }
 
-    public ListicOptionMenu getListicOptionMenu(Object... objects)
+    public Menu getListicOptionMenu(Object... objects)
     {
         Object[] allObjects = objects.clone();
         String primaryKey = (String) allObjects[0];
@@ -113,7 +113,7 @@ public class ListicProcessor extends Processor {
             return ListicOptionMenu.makeMenu("User Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("View All Admins"))
             return ListicOptionMenu.makeMenu("Admin Profile Menu", parentMenu, primaryKey);
-        else if(parentMenu.getName().equals("Products Menu")) {
+        else if(parentMenu.getName().equals("Products Menu") || parentMenu.getName().equals("Off Products Menu")) {
             productControl.addSeenToProduct(primaryKey);
             return ListicOptionMenu.makeMenu("Common Product Menu", parentMenu, primaryKey);
         }
@@ -139,6 +139,10 @@ public class ListicProcessor extends Processor {
             return ListicOptionMenu.makeMenu("Add Off Request Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("Manage Edit Off Requests"))
             return ListicOptionMenu.makeMenu("Edit Off Request Menu", parentMenu, primaryKey);
+        else if(parentMenu.getName().equals("Offs Menu")) {
+            productControl.setListicOffID(primaryKey);
+            return ListicMenu.makeListicMenu("Off Products Listic Menu");
+        }
         //TODO(OTHERS)
         return null;
     }
@@ -196,7 +200,7 @@ public class ListicProcessor extends Processor {
             initManageAllUsers(listicMenu);
         else if(listicMenu.getName().equals("View All Admins"))
             initViewAllAdmins(listicMenu);
-        else if(listicMenu.getName().equals("Products Menu"))
+        else if(listicMenu.getName().equals("Products Menu") || listicMenu.getName().equals("Off Products Menu"))
             initProductsMenu(listicMenu);
         else if(listicMenu.getName().equals("View Cart"))
             initViewCart(listicMenu);
@@ -220,7 +224,16 @@ public class ListicProcessor extends Processor {
             initManageAddOffRequest(listicMenu);
         else if(listicMenu.getName().equals("Manage Edit Off Requests"))
             initManageEditOffRequests(listicMenu);
+        else if(listicMenu.getName().equals("Offs Menu"))
+            initOffs(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initOffs(ListicMenu listicMenu) {
+        productControl.initFilter();
+        productControl.initSort();
+        listicMenu.setListicOptionNames(customerControl.getAllShowingOffNames());
+        listicMenu.setListicOptionPrimaryKeys(customerControl.getAllShowingOffIDs());
     }
 
     private static void initManageEditOffRequests(ListicMenu listicMenu) {

@@ -1,6 +1,8 @@
 package view.process;
 
 import controller.Control;
+import controller.product.ProductControl;
+import model.existence.Product;
 import view.menu.ListicMenu;
 import view.menu.Menu;
 
@@ -8,7 +10,7 @@ import java.util.HashMap;
 
 public class MainMenuProcessor extends Processor {
     private static MainMenuProcessor mainMenuProcessor = null;
-    private static Control control = Control.getController();
+    private static ProductControl control = ProductControl.getController();
     private MainMenuProcessor(){
         functionsHashMap = new HashMap<>();
         functionsHashMap.put("Account Menu", new FunctioningOption() {
@@ -19,7 +21,17 @@ public class MainMenuProcessor extends Processor {
         functionsHashMap.put("Products Menu", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return productsMenu();
+                control.initFilter();
+                control.initSort();
+                control.setOffListic(false);
+                return ListicMenu.makeListicMenu("Products Listic Menu");
+            }
+        });
+        functionsHashMap.put("Offs Menu", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                control.setOffListic(true);
+                return ListicMenu.makeListicMenu("Offs Listic Menu");
             }
         });
     }
@@ -39,12 +51,5 @@ public class MainMenuProcessor extends Processor {
         }
 
         return Menu.makeMenu("IO Menu");
-    }
-
-    public Menu productsMenu()
-    {
-        control.initFilter();
-        control.initSort();
-        return ListicMenu.makeListicMenu("Products Listic Menu");
     }
 }

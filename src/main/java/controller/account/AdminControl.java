@@ -468,7 +468,7 @@ public class AdminControl extends AccountControl{
 
     public ArrayList<String> getAllEditingOffIDs() {
         try {
-            return OffTable.geteditingOffIDs();
+            return OffTable.getEditingOffIDs();
         } catch (SQLException e) {
             e.printStackTrace();
             return new ArrayList<>();

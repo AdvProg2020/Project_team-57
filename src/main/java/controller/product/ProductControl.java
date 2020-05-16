@@ -16,7 +16,16 @@ import java.util.Collections;
 
 public class ProductControl extends Control {
     private static ProductControl productControl = null;
+    private boolean isOffListic;
     private String listicOffID;
+
+    public boolean isOffListic() {
+        return isOffListic;
+    }
+
+    public void setOffListic(boolean offListic) {
+        isOffListic = offListic;
+    }
 
     public String getListicOffID() {
         return listicOffID;
@@ -286,8 +295,16 @@ public class ProductControl extends Control {
                 }
             }
         } else {
-            for (Product product : ProductTable.getAllShowingProducts()) {
-                filteredProductIds.add(product.getID());
+            if(!isOffListic) {
+                //System.out.println("Hello fuck");
+                for (Product product : ProductTable.getAllShowingProducts()) {
+                    filteredProductIds.add(product.getID());
+                }
+            } else {
+                for (Product product : ProductTable.getAllShowingProducts()) {
+                    if (OffTable.isThereProductInSpecificOff(listicOffID, product.getID()))
+                        filteredProductIds.add(product.getID());
+                }
             }
         }
         if (filter.getFilterNames().size() != 0) {
@@ -332,10 +349,18 @@ public class ProductControl extends Control {
             return new ArrayList<>();
         }
         ArrayList<String> productIds = new ArrayList<>();
-        for (Product product : ProductTable.getProductsWithCategory(category)) {
-            if (product.getStatus() != 2)
-                productIds.add(product.getID());
+        if(!isOffListic) {
+            for (Product product : ProductTable.getProductsWithCategory(category)) {
+                if (product.getStatus() != 2)
+                    productIds.add(product.getID());
+            }
+        } else {
+            for (Product product : ProductTable.getProductsWithCategory(category)) {
+                if (product.getStatus() != 2 && OffTable.isThereProductInSpecificOff(listicOffID, product.getID()))
+                    productIds.add(product.getID());
+            }
         }
+
         for (Category subCategory : CategoryTable.getSubCategories(category)) {
             productIds.addAll(filterOnCategory(subCategory.getName()));
         }
@@ -371,9 +396,5 @@ public class ProductControl extends Control {
             e.printStackTrace();
             return new Off();
         }
-    }
-
-    public ArrayList<String> getAllProductNamesByOffID(){
-
     }
 }

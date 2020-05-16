@@ -1,0 +1,10 @@
+{
+  "name" : "Off Products Menu",
+  "parentName" : "Offs Listic Menu",
+  "isThereParentMenu" : true,
+  "processorName" : "ListicProcessor",
+  "options" : [
+    "Filtering",
+    "Sorting"
+  ]
+}
