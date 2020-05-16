@@ -5,6 +5,7 @@ import controller.account.AdminControl;
 import controller.account.CustomerControl;
 import controller.product.ProductControl;
 import model.existence.Product;
+import view.menu.ListicMenu;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 import view.PrintOptionSpecs;
@@ -16,6 +17,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
     private static ProductControl productControl = ProductControl.getController();
     private static AdminControl adminControl = AdminControl.getController();
     private static CustomerControl customerControl = CustomerControl.getController();
+    private static ListicOptionMenu comparisonParentMenu = null;
 
     private ProductProcessor(){
         this.functionsHashMap = new HashMap<>();
@@ -83,6 +85,32 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
             @Override
             public Menu doTheThing(Object... objects) {
                 return removeCartProduct(objects);
+            }
+        });
+        functionsHashMap.put("Enter The Comparing Product", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                productControl.initFilter();
+                productControl.initSort();
+                return ListicMenu.makeListicMenu("Comparison Listic Menu");
+            }
+        });
+        functionsHashMap.put("Do The Compare", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                if(productControl.getComparingProducts()[0] != null && productControl.getComparingProducts()[1] != null)
+                    return ListicOptionMenu.makeMenu("Comparing Products Menu");
+                else
+                {
+                    System.out.println("Please First Choose The Comparing Product");
+                    return Menu.makeMenu("Comparison Menu");
+                }
+            }
+        });
+        functionsHashMap.put("Back", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return comparisonParentMenu;
             }
         });
 
@@ -311,4 +339,11 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         return productMenu.getParentMenu();
     }
 
+    public static ListicOptionMenu getComparisonParentMenu() {
+        return comparisonParentMenu;
+    }
+
+    public static void setComparisonParentMenu(ListicOptionMenu comparisonParentMenu) {
+        ProductProcessor.comparisonParentMenu = comparisonParentMenu;
+    }
 }

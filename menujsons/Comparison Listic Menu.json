@@ -1,0 +1,6 @@
+{
+  "name" : "Comparison Products Menu",
+  "parentName" : "Comparison Menu",
+  "isThereParentMenu" : true,
+  "processorName" : "ListicProcessor"
+}
