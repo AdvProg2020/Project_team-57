@@ -32,6 +32,7 @@ public class Database {
         initDiscountTable(initConnection.createStatement());
         initOffTable(initConnection.createStatement());
         initEditingOffTable(initConnection.createStatement());
+        initLogTable(initConnection.createStatement());
         removeTempAccountsFromCarts(initConnection);
 
         isDBInit = true;
@@ -66,6 +67,27 @@ public class Database {
         //System.out.println("After");
         preparedStatement.close();
         //System.out.println("World");
+    }
+
+    private static void initLogTable(Statement statement) throws SQLException {
+        String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'Logs'";
+        ResultSet resultSet = statement.executeQuery(command);
+        if (!resultSet.next()){
+            statement.execute("CREATE TABLE Logs("+
+                    "ProductID varchar(16)," +
+                    "CustomerUsername varchar(16)," +
+                    "Count int," +
+                    "Amount double," +
+                    "DATE DATE," +
+                    "InitPrice double," +
+                    "OffPrice double," +
+                    "DiscountPercent double(100)," +
+                    "Status int," +
+                    "LogID varchar(16))," +
+                    "IsCountable BIT;");
+        }
+        statement.close();
+        resultSet.close();
     }
 
     private static void initOffTable(Statement statement) throws SQLException {

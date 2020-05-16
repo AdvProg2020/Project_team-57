@@ -130,4 +130,13 @@ public class ProductTable extends Database {
             preparedStatement.execute();
         }
     }
+
+    public static String getVendorName(String productID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Products WHERE ProductID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        return resultSet.getString("SellerUsername");
+    }
 }
