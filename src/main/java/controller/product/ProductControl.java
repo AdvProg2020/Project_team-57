@@ -18,6 +18,37 @@ public class ProductControl extends Control {
     private static ProductControl productControl = null;
     private boolean isOffListic;
     private String listicOffID;
+    private Product[] comparingProducts = null;
+
+    public Product[] getComparingProducts() {
+        return comparingProducts;
+    }
+
+    public void setComparingProducts(Product[] comparingProducts) {
+        this.comparingProducts = comparingProducts;
+    }
+
+    public void setFirstComparingProduct(String productID)
+    {
+        try {
+            this.comparingProducts[0] = ProductTable.getProductByID(productID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setSecondComparingProduct(String productID)
+    {
+        try {
+            this.comparingProducts[1] = ProductTable.getProductByID(productID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     public boolean isOffListic() {
         return isOffListic;
@@ -396,5 +427,25 @@ public class ProductControl extends Control {
             e.printStackTrace();
             return new Off();
         }
+    }
+
+    public boolean areComparable(String firstProduct, String secondProduct) {
+        if(firstProduct.equals(secondProduct))
+            return false;
+        try {
+            String firstProductCategory = ProductTable.getProductByID(firstProduct).getCategory();
+            while (!CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
+                firstProductCategory = CategoryTable.getParentCategory(firstProductCategory);
+            String secondProductCategory = ProductTable.getProductByID(firstProduct).getCategory();
+            while (!CategoryTable.getParentCategory(secondProductCategory).equals("All Products"))
+                secondProductCategory = CategoryTable.getParentCategory(secondProductCategory);
+            if(!firstProductCategory.equals(secondProductCategory))
+                return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 }

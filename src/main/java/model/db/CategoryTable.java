@@ -92,4 +92,11 @@ public class CategoryTable extends Database {
         preparedStatement.setString(1, categoryName);
         return preparedStatement.executeQuery().next();
     }
+
+    public static String getParentCategory(String category) throws SQLException, ClassNotFoundException {
+        String command = "SELECT ParentCategory FROM Categories WHERE Name = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, category);
+        return preparedStatement.executeQuery().getString("ParentCategory");
+    }
 }
