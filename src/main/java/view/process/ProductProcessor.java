@@ -99,7 +99,8 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
             @Override
             public Menu doTheThing(Object... objects) {
                 if(productControl.getComparingProducts()[0] != null && productControl.getComparingProducts()[1] != null)
-                    return ListicOptionMenu.makeMenu("Comparing Products Menu");
+                    return ListicOptionMenu.makeMenu("Comparing Products Menu", Menu.makeMenu("Comparison Menu"),
+                            productControl.getComparingProducts()[1].getID());
                 else
                 {
                     System.out.println("Please First Choose The Comparing Product");
