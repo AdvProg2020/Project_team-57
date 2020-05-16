@@ -121,11 +121,38 @@ public class DiscountTable extends Database {
         return discounts;
     }
 
-    public static void updateDiscountCodes() throws SQLException, ClassNotFoundException {
+    public static void updateDiscountCodesTime() throws SQLException, ClassNotFoundException {
         ArrayList<Discount> allDiscountCodes = getAllDiscountCodes();
         for (Discount discountCode : allDiscountCodes) {
             if(discountCode.getFinishDate().compareTo(new Date(System.currentTimeMillis())) != 1)
                 removeDiscountCode(discountCode.getID());
         }
+    }
+
+    public static void updateDiscountCodesRep() throws SQLException, ClassNotFoundException {
+        ArrayList<Discount> allDiscountCodes = getAllDiscountCodes();
+        for (Discount discountCode : allDiscountCodes) {
+            for (String username : discountCode.getCustomersWithRepetition().keySet()) {
+                if(discountCode.getMaxRepetition() <= discountCode.getCustomersWithRepetition().get(username))
+                    removeDiscountCodeForUsername(discountCode.getID(),username);
+            }
+        }
+    }
+
+    public static void removeDiscountCodeForUsername(String discountID, String customerUsername) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Discounts WHERE ID = ? AND CustomerUsername = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, discountID);
+        preparedStatement.setString(2, customerUsername);
+        preparedStatement.execute();
+    }
+
+    public static void addRepetitionToDiscount(Discount discount, String username) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Discounts SET MaxRepetition = ? WHERE ID = ? AND CustomerUsername = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, discount.getCustomersWithRepetition().get(username) + 1);
+        preparedStatement.setString(2, discount.getID());
+        preparedStatement.setString(3, username);
+        preparedStatement.execute();
     }
 }
