@@ -3,8 +3,10 @@ package controller.account;
 import controller.Control;
 import model.db.CartTable;
 import model.db.DiscountTable;
+import model.db.OffTable;
 import model.db.ProductTable;
 import model.existence.Discount;
+import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
 
@@ -245,5 +247,35 @@ public class CustomerControl extends AccountControl{
         return discountIDs;
     }
 
+    public ArrayList<String> getAllOffNames(){
+        ArrayList<String> allOffNames = new ArrayList<>();
+        try {
+            for (Off off : OffTable.getAllOffs()) {
+                allOffNames.add(off.getOffName())
+            }
+            return allOffNames;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 
+    public ArrayList<String> getAllOffIDs(){
+        ArrayList<String> allOffIds = new ArrayList<>();
+        try {
+            for (Off off : OffTable.getAllOffs()) {
+                allOffIds.add(off.getOffID())
+            }
+            return allOffIds;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 }

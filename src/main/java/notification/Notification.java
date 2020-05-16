@@ -92,7 +92,6 @@ public enum Notification {
 
 
 
-
     private String message;
 
     Notification(String message) {

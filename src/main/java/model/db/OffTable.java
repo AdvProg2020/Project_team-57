@@ -224,7 +224,7 @@ public class OffTable extends Database{
         return editingOffNames;
     }
 
-    public static ArrayList<String> geteditingOffIDs() throws SQLException, ClassNotFoundException {
+    public static ArrayList<String> getEditingOffIDs() throws SQLException, ClassNotFoundException {
         String command = "SELECT DISTINCT OffID FROM EditingOffs WHERE Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, 3);
@@ -234,5 +234,35 @@ public class OffTable extends Database{
             editingOffIDs.add(resultSet.getString("OffID"));
         }
         return editingOffIDs;
+    }
+
+    public static Off getOffByProductID(String id) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Offs WHERE ProductID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, id);
+        Off off = Off.makeOffByID(preparedStatement.executeQuery());
+        return OffTable.getSpecificOff(off.getOffID());
+    }
+
+    public static ArrayList<String> getAllProductNamesByOffID(String id) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Offs WHERE OffID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<String> allProductNames = new ArrayList<>();
+        while (resultSet.next()){
+            allProductNames.add()
+        }
+    }
+
+    public static ArrayList<Off> getAllOffs() throws SQLException, ClassNotFoundException {
+        String command = "SELECT DISTINCT OffID FROM Offs";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<Off> allOffs = new ArrayList<>();
+        while (resultSet.next()){
+            allOffs.add(OffTable.getSpecificOff(resultSet.getString("OffID")));
+        }
+        return allOffs;
     }
 }

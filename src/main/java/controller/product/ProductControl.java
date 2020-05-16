@@ -3,8 +3,10 @@ package controller.product;
 import controller.Control;
 import model.db.CategoryTable;
 import model.db.EditingProductTable;
+import model.db.OffTable;
 import model.db.ProductTable;
 import model.existence.Category;
+import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
 
@@ -14,6 +16,15 @@ import java.util.Collections;
 
 public class ProductControl extends Control {
     private static ProductControl productControl = null;
+    private String listicOffID;
+
+    public String getListicOffID() {
+        return listicOffID;
+    }
+
+    public void setListicOffID(String listicOffID) {
+        this.listicOffID = listicOffID;
+    }
 
     public Product getProductById(String productId) {
         try {
@@ -348,5 +359,21 @@ public class ProductControl extends Control {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public Off getOffByProductID(String productID){
+        try {
+            return OffTable.getOffByProductID(productID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new Off();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return new Off();
+        }
+    }
+
+    public ArrayList<String> getAllProductNamesByOffID(){
+
     }
 }
