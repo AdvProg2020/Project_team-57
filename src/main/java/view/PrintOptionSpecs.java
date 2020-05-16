@@ -84,7 +84,7 @@ public interface PrintOptionSpecs {
         printWithNullCheckingForProduct("Seller Name", product.getSellerUserName());
         this.printCustomLineForProduct();
 
-        printCustomCount(product);
+        printCustomCountForProduct(product);
         this.printCustomLineForProduct();
 
         printWithNullCheckingForProduct("Category", product.getCategory());
@@ -93,7 +93,7 @@ public interface PrintOptionSpecs {
         printCustomDescriptionForProduct(product.getDescription());
         this.printCustomLineForProduct();
 
-        System.out.format("| %-20s | %-35f | %n", "Price", product.getPrice());
+        printCustomPriceForProduct(product);
         this.printCustomLineForProduct();
 
         System.out.format("| %-20s | %-35d | %n", "View", product.getSeen());
@@ -117,7 +117,18 @@ public interface PrintOptionSpecs {
         System.out.format("| %-20s | %-35s | %n", "Status", state);
     }
 
-    default void printCustomCount(Product product){
+    default void printCustomLineForProduct(){
+        System.out.println("+----------------------+-------------------------------------+");
+    }
+
+    default void printWithNullCheckingForProduct(String fieldName, String fieldValue){
+        if(fieldValue == null)
+            System.out.format("| %-20s | %-35s | %n", fieldName, "Not Assigned");
+        else
+            System.out.format("| %-20s | %-35s | %n", fieldName, fieldValue);
+    }
+
+    default void printCustomCountForProduct(Product product){
         if(product.isCountable()){
             System.out.format("| %-20s | %-35d | %n", "Count", product.getCount());
         } else {
@@ -125,6 +136,20 @@ public interface PrintOptionSpecs {
         }
     }
 
+    default void printCustomPriceForProduct(Product product) {
+        ProductControl productControl = ProductControl.getController();
+
+        if(productControl.isProductInOff(product.getID())) {
+            Off productOff = productControl.getOffByProduct(product.getID());
+            double oldPrice = product.getPrice();
+            double newPrice = oldPrice - oldPrice * productOff.getOffPercent();
+            System.out.format("| %-20s | %-16f => %-15f | %n", "Price", oldPrice, newPrice);
+            System.out.format("| %-20s | %-30f% Off | %n", "", productOff.getOffPercent());
+        } else {
+            System.out.format("| %-20s | %-35f | %n", "Price", product.getPrice());
+        }
+
+    }
     default void printCustomDescriptionForProduct(String description){
         if(description != null) {
             ArrayList<String> splitDescription = splitDescriptionForProduct(description);
@@ -167,17 +192,6 @@ public interface PrintOptionSpecs {
         }
 
         return splitDescription;
-    }
-
-    default void printCustomLineForProduct(){
-        System.out.println("+----------------------+-------------------------------------+");
-    }
-
-    default void printWithNullCheckingForProduct(String fieldName, String fieldValue){
-        if(fieldValue == null)
-            System.out.format("| %-20s | %-35s | %n", fieldName, "Not Assigned");
-        else
-            System.out.format("| %-20s | %-35s | %n", fieldName, fieldValue);
     }
 
     default void printCategorySpecs(Category category) {
@@ -472,4 +486,5 @@ public interface PrintOptionSpecs {
 
         return splitProducts;
     }
+
 }
