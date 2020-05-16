@@ -83,8 +83,8 @@ public class Database {
                     "OffPrice double," +
                     "DiscountPercent double(100)," +
                     "Status int," +
-                    "LogID varchar(16))," +
-                    "IsCountable BIT;");
+                    "LogID varchar(16)," +
+                    "IsCountable BIT);");
         }
         statement.close();
         resultSet.close();

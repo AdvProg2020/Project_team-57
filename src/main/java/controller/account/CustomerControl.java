@@ -27,7 +27,7 @@ public class CustomerControl extends AccountControl{
         try {
             if (ProductTable.getProductByID(id).getCount() < count)
                 return Notification.MORE_THAN_INVENTORY_COUNTABLE;
-            if (count < 0)
+            if (count <= 0)
                 return Notification.NEGATIVE_NUMBER;
             if(CartTable.isThereCartProductForUsername(username, id)) {
                 CartTable.deleteCartProduct(username, id);
@@ -45,7 +45,7 @@ public class CustomerControl extends AccountControl{
         try {
             if (ProductTable.getProductByID(id).getAmount() < amount)
                 return Notification.MORE_THAN_INVENTORY_UNCOUNTABLE;
-            if (amount < 0)
+            if (amount <= 0)
                 return Notification.NEGATIVE_NUMBER;
             if(CartTable.isThereCartProductForUsername(username, id)) {
                 CartTable.deleteCartProduct(username, id);

@@ -90,7 +90,6 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         functionsHashMap.put("Compare To", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                //System.out.println(((Product) objects[1]).getID());
                 comparisonParentMenu = (ListicOptionMenu) objects[0];
                 productControl.setComparingProducts(new Product[2]);
                 productControl.setFirstComparingProduct(((Product) objects[1]).getID());
@@ -100,8 +99,6 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         functionsHashMap.put("Choose The Comparing Product", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                productControl.initFilter();
-                productControl.initSort();
                 return ListicMenu.makeListicMenu("Comparison Listic Menu");
             }
         });

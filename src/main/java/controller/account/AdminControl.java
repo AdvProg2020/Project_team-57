@@ -39,6 +39,7 @@ public class AdminControl extends AccountControl{
     public Notification acceptEditingProductByID(String editingProductID) {
         try {
             Product editingProduct = EditingProductTable.getEditingProductWithID(editingProductID);
+            editingProduct.setSeen(ProductTable.getProductByID(editingProductID).getSeen());
             EditingProductTable.removeProductById(editingProductID);
             ProductTable.removeProductByID(editingProduct.getID());
             if(editingProduct.isCountable())

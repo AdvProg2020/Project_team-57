@@ -327,7 +327,6 @@ public class ProductControl extends Control {
             }
         } else {
             if(!isOffListic) {
-                //System.out.println("Hello fuck");
                 for (Product product : ProductTable.getAllShowingProducts()) {
                     filteredProductIds.add(product.getID());
                 }
@@ -429,23 +428,40 @@ public class ProductControl extends Control {
         }
     }
 
-    public boolean areComparable(String firstProduct, String secondProduct) {
-        if(firstProduct.equals(secondProduct))
-            return false;
+    public ArrayList<String> getAllComparingProductNames() {
+        ArrayList<String> comparingProductNames = new ArrayList<>();
         try {
-            String firstProductCategory = ProductTable.getProductByID(firstProduct).getCategory();
-            while (!CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
+            String firstProductCategory = ProductTable.getProductByID(comparingProducts[0].getID()).getCategory();
+            while (CategoryTable.getParentCategory(firstProductCategory) != null &&
+                    !CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
                 firstProductCategory = CategoryTable.getParentCategory(firstProductCategory);
-            String secondProductCategory = ProductTable.getProductByID(secondProduct).getCategory();
-            while (!CategoryTable.getParentCategory(secondProductCategory).equals("All Products"))
-                secondProductCategory = CategoryTable.getParentCategory(secondProductCategory);
-            if(!firstProductCategory.equals(secondProductCategory))
-                return false;
+            for (Product product : convertIDsToProducts(filterOnCategory(firstProductCategory))) {
+                comparingProductNames.add(product.getName());
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return true;
+        return comparingProductNames;
+    }
+
+    public ArrayList<String> getAllComparingProductIDs() {
+        ArrayList<String> comparingProductIDs = new ArrayList<>();
+        try {
+            String firstProductCategory = ProductTable.getProductByID(comparingProducts[0].getID()).getCategory();
+            while (CategoryTable.getParentCategory(firstProductCategory) != null &&
+                    !CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
+                firstProductCategory = CategoryTable.getParentCategory(firstProductCategory);
+            for (String productID : filterOnCategory(firstProductCategory)) {
+                comparingProductIDs.add(productID);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return comparingProductIDs;
     }
 }

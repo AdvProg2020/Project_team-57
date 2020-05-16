@@ -609,22 +609,28 @@ public interface PrintOptionSpecs {
         System.out.format("| %-20s | %-35s | %-35s | %n", "Description",
                 getFirstValueOfArrayList(splitDescription1), getFirstValueOfArrayList(splitDescription2));
 
-        int i = 0;
+        int i = 1;
 
-        while (i < splitDescription1.size() && i < splitDescription2.size())
+        while (i < splitDescription1.size() && i < splitDescription2.size()) {
             System.out.format("| %-20s | %-35s | %-35s | %n", "", splitDescription1.get(i), splitDescription2.get(i));
+            ++i;
+        }
 
-        while (i < splitDescription1.size())
+        while (i < splitDescription1.size()) {
             System.out.format("| %-20s | %-35s | %-35s | %n", "", splitDescription1.get(i), "");
+            ++i;
+        }
 
-        while (i < splitDescription2.size())
+        while (i < splitDescription2.size()) {
             System.out.format("| %-20s | %-35s | %-35s | %n", "", "", splitDescription2.get(i));
+            ++i;
+        }
 
     }
 
     default String getFirstValueOfArrayList(ArrayList<String> arrayList) {
         if(arrayList == null || arrayList.size() == 0)
-            return "";
+            return "Not Assigned";
 
         return arrayList.get(0);
     }

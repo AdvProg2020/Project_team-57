@@ -24,7 +24,6 @@ public class Log {
                     resultSet.getInt("Count"), resultSet.getDouble("Amount"),
                     resultSet.getDouble("InitPrice"), resultSet.getDouble("OffPrice")));
         }
-
         while (resultSet.next()){
             allProducts.add(new ProductOfLog(resultSet.getString("ProductID"),resultSet.getBoolean("IsCountable"),
                     resultSet.getInt("Count"), resultSet.getDouble("Amount"),

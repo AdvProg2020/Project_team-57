@@ -35,7 +35,7 @@ public class LogTable extends Database {
                 }
         }
 
-        public static ArrayList<Log> getAllLogsByUsername(String username) throws SQLException, ClassNotFoundException {
+        public static ArrayList<Log> getAllCustomerLogs(String username) throws SQLException, ClassNotFoundException {
                 String command = "SELECT DISTINCT LogID FROM Logs WHERE CustomerUsername = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
                 preparedStatement.setString(1, username);

@@ -144,13 +144,12 @@ public class ListicProcessor extends Processor {
             return ListicMenu.makeListicMenu("Off Products Listic Menu");
         }
         else if(parentMenu.getName().equals("Comparison Products Menu")) {
-            if (productControl.areComparable(productControl.getComparingProducts()[0].getID(), primaryKey)) {
+            if (!primaryKey.equals(productControl.getComparingProducts()[0].getID())) {
                 productControl.setSecondComparingProduct(primaryKey);
                 System.out.println("Successfully Added The Comparing Product");
                 return Menu.makeMenu("Comparison Menu");
             } else {
-                System.out.println("You Can Only Compare Two Products With The Same Category Or Parent Category.\n" +
-                        "You Can't Also Compare A Product With Itself");
+                System.out.println("You Must Choose Different Products To Compare");
                 return parentMenu;
             }
         }
@@ -211,7 +210,7 @@ public class ListicProcessor extends Processor {
             initManageAllUsers(listicMenu);
         else if(listicMenu.getName().equals("View All Admins"))
             initViewAllAdmins(listicMenu);
-        else if(listicMenu.getName().equals("Products Menu") || listicMenu.getName().equals("Off Products Menu") || listicMenu.getName().equals("Comparison Products Menu"))
+        else if(listicMenu.getName().equals("Products Menu") || listicMenu.getName().equals("Off Products Menu"))
             initProductsMenu(listicMenu);
         else if(listicMenu.getName().equals("View Cart"))
             initViewCart(listicMenu);
@@ -237,7 +236,14 @@ public class ListicProcessor extends Processor {
             initManageEditOffRequests(listicMenu);
         else if(listicMenu.getName().equals("Offs Menu"))
             initOffs(listicMenu);
+        else if(listicMenu.getName().equals("Comparison Products Menu"))
+            initComparisonProducts(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initComparisonProducts(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(productControl.getAllComparingProductNames());
+        listicMenu.setListicOptionPrimaryKeys(productControl.getAllComparingProductIDs());
     }
 
     private static void initOffs(ListicMenu listicMenu) {
