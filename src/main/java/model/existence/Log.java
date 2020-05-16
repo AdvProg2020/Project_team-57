@@ -51,13 +51,13 @@ public class Log {
         private double offPrice;
         private boolean isCountable;
 
-        public ProductOfLog(String productID, int count, double amount, double initPrice, double offPrice, boolean isCountable) {
+        public ProductOfLog(String productID,boolean isCountable, int count, double amount, double initPrice, double offPrice) {
             this.productID = productID;
+            this.isCountable = isCountable;
             this.count = count;
             this.amount = amount;
             this.initPrice = initPrice;
             this.offPrice = offPrice;
-            this.isCountable = isCountable;
         }
 
         public ProductOfLog(Product product) throws SQLException, ClassNotFoundException {
