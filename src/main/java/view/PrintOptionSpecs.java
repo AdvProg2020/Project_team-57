@@ -172,6 +172,9 @@ public interface PrintOptionSpecs {
     default ArrayList<String> splitDescriptionForProduct(String description) {
         ArrayList<String> splitDescription = new ArrayList<>();
 
+        if(description == null)
+            return new ArrayList<String>();
+
         if(description.length() > 35) {
             Character[] splitCharacters = new Character[] {' ', '\t', '.', ',', '!', '\n'};
             ArrayList<Character> characters = new ArrayList<>(Arrays.asList(splitCharacters));
@@ -562,7 +565,8 @@ public interface PrintOptionSpecs {
     }
 
     default void printWithNullCheckingForComparingProducts(String fieldName, String fieldValue1, String fieldValue2) {
-        System.out.format("| %-20s | %-35s | %-35s | %n", fieldName, fieldValue1, fieldValue2);
+        System.out.format("| %-20s | %-35s | %-35s | %n", fieldName,
+                getValueWithNullChecking(fieldValue1), getValueWithNullChecking(fieldValue2));
     }
 
     default String getValueWithNullChecking(String fieldValue) {

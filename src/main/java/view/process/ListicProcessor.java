@@ -144,15 +144,15 @@ public class ListicProcessor extends Processor {
             return ListicMenu.makeListicMenu("Off Products Listic Menu");
         }
         else if(parentMenu.getName().equals("Comparison Products Menu")) {
-            if(productControl.areComparable(productControl.getComparingProducts()[0].getID(), primaryKey))
-            {
+            if (productControl.areComparable(productControl.getComparingProducts()[0].getID(), primaryKey)) {
                 productControl.setSecondComparingProduct(primaryKey);
                 System.out.println("Successfully Added The Comparing Product");
-            }
-            else
+                return Menu.makeMenu("Comparison Menu");
+            } else {
                 System.out.println("You Can Only Compare Two Products With The Same Category Or Parent Category.\n" +
                         "You Can't Also Compare A Product With Itself");
-            return parentMenu;
+                return parentMenu;
+            }
         }
         //TODO(OTHERS)
         return null;

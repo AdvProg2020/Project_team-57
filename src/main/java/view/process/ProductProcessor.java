@@ -87,7 +87,17 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
                 return removeCartProduct(objects);
             }
         });
-        functionsHashMap.put("Enter The Comparing Product", new FunctioningOption() {
+        functionsHashMap.put("Compare To", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                //System.out.println(((Product) objects[1]).getID());
+                comparisonParentMenu = (ListicOptionMenu) objects[0];
+                productControl.setComparingProducts(new Product[2]);
+                productControl.setFirstComparingProduct(((Product) objects[1]).getID());
+                return Menu.makeMenu("Comparison Menu");
+            }
+        });
+        functionsHashMap.put("Choose The Comparing Product", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
                 productControl.initFilter();
@@ -132,8 +142,8 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
             productMenu.setOption(productControl.getProductById(ID));
         } else if(productMenu.getName().contains("Cart Product Menu")) {
             productMenu.setOption(customerControl.getCartProductByID(ID));
-        } else if(productMenu.getName().equals("Comparing Products Menu")) {
-            productMenu.setOption(productMenu.getComparingArrays());
+        } else if(productMenu.getName().equals("Comparing Menu")) {
+            productMenu.setOption(productControl.getComparingProducts());
         } else {
             productMenu.setOption(productControl.getEditedProductByID(ID));
         }

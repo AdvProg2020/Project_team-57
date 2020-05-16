@@ -436,7 +436,7 @@ public class ProductControl extends Control {
             String firstProductCategory = ProductTable.getProductByID(firstProduct).getCategory();
             while (!CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
                 firstProductCategory = CategoryTable.getParentCategory(firstProductCategory);
-            String secondProductCategory = ProductTable.getProductByID(firstProduct).getCategory();
+            String secondProductCategory = ProductTable.getProductByID(secondProduct).getCategory();
             while (!CategoryTable.getParentCategory(secondProductCategory).equals("All Products"))
                 secondProductCategory = CategoryTable.getParentCategory(secondProductCategory);
             if(!firstProductCategory.equals(secondProductCategory))
