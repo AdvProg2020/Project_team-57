@@ -1,5 +1,7 @@
 package model.existence;
 
+import model.db.OffTable;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +15,8 @@ public class Log {
     private Date date;
     private ArrayList<ProductOfLog> allProducts = new ArrayList<>();
 
+    public Log() {
+    }
 
     public Log(ResultSet resultSet) throws SQLException {
         if (resultSet.next()){
@@ -47,13 +51,26 @@ public class Log {
         private double offPrice;
         private boolean isCountable;
 
-        public ProductOfLog(String productID,boolean isCountable, int count, double amount, double initPrice, double offPrice) {
+        public ProductOfLog(String productID, int count, double amount, double initPrice, double offPrice, boolean isCountable) {
             this.productID = productID;
-            this.isCountable = isCountable;
             this.count = count;
             this.amount = amount;
             this.initPrice = initPrice;
             this.offPrice = offPrice;
+            this.isCountable = isCountable;
+        }
+
+        public ProductOfLog(Product product) throws SQLException, ClassNotFoundException {
+            this.productID = product.getID();
+            this.isCountable = product.isCountable();
+            this.count = product.getCount();
+            this.amount = product.getAmount();
+            this.initPrice = product.getPrice();
+            if(OffTable.isThereProductInOff(product.getID())) {
+                this.offPrice = (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100)) * product.getPrice();
+            } else {
+                this.offPrice = product.getPrice();
+            }
         }
 
         public boolean isCountable() {

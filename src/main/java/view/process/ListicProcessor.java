@@ -153,6 +153,12 @@ public class ListicProcessor extends Processor {
                 return parentMenu;
             }
         }
+        else if(parentMenu.getName().equals("Select Discount Code")) {
+            customerControl.setHasDiscount(true);
+            customerControl.setDiscount(primaryKey);
+            System.out.println(customerControl.purchase().getMessage());
+            return ListicMenu.makeListicMenu("View Cart Listic Menu");
+        }
         //TODO(OTHERS)
         return null;
     }
@@ -224,7 +230,7 @@ public class ListicProcessor extends Processor {
             initManageDiscountCodes(listicMenu);
         else if(listicMenu.getName().equals("Add Customers To Discount Code"))
             initAddCustomersToDiscount(listicMenu);
-        else if(listicMenu.getName().equals("View Discount Codes"))
+        else if(listicMenu.getName().equals("View Discount Codes") || listicMenu.getName().equals("Select Discount Code"))
             initViewDiscountCodes(listicMenu);
         else if(listicMenu.getName().equals("Manage Offs"))
             initManageOffs(listicMenu);
@@ -274,6 +280,7 @@ public class ListicProcessor extends Processor {
     }
 
     private static void initViewDiscountCodes(ListicMenu listicMenu) {
+        customerControl.setHasDiscount(false);
         listicMenu.setListicOptionNames(customerControl.getDiscountCodes());
         listicMenu.setListicOptionPrimaryKeys(customerControl.getDiscountIDs());
     }

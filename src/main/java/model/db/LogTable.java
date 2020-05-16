@@ -65,4 +65,11 @@ public class LogTable extends Database {
                 }
                 return allLogs;
         }
+
+        public static boolean isThereLogWithID(String logID) throws SQLException, ClassNotFoundException {
+                String command = "SELECT * FROM Logs WHERE LogID = ?";
+                PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+                preparedStatement.setString(1, logID);
+                return preparedStatement.executeQuery().next();
+        }
 }

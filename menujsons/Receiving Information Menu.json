@@ -1,0 +1,13 @@
+{
+  "options" : [
+    "Address",
+    "Email",
+    "Postal Code",
+    "PhoneNumber (If You Are Hot 😂)",
+    "Confirm"
+  ],
+  "name" : "Receiving Information Menu",
+  "parentName" : "Main Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "CustomerProcessor"
+}

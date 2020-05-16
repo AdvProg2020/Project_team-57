@@ -2,12 +2,10 @@ package controller.account;
 
 import controller.Control;
 import model.db.*;
-import model.existence.Account;
-import model.existence.Discount;
-import model.existence.Off;
-import model.existence.Product;
+import model.existence.*;
 import notification.Notification;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -227,7 +225,8 @@ public class CustomerControl extends AccountControl{
     public ArrayList<String> getDiscountCodes() {
         ArrayList<String> discountCodes = new ArrayList<>();
         try {
-            DiscountTable.updateDiscountCodes();
+            DiscountTable.updateDiscountCodesTime();
+            DiscountTable.updateDiscountCodesRep();
             for (Discount discountCode : DiscountTable.getCustomerDiscountCodes(Control.getUsername())) {
                 discountCodes.add(discountCode.getCode());
             }
@@ -324,12 +323,14 @@ public class CustomerControl extends AccountControl{
                 return Notification.CANT_AFFOARD_CART;
             AccountTable.changeCredit(customer.getUsername(),((-1) * finalPrice));
             giveCreditToVendors(customer.getUsername());
+            createLog(customer);
             if(hasDiscount) {
                 DiscountTable.addRepetitionToDiscount(discount, customer.getUsername());
                 if(discount.getMaxRepetition() <= discount.getCustomersWithRepetition().get(customer.getUsername()))
                     DiscountTable.removeDiscountCodeForUsername(discount.getID(),customer.getUsername());
             }
-            DiscountTable.updateDiscountCodesTime();
+            CartTable.deleteCustomerCart(customer.getUsername());
+            hasDiscount = false;
             return Notification.PURCHASED_SUCCESSFULLY;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -378,5 +379,42 @@ public class CustomerControl extends AccountControl{
 
     public void setHasDiscount(boolean hasDiscount) {
         this.hasDiscount = hasDiscount;
+    }
+
+    private void createLog(Account customer) throws SQLException, ClassNotFoundException {
+        Log log = new Log();
+        String logID = "";
+        do {
+            logID = generateLogID();
+        } while (LogTable.isThereLogWithID(logID));
+
+        log.setLogID(logID);
+        log.setCustomerUsername(customer.getUsername());
+        if(hasDiscount)
+            log.setDiscountPercent(discount.getDiscountPercent());
+        else
+            log.setDiscountPercent(0);
+
+        log.setStatus(1);
+        log.setDate(new Date(System.currentTimeMillis()));
+
+        ArrayList<Log.ProductOfLog> logProducts = new ArrayList<>();
+        for (Product product : CartTable.getAllCartWithUsername(customer.getUsername())) {
+            logProducts.add(new Log.ProductOfLog(product));
+        }
+
+        log.setAllProducts(logProducts);
+        LogTable.addLog(log);
+    }
+
+    private String generateLogID()
+    {
+        char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
+        StringBuilder ID = new StringBuilder("l");
+        for(int i = 0; i < 7; ++i)
+        {
+            ID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
+        }
+        return ID.toString();
     }
 }

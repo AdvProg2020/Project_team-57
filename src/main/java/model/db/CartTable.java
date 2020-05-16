@@ -120,4 +120,11 @@ public class CartTable extends Database{
         preparedStatement.setString(2, id);
         preparedStatement.execute();
     }
+
+    public static void deleteCustomerCart(String username) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Carts WHERE CustomerUsername = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        preparedStatement.execute();
+    }
 }
