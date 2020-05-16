@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.SplittableRandom;
 
 public interface PrintOptionSpecs {
     default void printOptionSpecs(Object option) {
@@ -23,6 +24,8 @@ public interface PrintOptionSpecs {
             printDiscountSpecs((Discount) option);
         } else if(option instanceof Off) {
             printOffSpecs((Off) option);
+        } else if(option instanceof Product[]) {
+            printComparingSpecs((Product[]) option);
         }
     }
 
@@ -486,6 +489,140 @@ public interface PrintOptionSpecs {
         }
 
         return splitProducts;
+    }
+
+    default void printComparingSpecs(Product[] comparingProducts) {
+        Product product1 = comparingProducts[0], product2 = comparingProducts[1];
+
+        printCustomLineForComparingProducts();
+
+        printCustomStatusForComparingProducts(product1.getStatus(), product2.getStatus());
+        printCustomLineForComparingProducts();
+
+        printWithNullCheckingForComparingProducts("Name", product1.getName(), product2.getName());
+        printCustomLineForComparingProducts();
+
+        printWithNullCheckingForComparingProducts("Brand Name", product1.getBrand(), product2.getBrand());
+        printCustomLineForComparingProducts();
+
+        printWithNullCheckingForComparingProducts("Seller Name", product1.getSellerUserName(), product2.getSellerUserName());
+        printCustomLineForComparingProducts();
+
+        printCustomCountForComparingProducts(product1, product2);
+        printCustomLineForComparingProducts();
+
+        printCustomAmountForComparingProduct(product1, product2);
+        printCustomLineForComparingProducts();
+
+        printWithNullCheckingForComparingProducts("Category", product1.getCategory(), product2.getCategory());
+        printCustomLineForComparingProducts();
+
+        printCustomDescriptionForComparingProducts(product1.getDescription(), product2.getDescription());
+        printCustomLineForComparingProducts();
+
+        System.out.format("| %-20s | %-35d | %-35d | %n", "View", product1.getSeen(), product2.getSeen());
+        printCustomLineForComparingProducts();
+
+        System.out.format("| %-20s | %-35s | %-35s | %n", "Average Score", product1.getAverageScore(), product2.getAverageScore());
+        printCustomLineForComparingProducts();
+    }
+
+    default void printCustomLineForComparingProducts() {
+        System.out.println("+----------------------+-------------------------------------+-------------------------------------+");
+    }
+
+    default void printCustomStatusForComparingProducts(int status1, int status2) {
+        String statusString1 = getCustomStatusStringForProduct(status1);
+        String statusString2 = getCustomStatusStringForProduct(status2);
+
+        System.out.format("| %-20s | %-35s | %-35s | %n", "Status", statusString1, statusString2);
+    }
+
+    default String getCustomStatusStringForProduct(int status) {
+        String statusString = null;
+
+        switch (status) {
+            case 0 :
+                statusString = "Not Assigned";
+                break;
+            case 1:
+                statusString = "Approved";
+                break;
+            case 2:
+                statusString = "Waiting For Creating Approval";
+                break;
+            case 3:
+                statusString = "Waiting For Editing Approval";
+                break;
+            default:
+                statusString = "Error In Status";
+        }
+
+        return statusString;
+    }
+
+    default void printWithNullCheckingForComparingProducts(String fieldName, String fieldValue1, String fieldValue2) {
+        System.out.format("| %-20s | %-35s | %-35s | %n", fieldName, fieldValue1, fieldValue2);
+    }
+
+    default String getValueWithNullChecking(String fieldValue) {
+        if(fieldValue == null)
+            return "Not Assigned";
+
+        return fieldValue;
+    }
+
+    default void printCustomCountForComparingProducts(Product product1, Product product2) {
+        String count1 = getCustomCountForComparingProduct(product1);
+        String count2 = getCustomCountForComparingProduct(product2);
+        System.out.format("| %-20s | %-35s | %-35s | %n", "Count", count1, count2);
+    }
+
+    default String getCustomCountForComparingProduct(Product product) {
+        if(product.isCountable())
+            return Integer.toString(product.getCount());
+
+        return "********";
+    }
+
+    default void printCustomAmountForComparingProduct(Product product1, Product product2) {
+        String amount1 = getCustomAmountForComparingProduct(product1);
+        String amount2 = getCustomAmountForComparingProduct(product2);
+        System.out.format("| %-20s | %-35s | %-35s | %n", "Amount", amount1, amount2);
+    }
+
+    default String getCustomAmountForComparingProduct(Product product) {
+        if(!product.isCountable())
+            return "********";
+
+        return Double.toString(product.getAmount());
+    }
+
+    default void printCustomDescriptionForComparingProducts(String description1 , String description2) {
+        ArrayList<String> splitDescription1 = splitDescriptionForProduct(description1);
+        ArrayList<String> splitDescription2 = splitDescriptionForProduct(description2);
+
+        System.out.format("| %-20s | %-35s | %-35s | %n", "Description",
+                getFirstValueOfArrayList(splitDescription1), getFirstValueOfArrayList(splitDescription2));
+
+        int i = 0;
+
+        while (i < splitDescription1.size() && i < splitDescription2.size())
+            System.out.format("| %-20s | %-35s | %-35s | %n", "", splitDescription1.get(i), splitDescription2.get(i));
+
+        while (i < splitDescription1.size())
+            System.out.format("| %-20s | %-35s | %-35s | %n", "", splitDescription1.get(i), "");
+
+        while (i < splitDescription2.size())
+            System.out.format("| %-20s | %-35s | %-35s | %n", "", "", splitDescription2.get(i));
+
+    }
+
+    default String getFirstValueOfArrayList(ArrayList<String> arrayList) {
+        if(arrayList == null || arrayList.size() == 0)
+            return "";
+
+        return arrayList.get(0);
     }
 
 }
