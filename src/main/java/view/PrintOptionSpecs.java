@@ -150,6 +150,7 @@ public interface PrintOptionSpecs {
         }
 
     }
+
     default void printCustomDescriptionForProduct(String description){
         if(description != null) {
             ArrayList<String> splitDescription = splitDescriptionForProduct(description);
