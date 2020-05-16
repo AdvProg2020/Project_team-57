@@ -103,6 +103,8 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
             productMenu.setOption(productControl.getProductById(ID));
         } else if(productMenu.getName().contains("Cart Product Menu")) {
             productMenu.setOption(customerControl.getCartProductByID(ID));
+        } else if(productMenu.getName().equals("Comparing Products Menu")) {
+            productMenu.setOption(productMenu.getComparingArrays());
         } else {
             productMenu.setOption(productControl.getEditedProductByID(ID));
         }
