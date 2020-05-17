@@ -73,6 +73,10 @@ public class Log {
             }
         }
 
+        public ProductOfLog() {
+
+        }
+
         public boolean isCountable() {
             return isCountable;
         }

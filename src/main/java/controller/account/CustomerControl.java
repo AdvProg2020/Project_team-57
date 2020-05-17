@@ -461,4 +461,76 @@ public class CustomerControl extends AccountControl{
         }
         return null;
     }
+
+    public ArrayList<String> getAllLogesNames() {
+        try {
+            ArrayList<String> allLogNames = new ArrayList<>();
+            for (Log customerLog : LogTable.getAllCustomerLogs(Control.getUsername())) {
+                java.util.Date date = new java.util.Date(customerLog.getDate().getTime());
+                allLogNames.add(date.toString());
+            }
+            return allLogNames;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public ArrayList<String> getAllLogesIDs() {
+        try {
+            ArrayList<String> allLogIDs = new ArrayList<>();
+            for (Log customerLog : LogTable.getAllCustomerLogs(Control.getUsername())) {
+                allLogIDs.add(customerLog.getLogID());
+            }
+            return allLogIDs;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public ArrayList<String> getProductOfLogNames() {
+        try {
+            ArrayList<String> allProductOfLogNames = new ArrayList<>();
+            for (Log.ProductOfLog productOfLog : LogTable.getLogByID(getCurrentLogID()).getAllProducts()) {
+                allProductOfLogNames.add(ProductTable.getProductByID(productOfLog.getProductID()).getName());
+            }
+            return allProductOfLogNames;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public ArrayList<String> getProductOfLogIDs() {
+        try {
+            ArrayList<String> allProductOfLogIDs = new ArrayList<>();
+            for (Log.ProductOfLog productOfLog : LogTable.getLogByID(getCurrentLogID()).getAllProducts()) {
+                allProductOfLogIDs.add(productOfLog.getProductID());
+            }
+            return allProductOfLogIDs;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public Log getCurrentLog(){
+        try {
+            return LogTable.getLogByID(getCurrentLogID());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new Log();
+    }
 }

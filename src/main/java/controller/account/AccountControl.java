@@ -2,9 +2,11 @@ package controller.account;
 
 import controller.Control;
 import model.db.AccountTable;
+import model.db.LogTable;
 import model.db.OffTable;
 import model.db.VendorTable;
 import model.existence.Account;
+import model.existence.Log;
 import model.existence.Off;
 import notification.Notification;
 
@@ -14,6 +16,15 @@ import java.util.ArrayList;
 
 public class AccountControl extends Control implements IOValidity {
     private static AccountControl customerControl = null;
+    private static String currentLogID;
+
+    public static String getCurrentLogID() {
+        return currentLogID;
+    }
+
+    public static void setCurrentLogID(String currentLogID) {
+        AccountControl.currentLogID = currentLogID;
+    }
 
     public Account getAccount() {
         try {
@@ -229,6 +240,20 @@ public class AccountControl extends Control implements IOValidity {
             if(OffTable.isThereEditingOffWithID(offID))
                 return OffTable.getSpecificEditingOffByID(offID);
             return OffTable.getSpecificOff(offID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Log.ProductOfLog getProductOfLog(String productID){
+        try {
+            for (Log.ProductOfLog productOfLog : LogTable.getLogByID(getCurrentLogID()).getAllProducts()) {
+                if (productID.equals(productOfLog.getProductID()))
+                    return productOfLog;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
