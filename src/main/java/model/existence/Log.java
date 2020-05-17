@@ -73,6 +73,10 @@ public class Log {
             }
         }
 
+        public ProductOfLog() {
+
+        }
+
         public boolean isCountable() {
             return isCountable;
         }
@@ -176,5 +180,13 @@ public class Log {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public double getFinalPrice(){
+        double finalPrice = 0;
+        for (ProductOfLog productOfLog : allProducts) {
+            finalPrice += productOfLog.getOffPrice();
+        }
+        return (finalPrice * (100 - this.discountPercent))/100;
     }
 }
