@@ -27,36 +27,6 @@ public class DiscountProcessor extends Processor {
                 return removeDiscount(objects);
             }
         });
-        functionsHashMap.put("Address", new FunctioningOption() {
-            @Override
-            public Menu doTheThing(Object... objects) {
-                return ReceiveBullShitDontSave("Address");
-            }
-        });
-        functionsHashMap.put("Email", new FunctioningOption() {
-            @Override
-            public Menu doTheThing(Object... objects) {
-                return ReceiveBullShitDontSave("Email");
-            }
-        });
-        functionsHashMap.put("Postal Code", new FunctioningOption() {
-            @Override
-            public Menu doTheThing(Object... objects) {
-                return ReceiveBullShitDontSave("Postal Code");
-            }
-        });
-        functionsHashMap.put("PhoneNumber (If You Are Hot 😂)", new FunctioningOption() {
-            @Override
-            public Menu doTheThing(Object... objects) {
-                return ReceiveBullShitDontSave("PhoneNumber");
-            }
-        });
-        functionsHashMap.put("Confirm", new FunctioningOption() {
-            @Override
-            public Menu doTheThing(Object... objects) {
-                return ListicMenu.makeMenu("Select Discount Listic Menu");
-            }
-        });
 
     }
 
@@ -89,10 +59,4 @@ public class DiscountProcessor extends Processor {
         return  menu.getParentMenu();
     }
 
-    public static Menu ReceiveBullShitDontSave(String information) {
-        System.out.println("0. Back");
-        System.out.println("Please Enter Your " + information + " :");
-        String command = scanner.nextLine().trim();
-        return Menu.makeMenu("Receiving Information Menu");
-    }
 }

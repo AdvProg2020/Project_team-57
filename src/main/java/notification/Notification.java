@@ -88,7 +88,14 @@ public enum Notification {
     OFF_EDITING_ACCEPTED("+I May Not Be A Smart Man, But I Know What Love Is.\n*Forrest Gump\n(You Accepted Editing Off) "),
     OFF_EDITING_DECLINED("+Sometimes This Program Makes Me Wonder, Which Would Be Worse,\n" +
             "To Live As A Monster Or Die As A Good Man.\n*Shutter Island\n" +
-            "(You Successfully Declined Editing Off Request.)");
+            "(You Successfully Declined Editing Off Request.)"),
+    UNAVAILABLE_CART_PRODUCT("One Of Your Cart Products Is Not Approved Yet. "),
+    CART_PRODUCT_OUT_OF_STOCK("One Of Your Cart Products Is Out Of Stock. "),
+    CANT_AFFORD_CART("Come Back When You Have Some Money, Buddy. "),
+    PURCHASED_SUCCESSFULLY("I Don't Know How I'm Going To Live With MySelf " +
+            "\nIf I Don't Stay True To What I Believe. " +
+            "\nDesmond T.Doss (Hacksaw Ridge)" +
+            "\nPurchased Successfully. 😐");
 
 
 

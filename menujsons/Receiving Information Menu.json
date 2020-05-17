@@ -7,7 +7,7 @@
     "Confirm"
   ],
   "name" : "Receiving Information Menu",
-  "parentName" : "Main Menu",
+  "parentName" : "View Cart Listic Menu",
   "isThereParentMenu" : "true",
   "processorName" : "CustomerProcessor"
 }

@@ -132,19 +132,35 @@ public class AccountProcessor extends Processor implements PrintOptionSpecs {
         boolean flag = true;
 
         ArrayList<String> creditOptions = new ArrayList<String>();
-        creditOptions.add("Add Money");
-        creditOptions.add("Reduce Money");
 
-        while(flag) {
-            System.out.println("Do You Wanna Add Money or Reduce Money ?");
+        if(Control.getType().equals("Vendor")) {
+            creditOptions.add("Add Money");
+            creditOptions.add("Reduce Money");
 
-            creditOption = setOptionsForArrayList(creditOptions);
+            while (flag) {
+                System.out.println("Do You Wanna Add Money or Reduce Money ?");
 
-            if(creditOption == "Cancel")
-                return Menu.makeMenu(Control.getType() + " Menu");
-            else if(creditOption != null)
-                flag = false;
+                creditOption = setOptionsForArrayList(creditOptions);
 
+                if (creditOption == "Cancel")
+                    return Menu.makeMenu(Control.getType() + " Menu");
+                else if (creditOption != null)
+                    flag = false;
+
+            }
+        } else {
+            creditOptions.add("Add Money");
+
+            while (flag) {
+                System.out.println("Choose Your Option :");
+
+                creditOption = setOptionsForArrayList(creditOptions);
+
+                if (creditOption == "Cancel")
+                    return Menu.makeMenu(Control.getType() + " Menu");
+                else if (creditOption != null)
+                    flag = false;
+            }
         }
 
         flag = true;

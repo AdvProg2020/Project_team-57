@@ -212,7 +212,8 @@ public class AdminControl extends AccountControl{
     public ArrayList<String> getAllDiscountCodes() {
         ArrayList<String> discountCodes = new ArrayList<>();
         try {
-            DiscountTable.updateDiscountCodes();
+            DiscountTable.updateDiscountCodesTime();
+            DiscountTable.updateDiscountCodesRep();
             for (Discount discountCode : DiscountTable.getAllDiscountCodes()) {
                 discountCodes.add(discountCode.getCode());
             }

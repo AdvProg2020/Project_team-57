@@ -320,7 +320,7 @@ public class CustomerControl extends AccountControl{
         try {
             Account customer = AccountTable.getAccountByUsername(Control.getUsername());
             if(finalPrice > customer.getCredit())
-                return Notification.CANT_AFFOARD_CART;
+                return Notification.CANT_AFFORD_CART;
             AccountTable.changeCredit(customer.getUsername(),((-1) * finalPrice));
             giveCreditToVendors(customer.getUsername());
             createLog(customer);

@@ -84,6 +84,12 @@ public class ListicProcessor extends Processor {
                 return Menu.makeMenu("Add Off Menu");
             }
         });
+        this.functionsHashMap.put("Purchase", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return Menu.makeMenu("Receiving Information Menu");
+            }
+        });
 
     }
 
@@ -153,7 +159,7 @@ public class ListicProcessor extends Processor {
                 return parentMenu;
             }
         }
-        else if(parentMenu.getName().equals("Select Discount Code")) {
+        else if(parentMenu.getName().equals("Select Discount")) {
             customerControl.setHasDiscount(true);
             customerControl.setDiscount(primaryKey);
             System.out.println(customerControl.purchase().getMessage());
@@ -230,7 +236,7 @@ public class ListicProcessor extends Processor {
             initManageDiscountCodes(listicMenu);
         else if(listicMenu.getName().equals("Add Customers To Discount Code"))
             initAddCustomersToDiscount(listicMenu);
-        else if(listicMenu.getName().equals("View Discount Codes") || listicMenu.getName().equals("Select Discount Code"))
+        else if(listicMenu.getName().equals("View Discount Codes") || listicMenu.getName().equals("Select Discount"))
             initViewDiscountCodes(listicMenu);
         else if(listicMenu.getName().equals("Manage Offs"))
             initManageOffs(listicMenu);
