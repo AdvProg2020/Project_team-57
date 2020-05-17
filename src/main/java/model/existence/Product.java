@@ -17,6 +17,7 @@ public class Product {
     private String description;
     private double price;
     private double averageScore;
+    private int scoreNum;
     private Date approvalDate;
     private int seen;
 
@@ -33,6 +34,7 @@ public class Product {
         this.description = resultSet.getString("Description");
         this.price = resultSet.getDouble("Price");
         this.averageScore = resultSet.getDouble("AverageScore");
+        this.scoreNum = resultSet.getInt("ScoreNum");
         this.approvalDate = resultSet.getDate("ApprovalDate");
         this.seen = resultSet.getInt("Seen");
     }
@@ -150,5 +152,13 @@ public class Product {
 
     public void setSeen(int seen) {
         this.seen = seen;
+    }
+
+    public int getScoreNum() {
+        return scoreNum;
+    }
+
+    public void setScoreNum(int scoreNum) {
+        this.scoreNum = scoreNum;
     }
 }

@@ -148,11 +148,12 @@ public class DiscountTable extends Database {
     }
 
     public static void addRepetitionToDiscount(Discount discount, String username) throws SQLException, ClassNotFoundException {
-        String command = "UPDATE Discounts SET MaxRepetition = ? WHERE ID = ? AND CustomerUsername = ?";
+        String command = "UPDATE Discounts SET Repetition = ? WHERE ID = ? AND CustomerUsername = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, discount.getCustomersWithRepetition().get(username) + 1);
         preparedStatement.setString(2, discount.getID());
         preparedStatement.setString(3, username);
+        //System.out.println("Step 2");
         preparedStatement.execute();
     }
 }

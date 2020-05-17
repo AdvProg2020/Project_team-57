@@ -4,5 +4,6 @@
   "isThereParentMenu" : true,
   "processorName" : "ListicProcessor",
   "options" : [
+    "Purchase Without Discount"
   ]
 }

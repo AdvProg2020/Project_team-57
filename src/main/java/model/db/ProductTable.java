@@ -139,4 +139,22 @@ public class ProductTable extends Database {
         resultSet.next();
         return resultSet.getString("SellerUsername");
     }
+
+    public static void reduceProductAmount(String productID, double amount) throws SQLException, ClassNotFoundException {
+        double firstAmount = ProductTable.getProductByID(productID).getAmount();
+        String command = "UPDATE Products SET Amount = ? WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setDouble(1, firstAmount - amount);
+        preparedStatement.setString(2, productID);
+        preparedStatement.execute();
+    }
+
+    public static void reduceProductCount(String productID, int count) throws SQLException, ClassNotFoundException {
+        int firstCount = ProductTable.getProductByID(productID).getCount();
+        String command = "UPDATE Products SET Count = ? WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, firstCount - count);
+        preparedStatement.setString(2, productID);
+        preparedStatement.execute();
+    }
 }

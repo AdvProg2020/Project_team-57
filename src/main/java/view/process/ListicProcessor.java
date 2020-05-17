@@ -1,5 +1,6 @@
 package view.process;
 
+import controller.Control;
 import controller.IOControl;
 import controller.account.AccountControl;
 import controller.account.AdminControl;
@@ -7,6 +8,7 @@ import controller.account.CustomerControl;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
 import model.existence.Account;
+import model.existence.Discount;
 import model.existence.Off;
 import view.menu.ListicMenu;
 import view.menu.ListicOptionMenu;
@@ -90,7 +92,14 @@ public class ListicProcessor extends Processor {
                 return Menu.makeMenu("Receiving Information Menu");
             }
         });
-
+        this.functionsHashMap.put("Purchase Without Discount", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                customerControl.setHasDiscount(false);
+                System.out.println(customerControl.purchase().getMessage());
+                return ListicMenu.makeListicMenu("View Cart Listic Menu");
+            }
+        });
     }
 
     public static ListicProcessor getInstance()
@@ -160,10 +169,19 @@ public class ListicProcessor extends Processor {
             }
         }
         else if(parentMenu.getName().equals("Select Discount")) {
-            customerControl.setHasDiscount(true);
-            customerControl.setDiscount(primaryKey);
-            System.out.println(customerControl.purchase().getMessage());
-            return ListicMenu.makeListicMenu("View Cart Listic Menu");
+            Discount discount = customerControl.getCustomerDiscountByID(primaryKey);
+            if(discount.getCustomersWithRepetition().get(Control.getUsername()) < discount.getMaxRepetition())
+            {
+                customerControl.setHasDiscount(true);
+                customerControl.setDiscount(primaryKey);
+                System.out.println(customerControl.purchase().getMessage());
+                return ListicMenu.makeListicMenu("View Cart Listic Menu");
+            }
+            else
+            {
+                System.out.println("You've Already Used This Discount Max Repetition");
+                return ListicMenu.makeListicMenu("Select Discount Listic Menu");
+            }
         }
         //TODO(OTHERS)
         return null;

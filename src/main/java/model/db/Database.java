@@ -177,6 +177,7 @@ public class Database {
                     "Description varchar(100)," +
                     "Price double," +
                     "AverageScore double," +
+                    "ScoreNum int," +
                     "ApprovalDate DATE, " +
                     "Seen int," +
                     "primary key(ID)" +
@@ -203,6 +204,7 @@ public class Database {
                     "Description varchar(100)," +
                     "Price double," +
                     "AverageScore double," +
+                    "ScoreNum int," +
                     "ApprovalDate DATE, " +
                     "Seen int," +
                     "primary key(ID)" +

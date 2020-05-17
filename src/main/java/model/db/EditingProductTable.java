@@ -59,8 +59,8 @@ public class EditingProductTable extends Database{
 
     public static void addProduct(Product product) throws SQLException, ClassNotFoundException {
         String command =  "INSERT INTO EditingProducts (ID, ProductName, Brand, SellerUsername, Count, Amount, " +
-                "IsCountable, Category, Description, Price, AverageScore, Status, ApprovalDate, Seen) " +
-                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "IsCountable, Category, Description, Price, AverageScore, Status, ApprovalDate, Seen, ScoreNum) " +
+                        "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, product.getID());
         preparedStatement.setString(2, product.getName());
@@ -82,6 +82,7 @@ public class EditingProductTable extends Database{
         preparedStatement.setInt(12, 3);
         preparedStatement.setDate(13, product.getApprovalDate());
         preparedStatement.setInt(14, product.getSeen());
+        preparedStatement.setInt(15, product.getScoreNum());
         preparedStatement.execute();
     }
 
