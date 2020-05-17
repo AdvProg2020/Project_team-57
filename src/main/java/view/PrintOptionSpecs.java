@@ -26,6 +26,8 @@ public interface PrintOptionSpecs {
             printOffSpecs((Off) option);
         } else if(option instanceof Product[]) {
             printComparingSpecs((Product[]) option);
+        } else if(option instanceof Object[]) {
+            printProductOfLogSpecs((Object[]) option);
         }
     }
 
@@ -635,4 +637,52 @@ public interface PrintOptionSpecs {
         return arrayList.get(0);
     }
 
+    default void printProductOfLogSpecs(Object[] products) {
+        Product product = (Product) products[0];
+        Log.ProductOfLog productOfLog = (Log.ProductOfLog) products[1];
+
+        printCustomLineForProduct();
+
+        printWithNullCheckingForProduct("Name", product.getName());
+        this.printCustomLineForProduct();
+
+        printWithNullCheckingForProduct("Brand Name", product.getBrand());
+        this.printCustomLineForProduct();
+
+        printWithNullCheckingForProduct("Seller Name", product.getSellerUserName());
+        this.printCustomLineForProduct();
+
+        printCustomCountForProductOfLog(productOfLog);
+        this.printCustomLineForProduct();
+
+        printWithNullCheckingForProduct("Category", product.getCategory());
+        this.printCustomLineForProduct();
+
+        printCustomPriceForProductOfLog(productOfLog);
+        this.printCustomLineForProduct();
+    }
+
+    default void printCustomCountForProductOfLog(Log.ProductOfLog productOfLog){
+        if(productOfLog.isCountable()){
+            System.out.format("| %-20s | %-35d | %n", "Count", productOfLog.getCount());
+        } else {
+            String amountString = Double.toString(productOfLog.getAmount());
+            System.out.format("| %-20s | %-35s | %n", "Amount", amountString);
+        }
+    }
+
+    default void printCustomPriceForProductOfLog(Log.ProductOfLog productOfLog) {
+        if(productOfLog.getInitPrice() == productOfLog.getOffPrice()) {
+            String initPriceString = Double.toString(productOfLog.getInitPrice());
+            System.out.format("| %-20s | %-35s | %n", "Price", initPriceString);
+        } else {
+            double offPercent = (1 - productOfLog.getOffPrice() / productOfLog.getInitPrice()) * 100;
+            String initPriceString = Double.toString(productOfLog.getInitPrice());
+            String offPriceString = Double.toString(productOfLog.getOffPrice());
+            String offPercentString = Double.toString(offPercent);
+            System.out.format("| %-20s | %-16s => %-15s | %n", "Price", initPriceString, offPriceString);
+            System.out.format("| %-20s | %%%-34s | %n", "Off Percent", offPercentString);
+        }
+
+    }
 }

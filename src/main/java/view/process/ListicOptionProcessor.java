@@ -8,6 +8,8 @@ import view.menu.ListicOptionMenu;
 import view.process.person.AdminProcessor;
 import view.process.person.VendorProcessor;
 
+import java.util.ArrayList;
+
 public class ListicOptionProcessor extends Processor{
     private static ListicOptionProcessor listicOptionProcessor = null;
     private static CustomerControl customerControl = CustomerControl.getController();
@@ -83,8 +85,15 @@ public class ListicOptionProcessor extends Processor{
     }
 
     public static void setMenu(String menuName, ListicOptionMenu listicOptionMenu, String optionID) {
+        ArrayList<String> productMenuNames = getAllProductMenuNames();
+        ArrayList<String> filteringMenuNames = getAllfilteringMenuNames();
+        ArrayList<String> categoryMenuNames = getAllcategoryMenuNames();
+        ArrayList<String> discountMenuNames = getAlldiscountMenuNames();
+        ArrayList<String> offMenuNames = getAllOffMenuNames();
+        //ArrayList<String> userMenuNames = getAllUserMenuNames();
+        //ArrayList<String> productOfLogMenuNames = getAllProductOfLogMenuNames();
 
-        if(menuName.contains("Product")) {
+        /*if(menuName.contains("Product")) {
             ProductProcessor.setMenu(listicOptionMenu, optionID);
         } else if(menuName.contains("Filtering")) {
             FilteringProcessor.setMenu(listicOptionMenu, optionID);
@@ -96,8 +105,75 @@ public class ListicOptionProcessor extends Processor{
             OffProcessor.setMenu(listicOptionMenu, optionID);
         } else {
             UserProcessor.setMenu(listicOptionMenu, optionID);
+        }*/
+
+        if(productMenuNames.contains(menuName)) {
+            ProductProcessor.setMenu(listicOptionMenu, optionID);
+        } else if(filteringMenuNames.contains(menuName)) {
+            FilteringProcessor.setMenu(listicOptionMenu, optionID);
+        } else if(categoryMenuNames.contains(menuName)) {
+            CategoryProcessor.setMenu(listicOptionMenu, optionID);
+        } else if(discountMenuNames.contains(menuName)) {
+            DiscountProcessor.setMenu(listicOptionMenu, optionID);
+        } else if(offMenuNames.contains(menuName)) {
+            OffProcessor.setMenu(listicOptionMenu, optionID);
+        } else {
+            UserProcessor.setMenu(listicOptionMenu, optionID);
         }
 
+    }
+
+    /*private static ArrayList<String> getAllProductOfLogMenuNames() {
+        ArrayList<String> productOfLogMenuNames = new ArrayList<>();
+        productOfLogMenuNames.add("View Log Menu");
+        return productOfLogMenuNames;
+    }*/
+
+    private static ArrayList<String> getAllOffMenuNames() {
+        ArrayList<String> offMenuNames = new ArrayList<>();
+        offMenuNames.add("Edit Off Request Menu");
+        offMenuNames.add("Add Off Request Menu");
+        offMenuNames.add("Vendor Off Menu");
+        return offMenuNames;
+    }
+
+    private static ArrayList<String> getAlldiscountMenuNames() {
+        ArrayList<String> discountMenuNames = new ArrayList<>();
+        discountMenuNames.add("Customer View Discount Menu");
+        discountMenuNames.add("View Discount Menu");
+        return discountMenuNames;
+    }
+
+    private static ArrayList<String> getAllcategoryMenuNames() {
+        ArrayList<String> allcategoryMenuNames = new ArrayList<>();
+        allcategoryMenuNames.add("Admin Category Menu");
+        return allcategoryMenuNames;
+    }
+
+    private static ArrayList<String> getAllfilteringMenuNames() {
+        ArrayList<String> allFilteringMunuNames = new ArrayList<>();
+        allFilteringMunuNames.add("Filtering Category Menu1");
+        allFilteringMunuNames.add("Filtering Category Menu1");
+        allFilteringMunuNames.add("Filtering Name Menu");
+        return allFilteringMunuNames;
+    }
+
+    private static ArrayList<String> getAllProductMenuNames() {
+        ArrayList<String> allProductMenuNames = new ArrayList<>();
+        allProductMenuNames.add("Add Product Request Menu");
+        allProductMenuNames.add("Admin Product Menu");
+        allProductMenuNames.add("Cart Product Menu");
+        allProductMenuNames.add("Common Product Menu1");
+        allProductMenuNames.add("Common Product Menu2");
+        allProductMenuNames.add("Comparing Products Menu");
+        allProductMenuNames.add("Customer Product Menu");
+        allProductMenuNames.add("Edit Product Request Menu");
+        allProductMenuNames.add("Off Product Menu1");
+        allProductMenuNames.add("Off Product Menu2");
+        allProductMenuNames.add("Vendor Product Menu");
+        allProductMenuNames.add("Non Logged In Product Menu");
+        allProductMenuNames.add("View Log Menu");
+        return allProductMenuNames;
     }
 
 }

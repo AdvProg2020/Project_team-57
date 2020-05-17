@@ -1,0 +1,8 @@
+{
+  "options" : [
+  ],
+  "name" : "Product Of Log Menu",
+  "parentName" : "Manage All Products Listic Menu",
+  "isThereParentMenu" : "true",
+  "processorName" : "ProductProcessor"
+}
