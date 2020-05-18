@@ -564,4 +564,15 @@ public class CustomerControl extends AccountControl{
         }
         return Notification.UNKNOWN_ERROR;
     }
+
+    public boolean isProductPurchasedByCustomer(String productID, String customerUsername) {
+        try {
+            return LogTable.isProductPurchasedByCustomer(productID, customerUsername);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

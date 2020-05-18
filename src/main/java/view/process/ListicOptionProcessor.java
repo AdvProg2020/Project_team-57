@@ -131,7 +131,7 @@ public class ListicOptionProcessor extends Processor{
         } else {
             UserProcessor.setMenu(listicOptionMenu, optionID);
         }*/
-
+        //System.out.println("Menu Name: " + menuName);
         if(productMenuNames.contains(menuName)) {
             ProductProcessor.setMenu(listicOptionMenu, optionID);
         } else if(filteringMenuNames.contains(menuName)) {
@@ -143,6 +143,7 @@ public class ListicOptionProcessor extends Processor{
         } else if(offMenuNames.contains(menuName)) {
             OffProcessor.setMenu(listicOptionMenu, optionID);
         } else if(commentMenuNames.contains(menuName)) {
+            //System.out.println("Menu Name: " + menuName);
             ProductProcessor.setCommentMenu(listicOptionMenu, optionID);
         } else {
             UserProcessor.setMenu(listicOptionMenu, optionID);

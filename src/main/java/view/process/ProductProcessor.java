@@ -5,6 +5,7 @@ import controller.account.AdminControl;
 import controller.account.CustomerControl;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
+import model.existence.Comment;
 import model.existence.Product;
 import sun.net.www.protocol.file.FileURLConnection;
 import view.menu.ListicMenu;
@@ -145,6 +146,28 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
                 return comparisonParentMenu;
             }
         });
+        functionsHashMap.put("Show Comments", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return ListicMenu.makeListicMenu("Comments Listic Menu");
+            }
+        });
+        functionsHashMap.put("Accept Adding The Comment", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                System.out.println(adminControl.modifyCommentApproval
+                        (((Comment)objects[1]).getCommentID(), true).getMessage());
+                return ListicMenu.makeListicMenu("Manage Comments Listic Menu");
+            }
+        });
+        this.functionsHashMap.put("Decline Adding The Comment", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                System.out.println(adminControl.modifyCommentApproval
+                        (((Comment)objects[1]).getCommentID(), false).getMessage());
+                return ListicMenu.makeListicMenu("Manage Comments Listic Menu");
+            }
+        });
 
     }
 
@@ -182,6 +205,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
 
     public static void setCommentMenu(ListicOptionMenu productMenu, String ID){
         productMenu.setOption(productControl.getCommentByID(ID));
+        //System.out.println("comment : " + productControl.getCommentByID(ID).getContent());
     }
 
     public Menu editProduct(Object... objects){

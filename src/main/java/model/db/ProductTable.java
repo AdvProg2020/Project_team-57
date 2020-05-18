@@ -256,28 +256,34 @@ public class ProductTable extends Database {
         String command = "UPDATE Comments SET Status = ? WHERE CommentID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, status);
-        preparedStatement.setString(2, command);
+        preparedStatement.setString(2, commentID);
         preparedStatement.execute();
     }
 
     public static ArrayList<Comment> getAllLoggedInUserComment(String username, String currentProduct) throws SQLException, ClassNotFoundException {
-        String command = "SELECT * FROM Comments WHERE ProductID = ? AND CustomerUsername = ? AND Status = ?";
+        String command = "SELECT * FROM Comments WHERE ProductID = ? AND CustomerUsername = ? AND (Status = ? OR Status = ?) ";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, currentProduct);
         preparedStatement.setString(2, username);
         preparedStatement.setInt(3,2);
+        preparedStatement.setInt(4, 3);
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Comment> comments = new ArrayList<>();
+        //System.out.println("Shit");
         while (resultSet.next()){
+            //System.out.println("Ha :|");
             comments.add(new Comment(resultSet));
+            //System.out.println(ProductTable.getProductByID(comments.get(comments.size() - 1).getProductID()).getName());
         }
+        //System.out.println(comments);
         return comments;
     }
 
     public static ArrayList<Comment> getAllApprovedCommentsOnThisProduct(String currentProduct) throws SQLException, ClassNotFoundException {
-        String comment = "SELECT * FROM Comments WHERE Status = ?";
+        String comment = "SELECT * FROM Comments WHERE ProductID = ? AND Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(comment);
-        preparedStatement.setInt(1,1);
+        preparedStatement.setString(1, currentProduct);
+        preparedStatement.setInt(2,1);
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Comment> comments = new ArrayList<>();
         while (resultSet.next()){

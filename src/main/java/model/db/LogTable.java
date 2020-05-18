@@ -74,4 +74,12 @@ public class LogTable extends Database {
                 preparedStatement.setString(1, logID);
                 return preparedStatement.executeQuery().next();
         }
+
+    public static boolean isProductPurchasedByCustomer(String productID, String customerUsername) throws SQLException, ClassNotFoundException {
+            String command = "SELECT * FROM Logs WHERE CustomerUsername = ? And ProductID = ?";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+            preparedStatement.setString(1, customerUsername);
+            preparedStatement.setString(2, productID);
+            return preparedStatement.executeQuery().next();
+    }
 }

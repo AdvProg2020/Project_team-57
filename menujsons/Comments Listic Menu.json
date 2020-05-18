@@ -1,6 +1,6 @@
 {
   "name" : "Comments Menu",
-  "parentName" : "Comment Menu",
+  "parentName" : "Comments Menu",
   "isThereParentMenu" : true,
   "processorName" : "ListicProcessor"
 }

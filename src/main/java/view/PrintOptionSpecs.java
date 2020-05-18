@@ -1,6 +1,7 @@
 package view;
 
 import controller.Control;
+import controller.account.CustomerControl;
 import controller.product.ProductControl;
 import model.existence.*;
 
@@ -721,6 +722,12 @@ public interface PrintOptionSpecs {
         printCustomLineForComment();
 
         printCustomStatusForComment(comment.getStatus());
+        printCustomLineForComment();
+        CustomerControl control = CustomerControl.getController();
+        String purchaseStat = "No \uD83D\uDE12";
+        if(control.isProductPurchasedByCustomer(comment.getProductID() ,comment.getCustomerUsername()))
+            purchaseStat = "Yes \uD83D\uDE0D";
+        System.out.format("| %-18s | %-35s | %n", "Has Bought", purchaseStat);
         printCustomLineForComment();
     }
 

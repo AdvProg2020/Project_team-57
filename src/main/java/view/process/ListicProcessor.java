@@ -201,9 +201,9 @@ public class ListicProcessor extends Processor {
             return ListicMenu.makeListicMenu("View Sell Log Products Listic Menu");
         }
         else if(parentMenu.getName().equals("Manage Comment Requests"))
-            return ListicOptionMenu.makeMenu("Admin Adding Comment Request Menu");
-        else if(parentMenu.getName().equals("Comment Menu"))
-            return ListicOptionMenu.makeMenu("Comment Menu");
+            return ListicOptionMenu.makeMenu("Admin Adding Comment Request Menu", parentMenu, primaryKey);
+        else if(parentMenu.getName().equals("Comments Menu"))
+            return ListicOptionMenu.makeMenu("Comment Menu", parentMenu, primaryKey);
         //TODO(OTHERS)
         return null;
     }
