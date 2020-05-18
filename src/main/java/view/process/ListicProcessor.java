@@ -194,6 +194,13 @@ public class ListicProcessor extends Processor {
         }
         else if(parentMenu.getName().equals("View Log Products"))
             return ListicOptionMenu.makeMenu("View Log Menu", parentMenu, primaryKey);
+        else if(parentMenu.getName().equals("View Sell Logs"))
+        {
+            AccountControl.setCurrentLogID(primaryKey);
+            return ListicMenu.makeListicMenu("View Sell Log Products Listic Menu");
+        }
+        else if(parentMenu.getName().equals("View Sell Log Products"))
+            return ListicOptionMenu.makeMenu();
         //TODO(OTHERS)
         return null;
     }
@@ -317,7 +324,21 @@ public class ListicProcessor extends Processor {
             initBuyLogs(listicMenu);
         else if(listicMenu.getName().equals("View Log Products"))
             initLogProducts(listicMenu);
+        else if(listicMenu.getName().equals("View Sell Logs"))
+            initSellLogs(listicMenu);
+        else if(listicMenu.getName().equals("Sell Log Products"))
+            initSellLogProducts(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initSellLogProducts(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(vendorControl.getAllLogProductNames());
+        listicMenu.setListicOptionPrimaryKeys(vendorControl.getAllLogProductIDs());
+    }
+
+    private static void initSellLogs(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(vendorControl.getAllVendorLogNames());
+        listicMenu.setListicOptionPrimaryKeys(vendorControl.getAllVendorLogIDs());
     }
 
     private static void initLogProducts(ListicMenu listicMenu) {

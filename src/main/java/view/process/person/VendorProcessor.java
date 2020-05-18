@@ -75,6 +75,12 @@ public class VendorProcessor extends AccountProcessor {
                 return confirmOff();
             }
         });
+        this.functionsHashMap.put("View Sell Logs", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return ListicMenu.makeListicMenu("View Sell Logs Listic Menu");
+            }
+        });
 
 
     }
