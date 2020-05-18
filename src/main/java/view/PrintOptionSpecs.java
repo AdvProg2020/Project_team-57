@@ -637,10 +637,11 @@ public interface PrintOptionSpecs {
         return arrayList.get(0);
     }
 
-    default void printProductOfLogSpecs(Object[] products) {
-        Product product = (Product) products[0];
-        Log.ProductOfLog productOfLog = (Log.ProductOfLog) products[1];
-        Integer score = (Integer) products[2];
+    default void printProductOfLogSpecs(Object[] LogPackage) {
+        Product product = (Product) LogPackage[0];
+        Log.ProductOfLog productOfLog = (Log.ProductOfLog) LogPackage[1];
+        String customerUserName = (String) LogPackage[2];
+        Integer score = (Integer) LogPackage[3];
 
         printCustomLineForProduct();
 
@@ -650,7 +651,11 @@ public interface PrintOptionSpecs {
         printWithNullCheckingForProduct("Brand Name", product.getBrand());
         this.printCustomLineForProduct();
 
-        printWithNullCheckingForProduct("Seller Name", product.getSellerUserName());
+        if(Control.getType().equals("Customer"))
+            printWithNullCheckingForProduct("Seller Name", product.getSellerUserName());
+        else if(Control.getType().equals("Vendor"))
+            printWithNullCheckingForProduct("Buyer Name", customerUserName);
+
         this.printCustomLineForProduct();
 
         printCustomCountForProductOfLog(productOfLog);
@@ -662,7 +667,9 @@ public interface PrintOptionSpecs {
         printCustomPriceForProductOfLog(productOfLog);
         this.printCustomLineForProduct();
 
-        printCustomScoreForProductOfLog(score);
+        if(Control.getType().equals("Customer"))
+            printCustomScoreForProductOfLog(score);
+
         this.printCustomLineForProduct();
 
     }
