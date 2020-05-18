@@ -1,10 +1,8 @@
 package controller.account;
 
 import controller.Control;
-import model.db.CategoryTable;
-import model.db.OffTable;
-import model.db.ProductTable;
-import model.db.VendorTable;
+import model.db.*;
+import model.existence.Log;
 import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
@@ -287,5 +285,63 @@ public class VendorControl extends AccountControl{
             e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;
+    }
+
+    public ArrayList<String> getALlVendorLogsName() {
+        try {
+            ArrayList<String> allLogsName = new ArrayList<>();
+            for (Log log : LogTable.getAllVendorLogs(Control.getUsername())) {
+                java.util.Date date = new java.util.Date(log.getDate().getTime());
+                allLogsName.add(date.toString());
+            }
+            return allLogsName;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ArrayList<Product> getAllProductsInSpecificLog() {
+        try {
+            ArrayList<Product> allProducts = new ArrayList<>();
+            for (Log.ProductOfLog product : LogTable.getVendorLogByID(getCurrentLogID(), Control.getUsername()).getAllProducts()) {
+                allProducts.add(ProductTable.getProductByID(product.getProductID()));
+            }
+            return allProducts;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ArrayList<String> getAllProductsNamesInSpecificLog() {
+        ArrayList<String> allNames = new ArrayList<>();
+        for (Product product : getAllProductsInSpecificLog()) {
+            allNames.add(product.getName());
+        }
+        return allNames;
+    }
+
+    public ArrayList<String> getAllProductsIdsInSpecificLog(){
+        ArrayList<String> allIDs = new ArrayList<>();
+        for (Product product : getAllProductsInSpecificLog()) {
+            allIDs.add(product.getID());
+        }
+        return allIDs;
+    }
+
+    public String getCustomerName(){
+        try {
+            return LogTable.getVendorLogByID(getCurrentLogID(), Control.getUsername()).getCustomerName();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
