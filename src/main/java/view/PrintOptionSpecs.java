@@ -28,6 +28,8 @@ public interface PrintOptionSpecs {
             printComparingSpecs((Product[]) option);
         } else if(option instanceof Object[]) {
             printProductOfLogSpecs((Object[]) option);
+        } else if(option instanceof Comment) {
+            printCommentSpecs((Comment) option);
         }
     }
 
@@ -704,5 +706,98 @@ public interface PrintOptionSpecs {
         } else {
             System.out.format("| %-20s | %-35d | %n", "Your Score", score);
         }
+    }
+
+    default void printCommentSpecs(Comment comment) {
+        printCustomLineForComment();
+
+        printWithNullCheckingForComment("Customer Name", comment.getCustomerUsername());
+        printCustomLineForComment();
+
+        printWithNullCheckingForComment("Title", comment.getTitle());
+        printCustomLineForComment();
+
+        printCustomContentForComment(comment.getContent());
+        printCustomLineForComment();
+
+        printCustomStatusForComment(comment.getStatus());
+        printCustomLineForComment();
+    }
+
+    default void printCustomLineForComment(){
+        System.out.println("+--------------------+-------------------------------------+");
+    }
+
+    default void printWithNullCheckingForComment(String fieldName, String fieldValue){
+        if(fieldValue == null)
+            System.out.format("| %-18s | %-35s | %n", fieldName, "Not Assigned");
+        else
+            System.out.format("| %-18s | %-35s | %n", fieldName, fieldValue);
+    }
+
+    default void printCustomStatusForComment(int status) {
+        switch (status) {
+            case 0:
+                System.out.format("| %-18s | %-35s | %n", "Status", "Not Assigned");
+                break;
+            case 1:
+                System.out.format("| %-18s | %-35s | %n", "Status", "Approved");
+                break;
+            case 2:
+                System.out.format("| %-18s | %-35s | %n", "Status", "Waiting For Approval");
+                break;
+            case 3:
+                System.out.format("| %-18s | %-35s | %n", "Status", "Removed Because Of Policy");
+                break;
+            default:
+                System.out.println("What The Fuck ? Error In Off Printing");
+        }
+    }
+
+    default void printCustomContentForComment(String content){
+        if(content != null) {
+            ArrayList<String> splitComment = splitContentForComment(content);
+
+            for(int i = 0; i < splitComment.size(); i++){
+                if(i == 0)
+                    System.out.format("| %-18s | %-35s | %n", "Content", splitComment.get(i));
+                else
+                    System.out.format("| %-18s | %-35s | %n", "", splitComment.get(i));
+            }
+        } else {
+            System.out.format("| %-18s | %-35s | %n", "Content", "Not Assigned");
+        }
+    }
+
+    default ArrayList<String> splitContentForComment(String content) {
+        ArrayList<String> splitContent = new ArrayList<>();
+
+        if(content == null)
+            return new ArrayList<String>();
+
+        if(content.length() > 35) {
+            Character[] splitCharacters = new Character[] {' ', '\t', '.', ',', '!', '\n'};
+            ArrayList<Character> characters = new ArrayList<>(Arrays.asList(splitCharacters));
+
+            int splitIndex = 0;
+
+            for(int i = 34; i > 0; i--) {
+                if(characters.contains(content.charAt(i))) {
+                    splitIndex = i;
+                    break;
+                }
+            }
+
+            if(splitIndex == 0)
+                splitIndex = 34;
+
+            splitContent.add(content.substring(0, splitIndex + 1));
+            splitContent.addAll(splitDescriptionForProduct(content.substring(splitIndex + 1)));
+
+        } else {
+            splitContent.add(content);
+        }
+
+        return splitContent;
     }
 }
