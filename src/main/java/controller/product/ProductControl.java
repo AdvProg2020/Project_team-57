@@ -528,4 +528,40 @@ public class ProductControl extends Control {
         return commentID.toString();
     }
 
+    public ArrayList<String> getShowingCommentTitles(){
+        ArrayList<String> allShowingCommentTitles = new ArrayList<>();
+        try {
+            for (Comment comment : ProductTable.getAllLoggedInUserComment(Control.getUsername(), getCurrentProduct())) {
+                allShowingCommentTitles.add(comment.getTitle());
+            }
+            for (Comment comment : ProductTable.getAllApprovedCommentsOnThisProduct(getCurrentProduct())) {
+                allShowingCommentTitles.add(comment.getTitle());
+            }
+            return allShowingCommentTitles;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public ArrayList<String> getShowingCommentIDs(){
+        ArrayList<String> allShowingCommentIDs = new ArrayList<>();
+        try {
+            for (Comment comment : ProductTable.getAllLoggedInUserComment(Control.getUsername(), getCurrentProduct())) {
+                allShowingCommentIDs.add(comment.getCommentID());
+            }
+            for (Comment comment : ProductTable.getAllApprovedCommentsOnThisProduct(getCurrentProduct())) {
+                allShowingCommentIDs.add(comment.getCommentID());
+            }
+            return allShowingCommentIDs;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
 }
