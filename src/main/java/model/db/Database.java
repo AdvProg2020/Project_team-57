@@ -98,7 +98,9 @@ public class Database {
                     "DiscountPercent double(100)," +
                     "Status int," +
                     "LogID varchar(16)," +
-                    "IsCountable BIT);");
+                    "IsCountable BIT," +
+                    "VendorUsername varchar(16)" +
+                    ");");
         }
         statement.close();
         resultSet.close();

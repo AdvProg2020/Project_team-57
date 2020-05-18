@@ -551,9 +551,11 @@ public class CustomerControl extends AccountControl{
         try {
             if (ProductTable.didScore(Control.getUsername(), productID)){
                 ProductTable.updateScore(Control.getUsername(), productID, score);
+                ProductTable.updateProductsAvgScore(productID);
                 return Notification.UPDATE_SCORE;
             }
             ProductTable.setScore(Control.getUsername(), productID, score);
+            ProductTable.updateProductsAvgScore(productID);
             return Notification.SET_SCORE;
         } catch (SQLException e) {
             e.printStackTrace();

@@ -203,5 +203,21 @@ public class ProductTable extends Database {
         preparedStatement.setInt(3, score);
         preparedStatement.execute();
     }
+
+    public static void updateProductsAvgScore(String productID) throws SQLException, ClassNotFoundException {
+        double avgSc = 0;
+        int size = 0;
+        for (Integer score : getAllScores(productID)) {
+            ++size;
+            avgSc += score;
+        }
+        avgSc /= size;
+        String command = "UPDATE Products SET AverageScore = ? WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setDouble(1, avgSc);
+        preparedStatement.setString(2, productID);
+        preparedStatement.execute();
+    }
+
 }
 

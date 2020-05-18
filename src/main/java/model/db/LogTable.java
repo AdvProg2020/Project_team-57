@@ -17,7 +17,7 @@ public class LogTable extends Database {
 
         public static void addLog(Log log) throws SQLException, ClassNotFoundException {
                 String command = "INSERT INTO Logs(ProductId, CustomerUsername, Count, Amount, InitPrice, OffPrice," +
-                        "Date, DiscountPercent, Status, LogID, IsCountable) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                        "Date, DiscountPercent, Status, LogID, IsCountable, VendorUsername) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
                 for (Log.ProductOfLog product : log.getAllProducts()) {
                         preparedStatement.setString(1, product.getProductID());
@@ -31,6 +31,7 @@ public class LogTable extends Database {
                         preparedStatement.setInt(9, log.getStatus());
                         preparedStatement.setString(10, log.getLogID());
                         preparedStatement.setBoolean(11, product.isCountable());
+                        preparedStatement.setString(12, product.getVendorUsername());
                         preparedStatement.execute();
                 }
         }

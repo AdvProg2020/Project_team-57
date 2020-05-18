@@ -27,12 +27,12 @@ public class Log {
             this.status = resultSet.getInt("Status");
             allProducts.add(new ProductOfLog(resultSet.getString("ProductID"),resultSet.getBoolean("IsCountable"),
                     resultSet.getInt("Count"), resultSet.getDouble("Amount"),
-                    resultSet.getDouble("InitPrice"), resultSet.getDouble("OffPrice")));
+                    resultSet.getDouble("InitPrice"), resultSet.getDouble("OffPrice"), resultSet.getString("VendorUsername")));
         }
         while (resultSet.next()){
             allProducts.add(new ProductOfLog(resultSet.getString("ProductID"),resultSet.getBoolean("IsCountable"),
                     resultSet.getInt("Count"), resultSet.getDouble("Amount"),
-                    resultSet.getDouble("InitPrice"), resultSet.getDouble("OffPrice")));
+                    resultSet.getDouble("InitPrice"), resultSet.getDouble("OffPrice"), resultSet.getString("VendorUsername")));
         }
     }
 
@@ -44,21 +44,24 @@ public class Log {
         this.allProducts.addAll(allProducts);
     }
 
+    //Start Inner Class
     public static class ProductOfLog{
         private String productID;
+        private String vendorUsername;
         private int count;
         private double amount;
         private double initPrice;
         private double offPrice;
         private boolean isCountable;
 
-        public ProductOfLog(String productID,boolean isCountable, int count, double amount, double initPrice, double offPrice) {
+        public ProductOfLog(String productID,boolean isCountable, int count, double amount, double initPrice, double offPrice, String vendorUsername) {
             this.productID = productID;
             this.isCountable = isCountable;
             this.count = count;
             this.amount = amount;
             this.initPrice = initPrice;
             this.offPrice = offPrice;
+            this.vendorUsername = vendorUsername;
         }
 
         public ProductOfLog(Product product) throws SQLException, ClassNotFoundException {
@@ -67,6 +70,7 @@ public class Log {
             this.count = product.getCount();
             this.amount = product.getAmount();
             this.initPrice = product.getPrice();
+            this.vendorUsername = product.getSellerUserName();
             if(OffTable.isThereProductInOff(product.getID())) {
                 this.offPrice = (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100)) * product.getPrice();
             } else {
@@ -125,7 +129,16 @@ public class Log {
         public void setOffPrice(double offPrice) {
             this.offPrice = offPrice;
         }
+
+        public String getVendorUsername() {
+            return vendorUsername;
+        }
+
+        public void setVendorUsername(String vendorUsername) {
+            this.vendorUsername = vendorUsername;
+        }
     }
+    //End Inner Class
 
     public String getLogID() {
         return logID;

@@ -153,7 +153,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
             Object[] objects = new Object[3];
             objects[0] = productControl.getProductById(ID);
             objects[1] = customerControl.getProductOfLog(ID);
-            objects[2] = productControl.getProductScoreByID(ID);
+            objects[2] = customerControl.getScore(ID);
             productMenu.setOption(objects);
         } else {
             //System.out.println("Step 2 " + productMenu.getName());
@@ -379,13 +379,14 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         int score = 0;
         boolean flag = true;
 
-        while (true) {
+        while (flag) {
             try {
                 System.out.println("Please Enter The Score :");
+                System.out.println("Score Must Be Between 0 & 5");
                 score = Integer.parseInt(scanner.nextLine().trim());
 
                 if (score < 0 || score > 5)
-                    System.out.println("Score Must Be Between 0 & 5");
+                    System.out.println("!Wrong Score!");
                 else
                     flag = false;
             } catch (NumberFormatException e) {
@@ -395,7 +396,8 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
             }
         }
 
-        System.out.println(productControl.setScore(product.getID(), score).getMessage());
+        System.out.println(customerControl.setScore(product.getID(), score).getMessage());
+        products[2] = customerControl.getScore(product.getID());
         return menu;
     }
 }
