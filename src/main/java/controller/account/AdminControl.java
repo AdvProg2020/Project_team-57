@@ -2,11 +2,8 @@ package controller.account;
 
 
 import model.db.*;
-import model.existence.Discount;
-import model.existence.Off;
-import model.existence.Product;
+import model.existence.*;
 import notification.Notification;
-import model.existence.Category;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -487,7 +484,7 @@ public class AdminControl extends AccountControl{
             if(isAccepted)
             {
                 OffTable.removeOffByID(editingOff.getOffID());
-                editingOff.setStatus(1);
+                editingOff.setStatus(2);
                 OffTable.addOff(editingOff);
                 OffTable.removeEditingOff(editingOff.getOffID());
                 return Notification.OFF_EDITING_ACCEPTED;
@@ -496,6 +493,52 @@ public class AdminControl extends AccountControl{
                 OffTable.changeOffStatus(offID, 1);
                 return Notification.OFF_EDITING_DECLINED;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
+    }
+
+    public ArrayList<String> getAllUnApprovedCommentTitles(){
+        try {
+            ArrayList<String> allUnApprovedCommentTitles = new ArrayList<>();
+            for (Comment unApprovedComment : ProductTable.getAllUnApprovedComments()) {
+                allUnApprovedCommentTitles.add(unApprovedComment.getTitle());
+            }
+            return allUnApprovedCommentTitles;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public ArrayList<String> getAllUnApprovedCommentIDs(){
+        try {
+            ArrayList<String> allUnApprovedCommentIDs = new ArrayList<>();
+            for (Comment unApprovedComment : ProductTable.getAllUnApprovedComments()) {
+                allUnApprovedCommentIDs.add(unApprovedComment.getCommentID());
+            }
+            return allUnApprovedCommentIDs;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public Notification modifyCommentApproval(String commentID, boolean flag){
+        try {
+            if (flag){
+                ProductTable.modifyCommentApproval(commentID, 1);
+                return Notification.ACCEPTING_COMMENT;
+            }
+            ProductTable.modifyCommentApproval(commentID, 3);
+            return Notification.DECLINE_COMMENT;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

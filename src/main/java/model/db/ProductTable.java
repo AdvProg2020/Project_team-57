@@ -240,5 +240,50 @@ public class ProductTable extends Database {
         return preparedStatement.executeQuery().next();
     }
 
+    public static ArrayList<Comment> getAllUnApprovedComments() throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Comments WHERE Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, 2);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<Comment> allUnApprovedComments = new ArrayList<>();
+        while (resultSet.next()){
+            allUnApprovedComments.add(new Comment(resultSet));
+        }
+        return allUnApprovedComments;
+    }
+
+    public static void modifyCommentApproval(String commentID, int status) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Comments SET Status = ? WHERE CommentID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, status);
+        preparedStatement.setString(2, command);
+        preparedStatement.execute();
+    }
+
+    public static ArrayList<Comment> getAllLoggedInUserComment(String username, String currentProduct) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Comments WHERE ProductID = ? AND CustomerUsername = ? AND Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, currentProduct);
+        preparedStatement.setString(2, username);
+        preparedStatement.setInt(3,2);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<Comment> comments = new ArrayList<>();
+        while (resultSet.next()){
+            comments.add(new Comment(resultSet));
+        }
+        return comments;
+    }
+
+    public static ArrayList<Comment> getAllApprovedCommentsOnThisProduct(String currentProduct) throws SQLException, ClassNotFoundException {
+        String comment = "SELECT * FROM Comments WHERE Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(comment);
+        preparedStatement.setInt(1,1);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<Comment> comments = new ArrayList<>();
+        while (resultSet.next()){
+            comments.add(new Comment(resultSet));
+        }
+        return comments;
+    }
 }
 

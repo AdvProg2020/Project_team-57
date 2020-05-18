@@ -1,5 +1,8 @@
 package model.existence;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class Comment {
     private String commentID;
     private String productID;
@@ -8,12 +11,13 @@ public class Comment {
     private String content;
     private int status;
 
-    public Comment(String commentID, String customerUsername, String title, String content, int status) {
-        this.commentID = commentID;
-        this.customerUsername = customerUsername;
-        this.title = title;
-        this.content = content;
-        this.status = status;
+    public Comment(ResultSet resultSet) throws SQLException {
+        this.commentID = resultSet.getString("CommentID");
+        this.customerUsername = resultSet.getString("CustomerUsername");
+        this.title = resultSet.getString("Title");
+        this.content = resultSet.getString("Content");
+        this.status = resultSet.getInt("Status");
+        this.productID = resultSet.getString("ProductID");
     }
 
     public Comment() {
