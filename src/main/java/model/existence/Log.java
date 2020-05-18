@@ -1,6 +1,7 @@
 package model.existence;
 
 import model.db.OffTable;
+import model.db.ProductTable;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -199,15 +200,17 @@ public class Log {
     public double getFinalPrice(){
         double finalPrice = 0;
         for (ProductOfLog productOfLog : allProducts) {
-            finalPrice += productOfLog.getOffPrice();
+            finalPrice += productOfLog.getOffPrice() * productOfLog.getCount();
+            finalPrice += productOfLog.getOffPrice() * productOfLog.getAmount();
         }
         return (finalPrice * (100 - this.discountPercent))/100;
     }
 
-    public double getVendorFinalPrice(){
+    public double getVendorFinalPrice() {
         double finalPrice = 0;
         for (ProductOfLog productOfLog : allProducts) {
-            finalPrice += productOfLog.getOffPrice();
+            finalPrice += productOfLog.getOffPrice() * productOfLog.getAmount();
+            finalPrice += productOfLog.getOffPrice() * productOfLog.getCount();
         }
         return finalPrice;
     }

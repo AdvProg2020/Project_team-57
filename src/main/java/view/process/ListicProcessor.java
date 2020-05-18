@@ -17,6 +17,7 @@ import view.menu.Menu;
 import view.process.person.AdminProcessor;
 import view.process.person.VendorProcessor;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -192,30 +193,38 @@ public class ListicProcessor extends Processor {
             AccountControl.setCurrentLogID(primaryKey);
             return ListicMenu.makeListicMenu("View Log Products Listic Menu");
         }
-        else if(parentMenu.getName().equals("View Log Products"))
+        else if(parentMenu.getName().equals("View Log Products") || parentMenu.getName().equals("View Sell Log Products"))
             return ListicOptionMenu.makeMenu("View Log Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("View Sell Logs"))
         {
             AccountControl.setCurrentLogID(primaryKey);
             return ListicMenu.makeListicMenu("View Sell Log Products Listic Menu");
         }
-        else if(parentMenu.getName().equals("View Sell Log Products"))
-            return ListicOptionMenu.makeMenu();
         //TODO(OTHERS)
         return null;
     }
 
     public Menu showLogStat() {
-        Log log = customerControl.getCurrentLog();
+        Log log = null;
+        if(Control.getType().equals("Customer"))
+            log = customerControl.getCurrentLog();
+        else
+            log = vendorControl.getCurrentLog();
         System.out.println("0. Back");
         System.out.println(new Date(log.getDate().getTime()).toString() + ":");
-        if(log.getDiscountPercent() != 0)
+        if(Control.getType().equals("Customer"))
         {
-            System.out.println("Discount Code Percent : " + log.getDiscountPercent());
+            if(log.getDiscountPercent() != 0)
+            {
+                System.out.println("Discount Code Percent : " + log.getDiscountPercent());
+            }
+            else
+                System.out.println("No Discount Code Used");
+            System.out.println("Final Total Price: " + log.getFinalPrice());
         }
-        else
-            System.out.println("No Discount Code Used");
-        System.out.println("Final Total Price: " + log.getFinalPrice());
+        else {
+            System.out.println("Final Total Price: " + log.getVendorFinalPrice());
+        }
         String stat = "";
         switch (log.getStatus())
         {
@@ -233,8 +242,11 @@ public class ListicProcessor extends Processor {
         System.out.println("Shopping Status: " + stat);
         while (true)
         {
-            if(scanner.nextLine().trim().equals("0"))
-                return ListicMenu.makeListicMenu("View Log Products Listic Menu");
+            if(scanner.nextLine().trim().equals("0")) {
+                if(Control.getType().equals("Customer"))
+                    return ListicMenu.makeListicMenu("View Log Products Listic Menu");
+                return ListicMenu.makeListicMenu("View Sell Log Products Listic Menu");
+            }
             System.out.println("Invalid Input Dude \uD83D\uDE32");
         }
     }
@@ -326,19 +338,19 @@ public class ListicProcessor extends Processor {
             initLogProducts(listicMenu);
         else if(listicMenu.getName().equals("View Sell Logs"))
             initSellLogs(listicMenu);
-        else if(listicMenu.getName().equals("Sell Log Products"))
+        else if(listicMenu.getName().equals("View Sell Log Products"))
             initSellLogProducts(listicMenu);
         //TODO(OTHERS)
     }
 
     private static void initSellLogProducts(ListicMenu listicMenu) {
-        listicMenu.setListicOptionNames(vendorControl.getAllLogProductNames());
-        listicMenu.setListicOptionPrimaryKeys(vendorControl.getAllLogProductIDs());
+        listicMenu.setListicOptionNames(vendorControl.getAllProductsNamesInSpecificLog());
+        listicMenu.setListicOptionPrimaryKeys(vendorControl.getAllProductsIdsInSpecificLog());
     }
 
     private static void initSellLogs(ListicMenu listicMenu) {
-        listicMenu.setListicOptionNames(vendorControl.getAllVendorLogNames());
-        listicMenu.setListicOptionPrimaryKeys(vendorControl.getAllVendorLogIDs());
+        listicMenu.setListicOptionNames(vendorControl.getALlVendorLogsName());
+        listicMenu.setListicOptionPrimaryKeys(vendorControl.getALlVendorLogsID());
     }
 
     private static void initLogProducts(ListicMenu listicMenu) {

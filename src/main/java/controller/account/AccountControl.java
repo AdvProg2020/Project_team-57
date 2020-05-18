@@ -250,7 +250,7 @@ public class AccountControl extends Control implements IOValidity {
 
     public Log.ProductOfLog getProductOfLog(String productID){
         try {
-            for (Log.ProductOfLog productOfLog : LogTable.getLogByID(getCurrentLogID()).getAllProducts()) {
+            for (Log.ProductOfLog productOfLog : LogTable.getCustomerLogByID(getCurrentLogID()).getAllProducts()) {
                 if (productID.equals(productOfLog.getProductID()))
                     return productOfLog;
             }

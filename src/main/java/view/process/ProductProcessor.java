@@ -155,7 +155,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
             Object[] objects = new Object[4];
             objects[0] = productControl.getProductById(ID);
             objects[1] = customerControl.getProductOfLog(ID);
-            objects[2] = vendorControl.getCustomerByID();
+            objects[2] = vendorControl.getCustomerName();
             objects[3] = customerControl.getScore(ID);
             productMenu.setOption(objects);
         } else {

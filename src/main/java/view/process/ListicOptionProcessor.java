@@ -184,7 +184,8 @@ public class ListicOptionProcessor extends Processor{
         allProductMenuNames.add("Off Product Menu2");
         allProductMenuNames.add("Vendor Product Menu");
         allProductMenuNames.add("Non Logged In Product Menu");
-        allProductMenuNames.add("View Log Menu");
+        allProductMenuNames.add("View Buying Log Menu");
+        allProductMenuNames.add("View Selling Log Menu");
         return allProductMenuNames;
     }
 

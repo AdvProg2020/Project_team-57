@@ -496,7 +496,7 @@ public class CustomerControl extends AccountControl{
     public ArrayList<String> getProductOfLogNames() {
         try {
             ArrayList<String> allProductOfLogNames = new ArrayList<>();
-            for (Log.ProductOfLog productOfLog : LogTable.getLogByID(getCurrentLogID()).getAllProducts()) {
+            for (Log.ProductOfLog productOfLog : LogTable.getCustomerLogByID(getCurrentLogID()).getAllProducts()) {
                 allProductOfLogNames.add(ProductTable.getProductByID(productOfLog.getProductID()).getName());
             }
             return allProductOfLogNames;
@@ -511,7 +511,7 @@ public class CustomerControl extends AccountControl{
     public ArrayList<String> getProductOfLogIDs() {
         try {
             ArrayList<String> allProductOfLogIDs = new ArrayList<>();
-            for (Log.ProductOfLog productOfLog : LogTable.getLogByID(getCurrentLogID()).getAllProducts()) {
+            for (Log.ProductOfLog productOfLog : LogTable.getCustomerLogByID(getCurrentLogID()).getAllProducts()) {
                 allProductOfLogIDs.add(productOfLog.getProductID());
             }
             return allProductOfLogIDs;
@@ -525,7 +525,7 @@ public class CustomerControl extends AccountControl{
 
     public Log getCurrentLog(){
         try {
-            return LogTable.getLogByID(getCurrentLogID());
+            return LogTable.getCustomerLogByID(getCurrentLogID());
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

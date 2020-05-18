@@ -2,6 +2,7 @@ package controller.account;
 
 import controller.Control;
 import model.db.*;
+import model.existence.Account;
 import model.existence.Log;
 import model.existence.Off;
 import model.existence.Product;
@@ -303,6 +304,21 @@ public class VendorControl extends AccountControl{
         return null;
     }
 
+    public ArrayList<String> getALlVendorLogsID() {
+        try {
+            ArrayList<String> allLogsID = new ArrayList<>();
+            for (Log log : LogTable.getAllVendorLogs(Control.getUsername())) {
+                allLogsID.add(log.getLogID());
+            }
+            return allLogsID;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public ArrayList<Product> getAllProductsInSpecificLog() {
         try {
             ArrayList<Product> allProducts = new ArrayList<>();
@@ -337,6 +353,17 @@ public class VendorControl extends AccountControl{
     public String getCustomerName(){
         try {
             return LogTable.getVendorLogByID(getCurrentLogID(), Control.getUsername()).getCustomerName();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Log getCurrentLog() {
+        try {
+            return LogTable.getVendorLogByID(AccountControl.getCurrentLogID(), Control.getUsername());
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

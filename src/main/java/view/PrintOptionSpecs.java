@@ -667,10 +667,10 @@ public interface PrintOptionSpecs {
         printCustomPriceForProductOfLog(productOfLog);
         this.printCustomLineForProduct();
 
-        if(Control.getType().equals("Customer"))
+        if(Control.getType().equals("Customer")) {
             printCustomScoreForProductOfLog(score);
-
-        this.printCustomLineForProduct();
+            this.printCustomLineForProduct();
+        }
 
     }
 

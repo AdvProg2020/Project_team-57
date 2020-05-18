@@ -1,6 +1,6 @@
 {
   "name" : "View Sell Log Products",
-  "parentName" : "View Buy Logs Listic Menu",
+  "parentName" : "View Sell Logs Listic Menu",
   "isThereParentMenu" : true,
   "processorName" : "ListicProcessor",
   "options" : [
