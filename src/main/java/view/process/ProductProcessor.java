@@ -37,6 +37,14 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
                 return editProduct(objects);
             }
         });
+        functionsHashMap.put("View Buyers", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                comparisonParentMenu = (ListicOptionMenu) objects[0];
+                vendorControl.setCurrentProduct(((Product) objects[1]).getID());
+                return Menu.makeMenu("View Buyers Menu");
+            }
+        });
         functionsHashMap.put("Accept Adding Product", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
@@ -168,7 +176,18 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
                 return ListicMenu.makeListicMenu("Manage Comments Listic Menu");
             }
         });
-
+        functionsHashMap.put("View Buyer Names", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return ListicMenu.makeListicMenu("View Buyers Listic Menu");
+            }
+        });
+        functionsHashMap.put("View Sale Status", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return viewSaleStatus();
+            }
+        });
     }
 
     public static ProductProcessor getInstance(){
@@ -466,6 +485,11 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         }
 
         return Menu.makeMenu("Comments Menu");
+    }
+
+    public Menu viewSaleStatus() {
+
+        return Menu.makeMenu("View Buyers Menu");
     }
 
 }

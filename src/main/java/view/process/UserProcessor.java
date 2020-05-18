@@ -55,7 +55,10 @@ public class UserProcessor extends ListicOptionProcessor {
     }
 
     public static void setMenu(ListicOptionMenu userMenu, String ID){
-        userMenu.setOption(accountControl.getAccountByUsername(ID));
+        if(userMenu.getName().equals("View Buyers Account"))
+            userMenu.setOption(new Account.AccountOfBuyer(accountControl.getAccountByUsername(ID)));
+        else
+            userMenu.setOption(accountControl.getAccountByUsername(ID));
     }
 
     public Menu acceptRequest(Object... objects){

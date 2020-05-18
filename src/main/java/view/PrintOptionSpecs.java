@@ -9,12 +9,13 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.SplittableRandom;
 
 public interface PrintOptionSpecs {
     default void printOptionSpecs(Object option) {
         if(option instanceof Account) {
             printAccountSpecs((Account) option);
+        } else if(option instanceof Account.AccountOfBuyer) {
+            printAccountOfBuyerSpecs((Account.AccountOfBuyer) option);
         } else if(option instanceof Product) {
             printProductSpecs((Product) option);
         } else if(option instanceof Category) {
@@ -75,6 +76,22 @@ public interface PrintOptionSpecs {
 
     default void printCustomLineForAccount(){
         System.out.println("+-----------------+-------------------------------------+");
+    }
+
+    default void printAccountOfBuyerSpecs(Account.AccountOfBuyer accountOfBuyer) {
+        printCustomLineForAccount();
+
+        printWithNullCheckingForAccount("User Name", accountOfBuyer.getUserName());
+        printCustomLineForAccount();
+
+        printWithNullCheckingForAccount("First Name", accountOfBuyer.getLastName());
+        printCustomLineForAccount();
+
+        printWithNullCheckingForAccount("Last Name", accountOfBuyer.getLastName());
+        printCustomLineForAccount();
+
+        printWithNullCheckingForAccount("Email", accountOfBuyer.getEmail());
+        printCustomLineForAccount();
     }
 
     default void printProductSpecs(Product product){

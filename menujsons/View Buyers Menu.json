@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "View Buyer Names",
+    "View Sale Status"
+  ],
+  "name" : "View Buyers Menu",
+  "parentName" : "Product Menu",
+  "isThereParentMenu" : false,
+  "processorName" : "ProductProcessor"
+}

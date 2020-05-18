@@ -31,6 +31,57 @@ public class Account {
         this.password = password;
     }
 
+    //Inner Class Start
+    public static class AccountOfBuyer {
+        private String userName;
+        private String firstName;
+        private String lastName;
+        private String Email;
+
+        public AccountOfBuyer(Account account) {
+            this.userName = account.getUsername();
+            this.firstName = account.getFirstName();
+            this.lastName = account.getLastName();
+            this.Email = account.getEmail();
+        }
+
+        public AccountOfBuyer() {
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public String getEmail() {
+            return Email;
+        }
+
+        public void setEmail(String email) {
+            Email = email;
+        }
+    }
+    //Inner Class End
+
     public String getUsername() {
         return username;
     }
