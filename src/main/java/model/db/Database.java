@@ -33,10 +33,24 @@ public class Database {
         initOffTable(initConnection.createStatement());
         initEditingOffTable(initConnection.createStatement());
         initLogTable(initConnection.createStatement());
+        initScoreTable(initConnection.createStatement());
         removeTempAccountsFromCarts(initConnection);
 
         isDBInit = true;
         initConnection.close();
+    }
+
+    private static void initScoreTable(Statement statement) throws SQLException {
+        String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'Scores'";
+        ResultSet resultSet = statement.executeQuery(command);
+        if (!resultSet.next()){
+            statement.execute("CREATE TABLE Scores(" +
+                    "ProductID varchar(16)," +
+                    "CustomerUsername varchar(16)," +
+                    "Score int);");
+        }
+        statement.close();
+        resultSet.close();
     }
 
     private static void initEditingOffTable(Statement statement) throws SQLException {

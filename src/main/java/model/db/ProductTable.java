@@ -157,4 +157,51 @@ public class ProductTable extends Database {
         preparedStatement.setString(2, productID);
         preparedStatement.execute();
     }
+
+    public static ArrayList<Integer> getAllScores(String productID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Scores WHERE ProductID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<Integer> allScores = new ArrayList<>();
+        while (resultSet.next()) {
+            allScores.add(resultSet.getInt("Score"));
+        }
+        return allScores;
+    }
+
+    public static boolean didScore(String username, String productID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Scores WHERE CustomerUsername = ? AND ProductID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        preparedStatement.setString(2, productID);
+        return preparedStatement.executeQuery().next();
+    }
+
+    public static int getScore(String username, String productID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Scores WHERE CustomerUsername = ? AND ProductID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        preparedStatement.setString(2, productID);
+        return preparedStatement.executeQuery().getInt("Score");
+    }
+
+    public static void updateScore(String username, String productID, int score) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Scores SET Score = ? WHERE CustomerUsername = ? AND ProductID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, score);
+        preparedStatement.setString(2, username);
+        preparedStatement.setString(3, productID);
+        preparedStatement.execute();
+    }
+
+    public static void setScore(String username, String productID, int score) throws SQLException, ClassNotFoundException {
+        String command = "INSERT INTO Scores(ProductID, CustomerUsername, Score) VALUES(?,?,?)";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productID);
+        preparedStatement.setString(2, username);
+        preparedStatement.setInt(3, score);
+        preparedStatement.execute();
+    }
 }
+

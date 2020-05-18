@@ -95,7 +95,9 @@ public enum Notification {
     PURCHASED_SUCCESSFULLY("I Don't Know How I'm Going To Live With MySelf " +
             "\nIf I Don't Stay True To What I Believe. " +
             "\nDesmond T.Doss (Hacksaw Ridge)" +
-            "\nPurchased Successfully. 😐");
+            "\nPurchased Successfully. 😐"),
+    UPDATE_SCORE("Score updated successfully babe"),
+    SET_SCORE("Score done");
 
 
 

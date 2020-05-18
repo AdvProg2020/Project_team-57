@@ -533,4 +533,33 @@ public class CustomerControl extends AccountControl{
         }
         return new Log();
     }
+
+    public int getScore(String productID){
+        try {
+            if (ProductTable.didScore(Control.getUsername(), productID))
+                return ProductTable.getScore(Control.getUsername(), productID);
+            return -1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
+
+    public Notification setScore(String productID, int score){
+        try {
+            if (ProductTable.didScore(Control.getUsername(), productID)){
+                ProductTable.updateScore(Control.getUsername(), productID, score);
+                return Notification.UPDATE_SCORE;
+            }
+            ProductTable.setScore(Control.getUsername(), productID, score);
+            return Notification.SET_SCORE;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
+    }
 }

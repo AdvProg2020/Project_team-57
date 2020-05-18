@@ -464,4 +464,19 @@ public class ProductControl extends Control {
         }
         return comparingProductIDs;
     }
+
+    public double getAverageScore(String productID){
+        try {
+            double averageScore = 0;
+            for (Integer score : ProductTable.getAllScores(productID)) {
+                averageScore += score;
+            }
+            return averageScore/ProductTable.getAllScores(productID).size();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
 }
