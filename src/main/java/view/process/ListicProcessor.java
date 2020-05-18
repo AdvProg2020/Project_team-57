@@ -9,6 +9,7 @@ import controller.account.VendorControl;
 import controller.product.ProductControl;
 import model.existence.Account;
 import model.existence.Discount;
+import model.existence.Log;
 import model.existence.Off;
 import view.menu.ListicMenu;
 import view.menu.ListicOptionMenu;
@@ -16,6 +17,7 @@ import view.menu.Menu;
 import view.process.person.AdminProcessor;
 import view.process.person.VendorProcessor;
 
+import java.util.Date;
 import java.util.HashMap;
 
 public class ListicProcessor extends Processor {
@@ -100,6 +102,18 @@ public class ListicProcessor extends Processor {
                 return ListicMenu.makeListicMenu("View Cart Listic Menu");
             }
         });
+        this.functionsHashMap.put("View Discount Code Percent", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return showLogStat();
+            }
+        });
+        this.functionsHashMap.put("Show Log Status", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return showLogStat();
+            }
+        });
     }
 
     public static ListicProcessor getInstance()
@@ -169,22 +183,53 @@ public class ListicProcessor extends Processor {
             }
         }
         else if(parentMenu.getName().equals("Select Discount")) {
-            Discount discount = customerControl.getCustomerDiscountByID(primaryKey);
-            if(discount.getCustomersWithRepetition().get(Control.getUsername()) < discount.getMaxRepetition())
-            {
-                customerControl.setHasDiscount(true);
-                customerControl.setDiscount(primaryKey);
-                System.out.println(customerControl.purchase().getMessage());
-                return ListicMenu.makeListicMenu("View Cart Listic Menu");
-            }
-            else
-            {
-                System.out.println("You've Already Used This Discount Max Repetition");
-                return ListicMenu.makeListicMenu("Select Discount Listic Menu");
-            }
+            customerControl.setHasDiscount(true);
+            customerControl.setDiscount(primaryKey);
+            System.out.println(customerControl.purchase().getMessage());
+            return ListicMenu.makeListicMenu("View Cart Listic Menu");
         }
+        else if(parentMenu.getName().equals("View Buy Logs")) {
+            AccountControl.setCurrentLogID(primaryKey);
+            return ListicMenu.makeListicMenu("View Log Products Listic Menu");
+        }
+        else if(parentMenu.getName().equals("View Log Products"))
+            return ListicOptionMenu.makeMenu("View Log Menu", parentMenu, primaryKey);
         //TODO(OTHERS)
         return null;
+    }
+
+    public Menu showLogStat() {
+        Log log = customerControl.getCurrentLog();
+        System.out.println("0. Back");
+        System.out.println(new Date(log.getDate().getTime()).toString() + ":");
+        if(log.getDiscountPercent() != 0)
+        {
+            System.out.println("Discount Code Percent : " + log.getDiscountPercent());
+        }
+        else
+            System.out.println("No Discount Code Used");
+        System.out.println("Final Total Price: " + log.getFinalPrice());
+        String stat = "";
+        switch (log.getStatus())
+        {
+            case 1 :
+                stat = "Delivery Preparation";
+                break;
+            case 2 :
+                stat = "Sent";
+                break;
+            case 3 :
+                stat = "Delivered";
+                break;
+        }
+        //System.out.println("stat : " );
+        System.out.println("Shopping Status: " + stat);
+        while (true)
+        {
+            if(scanner.nextLine().trim().equals("0"))
+                return ListicMenu.makeListicMenu("View Log Products Listic Menu");
+            System.out.println("Invalid Input Dude \uD83D\uDE32");
+        }
     }
 
     public Menu addProduct(Object... objects)
@@ -268,7 +313,21 @@ public class ListicProcessor extends Processor {
             initOffs(listicMenu);
         else if(listicMenu.getName().equals("Comparison Products Menu"))
             initComparisonProducts(listicMenu);
+        else if(listicMenu.getName().equals("View Buy Logs"))
+            initBuyLogs(listicMenu);
+        else if(listicMenu.getName().equals("View Log Products"))
+            initLogProducts(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initLogProducts(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(customerControl.getProductOfLogNames());
+        listicMenu.setListicOptionPrimaryKeys(customerControl.getProductOfLogIDs());
+    }
+
+    private static void initBuyLogs(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(customerControl.getAllLogesNames());
+        listicMenu.setListicOptionPrimaryKeys(customerControl.getAllLogesIDs());
     }
 
     private static void initComparisonProducts(ListicMenu listicMenu) {

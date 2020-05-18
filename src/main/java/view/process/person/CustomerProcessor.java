@@ -8,6 +8,8 @@ import view.menu.ListicOptionMenu;
 import view.menu.Menu;
 import view.process.FunctioningOption;
 
+import java.util.List;
+
 public class CustomerProcessor extends AccountProcessor {
     private static CustomerControl customerControl = CustomerControl.getController();
     private static CustomerProcessor customerProcessor = null;
@@ -54,6 +56,12 @@ public class CustomerProcessor extends AccountProcessor {
             @Override
             public Menu doTheThing(Object... objects) {
                 return ListicMenu.makeMenu("Select Discount Listic Menu");
+            }
+        });
+        this.functionsHashMap.put("View Buy Logs", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return ListicMenu.makeListicMenu("View Buy Logs Listic Menu");
             }
         });
 
