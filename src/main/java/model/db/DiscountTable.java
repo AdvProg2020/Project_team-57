@@ -1,7 +1,6 @@
 package model.db;
 
 import model.existence.Discount;
-import org.omg.CORBA.ARG_IN;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;

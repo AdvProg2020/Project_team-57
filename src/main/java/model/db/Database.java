@@ -34,10 +34,27 @@ public class Database {
         initEditingOffTable(initConnection.createStatement());
         initLogTable(initConnection.createStatement());
         initScoreTable(initConnection.createStatement());
+        initCommentTable(initConnection.createStatement());
         removeTempAccountsFromCarts(initConnection);
 
         isDBInit = true;
         initConnection.close();
+    }
+
+    private static void initCommentTable(Statement statement) throws SQLException {
+        String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'Comments'";
+        ResultSet resultSet = statement.executeQuery(command);
+        if (!resultSet.next()){
+            statement.execute("CREATE TABLE Comments(" +
+                    "CommentID varchar(8)," +
+                    "ProductID varchar(8)," +
+                    "Title varchar(16)," +
+                    "Content varchar(100)," +
+                    "Status int," +
+                    "CustomerUsername varchar(16));");
+        }
+        statement.close();
+        resultSet.close();
     }
 
     private static void initScoreTable(Statement statement) throws SQLException {

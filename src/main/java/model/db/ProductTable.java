@@ -1,5 +1,6 @@
 package model.db;
 
+import model.existence.Comment;
 import model.existence.Product;
 
 import java.sql.Date;
@@ -217,6 +218,26 @@ public class ProductTable extends Database {
         preparedStatement.setDouble(1, avgSc);
         preparedStatement.setString(2, productID);
         preparedStatement.execute();
+    }
+
+    public static void addComment(Comment comment) throws SQLException, ClassNotFoundException {
+        String command = "INSERT INTO Comments(CommentID, ProductID, Title, Content, Status, CustomerUsername)" +
+                " VALUES(?,?,?,?,?,?)";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, comment.getCommentID());
+        preparedStatement.setString(2, comment.getProductID());
+        preparedStatement.setString(3, comment.getTitle());
+        preparedStatement.setString(4, comment.getContent());
+        preparedStatement.setInt(5, comment.getStatus());
+        preparedStatement.setString(6, comment.getCustomerUsername());
+        preparedStatement.execute();
+    }
+
+    public static boolean isThereCommentByID(String commentID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Comments WHERE CommentID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, commentID);
+        return preparedStatement.executeQuery().next();
     }
 
 }

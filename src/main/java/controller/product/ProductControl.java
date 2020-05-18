@@ -6,6 +6,7 @@ import model.db.EditingProductTable;
 import model.db.OffTable;
 import model.db.ProductTable;
 import model.existence.Category;
+import model.existence.Comment;
 import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
@@ -18,7 +19,17 @@ public class ProductControl extends Control {
     private static ProductControl productControl = null;
     private boolean isOffListic;
     private String listicOffID;
+    private String currentProduct;
     private Product[] comparingProducts = null;
+
+
+    public String getCurrentProduct() {
+        return currentProduct;
+    }
+
+    public void setCurrentProduct(String currentProduct) {
+        this.currentProduct = currentProduct;
+    }
 
     public Product[] getComparingProducts() {
         return comparingProducts;
@@ -471,7 +482,7 @@ public class ProductControl extends Control {
             for (Integer score : ProductTable.getAllScores(productID)) {
                 averageScore += score;
             }
-            return averageScore/ProductTable.getAllScores(productID).size();
+            return averageScore / ProductTable.getAllScores(productID).size();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -479,4 +490,42 @@ public class ProductControl extends Control {
         }
         return 1;
     }
+
+    public Notification addComment(String title, String content) {
+        if (title.length() > 16)
+            return Notification.ERROR_TITLE_LENGTH;
+        if (content.length() > 100)
+            return Notification.ERROR_COMMENT_LENGTH;
+        Comment comment = new Comment();
+        comment.setTitle(title);
+        comment.setContent(content);
+        comment.setStatus(1);
+        comment.setCustomerUsername(Control.getUsername());
+        comment.setProductID(this.currentProduct);
+        String commentID;
+        try {
+            do {
+                commentID = generateCommentID();
+            } while (ProductTable.isThereCommentByID(commentID));
+            comment.setCommentID(commentID);
+            ProductTable.addComment(comment);
+            return Notification.ADD_COMMENT;
+        } catch (SQLException e){
+            e.printStackTrace();
+        } catch (ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
+    }
+
+    private String generateCommentID() {
+        StringBuilder commentID = new StringBuilder("c");
+        char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
+
+        for (int i = 0; i < 7; ++i)
+            commentID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
+
+        return commentID.toString();
+    }
+
 }
