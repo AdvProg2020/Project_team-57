@@ -180,6 +180,10 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
 
     }
 
+    public static void setCommentMenu(ListicOptionMenu productMenu, String ID){
+        productMenu.setOption(productControl.getCommentByID(ID));
+    }
+
     public Menu editProduct(Object... objects){
         //Todo
         Object[] parameters = objects.clone();

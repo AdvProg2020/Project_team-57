@@ -14,6 +14,26 @@ public class ListicOptionProcessor extends Processor{
     private static CustomerControl customerControl = CustomerControl.getController();
     private static VendorControl vendorControl = VendorControl.getController();
 
+    private ArrayList<String> productMenuNames = getAllProductMenuNames();
+    private ArrayList<String> filteringMenuNames = getAllFilteringMenuNames();
+    private ArrayList<String> categoryMenuNames = getAllCategoryMenuNames();
+    private ArrayList<String> discountMenuNames = getAllDiscountMenuNames();
+    private ArrayList<String> offMenuNames = getAllOffMenuNames();
+    //private static ArrayList<String> userMenuNames = getAllUserMenuNames();
+    //private static ArrayList<String> productOfLogMenuNames = getAllProductOfLogMenuNames();
+    private ArrayList<String> commentMenuNames = getAllCommentMenuNames();
+
+    private ListicOptionProcessor() {
+        productMenuNames = getAllProductMenuNames();
+        filteringMenuNames = getAllFilteringMenuNames();
+        categoryMenuNames = getAllCategoryMenuNames();
+        discountMenuNames = getAllDiscountMenuNames();
+        offMenuNames = getAllOffMenuNames();
+        //userMenuNames = getAllUserMenuNames();
+        //productOfLogMenuNames = getAllProductOfLogMenuNames();
+        commentMenuNames = getAllCommentMenuNames();
+    }
+
     public static ListicOptionProcessor getInstance() {
         if(listicOptionProcessor == null)
             listicOptionProcessor = new ListicOptionProcessor();
@@ -21,7 +41,7 @@ public class ListicOptionProcessor extends Processor{
         return listicOptionProcessor;
     }
 
-    public static String setMenuName(String menuName, String optionID) {
+    public String setMenuName(String menuName, String optionID) {
 
         //TODO
         if(menuName.equals("Common Product Menu"))
@@ -37,7 +57,7 @@ public class ListicOptionProcessor extends Processor{
         return menuName;
     }
 
-    public static String setMenuNameForCommonProductMenu() {
+    public String setMenuNameForCommonProductMenu() {
         String menuName = null;
 
         if(Control.isLoggedIn() && (Control.getType().equals("Vendor") || Control.getType().equals("Admin"))) {
@@ -49,7 +69,7 @@ public class ListicOptionProcessor extends Processor{
         return menuName;
     }
 
-    public static String setMenuNameForFilteringCategoryMenu(String optionID) {
+    public String setMenuNameForFilteringCategoryMenu(String optionID) {
         String menuName = null;
 
         if(customerControl.isThereFilteringCategoryWithName(optionID))
@@ -62,7 +82,7 @@ public class ListicOptionProcessor extends Processor{
         return menuName;
     }
 
-    public static String setMenuNameForDiscountUserMenu(String userName) {
+    public String setMenuNameForDiscountUserMenu(String userName) {
         String menuName = null;
 
         if(AdminProcessor.isThereCustomerInDiscount(userName))
@@ -73,7 +93,7 @@ public class ListicOptionProcessor extends Processor{
         return menuName;
     }
 
-    public static String setMenuNameForOffProductMenu(String productID) {
+    public String setMenuNameForOffProductMenu(String productID) {
         String menuName = "";
 
         if(VendorProcessor.getOff().isThereProductInOff(productID))
@@ -84,7 +104,7 @@ public class ListicOptionProcessor extends Processor{
         return menuName;
     }
 
-    public static String setMenuNameForLogMenu() {
+    public String setMenuNameForLogMenu() {
         String menuName = null;
 
         if(Control.getType().equals("Customer"))
@@ -96,15 +116,7 @@ public class ListicOptionProcessor extends Processor{
     }
 
 
-    public static void setMenu(String menuName, ListicOptionMenu listicOptionMenu, String optionID) {
-        ArrayList<String> productMenuNames = getAllProductMenuNames();
-        ArrayList<String> filteringMenuNames = getAllFilteringMenuNames();
-        ArrayList<String> categoryMenuNames = getAllCategoryMenuNames();
-        ArrayList<String> discountMenuNames = getAllDiscountMenuNames();
-        ArrayList<String> offMenuNames = getAllOffMenuNames();
-        //ArrayList<String> userMenuNames = getAllUserMenuNames();
-        //ArrayList<String> productOfLogMenuNames = getAllProductOfLogMenuNames();
-
+    public void setMenu(String menuName, ListicOptionMenu listicOptionMenu, String optionID) {
         /*if(menuName.contains("Product")) {
             ProductProcessor.setMenu(listicOptionMenu, optionID);
         } else if(menuName.contains("Filtering")) {
@@ -129,6 +141,8 @@ public class ListicOptionProcessor extends Processor{
             DiscountProcessor.setMenu(listicOptionMenu, optionID);
         } else if(offMenuNames.contains(menuName)) {
             OffProcessor.setMenu(listicOptionMenu, optionID);
+        } else if(commentMenuNames.contains(menuName)) {
+            ProductProcessor.setCommentMenu(listicOptionMenu, optionID);
         } else {
             UserProcessor.setMenu(listicOptionMenu, optionID);
         }
@@ -141,7 +155,7 @@ public class ListicOptionProcessor extends Processor{
         return productOfLogMenuNames;
     }*/
 
-    private static ArrayList<String> getAllOffMenuNames() {
+    private ArrayList<String> getAllOffMenuNames() {
         ArrayList<String> offMenuNames = new ArrayList<>();
         offMenuNames.add("Edit Off Request Menu");
         offMenuNames.add("Add Off Request Menu");
@@ -149,20 +163,20 @@ public class ListicOptionProcessor extends Processor{
         return offMenuNames;
     }
 
-    private static ArrayList<String> getAllDiscountMenuNames() {
+    private ArrayList<String> getAllDiscountMenuNames() {
         ArrayList<String> discountMenuNames = new ArrayList<>();
         discountMenuNames.add("Customer View Discount Menu");
         discountMenuNames.add("View Discount Menu");
         return discountMenuNames;
     }
 
-    private static ArrayList<String> getAllCategoryMenuNames() {
+    private ArrayList<String> getAllCategoryMenuNames() {
         ArrayList<String> allCategoryMenuNames = new ArrayList<>();
         allCategoryMenuNames.add("Admin Category Menu");
         return allCategoryMenuNames;
     }
 
-    private static ArrayList<String> getAllFilteringMenuNames() {
+    private ArrayList<String> getAllFilteringMenuNames() {
         ArrayList<String> allFilteringMenuNames = new ArrayList<>();
         allFilteringMenuNames.add("Filtering Category Menu1");
         allFilteringMenuNames.add("Filtering Category Menu1");
@@ -170,7 +184,7 @@ public class ListicOptionProcessor extends Processor{
         return allFilteringMenuNames;
     }
 
-    private static ArrayList<String> getAllProductMenuNames() {
+    private ArrayList<String> getAllProductMenuNames() {
         ArrayList<String> allProductMenuNames = new ArrayList<>();
         allProductMenuNames.add("Add Product Request Menu");
         allProductMenuNames.add("Admin Product Menu");
@@ -186,7 +200,15 @@ public class ListicOptionProcessor extends Processor{
         allProductMenuNames.add("Non Logged In Product Menu");
         allProductMenuNames.add("View Buying Log Menu");
         allProductMenuNames.add("View Selling Log Menu");
+
         return allProductMenuNames;
     }
 
+    private ArrayList<String> getAllCommentMenuNames() {
+        ArrayList<String> allCommentMenuNames = new ArrayList<>();
+        allCommentMenuNames.add("Comment Menu");
+        allCommentMenuNames.add("Admin Adding Comment Request Menu");
+        allCommentMenuNames.add("Admin Editing Comment Request Menu");
+        return allCommentMenuNames;
+    }
 }
