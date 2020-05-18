@@ -98,14 +98,16 @@ public class LogTable extends Database {
         }
 
     public static double getMaxSaleByID(String productID) throws SQLException, ClassNotFoundException {
-            String command = "SELECT OffPrice FROM Logs WHERE ProductID = ?";
+            String command = "SELECT * FROM Logs WHERE ProductID = ?";
             PreparedStatement preparedStatement = getConnection().prepareStatement(command);
             preparedStatement.setString(1, productID);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             double maxSale = 0;
-            while (resultSet.next())
-                    maxSale += resultSet.getDouble("OffPrice");
+            while (resultSet.next()) {
+                    maxSale += resultSet.getDouble("OffPrice") * resultSet.getInt("Count");
+                    maxSale += resultSet.getDouble("OffPrice") * resultSet.getDouble("Amount");
+            }
 
             return maxSale;
     }

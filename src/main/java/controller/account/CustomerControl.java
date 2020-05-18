@@ -334,7 +334,7 @@ public class CustomerControl extends AccountControl{
                 return Notification.CANT_AFFORD_CART;
             AccountTable.changeCredit(customer.getUsername(),((-1) * finalPrice));
             giveCreditToVendors(customer.getUsername());
-            createLog(customer);
+            int giftState = createLog(customer);
             if(hasDiscount) {
                 //System.out.println("Step 1");
                 DiscountTable.addRepetitionToDiscount(discount, customer.getUsername());
@@ -344,7 +344,15 @@ public class CustomerControl extends AccountControl{
             reduceProductFromStock(customer.getUsername());
             CartTable.deleteCustomerCart(customer.getUsername());
             hasDiscount = false;
-            return Notification.PURCHASED_SUCCESSFULLY;
+            switch (giftState)
+            {
+                case 1 :
+                    return Notification.PURCHASED_SUPERLY;
+                case 2 :
+                    return Notification.PURCHASED_GOODELY;
+                default:
+                    return Notification.PURCHASED_SUCCESSFULLY;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -415,7 +423,7 @@ public class CustomerControl extends AccountControl{
         this.hasDiscount = hasDiscount;
     }
 
-    private void createLog(Account customer) throws SQLException, ClassNotFoundException {
+    private int createLog(Account customer) throws SQLException, ClassNotFoundException {
         Log log = new Log();
         String logID = "";
         do {
@@ -438,13 +446,14 @@ public class CustomerControl extends AccountControl{
         }
 
         log.setAllProducts(logProducts);
-        checkGift(log);
+        int state = checkGift(log);
         LogTable.addLog(log);
+        return state;
     }
 
-    private void checkGift(Log log) {
+    private int checkGift(Log log) {
         AdminControl adminControl = AdminControl.getController();
-        if(log.getFinalPrice() > 85000)
+        if(log.getFinalPrice() >= 85000)
         {
             Discount discount = new Discount();
             discount.setCode("Super Code");
@@ -458,8 +467,9 @@ public class CustomerControl extends AccountControl{
             long days85 = (long) 7.344e+9;
             discount.setFinishDate(new Date(discount.getStartDate().getTime() + days85));
             adminControl.addDiscount(discount);
+            return 1;
         }
-        else if(log.getFinalPrice() > 5000)
+        else if(log.getFinalPrice() >= 5000)
         {
             Discount discount = new Discount();
             discount.setCode("Good Customer");
@@ -473,7 +483,9 @@ public class CustomerControl extends AccountControl{
             long oneMonth = (long) 2.628e+9;
             discount.setFinishDate(new Date(discount.getStartDate().getTime() + oneMonth));
             adminControl.addDiscount(discount);
+            return 2;
         }
+        return 0;
     }
 
     private String generateLogID()

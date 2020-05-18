@@ -179,7 +179,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         functionsHashMap.put("View Buyer Names", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
-                return ListicMenu.makeListicMenu("View Buyers Listic Menu");
+                return ListicMenu.makeListicMenu("View Product Buyers Listic Menu");
             }
         });
         functionsHashMap.put("View Sale Status", new FunctioningOption() {

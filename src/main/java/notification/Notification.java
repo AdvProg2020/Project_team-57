@@ -94,7 +94,7 @@ public enum Notification {
     CANT_AFFORD_CART("Come Back When You Have Some Money, Buddy. "),
     PURCHASED_SUCCESSFULLY("I Don't Know How I'm Going To Live With MySelf " +
             "\nIf I Don't Stay True To What I Believe. " +
-            "\nDesmond T.Doss (Hacksaw Ridge)" +
+            "\n+Desmond T.Doss (Hacksaw Ridge)" +
             "\nPurchased Successfully. 😐"),
     UPDATE_SCORE("Score updated successfully babe"),
     SET_SCORE("Score done"),
@@ -102,7 +102,13 @@ public enum Notification {
     ERROR_COMMENT_LENGTH("Comment length must be between 0 & 100 characters"),
     ADD_COMMENT("Comment was sent to manager, wait for approve!!"),
     ACCEPTING_COMMENT("Comment added successfully"),
-    DECLINE_COMMENT("Comment decline successfully");
+    DECLINE_COMMENT("Comment decline successfully"),
+    PURCHASED_SUPERLY("Do You Have A Bed Somewhere?" +
+            "\nWe Gave You A Super Discount With 85% Off." +
+            "\nPurchased Successfully But Who Cares About That ?\uD83D\uDE0B"),
+    PURCHASED_GOODELY("There Are No Two Words In English Language More Harmful Than GOOD JOB!" +
+            "\n+Whiplash" +
+            "\nPurchased Successfully \uD83D\uDE1C");
 
 
 
