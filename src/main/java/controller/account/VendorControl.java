@@ -2,7 +2,6 @@ package controller.account;
 
 import controller.Control;
 import model.db.*;
-import model.existence.Account;
 import model.existence.Log;
 import model.existence.Off;
 import model.existence.Product;

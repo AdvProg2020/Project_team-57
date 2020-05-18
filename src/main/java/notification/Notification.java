@@ -97,7 +97,10 @@ public enum Notification {
             "\nDesmond T.Doss (Hacksaw Ridge)" +
             "\nPurchased Successfully. 😐"),
     UPDATE_SCORE("Score updated successfully babe"),
-    SET_SCORE("Score done");
+    SET_SCORE("Score done"),
+    ERROR_TITLE_LENGTH("Title length must be between 0 & 16 characters"),
+    ERROR_COMMENT_LENGTH("Comment length must be between 0 & 100 characters"),
+    ADD_COMMENT("Comment was send to manager, wait for approve!!");
 
 
 
