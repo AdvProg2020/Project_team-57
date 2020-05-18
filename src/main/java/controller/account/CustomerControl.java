@@ -8,6 +8,7 @@ import notification.Notification;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CustomerControl extends AccountControl{
     private static CustomerControl customerControl = null;
@@ -437,7 +438,42 @@ public class CustomerControl extends AccountControl{
         }
 
         log.setAllProducts(logProducts);
+        checkGift(log);
         LogTable.addLog(log);
+    }
+
+    private void checkGift(Log log) {
+        AdminControl adminControl = AdminControl.getController();
+        if(log.getFinalPrice() > 85000)
+        {
+            Discount discount = new Discount();
+            discount.setCode("Super Code");
+            HashMap<String, Integer> customer = new HashMap<>();
+            customer.put(Control.getUsername(), 0);
+            discount.setCustomersWithRepetition(customer);
+            discount.setMaxRepetition(1);
+            discount.setDiscountPercent(85);
+            discount.setMaxDiscount(85000);
+            discount.setStartDate(new Date(System.currentTimeMillis()));
+            long days85 = (long) 7.344e+9;
+            discount.setFinishDate(new Date(discount.getStartDate().getTime() + days85));
+            adminControl.addDiscount(discount);
+        }
+        else if(log.getFinalPrice() > 5000)
+        {
+            Discount discount = new Discount();
+            discount.setCode("Good Customer");
+            HashMap<String, Integer> customer = new HashMap<>();
+            customer.put(Control.getUsername(), 0);
+            discount.setCustomersWithRepetition(customer);
+            discount.setMaxRepetition(1);
+            discount.setDiscountPercent(15);
+            discount.setMaxDiscount(1000);
+            discount.setStartDate(new Date(System.currentTimeMillis()));
+            long oneMonth = (long) 2.628e+9;
+            discount.setFinishDate(new Date(discount.getStartDate().getTime() + oneMonth));
+            adminControl.addDiscount(discount);
+        }
     }
 
     private String generateLogID()
