@@ -499,7 +499,7 @@ public class ProductControl extends Control {
         Comment comment = new Comment();
         comment.setTitle(title);
         comment.setContent(content);
-        comment.setStatus(1);
+        comment.setStatus(2);
         comment.setCustomerUsername(Control.getUsername());
         comment.setProductID(this.currentProduct);
         String commentID;

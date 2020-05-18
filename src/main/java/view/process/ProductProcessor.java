@@ -76,7 +76,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
             @Override
             public Menu doTheThing(Object... objects) {
                 Product product = (Product) objects[1];
-                Control.setCurrentProductID(product.getID());
+                productControl.setCurrentProduct(product.getID());
                 comparisonParentMenu = (ListicOptionMenu) objects[0];
                 return Menu.makeMenu("Comments Menu");
             }
@@ -420,7 +420,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
     }
 
     public Menu addComment() {
-        if(Control.isLoggedIn() & Control.getType().equals("Customer")) {
+        if(Control.isLoggedIn() && Control.getType().equals("Customer")) {
             String title = null, content = null;
 
             System.out.println("Please Enter The Title :");

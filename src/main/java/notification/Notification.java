@@ -100,7 +100,7 @@ public enum Notification {
     SET_SCORE("Score done"),
     ERROR_TITLE_LENGTH("Title length must be between 0 & 16 characters"),
     ERROR_COMMENT_LENGTH("Comment length must be between 0 & 100 characters"),
-    ADD_COMMENT("Comment was send to manager, wait for approve!!");
+    ADD_COMMENT("Comment was sent to manager, wait for approve!!");
 
 
 
