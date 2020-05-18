@@ -23,7 +23,7 @@ public class ListicOptionProcessor extends Processor{
     //private static ArrayList<String> productOfLogMenuNames = getAllProductOfLogMenuNames();
     private ArrayList<String> commentMenuNames = getAllCommentMenuNames();
 
-    private ListicOptionProcessor() {
+    private void initListicOptionMenuNames() {
         productMenuNames = getAllProductMenuNames();
         filteringMenuNames = getAllFilteringMenuNames();
         categoryMenuNames = getAllCategoryMenuNames();
@@ -35,9 +35,10 @@ public class ListicOptionProcessor extends Processor{
     }
 
     public static ListicOptionProcessor getInstance() {
-        if(listicOptionProcessor == null)
+        if(listicOptionProcessor == null) {
             listicOptionProcessor = new ListicOptionProcessor();
-
+            listicOptionProcessor.initListicOptionMenuNames();
+        }
         return listicOptionProcessor;
     }
 

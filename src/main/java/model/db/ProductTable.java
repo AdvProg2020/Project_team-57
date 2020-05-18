@@ -285,5 +285,12 @@ public class ProductTable extends Database {
         }
         return comments;
     }
+
+    public static Comment getCommentByID(String commentID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Comments WHERE CommentID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1,commentID);
+        return new Comment(preparedStatement.executeQuery());
+    }
 }
 

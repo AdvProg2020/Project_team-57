@@ -564,4 +564,16 @@ public class ProductControl extends Control {
         return new ArrayList<>();
     }
 
+    public Comment getCommentByID(String commentID) {
+        try {
+            return ProductTable.getCommentByID(commentID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }

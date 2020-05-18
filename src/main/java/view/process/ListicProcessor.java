@@ -200,10 +200,10 @@ public class ListicProcessor extends Processor {
             AccountControl.setCurrentLogID(primaryKey);
             return ListicMenu.makeListicMenu("View Sell Log Products Listic Menu");
         }
-/*        else if(parentMenu.getName().equals("Manage Comment Requests"))
-            return ListicOptionMenu.makeMenu();
+        else if(parentMenu.getName().equals("Manage Comment Requests"))
+            return ListicOptionMenu.makeMenu("Admin Adding Comment Request Menu");
         else if(parentMenu.getName().equals("Comment Menu"))
-            return ListicOptionMenu.makeMenu();*/
+            return ListicOptionMenu.makeMenu("Comment Menu");
         //TODO(OTHERS)
         return null;
     }
@@ -352,13 +352,13 @@ public class ListicProcessor extends Processor {
     }
 
     private static void initComments(ListicMenu listicMenu) {
-        listicMenu.setListicOptionNames(productControl.getShowingCommentNames());
+        listicMenu.setListicOptionNames(productControl.getShowingCommentTitles());
         listicMenu.setListicOptionPrimaryKeys(productControl.getShowingCommentIDs());
     }
 
     private static void initManageComments(ListicMenu listicMenu) {
-        listicMenu.setListicOptionNames(adminControl.getUnpApprovedCommentTitles());
-        listicMenu.setListicOptionPrimaryKeys(adminControl.getUnApprovedCommentIDs());
+        listicMenu.setListicOptionNames(adminControl.getAllUnApprovedCommentTitles());
+        listicMenu.setListicOptionPrimaryKeys(adminControl.getAllUnApprovedCommentIDs());
     }
 
     private static void initSellLogProducts(ListicMenu listicMenu) {
