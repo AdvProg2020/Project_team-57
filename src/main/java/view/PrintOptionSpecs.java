@@ -640,7 +640,7 @@ public interface PrintOptionSpecs {
     default void printProductOfLogSpecs(Object[] products) {
         Product product = (Product) products[0];
         Log.ProductOfLog productOfLog = (Log.ProductOfLog) products[1];
-        Integer
+        Integer score = (Integer) products[2];
 
         printCustomLineForProduct();
 
@@ -662,7 +662,9 @@ public interface PrintOptionSpecs {
         printCustomPriceForProductOfLog(productOfLog);
         this.printCustomLineForProduct();
 
-        printCustomScoreForProductOfLog()
+        printCustomScoreForProductOfLog(score);
+        this.printCustomLineForProduct();
+
     }
 
     default void printCustomCountForProductOfLog(Log.ProductOfLog productOfLog){
@@ -687,5 +689,13 @@ public interface PrintOptionSpecs {
             System.out.format("| %-20s | %%%-34s | %n", "Off Percent", offPercentString);
         }
 
+    }
+
+    default void printCustomScoreForProductOfLog(int score) {
+        if(score == -1) {
+            System.out.format("| %-20s | %-35s | %n", "Your Score", "Not Assigned");
+        } else {
+            System.out.format("| %-20s | %-35d | %n", "Your Score", score);
+        }
     }
 }

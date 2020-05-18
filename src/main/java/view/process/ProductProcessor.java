@@ -5,6 +5,7 @@ import controller.account.AdminControl;
 import controller.account.CustomerControl;
 import controller.product.ProductControl;
 import model.existence.Product;
+import sun.net.www.protocol.file.FileURLConnection;
 import view.menu.ListicMenu;
 import view.menu.ListicOptionMenu;
 import view.menu.Menu;
@@ -115,6 +116,12 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
                 }
             }
         });
+        functionsHashMap.put("Give A Score", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return giveScoreToProduct(objects);
+            }
+        });
         functionsHashMap.put("Back", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
@@ -143,9 +150,10 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
             productMenu.setOption(productControl.getComparingProducts());
         } else if(productMenu.getName().equals("Product Of Log Menu")) {
             //System.out.println("Step 1 " + productMenu.getName());
-            Object[] objects = new Object[2];
+            Object[] objects = new Object[3];
             objects[0] = productControl.getProductById(ID);
             objects[1] = customerControl.getProductOfLog(ID);
+            objects[2] = productControl.getProductScoreByID(ID);
             productMenu.setOption(objects);
         } else {
             //System.out.println("Step 2 " + productMenu.getName());
@@ -362,5 +370,32 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
 
     public static void setComparisonParentMenu(ListicOptionMenu comparisonParentMenu) {
         ProductProcessor.comparisonParentMenu = comparisonParentMenu;
+    }
+
+    public Menu giveScoreToProduct(Object... objects) {
+        ListicOptionMenu menu = (ListicOptionMenu) objects[0];
+        Object[] products = (Object[]) objects[1];
+        Product product = (Product) products[0];
+        int score = 0;
+        boolean flag = true;
+
+        while (true) {
+            try {
+                System.out.println("Please Enter The Score :");
+                score = Integer.parseInt(scanner.nextLine().trim());
+
+                if (score < 0 || score > 5)
+                    System.out.println("Score Must Be Between 0 & 5");
+                else
+                    flag = false;
+            } catch (NumberFormatException e) {
+                System.out.println("Please Enter An Integer");
+            } catch (NullPointerException e) {
+                System.out.println("Please Enter An Integer");
+            }
+        }
+
+        System.out.println(productControl.setScore(product.getID(), score).getMessage());
+        return menu;
     }
 }
