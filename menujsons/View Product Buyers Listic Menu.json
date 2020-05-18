@@ -1,0 +1,6 @@
+{
+  "name" : "View Product Buyers",
+  "parentName" : "View Buyers Menu",
+  "isThereParentMenu" : true,
+  "processorName" : "ListicProcessor"
+}

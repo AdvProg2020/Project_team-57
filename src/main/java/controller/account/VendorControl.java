@@ -2,6 +2,7 @@ package controller.account;
 
 import controller.Control;
 import model.db.*;
+import model.existence.Account;
 import model.existence.Log;
 import model.existence.Off;
 import model.existence.Product;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 
 public class VendorControl extends AccountControl{
     private static VendorControl vendorControl = null;
+    private String currentProduct;
+
 
     public static VendorControl getController() {
         if (vendorControl == null)
@@ -369,5 +372,28 @@ public class VendorControl extends AccountControl{
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<String> getProductBuyerUsernames() {
+        ArrayList<String> buyers = new ArrayList<>();
+        try {
+            for(String account: LogTable.getAllCustomerUsernamesForProduct(currentProduct))
+            {
+                buyers.add(account);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return buyers;
+    }
+
+    public String getCurrentProduct() {
+        return currentProduct;
+    }
+
+    public void setCurrentProduct(String currentProduct) {
+        this.currentProduct = currentProduct;
     }
 }

@@ -1,5 +1,6 @@
 package model.db;
 
+import model.existence.Account;
 import model.existence.Log;
 
 import java.sql.PreparedStatement;
@@ -82,4 +83,17 @@ public class LogTable extends Database {
             preparedStatement.setString(2, productID);
             return preparedStatement.executeQuery().next();
     }
+
+        public static ArrayList<String> getAllCustomerUsernamesForProduct(String currentProduct) throws SQLException, ClassNotFoundException {
+                String command = "SELECT DISTINCT CustomerUsername FROM Logs WHERE ProductID = ?";
+                PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+                preparedStatement.setString(1, currentProduct);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                ArrayList<String> accounts = new ArrayList<>();
+                while (resultSet.next())
+                {
+                        accounts.add(resultSet.getString("CustomerUsername"));
+                }
+                return accounts;
+        }
 }
