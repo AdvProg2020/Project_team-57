@@ -6,6 +6,7 @@
     "Change Password",
     "View Cart",
     "View Discount Codes",
+    "View Buy Logs",
     "Logout"
   ],
   "name" : "Customer Menu",

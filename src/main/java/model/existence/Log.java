@@ -24,6 +24,7 @@ public class Log {
             this.customerUsername = resultSet.getString("customerUsername");
             this.date = resultSet.getDate("Date");
             this.discountPercent = resultSet.getDouble("DiscountPercent");
+            this.status = resultSet.getInt("Status");
             allProducts.add(new ProductOfLog(resultSet.getString("ProductID"),resultSet.getBoolean("IsCountable"),
                     resultSet.getInt("Count"), resultSet.getDouble("Amount"),
                     resultSet.getDouble("InitPrice"), resultSet.getDouble("OffPrice")));
