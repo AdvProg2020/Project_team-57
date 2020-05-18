@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class LogTable extends Database {
-        public static Log getLogByID(String logID) throws SQLException, ClassNotFoundException {
+        public static Log getCustomerLogByID(String logID) throws SQLException, ClassNotFoundException {
                 String command = "SELECT * FROM Logs WHERE LogID = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
                 preparedStatement.setString(1, logID);
@@ -43,28 +43,29 @@ public class LogTable extends Database {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 ArrayList<Log> allLogs = new ArrayList<>();
                 while (resultSet.next()) {
-                        allLogs.add(getLogByID(resultSet.getString("LogID")));
+                        allLogs.add(getCustomerLogByID(resultSet.getString("LogID")));
                 }
                 return allLogs;
         }
 
-        public static ArrayList<Log> getAllVendorLogs(String vendorName) throws SQLException, ClassNotFoundException {
-                String command = "SELECT DISTINCT LogID FROM Logs";
+        public static ArrayList<Log> getAllVendorLogs(String username) throws SQLException, ClassNotFoundException {
+                String command = "SELECT DISTINCT LogID FROM Logs WHERE VendorUsername = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+                preparedStatement.setString(1, username);
                 ResultSet resultSet = preparedStatement.executeQuery();
-                ArrayList<Log.ProductOfLog> allProducts = new ArrayList<>();
                 ArrayList<Log> allLogs = new ArrayList<>();
                 while (resultSet.next()) {
-                        allProducts.clear();
-                        for (Log.ProductOfLog product : getLogByID(resultSet.getString("LogID")).getAllProducts()) {
-                                if (vendorName.equals(ProductTable.getVendorName(product.getProductID())))
-                                        allProducts.add(product);
-                        }
-                        if (allProducts.size() != 0)
-                                allLogs.add(new Log(allProducts, getLogByID(resultSet.getString("LogID"))));
-                        allProducts.clear();
+                        allLogs.add(getVendorLogByID(resultSet.getString("LogID"), username));
                 }
                 return allLogs;
+        }
+
+        public static Log getVendorLogByID(String logID, String vendorUsername) throws SQLException, ClassNotFoundException {
+                String command = "SELECT * FROM Logs WHERE LogID = ? AND VendorUsername = ?";
+                PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+                preparedStatement.setString(1, logID);
+                preparedStatement.setString(2, vendorUsername);
+                return new Log(preparedStatement.executeQuery());
         }
 
         public static boolean isThereLogWithID(String logID) throws SQLException, ClassNotFoundException {

@@ -203,4 +203,12 @@ public class Log {
         }
         return (finalPrice * (100 - this.discountPercent))/100;
     }
+
+    public double getVendorFinalPrice(){
+        double finalPrice = 0;
+        for (ProductOfLog productOfLog : allProducts) {
+            finalPrice += productOfLog.getOffPrice();
+        }
+        return finalPrice;
+    }
 }
