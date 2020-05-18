@@ -488,6 +488,16 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
     }
 
     public Menu viewSaleStatus() {
+        Product product = productControl.getProductById(vendorControl.getCurrentProduct());
+        String maxSale = Double.toString(vendorControl.getMaxSale());
+        System.out.println("Maximum Credit You Got From This Sale : " + maxSale);
+
+        if(product.isCountable()) {
+            System.out.println("Maximum Count Of This Sale : " + vendorControl.getMaxCountOfSale());
+        } else {
+            System.out.println("Maximum Amount Of This Sale : "
+                    + Double.toString(vendorControl.getMaxAmountOfSale()));
+        }
 
         return Menu.makeMenu("View Buyers Menu");
     }

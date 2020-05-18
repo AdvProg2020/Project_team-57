@@ -396,4 +396,40 @@ public class VendorControl extends AccountControl{
     public void setCurrentProduct(String currentProduct) {
         this.currentProduct = currentProduct;
     }
+
+    public double getMaxSale() {
+        try {
+            return LogTable.getMaxSaleByID(currentProduct);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public int getMaxCountOfSale() {
+        try {
+            return LogTable.getMaxCountOfSaleByProductID(currentProduct);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public double getMaxAmountOfSale() {
+        try {
+            return LogTable.getMaxAmountOfSaleByProductID(currentProduct);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
 }

@@ -84,7 +84,7 @@ public class LogTable extends Database {
             return preparedStatement.executeQuery().next();
     }
 
-        public static ArrayList<String> getAllCustomerUsernamesForProduct(String currentProduct) throws SQLException, ClassNotFoundException {
+    public static ArrayList<String> getAllCustomerUsernamesForProduct(String currentProduct) throws SQLException, ClassNotFoundException {
                 String command = "SELECT DISTINCT CustomerUsername FROM Logs WHERE ProductID = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
                 preparedStatement.setString(1, currentProduct);
@@ -95,5 +95,44 @@ public class LogTable extends Database {
                         accounts.add(resultSet.getString("CustomerUsername"));
                 }
                 return accounts;
+        }
+
+    public static double getMaxSaleByID(String productID) throws SQLException, ClassNotFoundException {
+            String command = "SELECT OffPrice FROM Logs WHERE ProductID = ?";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+            preparedStatement.setString(1, productID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            double maxSale = 0;
+            while (resultSet.next())
+                    maxSale += resultSet.getDouble("OffPrice");
+
+            return maxSale;
+    }
+
+        public static int getMaxCountOfSaleByProductID(String productID) throws SQLException, ClassNotFoundException {
+                String command = "SELECT Count FROM Logs WHERE ProductID = ?";
+                PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+                preparedStatement.setString(1, productID);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                int maxCount = 0;
+                while (resultSet.next())
+                        maxCount += resultSet.getDouble("Count");
+
+                return maxCount;
+        }
+
+        public static double getMaxAmountOfSaleByProductID(String productID) throws SQLException, ClassNotFoundException {
+                String command = "SELECT Amount FROM Logs WHERE ProductID = ?";
+                PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+                preparedStatement.setString(1, productID);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                double maxAmount = 0;
+                while (resultSet.next())
+                        maxAmount += resultSet.getDouble("Amount");
+
+                return maxAmount;
         }
 }
