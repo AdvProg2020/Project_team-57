@@ -640,6 +640,7 @@ public interface PrintOptionSpecs {
     default void printProductOfLogSpecs(Object[] products) {
         Product product = (Product) products[0];
         Log.ProductOfLog productOfLog = (Log.ProductOfLog) products[1];
+        Integer
 
         printCustomLineForProduct();
 
@@ -660,6 +661,8 @@ public interface PrintOptionSpecs {
 
         printCustomPriceForProductOfLog(productOfLog);
         this.printCustomLineForProduct();
+
+        printCustomScoreForProductOfLog()
     }
 
     default void printCustomCountForProductOfLog(Log.ProductOfLog productOfLog){
