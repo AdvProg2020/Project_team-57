@@ -204,6 +204,8 @@ public class ListicProcessor extends Processor {
             return ListicOptionMenu.makeMenu("Admin Adding Comment Request Menu", parentMenu, primaryKey);
         else if(parentMenu.getName().equals("Comments Menu"))
             return ListicOptionMenu.makeMenu("Comment Menu", parentMenu, primaryKey);
+        else if(parentMenu.getName().equals("View Product Buyers"))
+            return ListicOptionMenu.makeMenu("View Buyers Account Menu", parentMenu, primaryKey);
         //TODO(OTHERS)
         return null;
     }
@@ -348,7 +350,14 @@ public class ListicProcessor extends Processor {
             initManageComments(listicMenu);
         else if(listicMenu.getName().equals("Comments Menu"))
             initComments(listicMenu);
+        else if(listicMenu.getName().equals("View Product Buyers"))
+            initProductBuyers(listicMenu);
         //TODO(OTHERS)
+    }
+
+    private static void initProductBuyers(ListicMenu listicMenu) {
+        listicMenu.setListicOptionNames(vendorControl.getProductBuyerUsernames());
+        listicMenu.setListicOptionPrimaryKeys(vendorControl.getProductBuyerUsernames());
     }
 
     private static void initComments(ListicMenu listicMenu) {
