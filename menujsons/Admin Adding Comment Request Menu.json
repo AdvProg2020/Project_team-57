@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "Accept Adding The Comment",
+    "Decline Adding The Comment"
+  ],
+  "name" : "Adding Comment Request Menu",
+  "parentName" : "Manage Comment Requests Listic Menu",
+  "isThereParentMenu" : false,
+  "processorName" : "ProductProcessor"
+}

@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "Add A Comment",
+    "Show Comments"
+  ],
+  "name" : "Comments Menu",
+  "parentName" : "Common Product Menu",
+  "isThereParentMenu" : false,
+  "processorName" : "ProductProcessor"
+}

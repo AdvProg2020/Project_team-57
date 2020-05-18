@@ -72,6 +72,15 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
                 return addToCart(objects);
             }
         });
+        functionsHashMap.put("Comments", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                Product product = (Product) objects[1];
+                Control.setCurrentProductID(product.getID());
+                comparisonParentMenu = (ListicOptionMenu) objects[0];
+                return Menu.makeMenu("Comments Menu");
+            }
+        });
         functionsHashMap.put("Increase", new FunctioningOption() {
             @Override
             public Menu doTheThing(Object... objects) {
@@ -122,6 +131,12 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
             @Override
             public Menu doTheThing(Object... objects) {
                 return giveScoreToProduct(objects);
+            }
+        });
+        functionsHashMap.put("Add A Comment", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return addComment();
             }
         });
         functionsHashMap.put("Back", new FunctioningOption() {
@@ -403,4 +418,26 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
         products[2] = customerControl.getScore(product.getID());
         return menu;
     }
+
+    public Menu addComment() {
+        if(Control.isLoggedIn() & Control.getType().equals("Customer")) {
+            String title = null, content = null;
+
+            System.out.println("Please Enter The Title :");
+            title = scanner.nextLine().trim();
+
+            System.out.println("Please Enter The Content :");
+            content = scanner.nextLine().trim();
+
+            System.out.println(productControl.addComment(title, content).getMessage());
+
+        } else if(!Control.isLoggedIn()) {
+            System.out.println("You Can't Add A Comment, Cause You haven't Logged in. ");
+        } else {
+            System.out.println("You Can't Add A Comment, Cause You Are Not A Customer. ");
+        }
+
+        return Menu.makeMenu("Comments Menu");
+    }
+
 }

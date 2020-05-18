@@ -1,0 +1,10 @@
+{
+  "options" : [
+    "Accept Editing The Comment",
+    "Decline Editing The Comment"
+  ],
+  "name" : "Editing Comment Request Menu",
+  "parentName" : "Manage Comment Requests Listic Menu",
+  "isThereParentMenu" : false,
+  "processorName" : "ProductProcessor"
+}
