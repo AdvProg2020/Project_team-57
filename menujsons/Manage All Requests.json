@@ -2,7 +2,8 @@
   "options" : [
     "Manage Vendors Registration Requests",
     "Manage Product Requests",
-    "Manage Off Requests"
+    "Manage Off Requests",
+    "Manage Comment Requests"
   ],
   "name" : "Request Menu",
   "parentName" : "Admin Menu",

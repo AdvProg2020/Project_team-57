@@ -1,0 +1,6 @@
+{
+  "name" : "Manage Comment Requests",
+  "parentName" : "Manage All Requests",
+  "isThereParentMenu" : true,
+  "processorName" : "ListicProcessor"
+}
