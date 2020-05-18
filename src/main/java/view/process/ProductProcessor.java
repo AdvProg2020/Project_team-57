@@ -3,6 +3,7 @@ package view.process;
 import controller.Control;
 import controller.account.AdminControl;
 import controller.account.CustomerControl;
+import controller.account.VendorControl;
 import controller.product.ProductControl;
 import model.existence.Product;
 import sun.net.www.protocol.file.FileURLConnection;
@@ -18,6 +19,7 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
     private static ProductControl productControl = ProductControl.getController();
     private static AdminControl adminControl = AdminControl.getController();
     private static CustomerControl customerControl = CustomerControl.getController();
+    private static VendorControl vendorControl = VendorControl.getController();
     private static ListicOptionMenu comparisonParentMenu = null;
 
     private ProductProcessor(){
@@ -150,10 +152,11 @@ public class ProductProcessor extends ListicOptionProcessor implements PrintOpti
             productMenu.setOption(productControl.getComparingProducts());
         } else if(productMenu.getName().equals("Product Of Log Menu")) {
             //System.out.println("Step 1 " + productMenu.getName());
-            Object[] objects = new Object[3];
+            Object[] objects = new Object[4];
             objects[0] = productControl.getProductById(ID);
             objects[1] = customerControl.getProductOfLog(ID);
-            objects[2] = customerControl.getScore(ID);
+            objects[2] = vendorControl.getCustomerByID();
+            objects[3] = customerControl.getScore(ID);
             productMenu.setOption(objects);
         } else {
             //System.out.println("Step 2 " + productMenu.getName());
