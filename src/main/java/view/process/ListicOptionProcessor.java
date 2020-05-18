@@ -1,7 +1,6 @@
 package view.process;
 
 import controller.Control;
-import controller.account.AdminControl;
 import controller.account.CustomerControl;
 import controller.account.VendorControl;
 import view.menu.ListicOptionMenu;
@@ -33,7 +32,8 @@ public class ListicOptionProcessor extends Processor{
             menuName = setMenuNameForDiscountUserMenu(optionID);
         else if(menuName.equals("Off Product Menu"))
             menuName = setMenuNameForOffProductMenu(optionID);
-
+        else if(menuName.equals("View Log Menu"))
+            menuName = setMenuNameForLogMenu();
         return menuName;
     }
 
@@ -84,11 +84,23 @@ public class ListicOptionProcessor extends Processor{
         return menuName;
     }
 
+    public static String setMenuNameForLogMenu() {
+        String menuName = null;
+
+        if(Control.getType().equals("Customer"))
+            menuName = "View Buying Log Menu";
+        else if(Control.getType().equals("Vendor"))
+            menuName = "View Selling Log Menu";
+
+        return menuName;
+    }
+
+
     public static void setMenu(String menuName, ListicOptionMenu listicOptionMenu, String optionID) {
         ArrayList<String> productMenuNames = getAllProductMenuNames();
-        ArrayList<String> filteringMenuNames = getAllfilteringMenuNames();
-        ArrayList<String> categoryMenuNames = getAllcategoryMenuNames();
-        ArrayList<String> discountMenuNames = getAlldiscountMenuNames();
+        ArrayList<String> filteringMenuNames = getAllFilteringMenuNames();
+        ArrayList<String> categoryMenuNames = getAllCategoryMenuNames();
+        ArrayList<String> discountMenuNames = getAllDiscountMenuNames();
         ArrayList<String> offMenuNames = getAllOffMenuNames();
         //ArrayList<String> userMenuNames = getAllUserMenuNames();
         //ArrayList<String> productOfLogMenuNames = getAllProductOfLogMenuNames();
@@ -137,25 +149,25 @@ public class ListicOptionProcessor extends Processor{
         return offMenuNames;
     }
 
-    private static ArrayList<String> getAlldiscountMenuNames() {
+    private static ArrayList<String> getAllDiscountMenuNames() {
         ArrayList<String> discountMenuNames = new ArrayList<>();
         discountMenuNames.add("Customer View Discount Menu");
         discountMenuNames.add("View Discount Menu");
         return discountMenuNames;
     }
 
-    private static ArrayList<String> getAllcategoryMenuNames() {
-        ArrayList<String> allcategoryMenuNames = new ArrayList<>();
-        allcategoryMenuNames.add("Admin Category Menu");
-        return allcategoryMenuNames;
+    private static ArrayList<String> getAllCategoryMenuNames() {
+        ArrayList<String> allCategoryMenuNames = new ArrayList<>();
+        allCategoryMenuNames.add("Admin Category Menu");
+        return allCategoryMenuNames;
     }
 
-    private static ArrayList<String> getAllfilteringMenuNames() {
-        ArrayList<String> allFilteringMunuNames = new ArrayList<>();
-        allFilteringMunuNames.add("Filtering Category Menu1");
-        allFilteringMunuNames.add("Filtering Category Menu1");
-        allFilteringMunuNames.add("Filtering Name Menu");
-        return allFilteringMunuNames;
+    private static ArrayList<String> getAllFilteringMenuNames() {
+        ArrayList<String> allFilteringMenuNames = new ArrayList<>();
+        allFilteringMenuNames.add("Filtering Category Menu1");
+        allFilteringMenuNames.add("Filtering Category Menu1");
+        allFilteringMenuNames.add("Filtering Name Menu");
+        return allFilteringMenuNames;
     }
 
     private static ArrayList<String> getAllProductMenuNames() {
