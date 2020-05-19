@@ -180,8 +180,9 @@ public class ListicOptionProcessor extends Processor{
 
     private ArrayList<String> getAllFilteringMenuNames() {
         ArrayList<String> allFilteringMenuNames = new ArrayList<>();
+        allFilteringMenuNames.add("Filtering Category Menu");
         allFilteringMenuNames.add("Filtering Category Menu1");
-        allFilteringMenuNames.add("Filtering Category Menu1");
+        allFilteringMenuNames.add("Filtering Category Menu2");
         allFilteringMenuNames.add("Filtering Name Menu");
         return allFilteringMenuNames;
     }
