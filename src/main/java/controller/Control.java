@@ -62,10 +62,13 @@ public class Control {
     protected static class Filter{
         ArrayList<String> filterCategories;
         ArrayList<String> filterNames;
+        double minPrice, maxPrice;
 
         public Filter(ArrayList<String> filterCategories, ArrayList<String> filterNames) {
             this.filterCategories = filterCategories;
             this.filterNames = filterNames;
+            this.minPrice = 0;
+            this.maxPrice = Double.MAX_VALUE;
         }
 
         public ArrayList<String> getFilterCategories() {
@@ -103,6 +106,22 @@ public class Control {
         {
             filterNames.remove(name);
         }
+
+        public double getMinPrice() {
+            return minPrice;
+        }
+
+        public void setMinPrice(double minPrice) {
+            this.minPrice = minPrice;
+        }
+
+        public double getMaxPrice() {
+            return maxPrice;
+        }
+
+        public void setMaxPrice(double maxPrice) {
+            this.maxPrice = maxPrice;
+        }
     }
     //END INNER CLASS
 
@@ -138,6 +157,18 @@ public class Control {
         else
             currentSort += ", Descending";
         return currentSort;
+    }
+
+    public Notification setPriceFilters(double minPrice, double maxPrice) {
+        if(minPrice < 0)
+            return Notification.INVALID_MIN_PRICE;
+        else if(minPrice > maxPrice)
+            return Notification.MIN_PRICE_BIGGER_THAN_MAX_PRICE;
+        else {
+            filter.minPrice = minPrice;
+            filter.maxPrice = maxPrice;
+            return Notification.SET_PRICE_FILTERS;
+        }
     }
 
     public Notification disableSore() {
