@@ -152,7 +152,44 @@ public class DiscountTable extends Database {
         preparedStatement.setInt(1, discount.getCustomersWithRepetition().get(username) + 1);
         preparedStatement.setString(2, discount.getID());
         preparedStatement.setString(3, username);
-        //System.out.println("Step 2");
+        preparedStatement.execute();
+    }
+
+    public static boolean didFiveDaysPast() throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Discounts WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, "" + 11111111);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()){
+            if ((resultSet.getDate("GiftDate").getTime() + 432000000) < System.currentTimeMillis())
+                return true;
+            return false;
+        }
+        return false;
+    }
+
+    public static void addGiftDiscount(Discount discount, String username) throws SQLException, ClassNotFoundException {
+        String  command = "INSERT INTO Discounts(Code, StartDate, FinishDate, DiscountPercent, MaxDiscount," +
+                "Repetition, MaxRepetition, CustomerUsername, ID) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, discount.getCode());
+        preparedStatement.setDate(2, discount.getStartDate());
+        preparedStatement.setDate(3, discount.getFinishDate());
+        preparedStatement.setDouble(4, discount.getDiscountPercent());
+        preparedStatement.setDouble(5, discount.getMaxDiscount());
+        preparedStatement.setInt(6, 0);
+        preparedStatement.setInt(7, discount.getMaxRepetition());
+        preparedStatement.setString(8, username);
+        preparedStatement.setString(9, discount.getID());
+        preparedStatement.execute();
+    }
+
+    public static void updateGiftDiscountDate() throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Discounts SET GiftDate = ? WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        Date date = new Date(new java.util.Date().getTime());
+        preparedStatement.setDate(1, date);
+        preparedStatement.setString(2, "" + 11111111);
         preparedStatement.execute();
     }
 }

@@ -2,6 +2,7 @@ package model.db;
 
 import java.io.File;
 import java.sql.*;
+import java.util.Calendar;
 
 public class Database {
     private static boolean isDBInit = false;
@@ -141,7 +142,7 @@ public class Database {
         resultSet.close();
     }
 
-    private static void initDiscountTable(Statement statement) throws SQLException {
+    private static void initDiscountTable(Statement statement) throws SQLException, ClassNotFoundException {
         String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'Discounts'";
         ResultSet resultSet = statement.executeQuery(command);
         if (!resultSet.next()){
@@ -154,7 +155,14 @@ public class Database {
                     "MaxDiscount double," +
                     "Repetition int," +
                     "MaxRepetition int," +
-                    "CustomerUsername varchar(16));");
+                    "CustomerUsername varchar(16)," +
+                    "GiftDate DATE);");
+            String sql = "INSERT INTO Discounts(ID, GiftDate) VALUES(?,?)";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
+            preparedStatement.setString(1, "" + 11111111);
+            Date date = new Date(new java.util.Date(2020, Calendar.MAY,21,0,0,0).getTime());
+            preparedStatement.setDate(2, date);
+            preparedStatement.execute();
         }
         statement.close();
         resultSet.close();

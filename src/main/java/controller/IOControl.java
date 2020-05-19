@@ -1,14 +1,14 @@
 package controller;
 
+import controller.account.AdminControl;
 import controller.account.IOValidity;
 import model.db.AccountTable;
 import model.db.CartTable;
+import model.db.DiscountTable;
 import model.existence.Account;
 import notification.Notification;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class IOControl extends Control implements IOValidity {
     private static IOControl ioControl = null;
@@ -43,11 +43,12 @@ public class IOControl extends Control implements IOValidity {
                         Control.setType(AccountTable.getTypeByUsername(account.getUsername()));
                         Control.setUsername(account.getUsername());
                         Control.setLoggedIn(true);
-                        if(Control.getType().equals("Customer"))
-                        {
+                        if (Control.getType().equals("Customer")) {
                             CartTable.addTempToUsername(account.getUsername());
                         }
                         CartTable.removeTemp();
+                        if (DiscountTable.didFiveDaysPast())
+                            AdminControl.getController().getGiftDiscount();
                         return Notification.LOGIN_SUCCESSFUL;
                     } else {
                         return Notification.USER_NOT_APPROVED;
