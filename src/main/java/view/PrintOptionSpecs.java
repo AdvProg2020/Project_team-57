@@ -1,6 +1,7 @@
 package view;
 
 import controller.Control;
+import controller.account.AdminControl;
 import controller.account.CustomerControl;
 import controller.product.ProductControl;
 import model.existence.*;
@@ -115,6 +116,9 @@ public interface PrintOptionSpecs {
         printWithNullCheckingForProduct("Category", product.getCategory());
         this.printCustomLineForProduct();
 
+        printCategoryDescriptionForProduct(product.getCategory());
+        printCustomLineForProduct();
+
         printCustomDescriptionForProduct(product.getDescription());
         this.printCustomLineForProduct();
 
@@ -174,6 +178,24 @@ public interface PrintOptionSpecs {
             System.out.format("| %-20s | %-35f | %n", "Price", product.getPrice());
         }
 
+    }
+
+    default void printCategoryDescriptionForProduct(String categoryName) {
+        AdminControl adminControl = AdminControl.getController();
+        String categoryFeatures = adminControl.getCategoryByName(categoryName).getFeatures();
+
+        if(categoryFeatures != null) {
+            ArrayList<String> splitCategoryFeatures = splitDescriptionForProduct(categoryFeatures);
+
+            for(int i = 0; i < splitCategoryFeatures.size(); i++){
+                if(i == 0)
+                    System.out.format("| %-20s | %-35s | %n", "Category Features", splitCategoryFeatures.get(i));
+                else
+                    System.out.format("| %-20s | %-35s | %n", "", splitCategoryFeatures.get(i));
+            }
+        } else {
+            System.out.format("| %-20s | %-35s | %n", "Category Features", "Not Assigned");
+        }
     }
 
     default void printCustomDescriptionForProduct(String description){
