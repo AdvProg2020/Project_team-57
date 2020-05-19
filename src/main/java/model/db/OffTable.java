@@ -72,6 +72,14 @@ public class OffTable extends Database{
         return resultSet.getDate("FinishDate");
     }
 
+    public static double getOffPercentByProductID(String productID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT OffPercent FROM Offs WHERE ProductID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet.getDouble("OffPercent");
+    }
+
     public static void editFinishDate(String offID, Date newFinishDate) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Offs SET FinishDate = ? WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);

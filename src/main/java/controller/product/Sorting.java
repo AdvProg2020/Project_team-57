@@ -64,6 +64,8 @@ public class Sorting extends Control {
     public static class TimeSortDescending implements Comparator<Product> {
         @Override
         public int compare(Product o1, Product o2) {
+/*            System.out.println(o1.getName() + "," + o2.getName());
+            System.out.println(o1.getApprovalDate() + ", " + o2.getApprovalDate());*/
             return -o1.getApprovalDate().compareTo(o2.getApprovalDate());
         }
     }

@@ -298,6 +298,7 @@ public class ProductControl extends Control {
         ArrayList<String> showingProductNames = new ArrayList<>();
         try {
             ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts());
+            filterProductsWithPrice(showingProducts);
             sortProducts(showingProducts);
             for (Product showingProduct : showingProducts) {
                 showingProductNames.add(showingProduct.getName());
@@ -314,6 +315,7 @@ public class ProductControl extends Control {
         ArrayList<String> showingProductIDs = new ArrayList<>();
         try {
             ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts());
+            filterProductsWithPrice(showingProducts);
             sortProducts(showingProducts);
             for (Product showingProduct : showingProducts) {
                 showingProductIDs.add(showingProduct.getID());
@@ -354,6 +356,37 @@ public class ProductControl extends Control {
             }
         }
         return filteredProductIds;
+    }
+
+    private void filterProductsWithPrice(ArrayList<Product> products) {
+        for (int i = 0; i < products.size(); i++) {
+            double productPrice = getProductPriceForVendor(products.get(i));
+
+            if(!(productPrice <= getFinishPeriod() && productPrice >= getStartPeriod())) {
+                products.remove(products.get(i));
+                i--;
+            }
+        }
+    }
+
+    private double getProductPriceForVendor(Product product) {
+        try {
+            double productPriceForVendor = 0;
+
+            if(OffTable.isThereProductInOff(product.getID())) {
+                productPriceForVendor = OffTable.getOffPercentByProductID(product.getID());
+            } else {
+             productPriceForVendor = product.getPrice();
+            }
+
+            return productPriceForVendor;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 
     private ArrayList<Product> convertIDsToProducts(ArrayList<String> productIDs) throws SQLException, ClassNotFoundException {

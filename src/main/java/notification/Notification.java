@@ -108,7 +108,11 @@ public enum Notification {
             "\nPurchased Successfully But Who Cares About That ?\uD83D\uDE0B"),
     PURCHASED_GOODELY("There Are No Two Words In English Language More Harmful Than GOOD JOB!" +
             "\n+Whiplash" +
-            "\nPurchased Successfully \uD83D\uDE1C");
+            "\nPurchased Successfully \uD83D\uDE1C"),
+    INVALID_MIN_PRICE("Minimum Price Must Be A Positive Number. "),
+    MIN_PRICE_BIGGER_THAN_MAX_PRICE("Minimum Price Must Be Smaller Than Maximum Price. "),
+    SET_PRICE_FILTERS("Price Filters Are Set Successfully. ");
+
 
 
 
