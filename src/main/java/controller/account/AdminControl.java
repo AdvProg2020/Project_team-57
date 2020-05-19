@@ -551,8 +551,8 @@ public class AdminControl extends AccountControl{
     public void getGiftDiscount() {
         try {
             Date currentDate = new Date(new java.util.Date().getTime());
-            Date finishDate = new Date(new java.util.Date().getTime() + 604800000);
-            Discount discount = new Discount(generateDiscountID(), "Gift_" + currentDate.toString(), currentDate, finishDate, 20, 2000, 1);
+            Date finishDate = new Date((new java.util.Date().getTime() + (long) 6.048e+8));
+            Discount discount = new Discount(generateDiscountID(), "Gift-" + currentDate.toString(), currentDate, finishDate, 10, 2000, 1);
             int customerNum;
             if (AccountTable.getAllAccounts().size() > 5) {
                 for (int i = 0; i < 5; i++) {

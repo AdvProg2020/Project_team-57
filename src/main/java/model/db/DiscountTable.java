@@ -161,7 +161,7 @@ public class DiscountTable extends Database {
         preparedStatement.setString(1, "" + 11111111);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()){
-            if ((resultSet.getDate("GiftDate").getTime() + 432000000) < System.currentTimeMillis())
+            if ((resultSet.getDate("StartDate").getTime() + (long) 4.32e+8) < System.currentTimeMillis())
                 return true;
             return false;
         }
@@ -185,7 +185,7 @@ public class DiscountTable extends Database {
     }
 
     public static void updateGiftDiscountDate() throws SQLException, ClassNotFoundException {
-        String command = "UPDATE Discounts SET GiftDate = ? WHERE ID = ?";
+        String command = "UPDATE Discounts SET StartDate = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         Date date = new Date(new java.util.Date().getTime());
         preparedStatement.setDate(1, date);

@@ -155,12 +155,12 @@ public class Database {
                     "MaxDiscount double," +
                     "Repetition int," +
                     "MaxRepetition int," +
-                    "CustomerUsername varchar(16)," +
-                    "GiftDate DATE);");
-            String sql = "INSERT INTO Discounts(ID, GiftDate) VALUES(?,?)";
+                    "CustomerUsername varchar(16)" +
+                    ");");
+            String sql = "INSERT INTO Discounts(ID, StartDate) VALUES(?,?)";
             PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
             preparedStatement.setString(1, "" + 11111111);
-            Date date = new Date(new java.util.Date(2020, Calendar.MAY,21,0,0,0).getTime());
+            Date date = new Date(new java.util.Date(120, Calendar.MAY,21,0,0,0).getTime());
             preparedStatement.setDate(2, date);
             preparedStatement.execute();
         }
