@@ -8,6 +8,7 @@ import notification.Notification;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class AdminControl extends AccountControl{
     private static AdminControl adminControl = null;
@@ -551,7 +552,7 @@ public class AdminControl extends AccountControl{
         try {
             Date currentDate = new Date(new java.util.Date().getTime());
             Date finishDate = new Date(new java.util.Date().getTime() + 604800000);
-            Discount discount = new Discount(generateDiscountID(), "GiftDiscount", currentDate, finishDate, 20, 2000, 1);
+            Discount discount = new Discount(generateDiscountID(), "Gift_" + currentDate.toString(), currentDate, finishDate, 20, 2000, 1);
             int customerNum;
             if (AccountTable.getAllAccounts().size() > 5) {
                 for (int i = 0; i < 5; i++) {
