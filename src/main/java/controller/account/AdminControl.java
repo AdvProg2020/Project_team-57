@@ -546,4 +546,27 @@ public class AdminControl extends AccountControl{
         }
         return Notification.UNKNOWN_ERROR;
     }
+
+    public void getGiftDiscount() {
+        try {
+            Date currentDate = new Date(new java.util.Date().getTime());
+            Date finishDate = new Date(new java.util.Date().getTime() + 604800000);
+            Discount discount = new Discount(generateDiscountID(), "GiftDiscount", currentDate, finishDate, 20, 2000, 1);
+            int customerNum;
+            if (AccountTable.getAllAccounts().size() > 5) {
+                for (int i = 0; i < 5; i++) {
+                    customerNum = ((int) (Math.random() * 100000000)) % AccountTable.getAllAccounts().size();
+                    DiscountTable.addGiftDiscount(discount, AccountTable.getAllAccounts().get(customerNum).getUsername());
+                }
+            } else {
+                customerNum = ((int) (Math.random() * 100000000)) % AccountTable.getAllAccounts().size();
+                DiscountTable.addGiftDiscount(discount, AccountTable.getAllAccounts().get(customerNum).getUsername());
+            }
+            DiscountTable.updateGiftDiscountDate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }

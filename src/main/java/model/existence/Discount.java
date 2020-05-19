@@ -33,6 +33,16 @@ public class Discount {
         }
     }
 
+    public Discount(String ID, String code, Date startDate, Date finishDate, double discountPercent, double maxDiscount, int maxRepetition) {
+        this.ID = ID;
+        this.code = code;
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+        this.discountPercent = discountPercent;
+        this.maxDiscount = maxDiscount;
+        this.maxRepetition = maxRepetition;
+    }
+
     public static Discount makeCustomerDiscount(ResultSet resultSet) throws SQLException {
         Discount discount = new Discount();
         discount.setID(resultSet.getString("ID"));
