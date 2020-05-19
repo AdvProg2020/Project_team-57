@@ -1,5 +1,6 @@
 package view.process;
 
+import controller.Control;
 import controller.account.CustomerControl;
 import controller.product.ProductControl;
 import model.existence.Product;
@@ -79,6 +80,31 @@ public class FilterProcessor extends Processor {
                 return ListicMenu.makeListicMenu("Products Listic Menu");
             }
         });
+        this.functionsHashMap.put("Filter By Price Period", new FunctioningOption() {
+            @Override
+            public Menu doTheThing(Object... objects) {
+                return filterByPrice();
+            }
+        });
+    }
+
+    private Menu filterByPrice() {
+        Menu nextMenu = Menu.makeMenu("Filter Menu");
+        System.out.println("-1. Back");
+        System.out.println("Please Enter The Start Price: ");
+        String startPrice = scanner.nextLine().trim();
+        if(startPrice.equals("-1"))
+            return nextMenu;
+        System.out.println("Please Enter The Finish Price: ");
+        String finishPrice = scanner.nextLine();
+        if (finishPrice.equals("-1"))
+            return nextMenu;
+        try {
+            System.out.println(customerControl.setPriceFilters(Double.parseDouble(startPrice), Double.parseDouble(finishPrice)).getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("You Should've Entered A Real Number");
+        }
+        return nextMenu;
     }
 
     public static FilterProcessor getInstance() {
@@ -105,23 +131,40 @@ public class FilterProcessor extends Processor {
         {
             System.out.println("0. Back");
             System.out.println("1. Current Category Filters");
-            System.out.println("2. Current Name Filters");
+            System.out.println("2. Current Price Filters");
+            System.out.println("3. Current Name Filters");
             try {
                 int input = Integer.parseInt(scanner.nextLine().trim());
-                if(input == 0)
-                    return Menu.makeMenu("Filter Menu");
-                else if(input == 1)
-                    return ListicMenu.makeListicMenu("Current Category Filters Listic Menu");
-                else if(input == 2) {
-                    return ListicMenu.makeListicMenu("Current Name Filters Listic Menu");
+                switch (input)
+                {
+                    case 0 :
+                        return Menu.makeMenu("Filter Menu");
+                    case 1 :
+                        return ListicMenu.makeListicMenu("Current Category Filters Listic Menu");
+                    case 2 :
+                        return showCurrentFilter();
+                    case 3 :
+                        return ListicMenu.makeListicMenu("Current Name Filters Listic Menu");
+                    default :
+                        System.out.println("Invalid Number!!! \nWhat are you doing, man?!");
                 }
-                System.out.println("Invalid Number!!! \nWhat are you doing, man?!");
             } catch (NumberFormatException e) {
                 System.out.println("Please Enter An Integer");
             } catch (NullPointerException e) {
                 System.out.println("Please Enter An Integer");
             }
         }
+    }
+
+    private Menu showCurrentFilter() {
+        if(customerControl.getFinishPeriod() == Double.MAX_VALUE && customerControl.getStartPeriod() == 0)
+            System.out.println("..!No Price Period Set!..");
+        else
+        {
+            System.out.println("Start Price: " + customerControl.getStartPeriod());
+            System.out.println("Finish Price: " + customerControl.getFinishPeriod());
+        }
+        return Menu.makeMenu("Filter Menu");
     }
 
     public Menu sortBy(String sort) {

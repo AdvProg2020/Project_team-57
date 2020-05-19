@@ -1,6 +1,7 @@
 {
   "options" : [
     "Filter By Category",
+    "Filter By Price Period",
     "Filter By Name",
     "Current Filters"
   ],

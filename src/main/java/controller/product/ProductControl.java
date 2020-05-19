@@ -362,7 +362,7 @@ public class ProductControl extends Control {
         for (int i = 0; i < products.size(); i++) {
             double productPrice = getProductPriceForVendor(products.get(i));
 
-            if(productPrice < filter.getMinPrice() || productPrice > filter.getMinPrice()) {
+            if(!(productPrice <= getFinishPeriod() && productPrice >= getStartPeriod())) {
                 products.remove(products.get(i));
                 i--;
             }

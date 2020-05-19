@@ -58,6 +58,14 @@ public class Control {
         return filter.getFilterNames();
     }
 
+    public double getStartPeriod() {
+        return filter.getMinPrice();
+    }
+
+    public double getFinishPeriod() {
+        return filter.getMaxPrice();
+    }
+
     //START INNER CLASS
     protected static class Filter{
         ArrayList<String> filterCategories;

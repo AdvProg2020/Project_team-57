@@ -93,8 +93,8 @@ public class VendorTable extends Database {
     public static void addCountableProduct(Product product, String username) throws SQLException, ClassNotFoundException
     {
         String command = "INSERT INTO Products (ID, ProductName, Brand, SellerUsername, Count, IsCountable, Category," +
-                "Description, Price, AverageScore, Status, Seen, ScoreNum)" +
-                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "Description, Price, AverageScore, Status, Seen, ScoreNum, ApprovalDate)" +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, product.getID());
         preparedStatement.setString(2, product.getName());
@@ -109,14 +109,15 @@ public class VendorTable extends Database {
         preparedStatement.setInt(11, 2);
         preparedStatement.setInt(12, 0);
         preparedStatement.setInt(13, 0);
+        preparedStatement.setDate(14, product.getApprovalDate());
         preparedStatement.execute();
     }
 
     public static void addUnCountableProduct(Product product, String username) throws SQLException, ClassNotFoundException
     {
         String command = "INSERT INTO Products (ID, ProductName, Brand, SellerUsername, Amount, IsCountable, Category," +
-                "Description, Price, AverageScore, Status, Seen, ScoreNum)" +
-                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "Description, Price, AverageScore, Status, Seen, ScoreNum, ApprovalDate)" +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, product.getID());
         preparedStatement.setString(2, product.getName());
@@ -131,6 +132,7 @@ public class VendorTable extends Database {
         preparedStatement.setInt(11, 2);
         preparedStatement.setInt(12, 0);
         preparedStatement.setInt(13, 0);
+        preparedStatement.setDate(14, product.getApprovalDate());
         preparedStatement.execute();
     }
 

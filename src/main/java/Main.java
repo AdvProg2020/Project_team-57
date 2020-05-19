@@ -1,6 +1,7 @@
 import model.db.DiscountTable;
 import model.db.ProductTable;
 import model.existence.Discount;
+import model.existence.Product;
 import view.menu.Menu;
 import view.process.Processor;
 
@@ -23,6 +24,10 @@ public class Main {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }*/
+
+/*        for (Product showingProduct : ProductTable.getAllShowingProducts()) {
+            System.out.println(showingProduct.getName() + ": " + showingProduct.getApprovalDate());
         }*/
 
         Processor.initProcessHashMaps();
