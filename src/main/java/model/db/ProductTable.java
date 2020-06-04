@@ -23,13 +23,10 @@ public class ProductTable extends Database {
     }
 
     public static Product getProductByID(String ID) throws SQLException, ClassNotFoundException {
-        //System.out.println(ID);
         String queryTask = "SELECT * FROM Products WHERE ID = ?;";
         PreparedStatement preparedStatement = getConnection().prepareStatement(queryTask);
         preparedStatement.setString(1, ID);
-        //System.out.println("Hello World");
         Product product = new Product(preparedStatement.executeQuery());
-        //System.out.println(product.getName() + " : " + product.getID());
         return product;
     }
 
@@ -269,13 +266,9 @@ public class ProductTable extends Database {
         preparedStatement.setInt(4, 3);
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Comment> comments = new ArrayList<>();
-        //System.out.println("Shit");
         while (resultSet.next()){
-            //System.out.println("Ha :|");
             comments.add(new Comment(resultSet));
-            //System.out.println(ProductTable.getProductByID(comments.get(comments.size() - 1).getProductID()).getName());
         }
-        //System.out.println(comments);
         return comments;
     }
 

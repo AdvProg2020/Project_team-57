@@ -211,7 +211,6 @@ public class AdminControl extends AccountControl{
         ArrayList<String> discountCodes = new ArrayList<>();
         try {
             DiscountTable.updateDiscountCodesTime();
-            //DiscountTable.updateDiscountCodesRep();
             for (Discount discountCode : DiscountTable.getAllDiscountCodes()) {
                 discountCodes.add(discountCode.getCode());
             }
@@ -563,7 +562,7 @@ public class AdminControl extends AccountControl{
                 customerNum = ((int) (Math.random() * 100000000)) % AccountTable.getAllAccounts().size();
                 DiscountTable.addGiftDiscount(discount, AccountTable.getAllAccounts().get(customerNum).getUsername());
             }
-            DiscountTable.updateGiftDiscountDate();
+            AccountTable.updatePeriod("Ya Zahra");
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

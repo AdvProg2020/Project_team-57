@@ -563,7 +563,6 @@ public class ProductControl extends Control {
 
     public ArrayList<String> getShowingCommentTitles(){
         ArrayList<String> allShowingCommentTitles = new ArrayList<>();
-        //System.out.println("What The Fuck");
         try {
             for (Comment comment : ProductTable.getAllLoggedInUserComment(Control.getUsername(), getCurrentProduct())) {
                 allShowingCommentTitles.add(comment.getTitle());

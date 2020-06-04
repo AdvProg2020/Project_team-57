@@ -2,10 +2,12 @@ package model.db;
 
 import model.existence.Account;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AccountTable extends Database {
     public static boolean isUsernameFree(String username) throws SQLException, ClassNotFoundException {
@@ -158,5 +160,42 @@ public class AccountTable extends Database {
         while (resultSet.next())
             allCustomers.add(Account.makeAccount(resultSet));
         return allCustomers;
+    }
+
+    public static boolean didPeriodPass(String ID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM TimeLapse WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, ID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()){
+            if (resultSet.getDate("FinishDate").compareTo(new Date(System.currentTimeMillis())) < 1)
+                return true;
+            return false;
+        }
+        return false;
+    }
+
+    public static void updatePeriod(String ID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM TimeLapse WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, ID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        Date startDate = resultSet.getDate("StartDate"); Date finishDate = resultSet.getDate("FinishDate");
+        String newCommand = "UPDATE TimeLapse SET StartDate = ?, FinishDate = ? WHERE ID = ?";
+        preparedStatement = getConnection().prepareStatement(newCommand);
+        preparedStatement.setString(3, ID);
+        preparedStatement.setDate(1, new Date(System.currentTimeMillis()));
+        preparedStatement.setDate(2, new Date(System.currentTimeMillis() + (finishDate.getTime() - startDate.getTime())));
+        preparedStatement.execute();
+    }
+
+    public static HashMap<Date, Date> getTimeLapse(String ID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM TimeLapse WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, ID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        HashMap<Date, Date> map = new HashMap<>();
+        map.put(resultSet.getDate("StartDate"), resultSet.getDate("FinishDate"));
+        return map;
     }
 }

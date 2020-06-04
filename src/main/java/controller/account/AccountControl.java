@@ -203,7 +203,6 @@ public class AccountControl extends Control implements IOValidity {
     public Off getOffByID(String offID) {
         try {
             Off off = OffTable.getSpecificOff(offID);
-            //System.out.println(off.getProductIDs());
             return off;
         } catch (SQLException e) {
             e.printStackTrace();

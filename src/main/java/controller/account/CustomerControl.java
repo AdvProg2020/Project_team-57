@@ -144,7 +144,6 @@ public class CustomerControl extends AccountControl{
 
     public Notification increaseAmount(String productID, String command) {
         try {
-            //System.out.println("Command = " + command);
             double input = Double.parseDouble(command);
             if(input > 0)
             {
@@ -167,7 +166,6 @@ public class CustomerControl extends AccountControl{
 
     public Notification decreaseAmount(String productID, String command) {
         try {
-            //System.out.println("Command = " + command);
             double input = Double.parseDouble(command);
             if(input > 0)
             {
@@ -227,7 +225,6 @@ public class CustomerControl extends AccountControl{
         ArrayList<String> discountCodes = new ArrayList<>();
         try {
             DiscountTable.updateDiscountCodesTime();
-            //DiscountTable.updateDiscountCodesRep();
             for (Discount discountCode : DiscountTable.getCustomerDiscountCodes(Control.getUsername())) {
                 if(discountCode.getMaxRepetition() > discountCode.getCustomersWithRepetition().get(Control.getUsername()))
                     discountCodes.add(discountCode.getCode());
@@ -313,10 +310,7 @@ public class CustomerControl extends AccountControl{
                 initPrice += product.getPrice() * product.getAmount();
                 initPrice += product.getPrice() * product.getCount();
             }
-            //TODO
-            //System.out.println("init price : " + initPrice + "$ off price : " + offPrice + "$");
             finalPrice = calculateFinalPrice(hasDiscount, discount, offPrice);
-            //System.out.println("fin pri : " + finalPrice);
             return affordability(initPrice, offPrice, finalPrice);
 
         } catch (SQLException e) {
@@ -336,10 +330,7 @@ public class CustomerControl extends AccountControl{
             giveCreditToVendors(customer.getUsername());
             int giftState = createLog(customer);
             if(hasDiscount) {
-                //System.out.println("Step 1");
                 DiscountTable.addRepetitionToDiscount(discount, customer.getUsername());
-/*                if(discount.getMaxRepetition() <= discount.getCustomersWithRepetition().get(customer.getUsername()))
-                    DiscountTable.removeDiscountCodeForUsername(discount.getID(),customer.getUsername());*/
             }
             reduceProductFromStock(customer.getUsername());
             CartTable.deleteCustomerCart(customer.getUsername());
@@ -400,12 +391,9 @@ public class CustomerControl extends AccountControl{
         if(!hasDiscount)
             return offPrice;
         double discountVal = (discount.getDiscountPercent()/100) * offPrice;
-        //System.out.println("Discount Val : " + discountVal);
         if(discountVal <= discount.getMaxDiscount()) {
-            //System.out.println("off - dis : " + (offPrice - discountVal));
             return offPrice - discountVal;
         }
-        //System.out.println("off - dis : " + (offPrice - discount.getMaxDiscount()));
         return offPrice - discount.getMaxDiscount();
     }
 

@@ -36,10 +36,34 @@ public class Database {
         initLogTable(initConnection.createStatement());
         initScoreTable(initConnection.createStatement());
         initCommentTable(initConnection.createStatement());
+        initTimeLapseTable(initConnection.createStatement());
         removeTempAccountsFromCarts(initConnection);
 
         isDBInit = true;
         initConnection.close();
+    }
+
+    private static void initTimeLapseTable(Statement statement) throws SQLException, ClassNotFoundException {
+        String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'TimeLapse'";
+        ResultSet resultSet = statement.executeQuery(command);
+        if (!resultSet.next()){
+            statement.execute("CREATE TABLE TimeLapse(" +
+                    "ID varchar (16)," +
+                    "StartDate DATE," +
+                    "FinishDate DATE," +
+                    "primary key(ID)" +
+                    ");");
+            String sql = "INSERT INTO TimeLapse(ID, StartDate, FinishDate) VALUES(?,?,?)";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
+            preparedStatement.setString(1, "Ya Zahra");
+            Date date = new Date(new java.util.Date(120, Calendar.MAY,21,0,0,0).getTime());
+            preparedStatement.setDate(2, date);
+            date = new Date(new java.util.Date(120, Calendar.MAY, 26, 0, 0, 0).getTime());
+            preparedStatement.setDate(3, date);
+            preparedStatement.execute();
+        }
+        statement.close();
+        resultSet.close();
     }
 
     private static void initCommentTable(Statement statement) throws SQLException {
@@ -90,15 +114,11 @@ public class Database {
     }
 
     private static void removeTempAccountsFromCarts(Connection initConnection) throws SQLException {
-        //System.out.println("Hello");
         String command = "DELETE FROM Carts WHERE CustomerUsername = ? ";
         PreparedStatement preparedStatement = initConnection.prepareStatement(command);
         preparedStatement.setString(1, "temp");
-        //System.out.println("Before");
         preparedStatement.execute();
-        //System.out.println("After");
         preparedStatement.close();
-        //System.out.println("World");
     }
 
     private static void initLogTable(Statement statement) throws SQLException {
@@ -157,12 +177,6 @@ public class Database {
                     "MaxRepetition int," +
                     "CustomerUsername varchar(16)" +
                     ");");
-            String sql = "INSERT INTO Discounts(ID, StartDate) VALUES(?,?)";
-            PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
-            preparedStatement.setString(1, "" + 11111111);
-            Date date = new Date(new java.util.Date(120, Calendar.MAY,21,0,0,0).getTime());
-            preparedStatement.setDate(2, date);
-            preparedStatement.execute();
         }
         statement.close();
         resultSet.close();

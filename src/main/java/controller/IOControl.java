@@ -47,7 +47,7 @@ public class IOControl extends Control implements IOValidity {
                             CartTable.addTempToUsername(account.getUsername());
                         }
                         CartTable.removeTemp();
-                        if (DiscountTable.didFiveDaysPast())
+                        if (AccountTable.didPeriodPass("Ya Zahra"))
                             AdminControl.getController().getGiftDiscount();
                         return Notification.LOGIN_SUCCESSFUL;
                     } else {

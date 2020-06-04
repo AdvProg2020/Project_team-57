@@ -16,21 +16,6 @@ public class Off {
 
     private ArrayList<String> productIDs = new ArrayList<>();
 
-    /*public Off(ResultSet resultSet) throws SQLException {
-        String offID = resultSet.getString("OffID");
-        this.offID = resultSet.getString("OffID");
-        this.offName = resultSet.getString("OffName");
-        this.vendorUsername = resultSet.getString("VendorUsername");
-        this.status = resultSet.getInt("Status");
-        this.startDate = resultSet.getDate("StartDate");
-        this.finishDate = resultSet.getDate("FinishDate");
-        this.offPercent = resultSet.getDouble("OffPercent");
-        productIDs.add(resultSet.getString("ProductID"));
-        while (resultSet.getString("OffID").equals(offID) && resultSet.next()) {
-            productIDs.add(resultSet.getString("ProductID"));
-        }
-    }*/
-
     public static Off makeOffByID(ResultSet resultSet) throws SQLException {
         Off off = new Off();
         String offID = resultSet.getString("OffID");
@@ -42,9 +27,7 @@ public class Off {
         off.setStatus(resultSet.getInt("Status"));
         off.setOffPercent(resultSet.getDouble("OffPercent"));
         ArrayList<String> productIDs = new ArrayList<>();
-        /*productIDs.add(resultSet.getString("ProductID"));*/
         while (resultSet.next()) {
-            //System.out.println(resultSet.getString("ProductID"));
             productIDs.add(resultSet.getString("ProductID"));
         }
         off.setProductIDs(productIDs);
