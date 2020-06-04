@@ -1,7 +1,7 @@
 
 .text-field {
     -fx-background-color: inherit;
-    -fx-text-fill: black;
+    -fx-text-fill: #455a64;
 }
 
 #imageOfSignUp {
@@ -21,30 +21,26 @@
     -fx-background-color: #607d8b;
 }
 
-#back {
-    -fx-background-image: url("Images/Icons/back.png");
-}
-
 .button:hover {
     -fx-font-weight: bolder;
 }
 
 #username:hover {
-    -fx-prompt-text-fill: #607d8b
+    -fx-prompt-text-fill: #607d8b;
 }
 
 #password:hover {
-    -fx-prompt-text-fill: #607d8b
+    -fx-prompt-text-fill: #607d8b;
 }
 
 #name:hover {
-    -fx-prompt-text-fill: #607d8b
+    -fx-prompt-text-fill: #607d8b;
 }
 
 #lastName:hover {
-    -fx-prompt-text-fill: #607d8b
+    -fx-prompt-text-fill: #607d8b;
 }
 
-#back:hover {
+#backImage:hover {
     -fx-opacity: 0.7;
 }

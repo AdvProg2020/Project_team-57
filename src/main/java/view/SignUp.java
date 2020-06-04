@@ -22,13 +22,14 @@ public class SignUp {
     public JFXTextField lastName;
     public ImageView back;
     private final IOControl ioControl = IOControl.getController();
+    public ImageView backImage;
 
     public void register(ActionEvent event) {
         if (!isTextFieldEmpty()) {
             final Account account = new Account(username.getText(), password.getText());
             account.setFirstName(name.getText());
             account.setLastName(lastName.getText());
-          //  ioControl.register(account).getAlert().show();
+            ioControl.register(account).show();
         }
     }
 
@@ -58,5 +59,13 @@ public class SignUp {
 
     public void backToSignInMenu(MouseEvent event) {
 
+    }
+
+    public void onMouse(MouseEvent event) {
+        backImage.setOpacity(0.7);
+    }
+
+    public void outMouse(MouseEvent event) {
+        backImage.setOpacity(0.4);
     }
 }

@@ -70,7 +70,7 @@ public class SignInProcessor{
     public void enterSignUpMenu(MouseEvent mouseEvent) {
         Parent root1 = null;
         try {
-            root1 = FXMLLoader.load(getClass().getResource("SignUpMenu.fxml"));
+            root1 = FXMLLoader.load(getClass().getResource("SignUp.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
