@@ -1,0 +1,50 @@
+
+.text-field {
+    -fx-background-color: inherit;
+    -fx-text-fill: black;
+}
+
+#imageOfSignUp {
+    -fx-background-image: url("../Images/Backgrounds/BuyGirl.png");
+    -fx-background-color: black;
+}
+
+.text-field:hover {
+    -fx-text-fill: #455a64;
+}
+
+.button {
+    -fx-background-radius: 20px;
+    -fx-border-color: dimgray;
+    -fx-border-radius: 20px;
+    -fx-cursor: hand;
+    -fx-background-color: #607d8b;
+}
+
+#back {
+    -fx-background-image: url("Images/Icons/back.png");
+}
+
+.button:hover {
+    -fx-font-weight: bolder;
+}
+
+#username:hover {
+    -fx-prompt-text-fill: #607d8b
+}
+
+#password:hover {
+    -fx-prompt-text-fill: #607d8b
+}
+
+#name:hover {
+    -fx-prompt-text-fill: #607d8b
+}
+
+#lastName:hover {
+    -fx-prompt-text-fill: #607d8b
+}
+
+#back:hover {
+    -fx-opacity: 0.7;
+}
