@@ -16,10 +16,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
         //System.out.println(getClass().getResource("WelcomeMenu.fxml"));
-        Parent root = FXMLLoader.load(getClass().getResource("WelcomeMenu.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("SignInMenu.fxml"));
         primaryStage.setScene(new Scene(root));
         //primaryStage.setResizable(false);
-        primaryStage.setTitle("Boos Shop");
+        primaryStage.setTitle("Boos Market");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Images\\Icons\\Main Icon.png")));
         primaryStage.setResizable(false);
         //primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Space Invaders.png")));

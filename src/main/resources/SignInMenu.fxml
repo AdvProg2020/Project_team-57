@@ -15,17 +15,17 @@
         <JFXButton layoutX="273.0" layoutY="310.0" onMouseClicked="#login" onMouseEntered="#loginChangeColor" style="-fx-background-color: #B0BEC5;" text="Login" textFill="WHITE" />
         <JFXButton layoutX="163.0" layoutY="310.0" onMouseClicked="#enterSignUpMenu" onMouseEntered="#changeSignUpColor" prefHeight="31.0" prefWidth="73.0" text="Sign Up" underline="true" />
         <Label layoutX="62.0" layoutY="310.0" prefHeight="31.0" prefWidth="108.0" text="Not A Member?" />
-      <ImageView fitHeight="86.0" fitWidth="108.0" layoutX="154.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="86.0" fitWidth="100.0" layoutX="154.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@Images/Icons/Login%20Icon.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="43.0" fitWidth="46.0" layoutX="32.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="31.0" fitWidth="33.0" layoutX="28.0" layoutY="139.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@Images/Icons/Username%20Icon.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="43.0" fitWidth="32.0" layoutX="37.0" layoutY="227.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="31.0" fitWidth="40.0" layoutX="27.0" layoutY="237.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@Images/Icons/Password%20Icon.png" />
          </image>

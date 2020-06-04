@@ -1,6 +1,7 @@
 package view;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,7 +13,8 @@ import java.io.IOException;
 
 public class SignInProcessor {
 
-    public JFXTextField userNameField, passwordField;
+    public JFXTextField userNameField;
+    public JFXPasswordField passwordField;
 
     public void changeSignUpColor(MouseEvent mouseEvent) {
         JFXButton button = (JFXButton) mouseEvent.getSource();

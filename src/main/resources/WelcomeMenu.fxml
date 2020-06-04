@@ -38,5 +38,10 @@
             <Image url="@Images/Icons/User%20Icon.png" />
          </image>
       </ImageView>
+      <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="39.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Images/Icons/Market%20Logo.png" />
+         </image>
+      </ImageView>
    </children>
 </Pane>
