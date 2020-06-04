@@ -46,6 +46,8 @@ public class WelcomeProcessor implements Initializable {
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
                 signInProcessor.setMyStage(newStage);
+                newStage.getIcons().add(new Image(getClass().getResourceAsStream("Login Icon.png")));
+                newStage.setResizable(false);
                 newStage.show();
             } catch (IOException e) {
                 e.printStackTrace();
