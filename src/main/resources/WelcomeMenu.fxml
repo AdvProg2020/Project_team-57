@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.WelcomeProcessor">
+   <children>
+      <JFXButton fx:id="accountMenuButton" buttonType="RAISED" layoutX="84.0" layoutY="236.0" onAction="#openAccountMenu" onMouseEntered="#buttonOnMouse" onMouseExited="#buttonOutMouse" prefHeight="38.0" prefWidth="135.0" style="-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10; -fx-background-color: #b0bec5; -fx-text-fill: #fafafa; -fx-border-color: #fafafa; -fx-border-width: 1.5;" text="Account Menu">
+         <font>
+            <Font name="Calibri Bold" size="17.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="productsMenuButton" buttonType="RAISED" layoutX="84.0" layoutY="291.0" onMouseEntered="#buttonOnMouse" onMouseExited="#buttonOutMouse" prefHeight="38.0" prefWidth="135.0" style="-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10; -fx-background-color: #b0bec5; -fx-text-fill: #fafafa; -fx-border-color: #fafafa; -fx-border-width: 1.5;" text="Products Menu">
+         <font>
+            <Font name="Calibri Bold" size="17.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="offsMenuButton" buttonType="RAISED" layoutX="84.0" layoutY="346.0" onMouseEntered="#buttonOnMouse" onMouseExited="#buttonOutMouse" prefHeight="38.0" prefWidth="135.0" style="-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10; -fx-background-color: #b0bec5; -fx-text-fill: #fafafa; -fx-border-color: #fafafa; -fx-border-width: 1.5;" text="Offs Menu">
+         <font>
+            <Font name="Calibri Bold" size="17.0" />
+         </font>
+      </JFXButton>
+      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="39.0" layoutY="348.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Images/Icons/Sale%20Icon.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="39.0" layoutY="293.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Images/Icons/Shop%20Icon.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="39.0" layoutY="238.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Images/Icons/User%20Icon.png" />
+         </image>
+      </ImageView>
+   </children>
+</Pane>
