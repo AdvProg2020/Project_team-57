@@ -25,22 +25,22 @@
       </JFXButton>
       <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="39.0" layoutY="348.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@Images/Icons/Sale%20Icon.png" />
+            <Image url="@../Images/Icons/Sale%20Icon.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="39.0" layoutY="293.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@Images/Icons/Shop%20Icon.png" />
+            <Image url="@../Images/Icons/Shop%20Icon.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="39.0" layoutY="238.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@Images/Icons/User%20Icon.png" />
+            <Image url="@../Images/Icons/User%20Icon.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="200.0" fitWidth="200.0" layoutX="39.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@Images/Icons/Market%20Logo.png" />
+            <Image url="@../Images/Icons/Market%20Logo.png" />
          </image>
       </ImageView>
    </children>

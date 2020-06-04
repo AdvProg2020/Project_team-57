@@ -8,13 +8,24 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class SignInProcessor {
+public class SignInProcessor{
 
     public JFXTextField userNameField;
     public JFXPasswordField passwordField;
+
+    public Stage getMyStage() {
+        return myStage;
+    }
+
+    public void setMyStage(Stage myStage) {
+        this.myStage = myStage;
+    }
+
+    public Stage myStage;
 
     public void changeSignUpColor(MouseEvent mouseEvent) {
         JFXButton button = (JFXButton) mouseEvent.getSource();

@@ -1,3 +1,5 @@
+package view;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,14 +17,11 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
-        //System.out.println(getClass().getResource("WelcomeMenu.fxml"));
-        Parent root = FXMLLoader.load(getClass().getResource("SignInMenu.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("WelcomeMenu.fxml"));
         primaryStage.setScene(new Scene(root));
-        //primaryStage.setResizable(false);
         primaryStage.setTitle("Boos Market");
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Images\\Icons\\Main Icon.png")));
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Main Icon.png")));
         primaryStage.setResizable(false);
-        //primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Space Invaders.png")));
         primaryStage.show();
     }
 

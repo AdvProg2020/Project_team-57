@@ -17,17 +17,17 @@
         <Label layoutX="62.0" layoutY="310.0" prefHeight="31.0" prefWidth="108.0" text="Not A Member?" />
       <ImageView fitHeight="86.0" fitWidth="100.0" layoutX="154.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@Images/Icons/Login%20Icon.png" />
+            <Image url="@../Images/Icons/Login%20Icon.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="31.0" fitWidth="33.0" layoutX="28.0" layoutY="139.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@Images/Icons/Username%20Icon.png" />
+            <Image url="@../Images/Icons/Username%20Icon.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="31.0" fitWidth="40.0" layoutX="27.0" layoutY="237.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@Images/Icons/Password%20Icon.png" />
+            <Image url="@../Images/Icons/Password%20Icon.png" />
          </image>
       </ImageView>
     </children>

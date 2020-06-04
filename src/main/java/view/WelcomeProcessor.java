@@ -3,10 +3,16 @@ package view;
 import com.jfoenix.controls.JFXButton;
 import controller.IOControl;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -33,6 +39,17 @@ public class WelcomeProcessor implements Initializable {
         if(IOControl.isLoggedIn()) {
             System.out.println("Logged In Before");
         } else {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInMenu.fxml"));
+                Parent root = loader.load();
+                SignInProcessor signInProcessor = loader.getController();
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                signInProcessor.setMyStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             System.out.println("Not Logged In");
         }
     }
