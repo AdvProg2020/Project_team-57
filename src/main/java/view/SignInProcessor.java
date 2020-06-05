@@ -9,6 +9,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.PasswordField;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -29,37 +31,46 @@ public class SignInProcessor{
 
     public Stage myStage;
 
-    public void changeSignUpColorWhenEntered(MouseEvent mouseEvent) {
+    public void signUpButtonOnMouse(MouseEvent mouseEvent) {
         JFXButton button = (JFXButton) mouseEvent.getSource();
         button.setTextFill(Color.valueOf("#b0bec5"));
     }
 
-    public void changeSignUpColorWhenExited(MouseEvent mouseEvent) {
+    public void signUpButtonOutMouse(MouseEvent mouseEvent) {
         JFXButton button = (JFXButton) mouseEvent.getSource();
         button.setTextFill(Color.BLACK);
     }
 
-    public void loginChangeColorWhenEntered(MouseEvent mouseEvent) {
+    public void loginButtonOnMouse(MouseEvent mouseEvent) {
         JFXButton button = (JFXButton) mouseEvent.getSource();
         button.setTextFill(Color.BLACK);
     }
 
-    public void loginChangeColorWhenExited(MouseEvent mouseEvent) {
+    public void loginButtonOutMouse(MouseEvent mouseEvent) {
         JFXButton button = (JFXButton) mouseEvent.getSource();
         button.setTextFill(Color.WHITE);
     }
 
     public void login(MouseEvent mouseEvent) {
-        Alert alert = ioControl.login(new Account(userNameField.getText(), passwordField.getText()));
-
-        if(alert.getHeaderText().equals("Login Successful")) {
+        String style = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
+        if(userNameField.getText().equals("") || passwordField.getText().equals("")) {
+          if(userNameField.getText().equals(""))
+              userNameField.setStyle(style);
+          if(userNameField.getText().equals(""))
+              passwordField.setStyle(style);
+        } else {
+            Alert alert = ioControl.login(new Account(userNameField.getText(), passwordField.getText())).getAlert();
             Optional<ButtonType> optionalButtonType = alert.showAndWait();
             if(optionalButtonType.get() == ButtonType.OK) {
-                myStage.hide();
+                if(alert.getHeaderText().equals("Congratulations"))
+                    myStage.hide();
+                if(alert.getHeaderText().contains("Username"))
+                    userNameField.setStyle(style);
+                if(alert.getHeaderText().contains("Password"))
+                    passwordField.setStyle(style);
             }
         }
 
-        alert.show();
     }
 
 
@@ -76,4 +87,13 @@ public class SignInProcessor{
         myStage.setTitle("Sign Up");
         myStage.setScene(new Scene(root1));
     }
+
+    public void textFieldMouseClicked(MouseEvent mouseEvent) {
+        ((JFXTextField) mouseEvent.getSource()).setStyle("");
+    }
+
+    public void passwordFieldMouseClicked(MouseEvent mouseEvent) {
+        ((JFXPasswordField) mouseEvent.getSource()).setStyle("");
+    }
+
 }

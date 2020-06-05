@@ -1,5 +1,7 @@
 package model.existence;
 
+import controller.account.AccountControl;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

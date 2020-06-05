@@ -14,29 +14,33 @@ import java.sql.SQLException;
 public class IOControl extends Control implements IOValidity {
     private static IOControl ioControl = null;
 
-    public Alert register(Account account) {
+    public Notification register(Account account) {
         if (account.getUsername().length() < 6 || account.getUsername().length() > 16)
-            return Notification.ERROR_USERNAME_LENGTH.getAlert();
+            return Notification.ERROR_USERNAME_LENGTH;
         if (!isUsernameValid(account.getUsername()))
-            return Notification.ERROR_USERNAME_FORMAT.getAlert();
+            return Notification.ERROR_USERNAME_FORMAT;
         if (account.getPassword().length() < 8 || account.getPassword().length() > 16)
-            return Notification.ERROR_PASSWORD_LENGTH.getAlert();
+            return Notification.ERROR_PASSWORD_LENGTH;
         if (!this.isPasswordValid(account.getPassword()))
-            return Notification.ERROR_PASSWORD_FORMAT.getAlert();
+            return Notification.ERROR_PASSWORD_FORMAT;
+        if (account.getFirstName().length() > 25)
+            return Notification.ERROR_FIRSTNAME_LENGTH;
+        if (account.getLastName().length() > 25)
+            return Notification.ERROR_LASTNAME_LENGTH;
         try {
             if (AccountTable.isUsernameFree(account.getUsername())) {
                 AccountTable.addAccount(account.getUsername(), account.getPassword(), account.getType());
-                return Notification.REGISTER_SUCCESSFUL.getAlert();
+                return Notification.REGISTER_SUCCESSFUL;
             } else
-                return Notification.ERROR_FULL_USERNAME.getAlert();
+                return Notification.ERROR_FULL_USERNAME;
         } catch (SQLException e) {
-            return Notification.UNKNOWN_ERROR.getAlert();
+            return Notification.UNKNOWN_ERROR;
         } catch (ClassNotFoundException e){
-            return Notification.UNKNOWN_ERROR.getAlert();
+            return Notification.UNKNOWN_ERROR;
         }
     }
 
-    public Alert login(Account account){
+    public Notification login(Account account){
         try {
             if (!AccountTable.isUsernameFree(account.getUsername())) {
                 if (AccountTable.isPasswordCorrect(account.getUsername(), account.getPassword())) {
@@ -50,23 +54,23 @@ public class IOControl extends Control implements IOValidity {
                         CartTable.removeTemp();
                         if (AccountTable.didPeriodPass("Ya Zahra"))
                             AdminControl.getController().getGiftDiscount();
-                        return Notification.LOGIN_SUCCESSFUL.getAlert();
+                        return Notification.LOGIN_SUCCESSFUL;
                         /*Alert alert = new Alert(Alert.AlertType.INFORMATION, "You have Logged In Successfully", new ButtonType("Ok"));
                         alert.setHeaderText("Logged In Successfully");
                         return alert;*/
                     } else {
-                        return Notification.USER_NOT_APPROVED.getAlert();
+                        return Notification.USER_NOT_APPROVED;
                         //Alert alert = new Alert(Alert.AlertType.ERROR, "User")
                     }
                 } else
-                    return Notification.WRONG_PASSWORD.getAlert();
+                    return Notification.WRONG_PASSWORD;
             } else
-                return Notification.ERROR_FREE_USERNAME.getAlert();
+                return Notification.ERROR_FREE_USERNAME;
         } catch (SQLException e) {
             e.printStackTrace();
-            return Notification.UNKNOWN_ERROR.getAlert();
+            return Notification.UNKNOWN_ERROR;
         } catch (ClassNotFoundException e) {
-            return Notification.UNKNOWN_ERROR.getAlert();
+            return Notification.UNKNOWN_ERROR;
         }
     }
 

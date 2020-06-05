@@ -4,16 +4,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
 public enum Notification {
-    REGISTER_SUCCESSFUL("Registered successfully", Alert.AlertType.INFORMATION, "Register Successful"),
-    LOGIN_SUCCESSFUL("Logged in successfully", Alert.AlertType.INFORMATION, "Login Successful"),
-    ERROR_USERNAME_LENGTH("Username must contain 6 to 16 characters!", Alert.AlertType.ERROR, "Username Length Not Valid"),
-    ERROR_USERNAME_FORMAT("Username must contain only word characters!", Alert.AlertType.ERROR, "Username Format Not Valid"),
-    ERROR_FULL_USERNAME("Username Already Exists", Alert.AlertType.ERROR, "Full Username"),
-    ERROR_FREE_USERNAME("This Username is not registered Yet", Alert.AlertType.ERROR, "Free Username"),
-    ERROR_PASSWORD_LENGTH("Password must contain 8 to 16 characters!", Alert.AlertType.ERROR, "Password Length Not Valid"),
-    ERROR_PASSWORD_FORMAT("Password contains some illegal characters", Alert.AlertType.ERROR, "Password Format Not Valid"),
-    UNKNOWN_ERROR("An unknown error occured", Alert.AlertType.ERROR, "Unknown Error"),
-    WRONG_PASSWORD("WRONG PASSWORD!", Alert.AlertType.ERROR, "Wrong Password"),
+    REGISTER_SUCCESSFUL("Registered successfully", Alert.AlertType.INFORMATION, "Successful", "Congratulations"),
+    LOGIN_SUCCESSFUL("Logged in successfully", Alert.AlertType.INFORMATION, "Successful", "Congratulations"),
+    ERROR_USERNAME_LENGTH("Username must contain 6 to 16 characters!", Alert.AlertType.ERROR, "Register Error", "Username Length Not Valid"),
+    ERROR_USERNAME_FORMAT("Username must contain only word characters!", Alert.AlertType.ERROR, "Register Error", "Username Format Not Valid"),
+    ERROR_FULL_USERNAME("Username Already Exists", Alert.AlertType.ERROR, "Register Error", "Full Username"),
+    ERROR_FREE_USERNAME("This Username is not registered Yet", Alert.AlertType.ERROR, "Login Error", "Free Username"),
+    ERROR_PASSWORD_LENGTH("Password must contain 8 to 16 characters!", Alert.AlertType.ERROR, "Register Error", "Password Length Not Valid"),
+    ERROR_PASSWORD_FORMAT("Password's length must be between 8 and 16, and contain both letters and numbers", Alert.AlertType.ERROR, "Register Error", "Password Format Not Valid"),
+    UNKNOWN_ERROR("An unknown error occured", Alert.AlertType.ERROR, "Unknown Error", "Shit!!!!"),
+    WRONG_PASSWORD("WRONG PASSWORD!", Alert.AlertType.ERROR, "Login Error", "Wrong Password"),
     SAME_PASSWORD_ERROR("What are you doing??\uD83D\uDE15\nPasswords are identical"),
     CHANGE_PASSWORD_SUCCESSFULLY("Password was changed successfully\uD83D\uDE10"),
     SAME_FIELD_ERROR("Are you ok???\uD83D\uDE10\nEntered value is identical with initial value"),
@@ -25,7 +25,7 @@ public enum Notification {
     REMOVE_PRODUCT_SUCCESSFULLY("Product removed successfully"),
     DECLINE_REQUEST("Request declined"),
     ACCEPT_ADD_VENDOR_REQUEST("The seller was added to the store"),
-    USER_NOT_APPROVED("Wait for The Lord to Prove your Account, may the 4th be with you.\uD83D\uDE08", Alert.AlertType.ERROR, "User Not Approved"),
+    USER_NOT_APPROVED("Wait for The Lord to Prove your Account, may the 4th be with you.\uD83D\uDE08", Alert.AlertType.ERROR, "Login Error", "User Not Approved"),
     PRODUCT_NOT_AVAILABLE("This Product is Unavailable. You can't Edit its Specs."),
     ADD_PRODUCT("Successfully Added. Hope You Will Have A Good Sale If The Lord Accepts your Product"),
     ACCEPT_ADDING_PRODUCT("Product added to store successfully \uD83D\uDC8B"),
@@ -114,7 +114,11 @@ public enum Notification {
             "\nPurchased Successfully \uD83D\uDE1C"),
     INVALID_MIN_PRICE("Minimum Price Must Be A Positive Number. "),
     MIN_PRICE_BIGGER_THAN_MAX_PRICE("Minimum Price Must Be Smaller Than Maximum Price. "),
-    SET_PRICE_FILTERS("Price Filters Are Set Successfully. ");
+    SET_PRICE_FILTERS("Price Filters Are Set Successfully. "),
+    ERROR_FIRSTNAME_LENGTH("FirstName length must be less than 25 characters", Alert.AlertType.ERROR,
+            "Register Error", "Invalid FirstName"),
+    ERROR_LASTNAME_LENGTH("LastName length must be less than 25 characters", Alert.AlertType.ERROR,
+            "Register Error", "Invalid LastName");
 
 
 
@@ -126,8 +130,9 @@ public enum Notification {
         this.message = message;
     }
 
-    Notification(String message, Alert.AlertType alertType, String header, ButtonType... buttonTypes) {
+    Notification(String message, Alert.AlertType alertType, String title, String header, ButtonType... buttonTypes) {
         Alert alert = new Alert(alertType, message, buttonTypes);
+        alert.setTitle(title);
         alert.setHeaderText(header);
         this.alert = alert;
         this.message = message;

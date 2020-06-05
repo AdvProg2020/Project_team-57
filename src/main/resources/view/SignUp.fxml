@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -11,22 +12,17 @@
 
 <AnchorPane fx:id="pane" prefHeight="503.0" prefWidth="722.0" style="-fx-background-color: #eeeeee#eeeeee;" styleClass="root" stylesheets="@CSS%20files/signUp.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.SignUpProcessor">
    <children>
-      <JFXTextField fx:id="username" focusColor="#5d6e9e" layoutX="118.0" layoutY="107.0" prefHeight="31.0" prefWidth="270.0" promptText="Username" stylesheets="@../CSS%20files/signUp.css">
+      <JFXTextField fx:id="username" focusColor="#5d6e9e" layoutX="118.0" layoutY="107.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="270.0" promptText="Username" stylesheets="@../CSS%20files/signUp.css">
          <font>
             <Font name="Arial Bold" size="18.0" />
          </font>
       </JFXTextField>
-      <JFXTextField fx:id="password" layoutX="118.0" layoutY="179.0" prefHeight="31.0" prefWidth="270.0" promptText="Password" stylesheets="@../CSS%20files/signUp.css" unFocusColor="#221b1b">
+      <JFXTextField fx:id="name" layoutX="118.0" layoutY="255.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="270.0" promptText="Name" stylesheets="@../CSS%20files/signUp.css">
          <font>
             <Font name="Arial Bold" size="18.0" />
          </font>
       </JFXTextField>
-      <JFXTextField fx:id="name" layoutX="118.0" layoutY="255.0" prefHeight="31.0" prefWidth="270.0" promptText="Name" stylesheets="@../CSS%20files/signUp.css">
-         <font>
-            <Font name="Arial Bold" size="18.0" />
-         </font>
-      </JFXTextField>
-      <JFXTextField fx:id="lastName" layoutX="118.0" layoutY="322.0" prefHeight="31.0" prefWidth="270.0" promptText="Last Name" stylesheets="@../CSS%20files/signUp.css">
+      <JFXTextField fx:id="lastName" layoutX="118.0" layoutY="322.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="270.0" promptText="Last Name" stylesheets="@../CSS%20files/signUp.css">
          <font>
             <Font name="Arial Bold" size="18.0" />
          </font>
@@ -61,5 +57,9 @@
          </cursor>
       </ImageView>
       <JFXComboBox fx:id="accountTypeComboBox" layoutX="89.0" layoutY="389.0" prefHeight="31.0" prefWidth="152.0" style="-fx-border-radius: 10 10 10 10; -fx-background-radius: 10 10 10 10;" />
+      <JFXPasswordField fx:id="password" layoutX="118.0" layoutY="180.0" onMouseClicked="#passwordFieldMouseClicked" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="31.0" prefWidth="270.0" promptText="Password">
+         <font>
+            <Font name="Arial Bold" size="18.0" />
+         </font></JFXPasswordField>
    </children>
 </AnchorPane>
