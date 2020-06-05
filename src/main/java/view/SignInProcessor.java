@@ -23,10 +23,6 @@ public class SignInProcessor{
     public JFXTextField userNameField;
     public JFXPasswordField passwordField;
 
-    public Stage getMyStage() {
-        return myStage;
-    }
-
     public void setMyStage(Stage myStage) {
         this.myStage = myStage;
     }
@@ -70,10 +66,14 @@ public class SignInProcessor{
     public void enterSignUpMenu(MouseEvent mouseEvent) {
         Parent root1 = null;
         try {
-            root1 = FXMLLoader.load(getClass().getResource("SignUp.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("SignUp.fxml"));
+            root1 = loader.load();
+            SignUpProcessor signUpProcessor = loader.getController();
+            signUpProcessor.setMyStage(myStage);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        myStage.setTitle("Sign Up");
         myStage.setScene(new Scene(root1));
     }
 }

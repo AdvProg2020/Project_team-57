@@ -48,6 +48,7 @@ public class WelcomeProcessor implements Initializable {
                 signInProcessor.setMyStage(newStage);
                 newStage.getIcons().add(new Image(getClass().getResourceAsStream("Login Icon.png")));
                 newStage.setResizable(false);
+                newStage.setTitle("Sign In");
                 newStage.show();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -57,7 +58,7 @@ public class WelcomeProcessor implements Initializable {
     }
 
     public void buttonOnMouse(MouseEvent mouseEvent) {
-        String onMouseStyle = "-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10; -fx-background-color: #fafafa; -fx-text-fill: #b0bec5; -fx-border-color: #fafafa; -fx-border-width: 1.5;";
+        String onMouseStyle = "-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10; -fx-background-color: #fafafa; -fx-text-fill: #b0bec5; -fx-border-color: #fafafa; -fx-border-width: 1.5; -fx-cursor: hand;";
         switch (((JFXButton)mouseEvent.getSource()).getText()) {
             case "Account Menu" :
                 accountMenuButton.setStyle(onMouseStyle);

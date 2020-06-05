@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -8,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" prefHeight="503.0" prefWidth="722.0" style="-fx-background-color: #eeeeee#eeeeee;" styleClass="root" stylesheets="@CSS%20files/signUp.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.SignUp">
+<AnchorPane fx:id="pane" prefHeight="503.0" prefWidth="722.0" style="-fx-background-color: #eeeeee#eeeeee;" styleClass="root" stylesheets="@CSS%20files/signUp.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.SignUpProcessor">
    <children>
       <JFXTextField fx:id="username" focusColor="#5d6e9e" layoutX="118.0" layoutY="107.0" prefHeight="31.0" prefWidth="270.0" promptText="Username" stylesheets="@../CSS%20files/signUp.css">
          <font>
@@ -50,7 +51,7 @@
          <image>
             <Image url="@../Images/Backgrounds/BuyGirl.png" />
          </image></ImageView>
-      <Button fx:id="signUp" layoutX="174.0" layoutY="403.0" mnemonicParsing="false" onAction="#register" prefHeight="33.0" prefWidth="129.0" stylesheets="@../CSS%20files/signUp.css" text="SignUp" />
+      <Button fx:id="signUp" layoutX="259.0" layoutY="388.0" mnemonicParsing="false" onAction="#register" prefHeight="33.0" prefWidth="129.0" stylesheets="@../CSS%20files/signUp.css" text="SignUp" />
       <ImageView fx:id="backImage" fitHeight="33.0" fitWidth="51.0" layoutX="26.0" layoutY="24.0" onMouseClicked="#backToSignInMenu" onMouseEntered="#onMouse" onMouseExited="#outMouse" opacity="0.4" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/Icons/back.png" />
@@ -59,5 +60,6 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
+      <JFXComboBox fx:id="accountTypeComboBox" layoutX="89.0" layoutY="389.0" prefHeight="31.0" prefWidth="152.0" style="-fx-border-radius: 10 10 10 10; -fx-background-radius: 10 10 10 10;" />
    </children>
 </AnchorPane>
