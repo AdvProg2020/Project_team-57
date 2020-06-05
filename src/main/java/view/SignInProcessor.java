@@ -52,21 +52,22 @@ public class SignInProcessor{
     }
 
     public void login(MouseEvent mouseEvent) {
+        String style = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
         if(userNameField.getText().equals("") || passwordField.getText().equals("")) {
           if(userNameField.getText().equals(""))
-              userNameField.setStyle("-fx-border-color: dimgray;");
+              userNameField.setStyle(style);
           if(userNameField.getText().equals(""))
-              passwordField.setStyle("-fx-border-color: dimgray;");
+              passwordField.setStyle(style);
         } else {
             Alert alert = ioControl.login(new Account(userNameField.getText(), passwordField.getText())).getAlert();
             Optional<ButtonType> optionalButtonType = alert.showAndWait();
             if(optionalButtonType.get() == ButtonType.OK) {
-                if(alert.getTitle().equals("Register Successful"))
+                if(alert.getHeaderText().equals("Congratulations"))
                     myStage.hide();
                 if(alert.getHeaderText().contains("Username"))
-                    userNameField.setStyle("-fx-border-color: dimgray;");
+                    userNameField.setStyle(style);
                 if(alert.getHeaderText().contains("Password"))
-                    passwordField.setStyle("-fx-border-color: dimgray;");
+                    passwordField.setStyle(style);
             }
         }
 

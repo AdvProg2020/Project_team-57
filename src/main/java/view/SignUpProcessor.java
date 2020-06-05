@@ -23,6 +23,7 @@ import model.existence.Account;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class SignUpProcessor implements Initializable {
@@ -59,17 +60,17 @@ public class SignUpProcessor implements Initializable {
         if (alert.getHeaderText().equals("Username Length Not Valid") ||
             alert.getHeaderText().equals("Username Format Not Valid") ||
             alert.getHeaderText().equals("Full Username")) {
-            username.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, null, new BorderWidths(1.5))));
+            username.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
             alert.show();
         } else if (alert.getHeaderText().equals("Password Length Not Valid") ||
                    alert.getHeaderText().equals("Password Format Not Valid")) {
-            password.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, null, new BorderWidths(1.5))));
+            password.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
             alert.show();
         } else if (alert.getHeaderText().equals("Invalid FirstName")) {
-            name.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, null, new BorderWidths(1.5))));
+            name.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
             alert.show();
         } else if (alert.getHeaderText().equals("Invalid LastName")) {
-            lastName.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, null, new BorderWidths(1.5))));
+            lastName.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
             alert.show();
         }
     }
@@ -92,27 +93,24 @@ public class SignUpProcessor implements Initializable {
         name.setBorder(null);
         password.setBorder(null);
         username.setBorder(null);
-        if (!username.getText().isEmpty()) {
-            if (!password.getText().isEmpty()) {
-                if (!name.getText().isEmpty()) {
-                    if (!lastName.getText().isEmpty()) {
-                        return false;
-                    } else {
-                        lastName.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(1.5))));
-                        return true;
-                    }
-                } else {
-                    name.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(1.5))));
-                    return true;
-                }
-            } else {
-                password.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(1.5))));
-                return true;
+
+        if(username.getText().isEmpty() || password.getText().isEmpty()
+                || name.getText().isEmpty() || lastName.getText().isEmpty()) {
+            if(username.getText().isEmpty()) {
+                username.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
             }
-        } else {
-            username.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(1.5))));
+            if(password.getText().isEmpty()) {
+                password.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
+            }
+            if(name.getText().isEmpty()) {
+                name.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
+            }
+            if(lastName.getText().isEmpty()) {
+                lastName.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
+            }
             return true;
         }
+        return false;
     }
 
     public void backToSignInMenu(MouseEvent event) {
@@ -136,7 +134,7 @@ public class SignUpProcessor implements Initializable {
 
     public void outMouse(MouseEvent event) {
         backImage.setOpacity(0.4);
-        password.setStyle("-fx-prompt-text-fill: Black");
+        password.setStyle(null);
     }
 
     @Override
@@ -156,5 +154,13 @@ public class SignUpProcessor implements Initializable {
     public void setMyStage(Stage myStage) {
         this.myStage = myStage;
 
+    }
+
+    public void textFieldMouseClicked(MouseEvent mouseEvent) {
+        ((JFXTextField) mouseEvent.getSource()).setBorder(null);
+    }
+
+    public void passwordFieldMouseClicked(MouseEvent mouseEvent) {
+        ((JFXPasswordField) mouseEvent.getSource()).setBorder(null);
     }
 }
