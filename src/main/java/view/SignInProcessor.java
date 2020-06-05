@@ -68,9 +68,6 @@ public class SignInProcessor{
                 if(alert.getHeaderText().contains("Password"))
                     passwordField.setStyle("-fx-border-color: dimgray;");
             }
-
-
-
         }
 
     }
