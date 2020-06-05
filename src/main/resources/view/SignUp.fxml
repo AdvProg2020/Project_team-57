@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -12,11 +13,6 @@
 <AnchorPane fx:id="pane" prefHeight="503.0" prefWidth="722.0" style="-fx-background-color: #eeeeee#eeeeee;" styleClass="root" stylesheets="@CSS%20files/signUp.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.SignUpProcessor">
    <children>
       <JFXTextField fx:id="username" focusColor="#5d6e9e" layoutX="118.0" layoutY="107.0" prefHeight="31.0" prefWidth="270.0" promptText="Username" stylesheets="@../CSS%20files/signUp.css">
-         <font>
-            <Font name="Arial Bold" size="18.0" />
-         </font>
-      </JFXTextField>
-      <JFXTextField fx:id="password" layoutX="118.0" layoutY="179.0" prefHeight="31.0" prefWidth="270.0" promptText="Password" stylesheets="@../CSS%20files/signUp.css" unFocusColor="#221b1b">
          <font>
             <Font name="Arial Bold" size="18.0" />
          </font>
@@ -50,10 +46,7 @@
       <ImageView fx:id="imageOfSignUp" fitHeight="313.0" fitWidth="244.0" layoutX="470.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/Backgrounds/BuyGirl.png" />
-         </image>
-         <cursor>
-            <Cursor fx:constant="DEFAULT" />
-         </cursor></ImageView>
+         </image></ImageView>
       <Button fx:id="signUp" layoutX="259.0" layoutY="388.0" mnemonicParsing="false" onAction="#register" prefHeight="33.0" prefWidth="129.0" stylesheets="@../CSS%20files/signUp.css" text="SignUp" />
       <ImageView fx:id="backImage" fitHeight="33.0" fitWidth="51.0" layoutX="26.0" layoutY="24.0" onMouseClicked="#backToSignInMenu" onMouseEntered="#onMouse" onMouseExited="#outMouse" opacity="0.4" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -63,9 +56,10 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
-      <JFXComboBox fx:id="accountTypeComboBox" layoutX="85.0" layoutY="380.0" prefHeight="31.0" prefWidth="152.0" style="-fx-border-radius: 10 10 10 10; -fx-background-radius: 10 10 10 10;">
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor></JFXComboBox>
+      <JFXComboBox fx:id="accountTypeComboBox" layoutX="89.0" layoutY="389.0" prefHeight="31.0" prefWidth="152.0" style="-fx-border-radius: 10 10 10 10; -fx-background-radius: 10 10 10 10;" />
+      <JFXPasswordField fx:id="password" layoutX="118.0" layoutY="180.0" prefHeight="31.0" prefWidth="270.0" promptText="Password" onMouseEntered="#onMouse" onMouseExited="#outMouse">
+         <font>
+            <Font name="Arial Bold" size="18.0" />
+         </font></JFXPasswordField>
    </children>
 </AnchorPane>

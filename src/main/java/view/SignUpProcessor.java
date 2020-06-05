@@ -1,14 +1,15 @@
 package view;
 
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import controller.Control;
 import controller.IOControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -28,7 +29,7 @@ public class SignUpProcessor implements Initializable {
 
     public Button signUp;
     public JFXTextField username;
-    public JFXTextField password;
+    public JFXPasswordField password;
     public JFXTextField name;
     public JFXTextField lastName;
     public ImageView back;
@@ -43,8 +44,33 @@ public class SignUpProcessor implements Initializable {
             account.setFirstName(name.getText());
             account.setLastName(lastName.getText());
             account.setType(getAccountType());
-            //System.out.println(account.getType());
-            ioControl.register(account).getAlert().show();
+            Alert alert = ioControl.register(account).getAlert();
+            if (alert.getTitle().equals("Successful")) {
+                alert.show();
+                signUp.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(1.5))));
+                backToSignInMenu(null);
+                return;
+            }
+            showError(alert);
+        }
+    }
+
+    private void showError(Alert alert) {
+        if (alert.getHeaderText().equals("Username Length Not Valid") ||
+            alert.getHeaderText().equals("Username Format Not Valid") ||
+            alert.getHeaderText().equals("Full Username")) {
+            username.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, null, new BorderWidths(1.5))));
+            alert.show();
+        } else if (alert.getHeaderText().equals("Password Length Not Valid") ||
+                   alert.getHeaderText().equals("Password Format Not Valid")) {
+            password.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, null, new BorderWidths(1.5))));
+            alert.show();
+        } else if (alert.getHeaderText().equals("Invalid FirstName")) {
+            name.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, null, new BorderWidths(1.5))));
+            alert.show();
+        } else if (alert.getHeaderText().equals("Invalid LastName")) {
+            lastName.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, null, new BorderWidths(1.5))));
+            alert.show();
         }
     }
 
@@ -105,10 +131,12 @@ public class SignUpProcessor implements Initializable {
 
     public void onMouse(MouseEvent event) {
         backImage.setOpacity(0.7);
+        password.setStyle("-fx-prompt-text-fill: #607d8b");
     }
 
     public void outMouse(MouseEvent event) {
         backImage.setOpacity(0.4);
+        password.setStyle("-fx-prompt-text-fill: Black");
     }
 
     @Override
