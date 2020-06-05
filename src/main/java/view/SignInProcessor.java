@@ -52,10 +52,10 @@ public class SignInProcessor{
     }
 
     public void login(MouseEvent mouseEvent) {
-        if(userNameField.getText() == null || passwordField == null) {
-          if(userNameField.getText() == null)
+        if(userNameField.getText().equals("") || passwordField.getText().equals("")) {
+          if(userNameField.getText().equals(""))
               userNameField.setStyle("-fx-border-color: dimgray;");
-          if(userNameField.getText() == null)
+          if(userNameField.getText().equals(""))
               passwordField.setStyle("-fx-border-color: dimgray;");
         } else {
             Alert alert = ioControl.login(new Account(userNameField.getText(), passwordField.getText())).getAlert();
@@ -87,7 +87,12 @@ public class SignInProcessor{
         myStage.setScene(new Scene(root1));
     }
 
-    public void fieldMouseClicked(MouseEvent mouseEvent) {
-        ((PasswordField) mouseEvent.getSource()).setStyle(null);
+    public void textFieldMouseClicked(MouseEvent mouseEvent) {
+        ((JFXTextField) mouseEvent.getSource()).setStyle("");
     }
+
+    public void passwordFieldMouseClicked(MouseEvent mouseEvent) {
+        ((JFXPasswordField) mouseEvent.getSource()).setStyle("");
+    }
+
 }
