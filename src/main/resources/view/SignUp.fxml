@@ -50,7 +50,10 @@
       <ImageView fx:id="imageOfSignUp" fitHeight="313.0" fitWidth="244.0" layoutX="470.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/Backgrounds/BuyGirl.png" />
-         </image></ImageView>
+         </image>
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor></ImageView>
       <Button fx:id="signUp" layoutX="259.0" layoutY="388.0" mnemonicParsing="false" onAction="#register" prefHeight="33.0" prefWidth="129.0" stylesheets="@../CSS%20files/signUp.css" text="SignUp" />
       <ImageView fx:id="backImage" fitHeight="33.0" fitWidth="51.0" layoutX="26.0" layoutY="24.0" onMouseClicked="#backToSignInMenu" onMouseEntered="#onMouse" onMouseExited="#outMouse" opacity="0.4" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -60,6 +63,9 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
-      <JFXComboBox fx:id="accountTypeComboBox" layoutX="89.0" layoutY="389.0" prefHeight="31.0" prefWidth="152.0" style="-fx-border-radius: 10 10 10 10; -fx-background-radius: 10 10 10 10;" />
+      <JFXComboBox fx:id="accountTypeComboBox" layoutX="85.0" layoutY="380.0" prefHeight="31.0" prefWidth="152.0" style="-fx-border-radius: 10 10 10 10; -fx-background-radius: 10 10 10 10;">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></JFXComboBox>
    </children>
 </AnchorPane>

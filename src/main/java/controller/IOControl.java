@@ -23,6 +23,10 @@ public class IOControl extends Control implements IOValidity {
             return Notification.ERROR_PASSWORD_LENGTH;
         if (!this.isPasswordValid(account.getPassword()))
             return Notification.ERROR_PASSWORD_FORMAT;
+        if (account.getFirstName().length() > 25)
+            return Notification.ERROR_FIRSTNAME_LENGTH;
+        if (account.getLastName().length() > 25)
+            return Notification.ERROR_LASTNAME_LENGTH;
         try {
             if (AccountTable.isUsernameFree(account.getUsername())) {
                 AccountTable.addAccount(account.getUsername(), account.getPassword(), account.getType());
