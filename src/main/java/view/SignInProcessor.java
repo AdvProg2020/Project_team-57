@@ -50,7 +50,7 @@ public class SignInProcessor{
     }
 
     public void login(MouseEvent mouseEvent) {
-        Alert alert = ioControl.login(new Account(userNameField.getText(), passwordField.getText()));
+        Alert alert = ioControl.login(new Account(userNameField.getText(), passwordField.getText())).getAlert();
 
         if(alert.getHeaderText().equals("Login Successful")) {
             Optional<ButtonType> optionalButtonType = alert.showAndWait();
