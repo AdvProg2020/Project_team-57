@@ -6,6 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import model.db.AccountTable;
+import model.db.VendorTable;
+import model.existence.Account;
+
+import java.sql.SQLException;
 
 public class Main extends Application {
     private static Stage stage;

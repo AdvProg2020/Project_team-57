@@ -44,7 +44,7 @@ public class SignUpProcessor implements Initializable {
             account.setLastName(lastName.getText());
             account.setType(getAccountType());
             //System.out.println(account.getType());
-            ioControl.register(account).show();
+            ioControl.register(account).getAlert().show();
         }
     }
 

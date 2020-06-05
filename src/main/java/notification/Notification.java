@@ -126,9 +126,9 @@ public enum Notification {
         this.message = message;
     }
 
-    Notification(String message, Alert.AlertType alertType, String header, ButtonType... buttonTypes) {
+    Notification(String message, Alert.AlertType alertType, String title, ButtonType... buttonTypes) {
         Alert alert = new Alert(alertType, message, buttonTypes);
-        alert.setHeaderText(header);
+        alert.setTitle(title);
         this.alert = alert;
         this.message = message;
     }
