@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="630.0" prefWidth="780.0" style="-fx-background-color: #e0f2f1;" stylesheets="@../CSS%20files/AdminMenuButtons.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AdminProcessor">
+   <children>
+      <HBox alignment="CENTER" layoutX="260.0" prefHeight="315.0" prefWidth="260.0">
+         <children>
+            <Pane maxHeight="-Infinity" opacity="0.7" prefHeight="275.0" prefWidth="220.0" style="-fx-background-color: #ffffff; -fx-background-radius: 5 5 5 5;" styleClass="hover_option">
+               <children>
+                  <ImageView fitHeight="96.0" fitWidth="96.0" layoutX="62.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/Icons/Manage%20Offs%20Icon.png" />
+                     </image>
+                  </ImageView>
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="35.0" layoutY="200.0" prefWidth="150.0" text="Offs Requests">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="315.0" prefWidth="260.0">
+         <children>
+            <Pane maxHeight="-Infinity" opacity="0.7" prefHeight="275.0" prefWidth="220.0" style="-fx-background-color: #ffffff; -fx-background-radius: 5 5 5 5;" styleClass="hover_option">
+               <children>
+                  <ImageView fitHeight="96.0" fitWidth="96.0" layoutX="62.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/Icons/Discounts%20Icon.png" />
+                     </image>
+                  </ImageView>
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="35.0" layoutY="200.0" prefWidth="150.0" text="Manage Discounts">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </children>
+      </HBox>
+   </children>
+</Pane>
