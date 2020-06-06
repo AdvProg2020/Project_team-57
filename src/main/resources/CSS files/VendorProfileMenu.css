@@ -1,3 +1,30 @@
 .Main_Pane {
-    -fx-background-image: linear-gradient(to bottom, );
+    -fx-background-image: linear-gradient(to bottom, #360033, #127183);
+
+}
+
+.Up_Button {
+    -fx-opacity: 0.7;
+    -fx-text-fill: #2F999F;
+    -fx-prompt-text-fill: #2F999F;
+}
+
+.Up_Button:hover {
+    -fx-border-color: #2F999F;
+    -fx-border-width: 0 0 2 0;
+    -fx-opacity: 1.0;
+    -fx-cursor: hand;
+}
+
+.Down_Button {
+    -fx-opacity: 0.7;
+    -fx-text-fill: #2F999F;
+    -fx-prompt-text-fill: #2F999F;
+    -fx-background-color: #292A51;
+    -fx-border-radius: 10;
+}
+
+.Down_Button:hover {
+    -fx-opacity: 1.0;
+    -fx-cursor: hand;
 }
