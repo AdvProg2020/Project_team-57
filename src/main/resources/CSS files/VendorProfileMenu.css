@@ -1,3 +1,5 @@
+
+
 .Main_Pane {
     -fx-background-image: linear-gradient(to bottom, #360033, #127183);
 
@@ -16,6 +18,10 @@
     -fx-cursor: hand;
 }
 
+.Up_Button:pressed {
+    //TODO
+}
+
 .Down_Button {
     -fx-opacity: 0.7;
     -fx-text-fill: #2F999F;
@@ -27,4 +33,19 @@
 .Down_Button:hover {
     -fx-opacity: 1.0;
     -fx-cursor: hand;
+}
+
+.Image1 {
+    //TODO
+    /*-fx-image: url(UserIcon.png);*/
+}
+
+.Image2 {
+    //TODO
+    /*-fx-image: url(UserIcon.png);*/
+}
+
+.Image3 {
+    //TODO
+    /*-fx-image: url(UserIcon.png);*/
 }
