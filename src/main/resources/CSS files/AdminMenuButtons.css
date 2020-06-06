@@ -1,0 +1,18 @@
+
+.hover_button:hover {
+    -fx-border-color: #0277bd;
+    -fx-border-width: 0 0 0 3;
+    -fx-background-color: #80cbc4;
+    -fx-cursor: hand;
+}
+
+.hover_option:hover {
+    -fx-background-color: #80cbc4;
+    -fx-opacity: 1;
+    -fx-cursor: hand;
+}
+
+.hover_log_out:hover {
+    -fx-background-color: #80cbc4;
+    -fx-cursor: hand;
+}
