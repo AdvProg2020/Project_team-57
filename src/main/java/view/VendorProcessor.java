@@ -33,7 +33,7 @@ public class VendorProcessor implements Initializable {
         mainPane.setBackground(new Background(backgroundFill));
         Pane pane = (Pane) mainPane.getChildren().get(1);
         Label label = (Label) pane.getChildren().get(1);
-        label.setText(Control.getUsername());
+        label.setText("Sepehr");
     }
 
     public void showProfile(MouseEvent mouseEvent) {
