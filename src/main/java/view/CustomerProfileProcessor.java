@@ -1,5 +1,6 @@
 package view;
 
+import controller.IOControl;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -39,6 +40,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     public Pane cartPane;
     public Pane profilePane;
     public ImageView back;
+    public Label profileLabel;
     private Stage myStage;
     public Pane pain;
 
@@ -50,7 +52,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         };
         LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
         BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
-       pain.setBackground(new Background(backgroundFill));
+        pain.setBackground(new Background(backgroundFill));
         DropShadow dropShadow = new DropShadow();
         dropShadow.setBlurType(BlurType.ONE_PASS_BOX);
         dropShadow.setColor(Color.valueOf("#4787bf"));
@@ -62,6 +64,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         infoLabel.setEffect(dropShadow);
         historyLabel.setEffect(dropShadow);
         cartLabel.setEffect(dropShadow);
+        profileLabel.setText(IOControl.getUsername());
     }
 
     public void returnSignInMenu(MouseEvent event) {

@@ -84,11 +84,17 @@
                <image>
                   <Image url="@../Images/Icons/login-as-user.png" />
                </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </ImageView>
             <Label alignment="CENTER_RIGHT" layoutX="43.0" layoutY="6.0" prefHeight="33.0" prefWidth="43.0" stylesheets="@../CSS%20files/customerProfile.css" text="Label" textFill="#9ce7f0">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Label>
          </children>
          <cursor>
