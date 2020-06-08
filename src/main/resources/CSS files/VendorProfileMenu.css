@@ -1,7 +1,7 @@
 .root {
     --text-fill : #2F999F;
     --button-background-color : #292A51;
-    --pressed-button-background-color : //Todo;
+    --pressed-button-background-color : #214362;
     --background-image : linear-gradient(to bottom, #360033, #127183);
 }
 
@@ -40,16 +40,17 @@
 }
 
 .Image1 {
-    //TODO
-    /*-fx-image: url(UserIcon.png);*/
+    -fx-image: url("Vendor Credit Icon.png");
 }
 
 .Image2 {
-    //TODO
-    /*-fx-image: url(UserIcon.png);*/
+    -fx-image: url("Vendor Lock Icon.png");
 }
 
 .Image3 {
-    //TODO
-    /*-fx-image: url(UserIcon.png);*/
+    -fx-image: url("Vendor Password Icon.png");
+}
+
+.Image4 {
+    -fx-image: url("Vendor User Icon.png");
 }
