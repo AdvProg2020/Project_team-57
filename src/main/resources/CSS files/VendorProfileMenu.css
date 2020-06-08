@@ -21,7 +21,7 @@
     -fx-cursor: hand;
 }
 
-.Up_Button:active {
+.Up_Button:pressed {
     -fx-background-image: var(--pressed-button-background-color);
 }
 
