@@ -2,11 +2,10 @@
     --text-fill : #2F999F;
     --button-background-color : #292A51;
     --pressed-button-background-color : #214362;
-    --background-image : linear-gradient(to bottom, #360033, #127183);
 }
 
 .Main_Pane {
-    -fx-background-image: var(--background-image, white);
+    -fx-background-image: linear-gradient(to bottom, #360033, #127183);
 }
 
 .Up_Button {
@@ -22,7 +21,7 @@
     -fx-cursor: hand;
 }
 
-.Up_Button:pressed {
+.Up_Button:active {
     -fx-background-image: var(--pressed-button-background-color);
 }
 
@@ -39,18 +38,18 @@
     -fx-cursor: hand;
 }
 
-.Image1 {
+.Credit_Image {
     -fx-image: url("Vendor Credit Icon.png");
 }
 
-.Image2 {
+.Lock_Image {
     -fx-image: url("Vendor Lock Icon.png");
 }
 
-.Image3 {
+.Password_Image {
     -fx-image: url("Vendor Password Icon.png");
 }
 
-.Image4 {
+.User_Image {
     -fx-image: url("Vendor User Icon.png");
 }
