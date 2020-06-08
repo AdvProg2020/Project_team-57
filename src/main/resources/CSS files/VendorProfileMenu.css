@@ -1,32 +1,36 @@
-
+.root {
+    --text-fill : #2F999F;
+    --button-background-color : #292A51;
+    --pressed-button-background-color : //Todo;
+    --background-image : linear-gradient(to bottom, #360033, #127183);
+}
 
 .Main_Pane {
-    -fx-background-image: linear-gradient(to bottom, #360033, #127183);
-
+    -fx-background-image: var(--background-image, white);
 }
 
 .Up_Button {
     -fx-opacity: 0.7;
-    -fx-text-fill: #2F999F;
-    -fx-prompt-text-fill: #2F999F;
+    -fx-text-fill: var(--text-fill);
+    -fx-prompt-text-fill: var(--text-fill);
 }
 
 .Up_Button:hover {
-    -fx-border-color: #2F999F;
+    -fx-border-color: var(--text-fill);
     -fx-border-width: 0 0 2 0;
     -fx-opacity: 1.0;
     -fx-cursor: hand;
 }
 
 .Up_Button:pressed {
-    //TODO
+    -fx-background-image: var(--pressed-button-background-color);
 }
 
 .Down_Button {
     -fx-opacity: 0.7;
-    -fx-text-fill: #2F999F;
-    -fx-prompt-text-fill: #2F999F;
-    -fx-background-color: #292A51;
+    -fx-text-fill: var(--text-fill);
+    -fx-prompt-text-fill: var(--text-fill);
+    -fx-background-color: var(--button-background-color);
     -fx-border-radius: 10;
 }
 
