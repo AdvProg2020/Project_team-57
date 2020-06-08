@@ -17,7 +17,7 @@
             </ImageView>
          </children>
       </Pane>
-      <Pane layoutX="493.0" layoutY="32.0" onMouseClicked="#showProfile" styleClass="Vendor_Menu_Up_Pane">
+      <Pane layoutX="493.0" layoutY="32.0" onMouseClicked="#showProfileMenu" styleClass="Vendor_Menu_Up_Pane">
          <children>
             <ImageView fitHeight="82.0" fitWidth="73.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -31,7 +31,7 @@
             </Label>
          </children>
       </Pane>
-      <Pane layoutX="883.0" layoutY="32.0" onMouseClicked="#logout" styleClass="Vendor_Menu_Up_Pane">
+      <Pane layoutX="883.0" layoutY="32.0" onMouseClicked="#logOutButton" styleClass="Vendor_Menu_Up_Pane">
          <children>
             <ImageView fitHeight="73.0" fitWidth="57.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -82,6 +82,20 @@
                   <Image url="@../Images/Icons/Vendor%20Menu%20Icons/product.png" />
                </image>
             </ImageView>
+         </children>
+      </Pane>
+      <Pane layoutX="26.0" layoutY="677.0" onMouseClicked="#backToMainMenu" styleClass="Vendor_Menu_Up_Pane">
+         <children>
+            <ImageView fitHeight="50.0" fitWidth="50.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/Vendor%20Menu%20Icons/Back.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="50.0" layoutY="7.0" prefHeight="44.0" text="Back" textFill="#2f999f">
+               <font>
+                  <Font name="System Bold Italic" size="16.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
    </children>

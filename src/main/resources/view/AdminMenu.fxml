@@ -74,7 +74,7 @@
             <Pane prefHeight="80.0" prefWidth="220.0" style="-fx-background-color: #ffffff;" />
             <Pane prefHeight="80.0" prefWidth="220.0" style="-fx-background-color: #ffffff;">
                <children>
-                  <JFXButton fx:id="mainMenuButton" onAction="#setOptions" prefHeight="80.0" prefWidth="220.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff;" styleClass="hover_button" text="Main Menu">
+                  <JFXButton fx:id="mainMenuButton" onAction="#backToMainMenu" prefHeight="80.0" prefWidth="220.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff;" styleClass="hover_button" text="Main Menu">
                      <font>
                         <Font name="Calibri" size="16.0" />
                      </font>
@@ -108,7 +108,7 @@
             <HBox prefHeight="70.0" prefWidth="572.0" style="-fx-background-color: #ffffff;" />
             <Pane prefHeight="70.0" prefWidth="210.0" style="-fx-background-color: #ffffff;">
                <children>
-                  <JFXButton fx:id="logOutButton" alignment="CENTER_RIGHT" layoutX="49.0" layoutY="16.0" prefHeight="39.0" prefWidth="111.0" ripplerFill="WHITE" styleClass="hover_log_out" text="Log Out">
+                  <JFXButton fx:id="logOutButton" alignment="CENTER_RIGHT" layoutX="49.0" layoutY="16.0" onAction="#logOutButton" prefHeight="39.0" prefWidth="111.0" ripplerFill="WHITE" styleClass="hover_log_out" text="Log Out">
                      <font>
                         <Font name="Calibri" size="17.0" />
                      </font>

@@ -1,6 +1,5 @@
 package view;
 
-import controller.IOControl;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -139,20 +138,6 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         profile.setOpacity(0.7);
     }
 
-    public void backToMainMenu(MouseEvent event) {
-        Parent root = null;
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInMenu.fxml"));
-            root = loader.load();
-            SignInProcessor signInProcessor = new SignInProcessor();
-            signInProcessor.setMyStage(myStage);
-            myStage.setTitle("Sign In");
-            myStage.setScene(new Scene(root));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void enterBack(MouseEvent event) {
         back.setOpacity(1);
     }
@@ -161,18 +146,6 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         back.setOpacity(0.7);
     }
 
-    public void logoutButton(MouseEvent event) {
-        Parent root = null;
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInMenu.fxml"));
-            root = loader.load();
-            SignInProcessor signInProcessor = new SignInProcessor();
-            signInProcessor.setMyStage(myStage);
-            myStage.setTitle("Sign In");
-            myStage.setScene(new Scene(root));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public void goCustomerProfile(MouseEvent mouseEvent) {
     }
 }

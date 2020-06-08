@@ -17,7 +17,7 @@ import javafx.scene.paint.Stop;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class VendorProcessor implements Initializable {
+public class VendorProcessor extends AccountProcessor implements Initializable {
     public Pane mainPane;
 
     @Override
@@ -33,17 +33,8 @@ public class VendorProcessor implements Initializable {
         mainPane.setBackground(new Background(backgroundFill));
         Pane pane = (Pane) mainPane.getChildren().get(1);
         Label label = (Label) pane.getChildren().get(1);
-        label.setText("Sepehr");
+        label.setText(Control.getUsername());
     }
 
-    public void showProfile(MouseEvent mouseEvent) {
-        //TODO
-    }
 
-    public void logout(MouseEvent mouseEvent) {
-        Control.setLoggedIn(false);
-        Control.setUsername(null);
-        Control.setType(null);
-        //TODO
-    }
 }

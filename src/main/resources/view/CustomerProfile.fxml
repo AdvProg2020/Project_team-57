@@ -95,7 +95,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
-      <Pane layoutX="668.0" layoutY="37.0" onMouseClicked="#logoutButton" onMouseEntered="#logoutEnter" onMouseExited="#logoutExit">
+      <Pane layoutX="668.0" layoutY="37.0" onMouseClicked="#logOutButton" onMouseEntered="#logoutEnter" onMouseExited="#logoutExit">
          <children>
             <Label layoutX="49.0" layoutY="9.0" stylesheets="@../CSS%20files/customerProfile.css" text="Logout" textFill="#9ce7f0">
                <font>
@@ -114,7 +114,7 @@
       </Pane>
       <Pane fx:id="backPane" layoutX="39.0" layoutY="30.0" onMouseClicked="#backToMainMenu" onMouseEntered="#enterBack" onMouseExited="#exitBack">
          <children>
-            <ImageView fx:id="back" fitHeight="43.0" fitWidth="48.0" layoutY="1.0" onMouseClicked="#backSignInMenu" onMouseEntered="#enterBack" onMouseExited="#exitBack" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="back" fitHeight="43.0" fitWidth="48.0" layoutY="1.0" onMouseClicked="#backToMainMenu" onMouseEntered="#enterBack" onMouseExited="#exitBack" opacity="0.7" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/Icons/backCustomerMenu.png" />
                </image>

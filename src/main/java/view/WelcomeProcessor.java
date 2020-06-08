@@ -1,6 +1,7 @@
 package view;
 
 import com.jfoenix.controls.JFXButton;
+import controller.Control;
 import controller.IOControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -37,7 +38,29 @@ public class WelcomeProcessor implements Initializable {
 
     public void openAccountMenu(ActionEvent actionEvent) {
         if(IOControl.isLoggedIn()) {
-            System.out.println("Logged In Before");
+            try {
+                Parent root = null;
+                Main.getStage().getIcons().remove(0);
+                switch (Control.getType()) {
+                    case "Admin" :
+                        root = FXMLLoader.load(Main.class.getResource("AdminMenu.fxml"));
+                        Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Admin Icon.png")));
+                        break;
+                    case "Vendor" :
+                        root = FXMLLoader.load(Main.class.getResource("VendorMenu.fxml"));
+                        Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Vendor Icon.png")));
+                        break;
+                    case "Customer" :
+                        root = FXMLLoader.load(Main.class.getResource("CustomerProfile.fxml"));
+                        Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Customer Icon.png")));
+                        break;
+                }
+                Main.setScene(Control.getUsername() + " Menu", root);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
         } else {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInMenu.fxml"));
@@ -53,7 +76,6 @@ public class WelcomeProcessor implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("Not Logged In");
         }
     }
 
