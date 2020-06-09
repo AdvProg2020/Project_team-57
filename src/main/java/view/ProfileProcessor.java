@@ -40,14 +40,14 @@ public class ProfileProcessor implements Initializable {
     public Pane profileInfoButton, profilePasswordButton, profileCreditButton;
     public HBox optionsHBox;
 
-    public JFXTextField usernameField, firstNameField, lastNameField, emailField, brandField;
-    public Label brandLabel;
+    public JFXTextField usernameField, firstNameField, lastNameField, emailField, creditField, brandField;
+    public Label creditLabel, brandLabel;
     public JFXButton saveChangesButton;
 
     public Circle imageFieldCircle;
     public Rectangle rightLine, rightLine1;
 
-    public JFXTextField creditField, currentCreditField, additionCreditField;
+    public JFXTextField currentCreditField, additionCreditField;
     public JFXButton subButton, addButton;
 
     public JFXPasswordField oldPasswordField, newPasswordField;
@@ -96,14 +96,21 @@ public class ProfileProcessor implements Initializable {
             profileInfoPane.getChildren().remove(brandLabel);
         }
 
+        if(account.getType().equals("Admin")) {
+            profileInfoPane.getChildren().remove(creditField);
+            profileInfoPane.getChildren().remove(creditLabel);
+        } else {
+            creditField.setText(Double.toString(account.getCredit()));
+        }
+
         if(!account.getUsername().equals(Control.getUsername())) {
             profileInfoPane.getChildren().remove(saveChangesButton);
         }
     }
 
     private void setProfileCreditFields() {
-        if(account.getCredit() != 0)
-            currentCreditField.setText(Double.toString(account.getCredit()));
+        currentCreditField.setText(Double.toString(account.getCredit()));
+
         if(!account.getUsername().equals(Control.getUsername())) {
             profileCreditPane.getChildren().remove(addButton);
             profileCreditPane.getChildren().remove(subButton);
