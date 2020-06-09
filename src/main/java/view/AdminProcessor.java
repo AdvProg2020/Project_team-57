@@ -1,7 +1,6 @@
 package view;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
 import controller.Control;
 import controller.IOControl;
 import javafx.event.ActionEvent;
@@ -9,9 +8,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
@@ -21,7 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class AdminProcessor implements Initializable {
+public class AdminProcessor extends AccountProcessor implements Initializable {
 
     public JFXButton dashboardButton;
     public BorderPane mainPane;
@@ -36,13 +32,13 @@ public class AdminProcessor implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if(location.toString().contains("AdminMenu")) {
-            Account account = new Account("Ashkan", "a1234567");
+/*            Account account = new Account("Ashkan", "a1234567");
             account.setType("Admin");
             account.setFirstName("Ashkan");
             account.setLastName("Khademian");
             IOControl ioControl = IOControl.getController();
             ioControl.register(account);
-            ioControl.login(account);
+            ioControl.login(account);*/
             initButtons();
             selectThisButton(dashboardButton);
             initLabelsForUsername();
