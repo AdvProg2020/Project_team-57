@@ -190,4 +190,12 @@ public class ProfileProcessor implements Initializable {
 
         return color;
     }
+
+    public void editPersonalInfoMouseClicked(MouseEvent mouseEvent) {
+
+    }
+
+    private void editField(String fieldName, String newValue) {
+
+    }
 }

@@ -67,11 +67,60 @@ public class AccountControl extends Control implements IOValidity {
             if (AccountTable.getValueByField(Control.getUsername(), fieldName) != null &&
                     AccountTable.getValueByField(Control.getUsername(), fieldName).equals(newValue))
                 return Notification.SAME_FIELD_ERROR;
-            AccountTable.editField(Control.getUsername(), fieldName, newValue);
-            return Notification.EDIT_FIELD_SUCCESSFULLY;
+
+            if(isNewValueValid(fieldName, newValue)) {
+                AccountTable.editField(Control.getUsername(), fieldName, newValue);
+                return Notification.EDIT_FIELD_SUCCESSFULLY;
+            } else {
+                return InvalidField(fieldName);
+            }
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
         }
+    }
+
+    private Notification InvalidField(String fieldName) {
+        Notification notification = null;
+
+        switch (fieldName) {
+            case "FirstName" :
+                notification = Notification.ERROR_FIRST_NAME_LENGTH_EDIT;
+                break;
+            case "LastName" :
+                notification = Notification.ERROR_LAST_NAME_LENGTH_EDIT;
+                break;
+            case "Email" :
+                notification = Notification.ERROR_EMAIL_LENGTH_EDIT;
+                break;
+            case "Brand" :
+                notification = Notification.ERROR_BRAND_LENGTH_EDIT;
+                break;
+            default :
+                System.out.println("Shit. Error In Checking Field Validity");
+                break;
+        }
+
+        return notification;
+    }
+
+    public boolean isNewValueValid(String fieldName, String newValue) {
+        boolean fieldValidity = false;
+
+        switch (fieldName) {
+            case "FirstName" :
+            case "LastName" :
+                fieldValidity = newValue.length() <= 25;
+                break;
+            case "Email" :
+            case "Brand" :
+                fieldValidity = newValue.length() <= 35;
+                break;
+            default :
+                System.out.println("Shit. Error In Checking Field Validity");
+                break;
+        }
+
+        return fieldValidity;
     }
 
     public Notification addMoney(double money) {

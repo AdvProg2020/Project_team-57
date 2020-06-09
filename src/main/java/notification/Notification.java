@@ -12,12 +12,12 @@ public enum Notification {
     ERROR_FREE_USERNAME("This Username is not registered Yet", Alert.AlertType.ERROR, "Login Error", "Free Username"),
     ERROR_PASSWORD_LENGTH("Password must contain 8 to 16 characters!", Alert.AlertType.ERROR, "Register Error", "Password Length Not Valid"),
     ERROR_PASSWORD_FORMAT("Password's length must be between 8 and 16, and contain both letters and numbers", Alert.AlertType.ERROR, "Register Error", "Password Format Not Valid"),
-    UNKNOWN_ERROR("An unknown error occured", Alert.AlertType.ERROR, "Unknown Error", "Shit!!!!"),
+    UNKNOWN_ERROR("An unknown error occurred", Alert.AlertType.ERROR, "Unknown Error", "Shit!!!!"),
     WRONG_PASSWORD("WRONG PASSWORD!", Alert.AlertType.ERROR, "Login Error", "Wrong Password"),
     SAME_PASSWORD_ERROR("What are you doing??\uD83D\uDE15\nPasswords are identical"),
     CHANGE_PASSWORD_SUCCESSFULLY("Password was changed successfully\uD83D\uDE10"),
-    SAME_FIELD_ERROR("Are you ok???\uD83D\uDE10\nEntered value is identical with initial value"),
-    EDIT_FIELD_SUCCESSFULLY("Value edited successfully\uD83E\uDD29"),
+    SAME_FIELD_ERROR("Are you ok???\uD83D\uDE10\nEntered value is identical with initial value", Alert.AlertType.ERROR, "Edit Account Error", "Duplicate Value"),
+    EDIT_FIELD_SUCCESSFULLY("Value edited successfully\uD83E\uDD29", Alert.AlertType.INFORMATION, "Successful", "Congratulations"),
     RISE_MONEY_SUCCESSFULLY("Inventory has increased!"),
     LACK_BALANCE_ERROR("Anything else???\uD83D\uDE12\nInventory is not enough!"),
     GET_MONEY_SUCCESSFULLY("Money has got successfully!"),
@@ -106,19 +106,27 @@ public enum Notification {
     ADD_COMMENT("Comment was sent to manager, wait for approve!!"),
     ACCEPTING_COMMENT("Comment added successfully"),
     DECLINE_COMMENT("Comment decline successfully"),
-    PURCHASED_SUPERLY("Do You Have A Bed Somewhere?" +
+    PURCHASED_SUPERBLY("Do You Have A Bed Somewhere?" +
             "\nWe Gave You A Super Discount With 85% Off." +
             "\nPurchased Successfully But Who Cares About That ?\uD83D\uDE0B"),
-    PURCHASED_GOODELY("There Are No Two Words In English Language More Harmful Than GOOD JOB!" +
+    PURCHASED_GOODLY("There Are No Two Words In English Language More Harmful Than GOOD JOB!" +
             "\n+Whiplash" +
             "\nPurchased Successfully \uD83D\uDE1C"),
     INVALID_MIN_PRICE("Minimum Price Must Be A Positive Number. "),
     MIN_PRICE_BIGGER_THAN_MAX_PRICE("Minimum Price Must Be Smaller Than Maximum Price. "),
     SET_PRICE_FILTERS("Price Filters Are Set Successfully. "),
-    ERROR_FIRSTNAME_LENGTH("FirstName length must be less than 25 characters", Alert.AlertType.ERROR,
+    ERROR_FIRST_NAME_LENGTH("FirstName length must be less than 25 characters", Alert.AlertType.ERROR,
             "Register Error", "Invalid FirstName"),
-    ERROR_LASTNAME_LENGTH("LastName length must be less than 25 characters", Alert.AlertType.ERROR,
-            "Register Error", "Invalid LastName");
+    ERROR_LAST_NAME_LENGTH("LastName length must be less than 25 characters", Alert.AlertType.ERROR,
+            "Register Error", "Invalid LastName"),
+    ERROR_FIRST_NAME_LENGTH_EDIT("FirstName length must be less than 25 characters",
+            Alert.AlertType.ERROR, "Edit Account Error", "Invalid FirstName"),
+    ERROR_LAST_NAME_LENGTH_EDIT("LastName length must be less than 25 characters", Alert.AlertType.ERROR,
+            "Edit Account Error", "Invalid LastName"),
+    ERROR_EMAIL_LENGTH_EDIT("Email length must be less than 35 characters", Alert.AlertType.ERROR,
+            "Edit Account Error", "Invalid Email"),
+    ERROR_BRAND_LENGTH_EDIT("Brand length must be less than 35 characters", Alert.AlertType.ERROR,
+            "Edit Account Error", "Invalid Brand");
 
 
 
