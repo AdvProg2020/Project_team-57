@@ -76,22 +76,29 @@ public class AccountControl extends Control implements IOValidity {
                 AccountTable.editField(Control.getUsername(), fieldName, newValue);
                 return Notification.EDIT_FIELD_SUCCESSFULLY;
             } else {
-                return InvalidField(fieldName);
+                return InvalidField(fieldName, newValue);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         }
     }
 
-    private Notification InvalidField(String fieldName) {
+    private Notification InvalidField(String fieldName, String newValue) {
         Notification notification = null;
 
         switch (fieldName) {
             case "FirstName" :
-                notification = Notification.ERROR_FIRST_NAME_LENGTH_EDIT;
+                if(newValue == null || newValue.length() == 0)
+                    notification = Notification.EMPTY_FIRST_NAME_EDIT;
+                else
+                    notification = Notification.ERROR_FIRST_NAME_LENGTH_EDIT;
                 break;
             case "LastName" :
-                notification = Notification.ERROR_LAST_NAME_LENGTH_EDIT;
+                if(newValue == null || newValue.length() == 0)
+                    notification = Notification.EMPTY_LAST_NAME_EDIT;
+                else
+                    notification = Notification.ERROR_LAST_NAME_LENGTH_EDIT;
                 break;
             case "Email" :
                 notification = Notification.ERROR_EMAIL_LENGTH_EDIT;
@@ -113,11 +120,11 @@ public class AccountControl extends Control implements IOValidity {
         switch (fieldName) {
             case "FirstName" :
             case "LastName" :
-                fieldValidity = newValue.length() <= 25;
+                fieldValidity = newValue != null && newValue.length() != 0 && newValue.length() <= 25;
                 break;
             case "Email" :
             case "Brand" :
-                fieldValidity = newValue.length() <= 35;
+                fieldValidity = newValue == null || newValue.length() <= 35;
                 break;
             default :
                 System.out.println("Shit. Error In Checking Field Validity");
@@ -137,6 +144,7 @@ public class AccountControl extends Control implements IOValidity {
             AccountTable.changeCredit(Control.getUsername(), money);
             return Notification.RISE_MONEY_SUCCESSFULLY;
         } catch (NumberFormatException e) {
+            System.out.println("Shit");
             return Notification.INVALID_ADDING_DOUBLE_MONEY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;

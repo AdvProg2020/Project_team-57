@@ -27,7 +27,7 @@ public enum Notification {
             Alert.AlertType.ERROR, "Subtracting Money Error", "Lack Of Balance, Bro"),
     GET_MONEY_SUCCESSFULLY("Money has got successfully! \nYou Have Reached Your Wishes?? Shop Lifter 😒😒",
             Alert.AlertType.INFORMATION, "Subtracting Money Successful", "Hey Rude"),
-    WRONG_OLD_PASSWORD("You have Some Alzaimer Issue ?! \nYou have Entered Wrong Old Password",
+    WRONG_OLD_PASSWORD("You have Some Alzheimer Issue ?! \nYou have Entered Wrong Old Password",
             Alert.AlertType.ERROR, "Change Password Error", "Old Password Incorrect"),
     REMOVE_PRODUCT_SUCCESSFULLY("Product removed successfully"),
     DECLINE_REQUEST("Request declined"),
@@ -141,7 +141,13 @@ public enum Notification {
     INVALID_ADDING_DOUBLE_MONEY("Dude, Please Enter A Valid Money??? \nI Wanna Know Seriously With \nWhat Do You Get High With",
             Alert.AlertType.ERROR, "Add Money Error", "Invalid Adding Money"),
     INVALID_SUBTRACTING_DOUBLE_MONEY("Dude, Please Enter A Valid Money??? \nI Wanna Know Seriously With \nWhat Do You Get High With",
-            Alert.AlertType.ERROR, "Subtract Money Error", "Invalid Subtracting Money");
+            Alert.AlertType.ERROR, "Subtract Money Error", "Invalid Subtracting Money"),
+    EMPTY_FIRST_NAME_EDIT("Please Enter Some Non-Empty First Name, Dude. " +
+            "\nWe Can't Have SomeOne Anonymous In Our Shop. \nIt's Not Safe!!!! 😱😱😱",
+            Alert.AlertType.ERROR, "Edit Account Error", "Empty FirstName"),
+    EMPTY_LAST_NAME_EDIT("Please Enter Some Non-Empty Last Name, Dude. " +
+            "\nWe Can't Have SomeOne Anonymous In Our Shop. \nIt's Not Safe!!!! 😱😱😱",
+            Alert.AlertType.ERROR, "Edit Account Error", "Empty LastName");
 
 
     private String message;

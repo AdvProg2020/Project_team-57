@@ -5,6 +5,8 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import controller.Control;
 import controller.account.AccountControl;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -119,6 +121,45 @@ public class ProfileProcessor implements Initializable {
             profileCreditPane.getChildren().remove(addButton);
             profileCreditPane.getChildren().remove(subButton);
         }
+
+        additionCreditField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                //Todo Checking
+
+                if (!newValue.matches("\\d+(.(\\d)+)?")) {
+                    if(additionCreditField.getText().contains(".")) {
+                        additionCreditField.setText(removeDots(additionCreditField.getText()));
+                    } else {
+                        additionCreditField.setText(newValue.replaceAll("[^\\d\\.]", ""));
+                    }
+                }
+            }
+        });
+    }
+
+    private String removeDots(String text) {
+        StringBuilder stringBuilder = new StringBuilder(text);
+        boolean foundDot = false;
+        int textSize = text.length();
+
+        for (int i = 0; i < textSize; i++) {
+            if(text.charAt(i) < 48 || text.charAt(i) > 57) {
+                if(text.charAt(i) == '.') {
+                    if(foundDot) {
+                        stringBuilder.deleteCharAt(i);
+                        textSize--;
+                    }
+                    foundDot = true;
+                } else {
+                    stringBuilder.deleteCharAt(i);
+                    textSize--;
+                }
+            }
+        }
+
+        return stringBuilder.toString();
     }
 
     private void setProfilePasswordFields() {
@@ -200,10 +241,19 @@ public class ProfileProcessor implements Initializable {
         Alert alert = null;
         alert = editField("FirstName", firstNameField, alert);
         alert = editField("LastName", lastNameField, alert);
-        alert = editField("Emain", emailField, alert);
+        alert = editField("Email", emailField, alert);
 
         if(account.getType().equals("Vendor"))
             alert = editField("Brand", brandField, alert);
+
+        if(alert.getTitle().equals("Edit Successful")) {
+            account = accountControl.getAccountByUsername(account.getUsername());
+            firstNameField.setText(account.getFirstName());
+            lastNameField.setText(account.getLastName());
+            lastNameField.setText(account.getLastName());
+            emailField.setText(account.getEmail());
+            brandField.setText(account.getBrand());
+        }
 
         alert.show();
     }
@@ -233,19 +283,27 @@ public class ProfileProcessor implements Initializable {
     }
 
     public void addMoneyMouseClicked(MouseEvent mouseEvent) {
-        Notification notification = accountControl.addMoney(((JFXTextField) mouseEvent.getSource()).getText());
+        Notification notification = accountControl.addMoney(additionCreditField.getText());
 
-        if(notification.equals(Notification.RISE_MONEY_SUCCESSFULLY))
+        if(notification.equals(Notification.RISE_MONEY_SUCCESSFULLY)) {
+            account = accountControl.getAccountByUsername(account.getUsername());
+            currentCreditField.setText(Double.toString(account.getCredit()));
+        } else {
             additionCreditField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
+        }
 
         notification.getAlert().show();
     }
 
     public void subtractMoneyMouseClicked(MouseEvent mouseEvent) {
-        Notification notification = accountControl.getMoney(((JFXTextField) mouseEvent.getSource()).getText());
+        Notification notification = accountControl.getMoney(additionCreditField.getText());
 
-        if(notification.equals(Notification.GET_MONEY_SUCCESSFULLY))
+        if(notification.equals(Notification.GET_MONEY_SUCCESSFULLY)) {
+            account = accountControl.getAccountByUsername(account.getUsername());
+            currentCreditField.setText(Double.toString(account.getCredit()));
+        } else {
             additionCreditField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
+        }
 
         notification.getAlert().show();
     }

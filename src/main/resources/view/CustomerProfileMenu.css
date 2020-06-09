@@ -61,3 +61,7 @@
 .Menu_Line {
     -fx-fill: #9CE7F0;
 }
+
+.Profile_Image {
+    -fx-stroke: #9CE7F0;
+}
