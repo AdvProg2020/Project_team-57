@@ -1,40 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="500.0" stylesheets="@../CSS%20files/VendorProfileMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="500.0" stylesheets="@../CSS%20files/VendorProfileMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProfileProcessor">
     <top>
-        <HBox fx:id="optionsHBox" prefHeight="100.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+        <HBox fx:id="optionsHBox" prefHeight="100.0" prefWidth="500.0" styleClass="HBox" BorderPane.alignment="CENTER">
             <children>
-                <Pane fx:id="profileInfoButton" prefHeight="102.0" prefWidth="100.0">
+                <Pane fx:id="profileInfoButton" onMouseClicked="#upPaneMouseClicked" prefHeight="102.0" prefWidth="100.0" styleClass="Up_Button">
                     <children>
-                        <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../Images/Icons/ProfileMenu/Admin%20User%20Icon.png" />
-                            </image>
-                        </ImageView>
+                        <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true" styleClass="User_Icon" />
                     </children>
                 </Pane>
-                <Pane fx:id="profilePasswordButton" prefHeight="102.0" prefWidth="100.0">
+                <Pane fx:id="profilePasswordButton" onMouseClicked="#upPaneMouseClicked" prefHeight="102.0" prefWidth="100.0" styleClass="Up_Button">
                     <children>
-                        <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../Images/Icons/ProfileMenu/Admin%20Password%20Icon.png" />
-                            </image>
-                        </ImageView>
+                        <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true" styleClass="Password_Icon" />
                     </children>
                 </Pane>
-                <Pane fx:id="profileCreditButton" prefHeight="102.0" prefWidth="100.0">
+                <Pane fx:id="profileCreditButton" onMouseClicked="#upPaneMouseClicked" prefHeight="102.0" prefWidth="100.0" styleClass="Up_Button">
                     <children>
-                        <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../Images/Icons/ProfileMenu/Admin%20Credit%20Icon.png" />
-                            </image>
-                        </ImageView>
+                        <ImageView fitHeight="70.0" fitWidth="70.0" layoutX="15.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true" styleClass="Credit_Icon" />
                     </children>
                 </Pane>
                 <Pane prefHeight="102.0" prefWidth="100.0" />
@@ -46,6 +33,6 @@
         <Pane prefHeight="25.0" prefWidth="500.0" style="-fx-background-color: #fafafa;" BorderPane.alignment="CENTER" />
     </center>
     <bottom>
-        <Pane prefHeight="575.0" prefWidth="500.0" BorderPane.alignment="CENTER" />
+        <Pane fx:id="profileMenusPane" prefHeight="575.0" prefWidth="500.0" BorderPane.alignment="CENTER" />
     </bottom>
 </BorderPane>

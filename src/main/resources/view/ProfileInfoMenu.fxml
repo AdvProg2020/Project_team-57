@@ -8,45 +8,45 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="profileInfoPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="575.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:id="profileInfoPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="575.0" prefWidth="500.0" styleClass="Center_Pane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProfileProcessor">
    <children>
-      <JFXTextField fx:id="usernameField" disable="true" editable="false" layoutX="180.0" layoutY="170.0" prefHeight="31.0" prefWidth="232.0" text="Ashkan.Khd" />
-      <Label layoutX="89.0" layoutY="175.0" text="Username">
+      <JFXTextField fx:id="usernameField" disable="true" editable="false" layoutX="180.0" layoutY="170.0" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="Ashkan.Khd" />
+      <Label layoutX="89.0" layoutY="175.0" styleClass="Label" text="Username">
          <font>
             <Font name="Calibri" size="16.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="firstnameField" layoutX="180.0" layoutY="220.0" prefHeight="31.0" prefWidth="232.0" text="Ashkan" />
-      <Label layoutX="89.0" layoutY="227.0" text="First Name">
+      <JFXTextField fx:id="firstNameField" layoutX="180.0" layoutY="220.0" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="Ashkan" />
+      <Label layoutX="89.0" layoutY="227.0" styleClass="Label" text="First Name">
          <font>
             <Font name="Calibri" size="16.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="lastnameField" layoutX="179.0" layoutY="270.0" prefHeight="31.0" prefWidth="232.0" text="Khademian" />
-      <Label layoutX="89.0" layoutY="277.0" text="Last Name">
+      <JFXTextField fx:id="lastNameField" layoutX="179.0" layoutY="270.0" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="Khademian" />
+      <Label layoutX="89.0" layoutY="277.0" styleClass="Label" text="Last Name">
          <font>
             <Font name="Calibri" size="16.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="emailField" layoutX="180.0" layoutY="320.0" prefHeight="31.0" prefWidth="232.0" text="ashkan.khd.q@gmail.com" />
-      <Label layoutX="115.0" layoutY="327.0" text="E-Mail">
+      <JFXTextField fx:id="emailField" layoutX="180.0" layoutY="320.0" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="ashkan.khd.q@gmail.com" />
+      <Label layoutX="115.0" layoutY="327.0" styleClass="Label" text="E-Mail">
          <font>
             <Font name="Calibri" size="16.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="creditField" disable="true" editable="false" layoutX="178.0" layoutY="370.0" prefHeight="31.0" prefWidth="232.0" text="23500 $" />
-      <Label layoutX="116.0" layoutY="377.0" text="Credit">
+      <JFXTextField fx:id="creditField" disable="true" editable="false" layoutX="178.0" layoutY="370.0" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="23500 $" />
+      <Label layoutX="116.0" layoutY="377.0" styleClass="Label" text="Credit">
          <font>
             <Font name="Calibri" size="16.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="brandField" layoutX="177.0" layoutY="420.0" prefHeight="31.0" prefWidth="232.0" text="Project Team 57" />
-      <Label layoutX="115.0" layoutY="427.0" text="Brand">
+      <JFXTextField fx:id="brandField" layoutX="177.0" layoutY="420.0" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="Project Team 57" />
+      <Label fx:id="brandLabel" layoutX="115.0" layoutY="427.0" styleClass="Label" text="Brand">
          <font>
             <Font name="Calibri" size="16.0" />
          </font>
       </Label>
-      <JFXButton buttonType="RAISED" layoutX="296.0" layoutY="481.0" style="-fx-background-radius: 10 10 10 10;" text="Save Changes" />
+      <JFXButton fx:id="saveChangesButton" buttonType="RAISED" layoutX="296.0" layoutY="481.0" style="-fx-background-radius: 10 10 10 10;" styleClass="Down_Button" text="Save Changes" />
       <Circle fx:id="imageFieldCircle" fill="#bdbdbd" layoutX="250.0" layoutY="74.0" radius="60.0" stroke="#e0f2f1" strokeType="INSIDE" strokeWidth="2.0" />
       <Rectangle fx:id="rightLine" arcHeight="5.0" arcWidth="5.0" fill="#e0f2f1" height="10.0" layoutX="308.0" layoutY="69.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="190.0" />
       <Rectangle fx:id="rightLine1" arcHeight="5.0" arcWidth="5.0" fill="#e0f2f1" height="10.0" layoutY="74.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="190.0" />
