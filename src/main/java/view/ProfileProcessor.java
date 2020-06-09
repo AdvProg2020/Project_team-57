@@ -4,11 +4,13 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import controller.Control;
+import controller.account.AccountControl;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -17,6 +19,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import model.existence.Account;
+import notification.Notification;
 
 import javax.swing.text.html.ImageView;
 import java.io.IOException;
@@ -24,6 +27,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ProfileProcessor implements Initializable {
+    private static AccountControl accountControl = AccountControl.getController();
     private static Account account;
 
     public static Account getAccount() {
@@ -192,10 +196,34 @@ public class ProfileProcessor implements Initializable {
     }
 
     public void editPersonalInfoMouseClicked(MouseEvent mouseEvent) {
-
+        //Todo
     }
 
-    private void editField(String fieldName, String newValue) {
+    private Alert editField(String fieldName, JFXTextField textField) {
+        //Todo
+        if(textField.getText() != null && !textField.getText().isEmpty())
+            return accountControl.editField(fieldName, textField.getText()).getAlert();
+        else
+            return Notification.EDIT_FIELD_SUCCESSFULLY.getAlert();
+    }
 
+    public void changePasswordMouseClicked(MouseEvent mouseEvent) {
+        Alert alert = accountControl.changePassword(oldPasswordField.getText(), newPasswordField.getText()).getAlert();
+
+        String style = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
+        if(alert.getHeaderText().contains("New") || alert.getHeaderText().equals("Duplicate Password"))
+            newPasswordField.setStyle(style);
+        if(alert.getHeaderText().contains("Old"))
+            oldPasswordField.setStyle(style);
+
+        alert.show();
+    }
+
+    public void addMoneyMouseClicked(MouseEvent mouseEvent) {
+        accountControl.addMoney(((JFXTextField) mouseEvent.getSource()).getText()).getAlert().show();
+    }
+
+    public void subtractMoneyMouseClicked(MouseEvent mouseEvent) {
+        accountControl.getMoney(((JFXTextField) mouseEvent.getSource()).getText()).getAlert().show();
     }
 }

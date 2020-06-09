@@ -31,7 +31,7 @@
       </Label>
       <JFXTextField fx:id="currentCreditField" disable="true" editable="false" layoutX="182.0" layoutY="240.0" prefHeight="31.0" prefWidth="232.0" text="\$$$$$$$$$" />
       <JFXTextField fx:id="additionCreditField" layoutX="182.0" layoutY="295.0" prefHeight="31.0" prefWidth="232.0" />
-      <JFXButton fx:id="addButton" buttonType="RAISED" layoutX="316.0" layoutY="390.0" text="Add Money" />
-      <JFXButton fx:id="subButton" buttonType="RAISED" layoutX="168.0" layoutY="390.0" text="Subtract Money" />
+      <JFXButton fx:id="addButton" buttonType="RAISED" layoutX="316.0" layoutY="390.0" onMouseClicked="#addMoneyMouseClicked" text="Add Money" />
+      <JFXButton fx:id="subButton" buttonType="RAISED" layoutX="168.0" layoutY="390.0" onMouseClicked="#subtractMoneyMouseClicked" text="Subtract Money" />
    </children>
 </Pane>

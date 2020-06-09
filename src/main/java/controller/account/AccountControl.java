@@ -47,6 +47,10 @@ public class AccountControl extends Control implements IOValidity {
 
     public Notification changePassword(String oldPassword, String newPassword) {
         try {
+            if(oldPassword == null || oldPassword.isEmpty())
+                return Notification.EMPTY_OLD_PASSWORD;
+            if(newPassword == null || oldPassword.isEmpty())
+                return Notification.EMPTY_NEW_PASSWORD;
             if(!AccountTable.isPasswordCorrect(Control.getUsername(), oldPassword))
                 return Notification.WRONG_OLD_PASSWORD;
             if (oldPassword.equals(newPassword))
@@ -123,21 +127,36 @@ public class AccountControl extends Control implements IOValidity {
         return fieldValidity;
     }
 
-    public Notification addMoney(double money) {
+    public Notification addMoney(String moneyString) {
         try {
+            double money = Double.parseDouble(moneyString);
+
+            if(money == 0)
+                return Notification.INVALID_ADDING_DOUBLE_MONEY;
+
             AccountTable.changeCredit(Control.getUsername(), money);
             return Notification.RISE_MONEY_SUCCESSFULLY;
+        } catch (NumberFormatException e) {
+            return Notification.INVALID_ADDING_DOUBLE_MONEY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
         }
     }
 
-    public Notification getMoney(double money) {
+    public Notification getMoney(String moneyString) {
         try {
+            double money = Double.parseDouble(moneyString);
+
+            if(money == 0)
+                return Notification.INVALID_ADDING_DOUBLE_MONEY;
+
             if (AccountTable.getCredit(Control.getUsername()) < money)
                 return Notification.LACK_BALANCE_ERROR;
+
             AccountTable.changeCredit(Control.getUsername(), -money);
             return Notification.GET_MONEY_SUCCESSFULLY;
+        } catch (NumberFormatException e) {
+            return Notification.INVALID_ADDING_DOUBLE_MONEY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
         }

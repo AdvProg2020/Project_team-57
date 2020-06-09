@@ -11,9 +11,9 @@ public enum Notification {
     ERROR_FULL_USERNAME("Username Already Exists", Alert.AlertType.ERROR, "Register Error", "Full Username"),
     ERROR_FREE_USERNAME("This Username is not registered Yet", Alert.AlertType.ERROR, "Login Error", "Free Username"),
     ERROR_PASSWORD_LENGTH("Password must contain 8 to 16 characters!", Alert.AlertType.ERROR, "Register Error", "Password Length Not Valid"),
-    ERROR_PASSWORD_LENGTH_EDIT("Password must contain 8 to 16 characters!", Alert.AlertType.ERROR, "Change Password Error", "Password Length Not Valid"),
+    ERROR_PASSWORD_LENGTH_EDIT("Password must contain 8 to 16 characters!", Alert.AlertType.ERROR, "Change Password Error", "New Password Length Not Valid"),
     ERROR_PASSWORD_FORMAT("Password's length must be between 8 and 16, and contain both letters and numbers", Alert.AlertType.ERROR, "Register Error", "Password Format Not Valid"),
-    ERROR_PASSWORD_FORMAT_EDIT("Password's length must be between 8 and 16, and contain both letters and numbers", Alert.AlertType.ERROR, "Change Password Error", "Password Format Not Valid"),
+    ERROR_PASSWORD_FORMAT_EDIT("Password's length must be between 8 and 16, and contain both letters and numbers", Alert.AlertType.ERROR, "Change Password Error", "New Password Format Not Valid"),
     UNKNOWN_ERROR("An unknown error occurred", Alert.AlertType.ERROR, "Unknown Error", "Shit!!!!"),
     WRONG_PASSWORD("WRONG PASSWORD!", Alert.AlertType.ERROR, "Login Error", "Wrong Password"),
     SAME_PASSWORD_ERROR("What are you doing??\uD83D\uDE15\nPasswords are identical",
@@ -133,9 +133,15 @@ public enum Notification {
     ERROR_EMAIL_LENGTH_EDIT("Email length must be less than 35 characters", Alert.AlertType.ERROR,
             "Edit Account Error", "Invalid Email"),
     ERROR_BRAND_LENGTH_EDIT("Brand length must be less than 35 characters", Alert.AlertType.ERROR,
-            "Edit Account Error", "Invalid Brand");
-
-
+            "Edit Account Error", "Invalid Brand"),
+    EMPTY_OLD_PASSWORD("Hey You!!!! \nWhere Are You Going?      Enter Your Old Password", Alert.AlertType.ERROR,
+            "Change Password Error", "Empty Old Password"),
+    EMPTY_NEW_PASSWORD("Are You Dumb Or Something??? \nAre You Gonna Replace Your Password With Empty?? \nI Mean, Seriously???"
+            , Alert.AlertType.ERROR, "Change Password Error", "Empty New Password"),
+    INVALID_ADDING_DOUBLE_MONEY("Dude, Please Enter A Valid Money??? \nI Wanna Know Seriously With \nWhat Do You Get High With",
+            Alert.AlertType.ERROR, "Add Money Error", "Invalid Adding Money"),
+    INVALID_SUBTRACTING_DOUBLE_MONEY("Dude, Please Enter A Valid Money??? \nI Wanna Know Seriously With \nWhat Do You Get High With",
+            Alert.AlertType.ERROR, "Subtract Money Error", "Invalid Subtracting Money");
 
 
     private String message;
