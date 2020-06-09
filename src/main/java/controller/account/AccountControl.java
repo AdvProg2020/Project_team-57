@@ -49,7 +49,7 @@ public class AccountControl extends Control implements IOValidity {
         try {
             if(oldPassword == null || oldPassword.isEmpty())
                 return Notification.EMPTY_OLD_PASSWORD;
-            if(newPassword == null || oldPassword.isEmpty())
+            if(newPassword == null || newPassword.isEmpty())
                 return Notification.EMPTY_NEW_PASSWORD;
             if(!AccountTable.isPasswordCorrect(Control.getUsername(), oldPassword))
                 return Notification.WRONG_OLD_PASSWORD;
@@ -68,9 +68,9 @@ public class AccountControl extends Control implements IOValidity {
 
     public Notification editField(String fieldName, String newValue) {
         try {
-            if (AccountTable.getValueByField(Control.getUsername(), fieldName) != null &&
+            /*if (AccountTable.getValueByField(Control.getUsername(), fieldName) != null &&
                     AccountTable.getValueByField(Control.getUsername(), fieldName).equals(newValue))
-                return Notification.SAME_FIELD_ERROR;
+                return Notification.SAME_FIELD_ERROR;*/
 
             if(isNewValueValid(fieldName, newValue)) {
                 AccountTable.editField(Control.getUsername(), fieldName, newValue);

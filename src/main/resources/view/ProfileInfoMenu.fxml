@@ -16,19 +16,19 @@
             <Font name="Calibri" size="16.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="firstNameField" layoutX="180.0" layoutY="220.0" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="Ashkan" />
+      <JFXTextField fx:id="firstNameField" layoutX="180.0" layoutY="220.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="Ashkan" />
       <Label layoutX="89.0" layoutY="227.0" styleClass="Label" text="First Name">
          <font>
             <Font name="Calibri" size="16.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="lastNameField" layoutX="179.0" layoutY="270.0" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="Khademian" />
+      <JFXTextField fx:id="lastNameField" layoutX="179.0" layoutY="270.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="Khademian" />
       <Label layoutX="89.0" layoutY="277.0" styleClass="Label" text="Last Name">
          <font>
             <Font name="Calibri" size="16.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="emailField" layoutX="180.0" layoutY="320.0" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="ashkan.khd.q@gmail.com" />
+      <JFXTextField fx:id="emailField" layoutX="180.0" layoutY="320.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="ashkan.khd.q@gmail.com" />
       <Label layoutX="115.0" layoutY="327.0" styleClass="Label" text="E-Mail">
          <font>
             <Font name="Calibri" size="16.0" />
@@ -40,7 +40,7 @@
             <Font name="Calibri" size="16.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="brandField" layoutX="177.0" layoutY="420.0" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="Project Team 57" />
+      <JFXTextField fx:id="brandField" layoutX="177.0" layoutY="420.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="232.0" styleClass="Text_Field" text="Project Team 57" />
       <Label fx:id="brandLabel" layoutX="115.0" layoutY="427.0" styleClass="Label" text="Brand">
          <font>
             <Font name="Calibri" size="16.0" />

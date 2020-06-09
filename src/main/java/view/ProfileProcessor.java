@@ -197,15 +197,18 @@ public class ProfileProcessor implements Initializable {
 
     public void editPersonalInfoMouseClicked(MouseEvent mouseEvent) {
         //Todo
+        boolean error = true;
+
+
     }
 
-    private Alert editField(String fieldName, JFXTextField textField) {
+    /*private Alert editField(String fieldName, JFXTextField textField) {
         //Todo
         if(textField.getText() != null && !textField.getText().isEmpty())
             return accountControl.editField(fieldName, textField.getText()).getAlert();
         else
             return Notification.EDIT_FIELD_SUCCESSFULLY.getAlert();
-    }
+    }*/
 
     public void changePasswordMouseClicked(MouseEvent mouseEvent) {
         Alert alert = accountControl.changePassword(oldPasswordField.getText(), newPasswordField.getText()).getAlert();
@@ -220,10 +223,30 @@ public class ProfileProcessor implements Initializable {
     }
 
     public void addMoneyMouseClicked(MouseEvent mouseEvent) {
-        accountControl.addMoney(((JFXTextField) mouseEvent.getSource()).getText()).getAlert().show();
+        Notification notification = accountControl.addMoney(((JFXTextField) mouseEvent.getSource()).getText());
+
+        if(notification.equals(Notification.RISE_MONEY_SUCCESSFULLY))
+            additionCreditField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
+
+        notification.getAlert().show();
     }
 
     public void subtractMoneyMouseClicked(MouseEvent mouseEvent) {
-        accountControl.getMoney(((JFXTextField) mouseEvent.getSource()).getText()).getAlert().show();
+        Notification notification = accountControl.getMoney(((JFXTextField) mouseEvent.getSource()).getText());
+
+        if(notification.equals(Notification.GET_MONEY_SUCCESSFULLY))
+            additionCreditField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
+
+        notification.getAlert().show();
+    }
+
+    public void textFieldMouseClicked(MouseEvent mouseEvent) {
+        JFXTextField textField = (JFXTextField) mouseEvent.getSource();
+        textField.setStyle("");
+    }
+
+    public void passwordFieldMouseClicked(MouseEvent mouseEvent) {
+        JFXPasswordField passwordField = (JFXPasswordField) mouseEvent.getSource();
+        passwordField.setStyle("");
     }
 }
