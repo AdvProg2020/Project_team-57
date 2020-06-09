@@ -72,7 +72,8 @@ public class SignUpProcessor implements Initializable {
         } else if (alert.getHeaderText().equals("Invalid LastName")) {
             lastName.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
             alert.show();
-        }
+        } else
+            alert.show();
     }
 
     private String getAccountType() {

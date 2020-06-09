@@ -12,48 +12,53 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ViewAccountsProcessor">
    <left>
-      <Pane prefHeight="600.0" prefWidth="228.0" style="-fx-background-color: #e0f2f1;" BorderPane.alignment="CENTER">
+      <Pane fx:id="optionsPane" prefHeight="600.0" prefWidth="228.0" style="-fx-background-color: #e0f2f1;" BorderPane.alignment="CENTER">
          <children>
             <Circle fx:id="imageCircle" fill="#4db6ac" layoutX="114.0" layoutY="161.0" radius="75.0" stroke="#4db6ac" strokeType="INSIDE" strokeWidth="2.0" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutX="189.0" layoutY="156.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutY="161.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" />
-            <Label fx:id="nameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="252.0" prefWidth="210.0" text="Ashkan.khd">
+            <Label fx:id="nameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="252.0" prefWidth="210.0" text="Username">
                <font>
                   <Font name="Calibri" size="17.0" />
                </font>
             </Label>
-            <JFXButton fx:id="showProfileButton" buttonType="RAISED" layoutX="62.0" layoutY="321.0" text="Show Profile">
+            <JFXButton fx:id="showProfileButton" buttonType="RAISED" disable="true" layoutX="62.0" layoutY="321.0" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Profile">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton fx:id="deleteUserButton" buttonType="RAISED" layoutX="14.0" layoutY="360.0" text="Delete User">
+            <JFXButton fx:id="deleteUserButton" buttonType="RAISED" disable="true" layoutX="14.0" layoutY="360.0" onAction="#deleteUser" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Delete User">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton fx:id="approveUserButton" buttonType="RAISED" layoutX="110.0" layoutY="360.0" text="Approve User">
+            <JFXButton fx:id="approveUserButton" buttonType="RAISED" disable="true" layoutX="110.0" layoutY="360.0" onAction="#approveUser" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Approve User">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <Label fx:id="typeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="273.0" prefWidth="210.0" text="Admin">
+            <Label fx:id="typeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="273.0" prefWidth="210.0" text="Type">
                <font>
                   <Font name="Calibri" size="17.0" />
                </font>
             </Label>
+            <JFXButton fx:id="addAdminButton" buttonType="RAISED" layoutX="22.0" layoutY="556.0" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="30.0" prefWidth="184.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Add New Admin">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </JFXButton>
          </children>
       </Pane>
    </left>
    <center>
       <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
          <children>
-            <TableView fx:id="accountsTableView" layoutX="29.0" layoutY="28.0" prefHeight="545.0" prefWidth="615.0">
+            <TableView fx:id="accountsTableView" layoutX="29.0" layoutY="28.0" onMouseClicked="#updateSelectedAccount" prefHeight="545.0" prefWidth="615.0">
               <columns>
-                <TableColumn fx:id="usernameColumn" prefWidth="145.0" text="Username" />
-                <TableColumn fx:id="firstNameColumn" minWidth="0.0" prefWidth="171.0" text="First Name" />
-                  <TableColumn fx:id="lastNameColumn" minWidth="0.0" prefWidth="198.0" text="Last Name" />
-                  <TableColumn fx:id="approvalColumn" minWidth="0.0" prefWidth="91.0" text="Approved" />
+                <TableColumn fx:id="usernameColumn" editable="false" prefWidth="146.0" sortable="false" text="Username" />
+                <TableColumn fx:id="firstNameColumn" editable="false" minWidth="0.0" prefWidth="159.0" sortable="false" text="First Name" />
+                  <TableColumn fx:id="lastNameColumn" editable="false" minWidth="0.0" prefWidth="142.0" sortable="false" text="Last Name" />
+                  <TableColumn fx:id="approvalColumn" editable="false" minWidth="0.0" prefWidth="151.0" sortable="false" text="Approved" />
               </columns>
             </TableView>
          </children>

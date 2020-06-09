@@ -33,14 +33,16 @@ public class AccountTable extends Database {
         return preparedStatement.executeQuery().getBoolean("IsApproved");
     }
 
-    public static void addAccount(String username, String password, String accType) throws SQLException, ClassNotFoundException {
-        String command = "INSERT INTO Accounts (Username, Password, AccType, IsApproved) " +
-                "VALUES (?, ?, ?, ?);";
+    public static void addAccount(Account account) throws SQLException, ClassNotFoundException {
+        String command = "INSERT INTO Accounts (Username, Password, AccType, IsApproved, FirstName, LastName) " +
+                "VALUES (?, ?, ?, ?, ?, ?);";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, username);
-        preparedStatement.setString(2, password);
-        preparedStatement.setString(3, accType);
-        if (!accType.equals("Vendor")) {
+        preparedStatement.setString(1, account.getUsername());
+        preparedStatement.setString(2, account.getPassword());
+        preparedStatement.setString(3, account.getType());
+        preparedStatement.setString(5, account.getFirstName());
+        preparedStatement.setString(6, account.getLastName());
+        if (!account.getType().equals("Vendor")) {
             preparedStatement.setBoolean(4, true);
         } else
             preparedStatement.setBoolean(4, false);

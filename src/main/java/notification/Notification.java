@@ -30,7 +30,7 @@ public enum Notification {
     ADD_PRODUCT("Successfully Added. Hope You Will Have A Good Sale If The Lord Accepts your Product"),
     ACCEPT_ADDING_PRODUCT("Product added to store successfully \uD83D\uDC8B"),
     ACCEPT_EDITING_PRODUCT("Product Editing Accepted. \uD83E\uDD11"),
-    DELETE_USER("User was deleted successfully"),
+    DELETE_USER("User was deleted successfully", Alert.AlertType.INFORMATION, "Successful", "Congratulations"),
     MORE_THAN_INVENTORY_COUNTABLE("Dude where are you looking??\uD83D\uDE15\nThe number entered is greater than the inventory"),
     MORE_THAN_INVENTORY_UNCOUNTABLE("Dude where are you looking??😕The number entered is greater than the inventory"),
     NEGATIVE_NUMBER("Hey where are you going?\uD83D\uDE10 Enter a positive number"),
