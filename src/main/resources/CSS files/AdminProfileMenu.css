@@ -1,30 +1,24 @@
-.Main_Pane {
-    -fx-background-image: linear-gradient(to bottom, #360033, #127183);
-
-}
 
 .Up_Button {
-    -fx-opacity: 0.7;
-    -fx-text-fill: black;
-    -fx-prompt-text-fill: black;
+    -fx-opacity: 1.0;
 }
 
 .Up_Button:hover {
-    -fx-border-color: #2F999F;
-    -fx-border-width: 0 0 2 0;
-    -fx-opacity: 1.0;
+    -fx-border-color: #233C5E;
+    -fx-border-width: 0 0 3 0;
     -fx-cursor: hand;
 }
 
-.Up_Button:pressed {
-//TODO
+.HBox {
+    -fx-background-color: #146B7F;
+}
+
+.Center_Pane {
+    -fx-background-color: #0B8793;
 }
 
 .Down_Button {
     -fx-opacity: 0.7;
-    -fx-text-fill: #2F999F;
-    -fx-prompt-text-fill: #2F999F;
-    -fx-background-color: #292A51;
     -fx-border-radius: 10;
 }
 
@@ -33,17 +27,33 @@
     -fx-cursor: hand;
 }
 
-.Image1 {
-//TODO
-    /*-fx-image: url(UserIcon.png);*/
+
+.Credit_Icon {
+    -fx-image: url("Admin_Credit_Icon.png");
 }
 
-.Image2 {
-//TODO
-    /*-fx-image: url(UserIcon.png);*/
+.Password_Icon {
+    -fx-image: url("Admin_Password_Icon.png");
 }
 
-.Image3 {
-//TODO
-    /*-fx-image: url(UserIcon.png);*/
+.User_Icon {
+    -fx-image: url("Admin_User_Icon.png");
+}
+
+.Password_Menu_Icon {
+    -fx-image: url("Admin_Lock_Icon.png");
+}
+
+.Credit_Menu_Icon {
+    -fx-image: url("Admin_Credit_Menu.png");
+}
+
+
+.Text_Field {
+    /*Todo*/
+    -fx-text-fill: black;
+}
+
+.Label {
+    -fx-text-fill: #330939;
 }

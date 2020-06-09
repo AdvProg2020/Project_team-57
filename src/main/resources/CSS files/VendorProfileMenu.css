@@ -1,35 +1,24 @@
-.root {
-    --text-fill : #2F999F;
-    --button-background-color : #292A51;
-    --pressed-button-background-color : #214362;
-}
-
-.Main_Pane {
-    -fx-background-image: linear-gradient(to bottom, #360033, #127183);
-}
 
 .Up_Button {
-    -fx-opacity: 0.7;
-    -fx-text-fill: var(--text-fill);
-    -fx-prompt-text-fill: var(--text-fill);
+    -fx-opacity: 1.0;
 }
 
 .Up_Button:hover {
-    -fx-border-color: var(--text-fill);
-    -fx-border-width: 0 0 2 0;
-    -fx-opacity: 1.0;
+    -fx-border-color: #233C5E;
+    -fx-border-width: 0 0 3 0;
     -fx-cursor: hand;
 }
 
-.Up_Button:pressed {
-    -fx-background-image: var(--pressed-button-background-color);
+.HBox {
+    -fx-background-color: #146B7F;
+}
+
+.Center_Pane {
+    -fx-background-color: #0B8793;
 }
 
 .Down_Button {
     -fx-opacity: 0.7;
-    -fx-text-fill: var(--text-fill);
-    -fx-prompt-text-fill: var(--text-fill);
-    -fx-background-color: var(--button-background-color);
     -fx-border-radius: 10;
 }
 
@@ -38,18 +27,33 @@
     -fx-cursor: hand;
 }
 
-.Credit_Image {
-    -fx-image: url("Vendor Credit Icon.png");
+
+.Credit_Icon {
+    -fx-image: url("Vendor_Credit_Icon.png");
 }
 
-.Lock_Image {
-    -fx-image: url("Vendor Lock Icon.png");
+.Password_Icon {
+    -fx-image: url("Vendor_Password_Icon.png");
 }
 
-.Password_Image {
-    -fx-image: url("Vendor Password Icon.png");
+.User_Icon {
+    -fx-image: url("Vendor_User_Icon.png");
 }
 
-.User_Image {
-    -fx-image: url("Vendor User Icon.png");
+.Password_Menu_Icon {
+    -fx-image: url("Vendor_Lock_Icon.png");
+}
+
+.Credit_Menu_Icon {
+    -fx-image: url("Vendor_Credit_Menu.png");
+}
+
+
+.Text_Field {
+    /*Todo*/
+    -fx-text-fill: black;
+}
+
+.Label {
+    -fx-text-fill: #330939;
 }

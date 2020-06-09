@@ -1,5 +1,6 @@
 package view;
 
+import controller.Control;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,6 +22,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Control.setType("Vendor");
+        Control.setUsername("Ashkan");
         stage = primaryStage;
         Parent root = FXMLLoader.load(getClass().getResource("ProfileMenu.fxml"));
         primaryStage.setScene(new Scene(root));
