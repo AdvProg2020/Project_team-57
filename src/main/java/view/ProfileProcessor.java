@@ -197,18 +197,28 @@ public class ProfileProcessor implements Initializable {
 
     public void editPersonalInfoMouseClicked(MouseEvent mouseEvent) {
         //Todo
-        boolean error = true;
+        Alert alert = null;
+        alert = editField("FirstName", firstNameField, alert);
+        alert = editField("LastName", lastNameField, alert);
+        alert = editField("Emain", emailField, alert);
 
+        if(account.getType().equals("Vendor"))
+            alert = editField("Brand", brandField, alert);
 
+        alert.show();
     }
 
-    /*private Alert editField(String fieldName, JFXTextField textField) {
-        //Todo
-        if(textField.getText() != null && !textField.getText().isEmpty())
-            return accountControl.editField(fieldName, textField.getText()).getAlert();
+    private Alert editField(String fieldName, JFXTextField textField, Alert previousAlert) {
+        Alert alert = accountControl.editField(fieldName, textField.getText()).getAlert();
+
+        if(!alert.getTitle().equals("Edit Successful"))
+            textField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
+
+        if(previousAlert == null || previousAlert.getTitle().equals("Edit Successful"))
+            return alert;
         else
-            return Notification.EDIT_FIELD_SUCCESSFULLY.getAlert();
-    }*/
+            return previousAlert;
+    }
 
     public void changePasswordMouseClicked(MouseEvent mouseEvent) {
         Alert alert = accountControl.changePassword(oldPasswordField.getText(), newPasswordField.getText()).getAlert();
