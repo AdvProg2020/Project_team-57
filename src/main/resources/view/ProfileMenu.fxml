@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="500.0" stylesheets="@../CSS%20files/VendorProfileMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProfileProcessor">
+<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="687.5" prefWidth="500.0" stylesheets="@../CSS%20files/VendorProfileMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProfileProcessor">
     <top>
         <HBox fx:id="optionsHBox" prefHeight="100.0" prefWidth="500.0" styleClass="HBox" BorderPane.alignment="CENTER">
             <children>
@@ -30,7 +30,7 @@
         </HBox>
     </top>
     <center>
-        <Pane prefHeight="25.0" prefWidth="500.0" style="-fx-background-color: #fafafa;" BorderPane.alignment="CENTER" />
+        <Pane prefHeight="12.5" prefWidth="500.0" style="-fx-background-color: #fafafa;" BorderPane.alignment="CENTER" />
     </center>
     <bottom>
         <Pane fx:id="profileMenusPane" prefHeight="575.0" prefWidth="500.0" BorderPane.alignment="CENTER" />

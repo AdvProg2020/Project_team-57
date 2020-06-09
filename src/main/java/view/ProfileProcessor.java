@@ -147,6 +147,7 @@ public class ProfileProcessor implements Initializable {
             Parent subRoot = loader.load();
             loader.setController(this);
             mainPane.setBottom(subRoot);
+            Pane pane = (Pane) mainPane.getBottom();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -176,7 +177,7 @@ public class ProfileProcessor implements Initializable {
                 color = Color.valueOf("#233C5E");
                 break;
             case "Customer":
-                color = Color.valueOf("#B0ECF3");
+                color = Color.valueOf("#56B6BF");
                 break;
         }
 

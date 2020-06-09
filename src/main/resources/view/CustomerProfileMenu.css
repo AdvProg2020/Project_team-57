@@ -4,13 +4,13 @@
 }
 
 .Up_Button:hover {
-    -fx-border-color: #233C5E;
+    -fx-border-color: #56B6BF;
     -fx-border-width: 0 0 3 0;
     -fx-cursor: hand;
 }
 
 .HBox {
-    -fx-background-color: #42878F;
+    -fx-background-color: #baf9ff;
 }
 
 .Center_Pane {
