@@ -5,6 +5,10 @@ import java.sql.SQLException;
 
 public class Account {
 
+    public boolean isApproved() {
+        return isApproved.equals("Approved");
+    }
+
     public static enum AccountType {
         ADMIN, CUSTOMER, VENDOR;
     }

@@ -29,7 +29,7 @@ public class IOControl extends Control implements IOValidity {
             return Notification.ERROR_LASTNAME_LENGTH;
         try {
             if (AccountTable.isUsernameFree(account.getUsername())) {
-                AccountTable.addAccount(account.getUsername(), account.getPassword(), account.getType());
+                AccountTable.addAccount(account);
                 return Notification.REGISTER_SUCCESSFUL;
             } else
                 return Notification.ERROR_FULL_USERNAME;
