@@ -22,7 +22,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Control.setType("Vendor");
+        Control.setType("Customer");
         Control.setUsername("Ashkan");
         stage = primaryStage;
         Parent root = FXMLLoader.load(getClass().getResource("ProfileMenu.fxml"));

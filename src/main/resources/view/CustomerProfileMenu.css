@@ -1,0 +1,59 @@
+
+.Up_Button {
+    -fx-opacity: 1.0;
+}
+
+.Up_Button:hover {
+    -fx-border-color: #233C5E;
+    -fx-border-width: 0 0 3 0;
+    -fx-cursor: hand;
+}
+
+.HBox {
+    -fx-background-color: #146B7F;
+}
+
+.Center_Pane {
+    -fx-background-color: #0B8793;
+}
+
+.Down_Button {
+    -fx-opacity: 0.7;
+    -fx-border-radius: 10;
+}
+
+.Down_Button:hover {
+    -fx-opacity: 1.0;
+    -fx-cursor: hand;
+}
+
+
+.Credit_Icon {
+    -fx-image: url("Customer_Credit_Icon.png");
+}
+
+.Password_Icon {
+    -fx-image: url("Customer_Password_Icon.png");
+}
+
+.User_Icon {
+    -fx-image: url("Customer_User_Icon.png");
+}
+
+.Password_Menu_Icon {
+    -fx-image: url("Customer_Lock_Icon.png");
+}
+
+.Credit_Menu_Icon {
+    -fx-image: url("Customer_Credit_Menu.png");
+}
+
+
+.Text_Field {
+    /*Todo*/
+    -fx-text-fill: black;
+}
+
+.Label {
+    -fx-text-fill: #330939;
+}

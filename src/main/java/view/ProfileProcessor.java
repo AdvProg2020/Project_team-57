@@ -113,13 +113,13 @@ public class ProfileProcessor implements Initializable {
         styleSheets.removeAll(styleSheets);
 
         if(accountType.equals("Admin")) {
-            styleSheet = "CSS files\\AdminProfileMenu.css";
+            styleSheet = "AdminProfileMenu.css";
         } else if(accountType.equals("Vendor")) {
-            styleSheet = "CSS files\\VendorProfileMenu.css";
+            styleSheet = "VendorProfileMenu.css";
         } else {
-            styleSheet = "CSS files\\CustomerProfileMenu.css";
+            styleSheet = "CustomerProfileMenu.css";
         }
-        styleSheets.add(styleSheet);
+        styleSheets.add(getClass().getResource(styleSheet).toExternalForm());
     }
 
     public void upPaneMouseClicked(MouseEvent mouseEvent) {
