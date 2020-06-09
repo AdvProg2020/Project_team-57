@@ -52,9 +52,9 @@ public class AccountControl extends Control implements IOValidity {
             if (oldPassword.equals(newPassword))
                 return Notification.SAME_PASSWORD_ERROR;
             if (newPassword.length() < 8 || newPassword.length() > 16)
-                return Notification.ERROR_PASSWORD_LENGTH;
+                return Notification.ERROR_PASSWORD_LENGTH_EDIT;
             if (!this.isPasswordValid(newPassword))
-                return Notification.ERROR_PASSWORD_FORMAT;
+                return Notification.ERROR_PASSWORD_FORMAT_EDIT;
             AccountTable.editField(Control.getUsername(), "Password", newPassword);
             return Notification.CHANGE_PASSWORD_SUCCESSFULLY;
         } catch (Exception e) {
