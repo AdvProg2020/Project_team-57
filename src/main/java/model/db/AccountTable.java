@@ -151,6 +151,18 @@ public class AccountTable extends Database {
         return allAdmins;
     }
 
+    public static ArrayList<Account> getAllVendors() throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Accounts WHERE AccType = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, "Vendor");
+        ArrayList<Account> allAdmins = new ArrayList<>();
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            allAdmins.add(Account.makeAccount(resultSet));
+        }
+        return allAdmins;
+    }
+
     public static ArrayList<Account> getAllCustomers() throws SQLException, ClassNotFoundException {
         ArrayList<Account> allCustomers = new ArrayList<>();
         String command = "SELECT * FROM Accounts WHERE AccType = ?";

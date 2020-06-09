@@ -28,6 +28,7 @@ public class AccountControl extends Control implements IOValidity {
 
     public Account getAccount() {
         try {
+            //System.out.println(AccountTable.getAccountByUsername(Control.getUsername()));
             return AccountTable.getAccountByUsername(Control.getUsername());
         } catch (Exception e) {
             e.printStackTrace();
@@ -252,6 +253,24 @@ public class AccountControl extends Control implements IOValidity {
             for (Log.ProductOfLog productOfLog : LogTable.getCustomerLogByID(getCurrentLogID()).getAllProducts()) {
                 if (productID.equals(productOfLog.getProductID()))
                     return productOfLog;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ArrayList<Account> getModifiedAccounts(Account.AccountType accountType) {
+        try {
+            switch (accountType) {
+                case ADMIN:
+                    return AccountTable.getAllAdmins();
+                case VENDOR:
+                    return AccountTable.getAllVendors();
+                case CUSTOMER:
+                    return AccountTable.getAllCustomers();
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -78,7 +78,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
-      <Pane fx:id="profilePane" layoutX="376.0" layoutY="37.0" onMouseClicked="#goCustomerProfile" onMouseEntered="#enterProfile" onMouseExited="#exitProfile">
+      <Pane fx:id="profilePane" layoutX="376.0" layoutY="37.0" onMouseClicked="#showProfileMenu" onMouseEntered="#enterProfile" onMouseExited="#exitProfile">
          <children>
             <ImageView fx:id="profile" fitHeight="43.0" fitWidth="48.0" layoutY="1.0" onMouseEntered="#enterProfile" onMouseExited="#exitProfile" opacity="0.7" pickOnBounds="true" preserveRatio="true">
                <image>
