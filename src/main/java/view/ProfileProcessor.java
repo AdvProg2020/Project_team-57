@@ -73,6 +73,8 @@ public class ProfileProcessor implements Initializable {
 
     private void adjustMainPanesForAccounts() {
         changeCenterPane("profileInfoMenu");
+        changeButtonBackGroundColor(profileInfoButton);
+
         if(account.getType().equals("Admin")) {
             optionsHBox.getChildren().remove(profileCreditButton);
         }
@@ -168,7 +170,7 @@ public class ProfileProcessor implements Initializable {
 
         switch (Control.getType()) {
             case "Admin":
-                color = Color.valueOf("#7FCAC4");
+                color = Color.valueOf("#80CBC4");
                 break;
             case "Vendor":
                 color = Color.valueOf("#233C5E");

@@ -57,3 +57,7 @@
 .Label {
     -fx-text-fill: #330939;
 }
+
+.Menu_Line {
+    -fx-fill: #2F999F;
+}
