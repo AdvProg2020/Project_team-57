@@ -1,5 +1,6 @@
 package view;
 
+import controller.Control;
 import controller.IOControl;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -64,7 +65,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         infoLabel.setEffect(dropShadow);
         historyLabel.setEffect(dropShadow);
         cartLabel.setEffect(dropShadow);
-        profileLabel.setText(IOControl.getUsername());
+        profileLabel.setText(Control.getUsername());
     }
 
     public void returnSignInMenu(MouseEvent event) {

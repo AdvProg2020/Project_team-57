@@ -32,13 +32,13 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if(location.toString().contains("AdminMenu")) {
-            Account account = new Account("Ashkan", "a1234567");
+/*            Account account = new Account("Ashkan", "a1234567");
             account.setType("Admin");
             account.setFirstName("Ashkan");
             account.setLastName("Khademian");
             IOControl ioControl = IOControl.getController();
             ioControl.register(account);
-            ioControl.login(account);
+            ioControl.login(account);*/
             initButtons();
             selectThisButton(dashboardButton);
             initLabelsForUsername();
