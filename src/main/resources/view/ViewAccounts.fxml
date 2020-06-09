@@ -10,35 +10,34 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ViewAccountsProcessor">
    <left>
       <Pane prefHeight="600.0" prefWidth="228.0" style="-fx-background-color: #e0f2f1;" BorderPane.alignment="CENTER">
          <children>
             <Circle fx:id="imageCircle" fill="#4db6ac" layoutX="114.0" layoutY="161.0" radius="75.0" stroke="#4db6ac" strokeType="INSIDE" strokeWidth="2.0" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutX="189.0" layoutY="156.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutY="161.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="40.0" />
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="252.0" prefWidth="210.0" text="Ashkan.khd">
+            <Label fx:id="nameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="252.0" prefWidth="210.0" text="Ashkan.khd">
                <font>
                   <Font name="Calibri" size="17.0" />
                </font>
             </Label>
-            <JFXButton buttonType="RAISED" layoutX="62.0" layoutY="321.0" text="Show Profile">
+            <JFXButton fx:id="showProfileButton" buttonType="RAISED" layoutX="62.0" layoutY="321.0" text="Show Profile">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton buttonType="RAISED" layoutX="14.0" layoutY="360.0" text="Delete User">
+            <JFXButton fx:id="deleteUserButton" buttonType="RAISED" layoutX="14.0" layoutY="360.0" text="Delete User">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <JFXButton buttonType="RAISED" layoutX="110.0" layoutY="360.0" text="Approve User">
+            <JFXButton fx:id="approveUserButton" buttonType="RAISED" layoutX="110.0" layoutY="360.0" text="Approve User">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="273.0" prefWidth="210.0" text="Admin">
+            <Label fx:id="typeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="273.0" prefWidth="210.0" text="Admin">
                <font>
                   <Font name="Calibri" size="17.0" />
                </font>
@@ -49,12 +48,12 @@
    <center>
       <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
          <children>
-            <TableView layoutX="29.0" layoutY="28.0" prefHeight="545.0" prefWidth="615.0">
+            <TableView fx:id="accountsTableView" layoutX="29.0" layoutY="28.0" prefHeight="545.0" prefWidth="615.0">
               <columns>
-                <TableColumn prefWidth="161.0" text="Username" />
-                <TableColumn minWidth="0.0" prefWidth="144.0" text="First Name" />
-                  <TableColumn minWidth="0.0" prefWidth="125.0" text="Last Name" />
-                  <TableColumn minWidth="0.0" prefWidth="133.0" text="Approved" />
+                <TableColumn fx:id="usernameColumn" prefWidth="145.0" text="Username" />
+                <TableColumn fx:id="firstNameColumn" minWidth="0.0" prefWidth="171.0" text="First Name" />
+                  <TableColumn fx:id="lastNameColumn" minWidth="0.0" prefWidth="198.0" text="Last Name" />
+                  <TableColumn fx:id="approvalColumn" minWidth="0.0" prefWidth="91.0" text="Approved" />
               </columns>
             </TableView>
          </children>

@@ -260,4 +260,22 @@ public class AccountControl extends Control implements IOValidity {
         }
         return null;
     }
+
+    public ArrayList<Account> getModifiedAccounts(Account.AccountType accountType) {
+        try {
+            switch (accountType) {
+                case ADMIN:
+                    return AccountTable.getAllAdmins();
+                case VENDOR:
+                    return AccountTable.getAllVendors();
+                case CUSTOMER:
+                    return AccountTable.getAllCustomers();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

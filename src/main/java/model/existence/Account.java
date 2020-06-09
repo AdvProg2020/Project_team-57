@@ -1,11 +1,14 @@
 package model.existence;
 
-import controller.account.AccountControl;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Account {
+
+    public static enum AccountType {
+        ADMIN, CUSTOMER, VENDOR;
+    }
+
     private String username;
     private String password;
     private String type;
@@ -13,6 +16,7 @@ public class Account {
     private String lastName;
     private String email;
     private String brand;
+    private String isApproved;
     private double credit;
 
     public static Account makeAccount(ResultSet resultSet) throws SQLException {
@@ -23,6 +27,7 @@ public class Account {
         account.setEmail(resultSet.getString("Email"));
         account.setCredit(resultSet.getDouble("Credit"));
         account.setBrand(resultSet.getString("Brand"));
+        account.setIsApproved(resultSet.getBoolean("IsApproved") ? "Approved" : "Unapproved");
         return account;
     }
 
@@ -31,6 +36,14 @@ public class Account {
     public Account(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public String getIsApproved() {
+        return isApproved;
+    }
+
+    public void setIsApproved(String isApproved) {
+        this.isApproved = isApproved;
     }
 
     //Inner Class Start
