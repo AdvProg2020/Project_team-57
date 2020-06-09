@@ -75,6 +75,7 @@ public class SignInProcessor{
 
 
     public void enterSignUpMenu(MouseEvent mouseEvent) {
+        SignUpProcessor.setIsNormal(true);
         Parent root1 = null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignUp.fxml"));

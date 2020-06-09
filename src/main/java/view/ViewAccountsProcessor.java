@@ -8,14 +8,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import model.existence.Account;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -73,7 +77,6 @@ public class ViewAccountsProcessor implements Initializable {
     }
 
     public void updateSelectedAccount() {
-        //System.out.println(accountsTableView.getSelectionModel().getSelectedItem());
         if(accountsTableView.getSelectionModel().getSelectedItem() != null) {
             selectedAccount = accountsTableView.getSelectionModel().getSelectedItem();
             nameLabel.setText(selectedAccount.getFirstName() + " " + selectedAccount.getLastName());
@@ -139,9 +142,37 @@ public class ViewAccountsProcessor implements Initializable {
 
     public void approveUser(ActionEvent actionEvent) {
         Optional<ButtonType> buttonType = new Alert
-                (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Delete " + selectedAccount.getUsername() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
+                (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Approve " + selectedAccount.getUsername() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
-            AdminControl.getController().deleteUserWithUsername(selectedAccount.getUsername()).getAlert().show();
+            AccountControl.getController().modifyApprove(selectedAccount.getUsername(), 1).getAlert().show();
         }
+        updateAccountTable();
+    }
+
+    public void addNewAdmin(ActionEvent actionEvent) {
+        try {
+            SignUpProcessor.setIsNormal(false);
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("SignUp.fxml"));
+            Parent root = loader.load();
+            SignUpProcessor signUpProcessor = loader.getController();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            signUpProcessor.setMyStage(newStage);
+            newStage.getIcons().add(new Image(getClass().getResourceAsStream("Login Icon.png")));
+            newStage.setResizable(false);
+            newStage.setTitle("Register New Admin");
+            newStage.show();
+            newStage.setOnCloseRequest(event -> {
+                updateAccountTable();
+                accountsTableView.getSelectionModel().selectFirst();
+                updateSelectedAccount();
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showProfile(ActionEvent actionEvent) {
+
     }
 }

@@ -11,12 +11,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.existence.Account;
@@ -27,7 +25,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class SignUpProcessor implements Initializable {
-
+    private static boolean isNormal = true;
     public Button signUp;
     public JFXTextField username;
     public JFXPasswordField password;
@@ -37,7 +35,13 @@ public class SignUpProcessor implements Initializable {
     private final IOControl ioControl = IOControl.getController();
     public ImageView backImage;
     public JFXComboBox<String> accountTypeComboBox;
+    public ImageView imageOfSignUp;
+    public AnchorPane pane;
     private Stage myStage;
+
+    public static void setIsNormal(boolean isNormal) {
+        SignUpProcessor.isNormal = isNormal;
+    }
 
     public void register(ActionEvent event) {
         if (!isTextFieldEmpty()) {
@@ -49,7 +53,14 @@ public class SignUpProcessor implements Initializable {
             if (alert.getTitle().equals("Successful")) {
                 alert.show();
                 signUp.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(1.5))));
-                backToSignInMenu(null);
+                if(isNormal)
+                    backToSignInMenu(null);
+                else {
+                    username.deleteText(0, username.getText().length());
+                    password.deleteText(0, password.getText().length());
+                    name.deleteText(0, name.getText().length());
+                    lastName.deleteText(0, lastName.getText().length());
+                }
                 return;
             }
             showError(alert);
@@ -77,16 +88,18 @@ public class SignUpProcessor implements Initializable {
     }
 
     private String getAccountType() {
-        if(!ioControl.isThereAdmin()) {
-            if(accountTypeComboBox.getSelectionModel().isSelected(0))
-                return "Admin";
-            else if(accountTypeComboBox.getSelectionModel().isSelected(1))
-                return "Vendor";
-            else
-                return "Customer";
-        } else
-            return (accountTypeComboBox.getSelectionModel().isSelected(0) ? "Vendor" : "Customer");
-
+        if(isNormal) {
+            if(!ioControl.isThereAdmin()) {
+                if(accountTypeComboBox.getSelectionModel().isSelected(0))
+                    return "Admin";
+                else if(accountTypeComboBox.getSelectionModel().isSelected(1))
+                    return "Vendor";
+                else
+                    return "Customer";
+            } else
+                return (accountTypeComboBox.getSelectionModel().isSelected(0) ? "Vendor" : "Customer");
+        }
+        return "Admin";
     }
 
     private boolean isTextFieldEmpty() {
@@ -144,12 +157,20 @@ public class SignUpProcessor implements Initializable {
     }
 
     private void initAccTypeComboBox() {
-        if(!ioControl.isThereAdmin()) {
+        if(isNormal) {
+            if(!ioControl.isThereAdmin()) {
+                accountTypeComboBox.getItems().add("Admin");
+            }
+            accountTypeComboBox.getItems().add("Vendor");
+            accountTypeComboBox.getItems().add("Customer");
+            accountTypeComboBox.getSelectionModel().selectFirst();
+        } else {
+            imageOfSignUp.setImage(new Image("Images\\Backgrounds\\steve jobs.png"));
+            pane.getChildren().remove(backImage);
             accountTypeComboBox.getItems().add("Admin");
+            accountTypeComboBox.getSelectionModel().selectFirst();
         }
-        accountTypeComboBox.getItems().add("Vendor");
-        accountTypeComboBox.getItems().add("Customer");
-        accountTypeComboBox.getSelectionModel().selectFirst();
+
     }
 
     public void setMyStage(Stage myStage) {

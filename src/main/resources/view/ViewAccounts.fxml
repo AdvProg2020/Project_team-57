@@ -22,7 +22,7 @@
                   <Font name="Calibri" size="17.0" />
                </font>
             </Label>
-            <JFXButton fx:id="showProfileButton" buttonType="RAISED" disable="true" layoutX="62.0" layoutY="321.0" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Profile">
+            <JFXButton fx:id="showProfileButton" buttonType="RAISED" disable="true" layoutX="62.0" layoutY="321.0" onAction="#showProfile" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Profile">
                <font>
                   <Font size="14.0" />
                </font>
@@ -42,7 +42,7 @@
                   <Font name="Calibri" size="17.0" />
                </font>
             </Label>
-            <JFXButton fx:id="addAdminButton" buttonType="RAISED" layoutX="22.0" layoutY="556.0" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="30.0" prefWidth="184.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Add New Admin">
+            <JFXButton fx:id="addAdminButton" buttonType="RAISED" layoutX="22.0" layoutY="556.0" onAction="#addNewAdmin" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="30.0" prefWidth="184.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Add New Admin">
                <font>
                   <Font size="14.0" />
                </font>

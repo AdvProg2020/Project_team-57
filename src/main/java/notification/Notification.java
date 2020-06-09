@@ -24,7 +24,7 @@ public enum Notification {
     WRONG_OLD_PASSWORD("Old Password Incorrect"),
     REMOVE_PRODUCT_SUCCESSFULLY("Product removed successfully"),
     DECLINE_REQUEST("Request declined"),
-    ACCEPT_ADD_VENDOR_REQUEST("The seller was added to the store"),
+    ACCEPT_ADD_VENDOR_REQUEST("The seller was added to the store", Alert.AlertType.INFORMATION, "Successful", "Congratulations"),
     USER_NOT_APPROVED("Wait for The Lord to Prove your Account, may the 4th be with you.\uD83D\uDE08", Alert.AlertType.ERROR, "Login Error", "User Not Approved"),
     PRODUCT_NOT_AVAILABLE("This Product is Unavailable. You can't Edit its Specs."),
     ADD_PRODUCT("Successfully Added. Hope You Will Have A Good Sale If The Lord Accepts your Product"),
