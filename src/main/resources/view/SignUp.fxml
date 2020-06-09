@@ -17,6 +17,10 @@
             <Font name="Arial Bold" size="18.0" />
          </font>
       </JFXTextField>
+      <JFXPasswordField fx:id="password" layoutX="118.0" layoutY="180.0" onMouseClicked="#passwordFieldMouseClicked" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="31.0" prefWidth="270.0" promptText="Password">
+         <font>
+            <Font name="Arial Bold" size="18.0" />
+         </font></JFXPasswordField>
       <JFXTextField fx:id="name" layoutX="118.0" layoutY="255.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="270.0" promptText="Name" stylesheets="@../CSS%20files/signUp.css">
          <font>
             <Font name="Arial Bold" size="18.0" />
@@ -57,9 +61,5 @@
          </cursor>
       </ImageView>
       <JFXComboBox fx:id="accountTypeComboBox" layoutX="89.0" layoutY="389.0" prefHeight="31.0" prefWidth="152.0" style="-fx-border-radius: 10 10 10 10; -fx-background-radius: 10 10 10 10;" />
-      <JFXPasswordField fx:id="password" layoutX="118.0" layoutY="180.0" onMouseClicked="#passwordFieldMouseClicked" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="31.0" prefWidth="270.0" promptText="Password">
-         <font>
-            <Font name="Arial Bold" size="18.0" />
-         </font></JFXPasswordField>
    </children>
 </AnchorPane>

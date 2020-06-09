@@ -64,9 +64,6 @@ public class ProfileProcessor implements Initializable {
     }
 
     private void adjustMainPanesForAccounts() {
-        account = new Account("Ashkan", "a1234567");
-        account.setType("Customer");
-
         if(account.getType().equals("Admin")) {
             optionsHBox.getChildren().remove(profileCreditButton);
         }
