@@ -26,6 +26,14 @@ import java.util.ResourceBundle;
 public class ProfileProcessor implements Initializable {
     private static Account account;
 
+    public static Account getAccount() {
+        return account;
+    }
+
+    public static void setAccount(Account account) {
+        ProfileProcessor.account = account;
+    }
+
     public BorderPane mainPane;
     public Pane profileMenusPane;
     public Pane profileInfoPane, profilePasswordPane, profileCreditPane;
@@ -64,9 +72,7 @@ public class ProfileProcessor implements Initializable {
     }
 
     private void adjustMainPanesForAccounts() {
-        account = new Account("Ashkan", "a1234567");
-        account.setType("Customer");
-
+        changeCenterPane("profileInfoMenu");
         if(account.getType().equals("Admin")) {
             optionsHBox.getChildren().remove(profileCreditButton);
         }

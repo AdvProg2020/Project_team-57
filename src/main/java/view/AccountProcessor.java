@@ -43,22 +43,20 @@ public class AccountProcessor {
     }
 
     public void showProfileMenu() {
-/*        try {
+        try {
+            AccountControl accountControl = AccountControl.getController();
+            ProfileProcessor.setAccount(accountControl.getAccount());
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileMenu.fxml"));
             Parent root = loader.load();
-            ProfileProcessor profileProcessor = loader.getController();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
-            profileProcessor.setMyStage(newStage);
-            AccountControl accountControl = AccountControl.getController();
-            profileProcessor.setAccount(accountControl.getAccount());
             newStage.getIcons().add(new Image(getClass().getResourceAsStream("Profile Icon.png")));
             newStage.setResizable(false);
             newStage.setTitle(Control.getUsername() + " Profile");
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
 }

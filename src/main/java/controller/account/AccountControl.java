@@ -28,6 +28,7 @@ public class AccountControl extends Control implements IOValidity {
 
     public Account getAccount() {
         try {
+            //System.out.println(AccountTable.getAccountByUsername(Control.getUsername()));
             return AccountTable.getAccountByUsername(Control.getUsername());
         } catch (Exception e) {
             e.printStackTrace();
