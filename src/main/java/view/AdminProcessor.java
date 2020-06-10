@@ -39,13 +39,6 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if(location.toString().contains("AdminMenu")) {
-/*            Account account = new Account("Ashkan", "a1234567");
-            account.setType("Admin");
-            account.setFirstName("Ashkan");
-            account.setLastName("Khademian");
-            IOControl ioControl = IOControl.getController();
-            ioControl.register(account);
-            ioControl.login(account);*/
             initButtons();
             selectThisButton(dashboardButton);
             initLabelsForUsername();
@@ -126,25 +119,28 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
 
     public void manageAccounts(MouseEvent mouseEvent) {
         String title = "";
+        Account.AccountType accountType = Account.AccountType.ADMIN;
         switch (((Pane)mouseEvent.getSource()).getId()) {
             case "manageCustomers" :
-                ViewAccountsProcessor.setAccountType(Account.AccountType.CUSTOMER);
+                accountType = Account.AccountType.CUSTOMER;
                 title = "Customers";
                 break;
             case "manageVendors" :
-                ViewAccountsProcessor.setAccountType(Account.AccountType.VENDOR);
+                accountType = Account.AccountType.VENDOR;
                 title = "Vendors";
                 break;
             case "manageAdmins" :
-                ViewAccountsProcessor.setAccountType(Account.AccountType.ADMIN);
+                accountType = Account.AccountType.ADMIN;
                 title = "Admins";
                 break;
         }
         title += " View";
+        //System.out.println(accountType);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewAccounts.fxml"));
             Parent root = loader.load();
             ViewAccountsProcessor viewAccountsProcessor = loader.getController();
+            viewAccountsProcessor.initProcessor(accountType);
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             viewAccountsProcessor.setMyStage(newStage);

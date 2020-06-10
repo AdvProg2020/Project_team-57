@@ -1,6 +1,7 @@
 package view;
 
 import com.jfoenix.controls.JFXButton;
+import controller.Control;
 import controller.account.AccountControl;
 import controller.account.AdminControl;
 import javafx.collections.FXCollections;
@@ -42,11 +43,18 @@ public class ViewAccountsProcessor implements Initializable {
     private Account selectedAccount = null;
     private Stage myStage;
 
-    private static Account.AccountType accountType = Account.AccountType.ADMIN;
+    private Account.AccountType accountType = Account.AccountType.ADMIN;
+
+    public ViewAccountsProcessor() {
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initColumns();
+    }
+
+    public void initProcessor(Account.AccountType accountType) {
+        this.accountType = accountType;
         updateAccountTable();
         if(accountType != Account.AccountType.ADMIN)
             optionsPane.getChildren().remove(addAdminButton);
@@ -54,7 +62,7 @@ public class ViewAccountsProcessor implements Initializable {
         updateSelectedAccount();
     }
 
-    private void updateAccountTable() {
+    public void updateAccountTable() {
         ObservableList<Account> accounts = FXCollections.observableArrayList();
         accountsTableView.getItems().remove(0, accountsTableView.getItems().size());
         accounts.addAll(AccountControl.getController().getModifiedAccounts(accountType));
@@ -72,8 +80,8 @@ public class ViewAccountsProcessor implements Initializable {
         approvalColumn.setResizable(false);
     }
 
-    public static void setAccountType(Account.AccountType accountType) {
-        ViewAccountsProcessor.accountType = accountType;
+    public  void setAccountType(Account.AccountType accountType) {
+        this.accountType = accountType;
     }
 
     public void updateSelectedAccount() {
@@ -173,6 +181,18 @@ public class ViewAccountsProcessor implements Initializable {
     }
 
     public void showProfile(ActionEvent actionEvent) {
-
+        try {
+            ProfileProcessor.setAccount(selectedAccount);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileMenu.fxml"));
+            Parent root = loader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.getIcons().add(new Image(getClass().getResourceAsStream("Profile Icon.png")));
+            newStage.setResizable(false);
+            newStage.setTitle(selectedAccount.getUsername() + " Profile");
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
