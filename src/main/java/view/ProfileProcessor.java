@@ -128,7 +128,9 @@ public class ProfileProcessor implements Initializable {
                                 String newValue) {
                 //Todo Checking
 
-                if (!newValue.matches("\\d+(.(\\d)+)?")) {
+                if(newValue.equals(".")) {
+                    additionCreditField.setText("0.");
+                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
                     if(additionCreditField.getText().contains(".")) {
                         additionCreditField.setText(removeDots(additionCreditField.getText()));
                     } else {
