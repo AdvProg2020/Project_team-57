@@ -47,14 +47,18 @@ public class AccountControl extends Control implements IOValidity {
 
     public Notification changePassword(String oldPassword, String newPassword) {
         try {
+            if(oldPassword == null || oldPassword.isEmpty())
+                return Notification.EMPTY_OLD_PASSWORD;
+            if(newPassword == null || newPassword.isEmpty())
+                return Notification.EMPTY_NEW_PASSWORD;
             if(!AccountTable.isPasswordCorrect(Control.getUsername(), oldPassword))
                 return Notification.WRONG_OLD_PASSWORD;
             if (oldPassword.equals(newPassword))
                 return Notification.SAME_PASSWORD_ERROR;
             if (newPassword.length() < 8 || newPassword.length() > 16)
-                return Notification.ERROR_PASSWORD_LENGTH;
+                return Notification.ERROR_PASSWORD_LENGTH_EDIT;
             if (!this.isPasswordValid(newPassword))
-                return Notification.ERROR_PASSWORD_FORMAT;
+                return Notification.ERROR_PASSWORD_FORMAT_EDIT;
             AccountTable.editField(Control.getUsername(), "Password", newPassword);
             return Notification.CHANGE_PASSWORD_SUCCESSFULLY;
         } catch (Exception e) {
@@ -64,31 +68,103 @@ public class AccountControl extends Control implements IOValidity {
 
     public Notification editField(String fieldName, String newValue) {
         try {
-            if (AccountTable.getValueByField(Control.getUsername(), fieldName) != null &&
+            /*if (AccountTable.getValueByField(Control.getUsername(), fieldName) != null &&
                     AccountTable.getValueByField(Control.getUsername(), fieldName).equals(newValue))
-                return Notification.SAME_FIELD_ERROR;
-            AccountTable.editField(Control.getUsername(), fieldName, newValue);
-            return Notification.EDIT_FIELD_SUCCESSFULLY;
+                return Notification.SAME_FIELD_ERROR;*/
+
+            if(isNewValueValid(fieldName, newValue)) {
+                AccountTable.editField(Control.getUsername(), fieldName, newValue);
+                return Notification.EDIT_FIELD_SUCCESSFULLY;
+            } else {
+                return InvalidField(fieldName, newValue);
+            }
         } catch (Exception e) {
+            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         }
     }
 
-    public Notification addMoney(double money) {
+    private Notification InvalidField(String fieldName, String newValue) {
+        Notification notification = null;
+
+        switch (fieldName) {
+            case "FirstName" :
+                if(newValue == null || newValue.length() == 0)
+                    notification = Notification.EMPTY_FIRST_NAME_EDIT;
+                else
+                    notification = Notification.ERROR_FIRST_NAME_LENGTH_EDIT;
+                break;
+            case "LastName" :
+                if(newValue == null || newValue.length() == 0)
+                    notification = Notification.EMPTY_LAST_NAME_EDIT;
+                else
+                    notification = Notification.ERROR_LAST_NAME_LENGTH_EDIT;
+                break;
+            case "Email" :
+                notification = Notification.ERROR_EMAIL_LENGTH_EDIT;
+                break;
+            case "Brand" :
+                notification = Notification.ERROR_BRAND_LENGTH_EDIT;
+                break;
+            default :
+                System.out.println("Shit. Error In Checking Field Validity");
+                break;
+        }
+
+        return notification;
+    }
+
+    public boolean isNewValueValid(String fieldName, String newValue) {
+        boolean fieldValidity = false;
+
+        switch (fieldName) {
+            case "FirstName" :
+            case "LastName" :
+                fieldValidity = newValue != null && newValue.length() != 0 && newValue.length() <= 25;
+                break;
+            case "Email" :
+            case "Brand" :
+                fieldValidity = newValue == null || newValue.length() <= 35;
+                break;
+            default :
+                System.out.println("Shit. Error In Checking Field Validity");
+                break;
+        }
+
+        return fieldValidity;
+    }
+
+    public Notification addMoney(String moneyString) {
         try {
+            double money = Double.parseDouble(moneyString);
+
+            if(money == 0)
+                return Notification.INVALID_ADDING_DOUBLE_MONEY;
+
             AccountTable.changeCredit(Control.getUsername(), money);
             return Notification.RISE_MONEY_SUCCESSFULLY;
+        } catch (NumberFormatException e) {
+            System.out.println("Shit");
+            return Notification.INVALID_ADDING_DOUBLE_MONEY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
         }
     }
 
-    public Notification getMoney(double money) {
+    public Notification getMoney(String moneyString) {
         try {
+            double money = Double.parseDouble(moneyString);
+
+            if(money == 0)
+                return Notification.INVALID_ADDING_DOUBLE_MONEY;
+
             if (AccountTable.getCredit(Control.getUsername()) < money)
                 return Notification.LACK_BALANCE_ERROR;
+
             AccountTable.changeCredit(Control.getUsername(), -money);
             return Notification.GET_MONEY_SUCCESSFULLY;
+        } catch (NumberFormatException e) {
+            return Notification.INVALID_ADDING_DOUBLE_MONEY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
         }

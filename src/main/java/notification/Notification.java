@@ -11,17 +11,24 @@ public enum Notification {
     ERROR_FULL_USERNAME("Username Already Exists", Alert.AlertType.ERROR, "Register Error", "Full Username"),
     ERROR_FREE_USERNAME("This Username is not registered Yet", Alert.AlertType.ERROR, "Login Error", "Free Username"),
     ERROR_PASSWORD_LENGTH("Password must contain 8 to 16 characters!", Alert.AlertType.ERROR, "Register Error", "Password Length Not Valid"),
+    ERROR_PASSWORD_LENGTH_EDIT("Password must contain 8 to 16 characters!", Alert.AlertType.ERROR, "Change Password Error", "New Password Length Not Valid"),
     ERROR_PASSWORD_FORMAT("Password's length must be between 8 and 16, and contain both letters and numbers", Alert.AlertType.ERROR, "Register Error", "Password Format Not Valid"),
-    UNKNOWN_ERROR("An unknown error occured", Alert.AlertType.ERROR, "Unknown Error", "Shit!!!!"),
+    ERROR_PASSWORD_FORMAT_EDIT("Password's length must be between 8 and 16, and contain both letters and numbers", Alert.AlertType.ERROR, "Change Password Error", "New Password Format Not Valid"),
+    UNKNOWN_ERROR("An unknown error occurred", Alert.AlertType.ERROR, "Unknown Error", "Shit!!!!"),
     WRONG_PASSWORD("WRONG PASSWORD!", Alert.AlertType.ERROR, "Login Error", "Wrong Password"),
-    SAME_PASSWORD_ERROR("What are you doing??\uD83D\uDE15\nPasswords are identical"),
-    CHANGE_PASSWORD_SUCCESSFULLY("Password was changed successfully\uD83D\uDE10"),
-    SAME_FIELD_ERROR("Are you ok???\uD83D\uDE10\nEntered value is identical with initial value"),
-    EDIT_FIELD_SUCCESSFULLY("Value edited successfully\uD83E\uDD29"),
-    RISE_MONEY_SUCCESSFULLY("Inventory has increased!"),
-    LACK_BALANCE_ERROR("Anything else???\uD83D\uDE12\nInventory is not enough!"),
-    GET_MONEY_SUCCESSFULLY("Money has got successfully!"),
-    WRONG_OLD_PASSWORD("Old Password Incorrect"),
+    SAME_PASSWORD_ERROR("What are you doing??\uD83D\uDE15\nPasswords are identical",
+            Alert.AlertType.ERROR, "Change Password Error", "Duplicate Password"),
+    CHANGE_PASSWORD_SUCCESSFULLY("Password was changed successfully\uD83D\uDE10", Alert.AlertType.INFORMATION, "Change Successful", "Congratulations"),
+    SAME_FIELD_ERROR("Are you ok???\uD83D\uDE10\nEntered value is identical with initial value", Alert.AlertType.ERROR, "Edit Account Error", "Duplicate Value"),
+    EDIT_FIELD_SUCCESSFULLY("Value edited successfully\uD83E\uDD29", Alert.AlertType.INFORMATION, "Edit Successful", "Congratulations"),
+    RISE_MONEY_SUCCESSFULLY("Inventory has increased! Be Joyful Man",
+            Alert.AlertType.INFORMATION, "Adding Money Successful", "You Should Celebrate"),
+    LACK_BALANCE_ERROR("Anything else???\uD83D\uDE12\nInventory is not enough!",
+            Alert.AlertType.ERROR, "Subtracting Money Error", "Lack Of Balance, Bro"),
+    GET_MONEY_SUCCESSFULLY("Money has got successfully! \nYou Have Reached Your Wishes?? Shop Lifter 😒😒",
+            Alert.AlertType.INFORMATION, "Subtracting Money Successful", "Hey Rude"),
+    WRONG_OLD_PASSWORD("You have Some Alzheimer Issue ?! \nYou have Entered Wrong Old Password",
+            Alert.AlertType.ERROR, "Change Password Error", "Old Password Incorrect"),
     REMOVE_PRODUCT_SUCCESSFULLY("Product removed successfully"),
     DECLINE_REQUEST("Request declined"),
     ACCEPT_ADD_VENDOR_REQUEST("The seller was added to the store", Alert.AlertType.INFORMATION, "Successful", "Congratulations"),
@@ -106,21 +113,41 @@ public enum Notification {
     ADD_COMMENT("Comment was sent to manager, wait for approve!!"),
     ACCEPTING_COMMENT("Comment added successfully"),
     DECLINE_COMMENT("Comment decline successfully"),
-    PURCHASED_SUPERLY("Do You Have A Bed Somewhere?" +
+    PURCHASED_SUPERBLY("Do You Have A Bed Somewhere?" +
             "\nWe Gave You A Super Discount With 85% Off." +
             "\nPurchased Successfully But Who Cares About That ?\uD83D\uDE0B"),
-    PURCHASED_GOODELY("There Are No Two Words In English Language More Harmful Than GOOD JOB!" +
+    PURCHASED_GOODLY("There Are No Two Words In English Language More Harmful Than GOOD JOB!" +
             "\n+Whiplash" +
             "\nPurchased Successfully \uD83D\uDE1C"),
     INVALID_MIN_PRICE("Minimum Price Must Be A Positive Number. "),
     MIN_PRICE_BIGGER_THAN_MAX_PRICE("Minimum Price Must Be Smaller Than Maximum Price. "),
     SET_PRICE_FILTERS("Price Filters Are Set Successfully. "),
-    ERROR_FIRSTNAME_LENGTH("FirstName length must be less than 25 characters", Alert.AlertType.ERROR,
+    ERROR_FIRST_NAME_LENGTH("FirstName length must be less than 25 characters", Alert.AlertType.ERROR,
             "Register Error", "Invalid FirstName"),
-    ERROR_LASTNAME_LENGTH("LastName length must be less than 25 characters", Alert.AlertType.ERROR,
-            "Register Error", "Invalid LastName");
-
-
+    ERROR_LAST_NAME_LENGTH("LastName length must be less than 25 characters", Alert.AlertType.ERROR,
+            "Register Error", "Invalid LastName"),
+    ERROR_FIRST_NAME_LENGTH_EDIT("FirstName length must be less than 25 characters",
+            Alert.AlertType.ERROR, "Edit Account Error", "Invalid FirstName"),
+    ERROR_LAST_NAME_LENGTH_EDIT("LastName length must be less than 25 characters", Alert.AlertType.ERROR,
+            "Edit Account Error", "Invalid LastName"),
+    ERROR_EMAIL_LENGTH_EDIT("Email length must be less than 35 characters", Alert.AlertType.ERROR,
+            "Edit Account Error", "Invalid Email"),
+    ERROR_BRAND_LENGTH_EDIT("Brand length must be less than 35 characters", Alert.AlertType.ERROR,
+            "Edit Account Error", "Invalid Brand"),
+    EMPTY_OLD_PASSWORD("Hey You!!!! \nWhere Are You Going?      Enter Your Old Password", Alert.AlertType.ERROR,
+            "Change Password Error", "Empty Old Password"),
+    EMPTY_NEW_PASSWORD("Are You Dumb Or Something??? \nAre You Gonna Replace Your Password With Empty?? \nI Mean, Seriously???"
+            , Alert.AlertType.ERROR, "Change Password Error", "Empty New Password"),
+    INVALID_ADDING_DOUBLE_MONEY("Dude, Please Enter A Valid Money??? \nI Wanna Know Seriously With \nWhat Do You Get High With",
+            Alert.AlertType.ERROR, "Add Money Error", "Invalid Adding Money"),
+    INVALID_SUBTRACTING_DOUBLE_MONEY("Dude, Please Enter A Valid Money??? \nI Wanna Know Seriously With \nWhat Do You Get High With",
+            Alert.AlertType.ERROR, "Subtract Money Error", "Invalid Subtracting Money"),
+    EMPTY_FIRST_NAME_EDIT("Please Enter Some Non-Empty First Name, Dude. " +
+            "\nWe Can't Have SomeOne Anonymous In Our Shop. \nIt's Not Safe!!!! 😱😱😱",
+            Alert.AlertType.ERROR, "Edit Account Error", "Empty FirstName"),
+    EMPTY_LAST_NAME_EDIT("Please Enter Some Non-Empty Last Name, Dude. " +
+            "\nWe Can't Have SomeOne Anonymous In Our Shop. \nIt's Not Safe!!!! 😱😱😱",
+            Alert.AlertType.ERROR, "Edit Account Error", "Empty LastName");
 
 
     private String message;

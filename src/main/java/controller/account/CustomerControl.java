@@ -338,9 +338,9 @@ public class CustomerControl extends AccountControl{
             switch (giftState)
             {
                 case 1 :
-                    return Notification.PURCHASED_SUPERLY;
+                    return Notification.PURCHASED_SUPERBLY;
                 case 2 :
-                    return Notification.PURCHASED_GOODELY;
+                    return Notification.PURCHASED_GOODLY;
                 default:
                     return Notification.PURCHASED_SUCCESSFULLY;
             }

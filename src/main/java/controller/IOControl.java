@@ -2,8 +2,6 @@ package controller;
 
 import controller.account.AdminControl;
 import controller.account.IOValidity;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import model.db.AccountTable;
 import model.db.CartTable;
 import model.existence.Account;
@@ -24,9 +22,9 @@ public class IOControl extends Control implements IOValidity {
         if (!this.isPasswordValid(account.getPassword()))
             return Notification.ERROR_PASSWORD_FORMAT;
         if (account.getFirstName().length() > 25)
-            return Notification.ERROR_FIRSTNAME_LENGTH;
+            return Notification.ERROR_FIRST_NAME_LENGTH;
         if (account.getLastName().length() > 25)
-            return Notification.ERROR_LASTNAME_LENGTH;
+            return Notification.ERROR_LAST_NAME_LENGTH;
         try {
             if (AccountTable.isUsernameFree(account.getUsername())) {
                 AccountTable.addAccount(account);

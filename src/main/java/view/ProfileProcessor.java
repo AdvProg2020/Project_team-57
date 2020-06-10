@@ -4,11 +4,15 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import controller.Control;
+import controller.account.AccountControl;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -17,6 +21,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import model.existence.Account;
+import notification.Notification;
 
 import javax.swing.text.html.ImageView;
 import java.io.IOException;
@@ -24,6 +29,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ProfileProcessor implements Initializable {
+    private static AccountControl accountControl = AccountControl.getController();
     private static Account account;
 
     public static Account getAccount() {
@@ -40,14 +46,14 @@ public class ProfileProcessor implements Initializable {
     public Pane profileInfoButton, profilePasswordButton, profileCreditButton;
     public HBox optionsHBox;
 
-    public JFXTextField usernameField, firstNameField, lastNameField, emailField, brandField;
-    public Label brandLabel;
+    public JFXTextField usernameField, firstNameField, lastNameField, emailField, creditField, brandField;
+    public Label creditLabel, brandLabel;
     public JFXButton saveChangesButton;
 
     public Circle imageFieldCircle;
     public Rectangle rightLine, rightLine1;
 
-    public JFXTextField creditField, currentCreditField, additionCreditField;
+    public JFXTextField currentCreditField, additionCreditField;
     public JFXButton subButton, addButton;
 
     public JFXPasswordField oldPasswordField, newPasswordField;
@@ -96,18 +102,66 @@ public class ProfileProcessor implements Initializable {
             profileInfoPane.getChildren().remove(brandLabel);
         }
 
+        if(account.getType().equals("Admin")) {
+            profileInfoPane.getChildren().remove(creditField);
+            profileInfoPane.getChildren().remove(creditLabel);
+        } else {
+            creditField.setText(Double.toString(account.getCredit()));
+        }
+
         if(!account.getUsername().equals(Control.getUsername())) {
             profileInfoPane.getChildren().remove(saveChangesButton);
         }
     }
 
     private void setProfileCreditFields() {
-        if(account.getCredit() != 0)
-            currentCreditField.setText(Double.toString(account.getCredit()));
+        currentCreditField.setText(Double.toString(account.getCredit()));
+
         if(!account.getUsername().equals(Control.getUsername())) {
             profileCreditPane.getChildren().remove(addButton);
             profileCreditPane.getChildren().remove(subButton);
         }
+
+        additionCreditField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                //Todo Checking
+
+                if(newValue.equals(".")) {
+                    additionCreditField.setText("0.");
+                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
+                    if(additionCreditField.getText().contains(".")) {
+                        additionCreditField.setText(removeDots(additionCreditField.getText()));
+                    } else {
+                        additionCreditField.setText(newValue.replaceAll("[^\\d\\.]", ""));
+                    }
+                }
+            }
+        });
+    }
+
+    private String removeDots(String text) {
+        StringBuilder stringBuilder = new StringBuilder(text);
+        boolean foundDot = false;
+        int textSize = text.length();
+
+        for (int i = 0; i < textSize; i++) {
+            if(text.charAt(i) < 48 || text.charAt(i) > 57) {
+                if(text.charAt(i) == '.') {
+                    if(foundDot) {
+                        stringBuilder.deleteCharAt(i);
+                        textSize--;
+                    }
+                    foundDot = true;
+                } else {
+                    stringBuilder.deleteCharAt(i);
+                    textSize--;
+                }
+            }
+        }
+
+        return stringBuilder.toString();
     }
 
     private void setProfilePasswordFields() {
@@ -182,5 +236,87 @@ public class ProfileProcessor implements Initializable {
         }
 
         return color;
+    }
+
+    public void editPersonalInfoMouseClicked(MouseEvent mouseEvent) {
+        //Todo
+        Alert alert = null;
+        alert = editField("FirstName", firstNameField, alert);
+        alert = editField("LastName", lastNameField, alert);
+        alert = editField("Email", emailField, alert);
+
+        if(account.getType().equals("Vendor"))
+            alert = editField("Brand", brandField, alert);
+
+        if(alert.getTitle().equals("Edit Successful")) {
+            account = accountControl.getAccountByUsername(account.getUsername());
+            firstNameField.setText(account.getFirstName());
+            lastNameField.setText(account.getLastName());
+            lastNameField.setText(account.getLastName());
+            emailField.setText(account.getEmail());
+            brandField.setText(account.getBrand());
+        }
+
+        alert.show();
+    }
+
+    private Alert editField(String fieldName, JFXTextField textField, Alert previousAlert) {
+        Alert alert = accountControl.editField(fieldName, textField.getText()).getAlert();
+
+        if(!alert.getTitle().equals("Edit Successful"))
+            textField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
+
+        if(previousAlert == null || previousAlert.getTitle().equals("Edit Successful"))
+            return alert;
+        else
+            return previousAlert;
+    }
+
+    public void changePasswordMouseClicked(MouseEvent mouseEvent) {
+        Alert alert = accountControl.changePassword(oldPasswordField.getText(), newPasswordField.getText()).getAlert();
+
+        String style = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
+        if(alert.getHeaderText().contains("New") || alert.getHeaderText().equals("Duplicate Password"))
+            newPasswordField.setStyle(style);
+        if(alert.getHeaderText().contains("Old"))
+            oldPasswordField.setStyle(style);
+
+        alert.show();
+    }
+
+    public void addMoneyMouseClicked(MouseEvent mouseEvent) {
+        Notification notification = accountControl.addMoney(additionCreditField.getText());
+
+        if(notification.equals(Notification.RISE_MONEY_SUCCESSFULLY)) {
+            account = accountControl.getAccountByUsername(account.getUsername());
+            currentCreditField.setText(Double.toString(account.getCredit()));
+        } else {
+            additionCreditField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
+        }
+
+        notification.getAlert().show();
+    }
+
+    public void subtractMoneyMouseClicked(MouseEvent mouseEvent) {
+        Notification notification = accountControl.getMoney(additionCreditField.getText());
+
+        if(notification.equals(Notification.GET_MONEY_SUCCESSFULLY)) {
+            account = accountControl.getAccountByUsername(account.getUsername());
+            currentCreditField.setText(Double.toString(account.getCredit()));
+        } else {
+            additionCreditField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
+        }
+
+        notification.getAlert().show();
+    }
+
+    public void textFieldMouseClicked(MouseEvent mouseEvent) {
+        JFXTextField textField = (JFXTextField) mouseEvent.getSource();
+        textField.setStyle("");
+    }
+
+    public void passwordFieldMouseClicked(MouseEvent mouseEvent) {
+        JFXPasswordField passwordField = (JFXPasswordField) mouseEvent.getSource();
+        passwordField.setStyle("");
     }
 }
