@@ -5,6 +5,10 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import controller.Control;
 import controller.account.AccountControl;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -23,14 +27,12 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
 import model.existence.Account;
 import notification.Notification;
 
 import javax.swing.text.html.ImageView;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -56,6 +58,7 @@ public class ProfileProcessor implements Initializable {
     public Label creditLabel, brandLabel;
     public JFXButton saveChangesButton;
 
+    public StackPane profilePictureStackPane;
     public Circle pictureCircle;
     public Rectangle rightLine, rightLine1;
 
@@ -370,6 +373,40 @@ public class ProfileProcessor implements Initializable {
 
             pictureCircle.setFill(new ImagePattern(image));
         }
+
+    }
+
+    public void profilePictureMouseEntered(MouseEvent mouseEvent) throws FileNotFoundException {
+        Circle circle = new Circle(45);
+
+        FileInputStream fileInputStream = new FileInputStream("src\\main\\resources\\Images\\ProfileInfoMenu - Camera.png");
+        Image image = new Image(fileInputStream);
+        ImagePattern imagePattern = new ImagePattern(image);
+        circle.setFill(imagePattern);
+
+        circle.translateYProperty().set(20);
+        profilePictureStackPane.getChildren().add(circle);
+
+        Timeline timeline = new Timeline();
+        KeyValue keyValue = new KeyValue(circle.translateYProperty(), 0, Interpolator.EASE_IN);
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(0.5), keyValue);
+        timeline.getKeyFrames().add(keyFrame);
+        timeline.play();
+    }
+
+    public void profilePictureMouseExited(MouseEvent mouseEvent) {
+        //Todo
+
+        Circle circle = (Circle) profilePictureStackPane.getChildren().get(1);
+
+        circle.translateYProperty().set(-20);
+        profilePictureStackPane.getChildren().remove(circle);
+
+        Timeline timeline = new Timeline();
+        KeyValue keyValue = new KeyValue(circle.translateYProperty(), 0, Interpolator.EASE_OUT);
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(0.5), keyValue);
+        timeline.getKeyFrames().add(keyFrame);
+        timeline.play();
 
     }
 }
