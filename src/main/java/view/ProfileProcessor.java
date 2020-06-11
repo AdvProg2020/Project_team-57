@@ -86,6 +86,7 @@ public class ProfileProcessor implements Initializable {
         }
         if(!account.getUsername().equals(Control.getUsername())) {
             optionsHBox.getChildren().remove(profilePasswordButton);
+            optionsHBox.getChildren().remove(profileCreditButton);
         }
     }
 
