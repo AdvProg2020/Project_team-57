@@ -5,10 +5,8 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import controller.Control;
 import controller.account.AccountControl;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -386,14 +384,16 @@ public class ProfileProcessor implements Initializable {
         ImagePattern imagePattern = new ImagePattern(image);
         circle.setFill(imagePattern);
 
-        circle.translateYProperty().set(20);
         profilePictureStackPane.getChildren().add(circle);
+        circle.setDisable(true);
 
+        circle.translateYProperty().set(20);
         Timeline timeline = new Timeline();
         KeyValue keyValue = new KeyValue(circle.translateYProperty(), 0, Interpolator.EASE_IN);
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(0.5), keyValue);
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
+
     }
 
     public void profilePictureMouseExited(MouseEvent mouseEvent) {
@@ -401,13 +401,12 @@ public class ProfileProcessor implements Initializable {
 
         Circle circle = (Circle) profilePictureStackPane.getChildren().get(1);
 
-        circle.translateYProperty().set(-20);
-        profilePictureStackPane.getChildren().remove(circle);
-
         Timeline timeline = new Timeline();
-        KeyValue keyValue = new KeyValue(circle.translateYProperty(), 0, Interpolator.EASE_OUT);
+        circle.translateYProperty().set(0);
+        KeyValue keyValue = new KeyValue(circle.translateYProperty(), 20, Interpolator.EASE_OUT);
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(0.5), keyValue);
         timeline.getKeyFrames().add(keyFrame);
+        timeline.setOnFinished(event -> profilePictureStackPane.getChildren().remove(circle));
         timeline.play();
 
     }
