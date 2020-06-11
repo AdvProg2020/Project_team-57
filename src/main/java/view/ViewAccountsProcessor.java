@@ -16,10 +16,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import model.existence.Account;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -90,9 +94,41 @@ public class ViewAccountsProcessor implements Initializable {
             nameLabel.setText(selectedAccount.getFirstName() + " " + selectedAccount.getLastName());
             typeLabel.setText(selectedAccount.getType());
             showOptions(selectedAccount);
+            setUserImage();
             return;
         }
         terminateOptions();
+    }
+
+    private void setUserImage() {
+        String filePath = getUserImageFileName(selectedAccount.getUsername());
+        try {
+            if(filePath != null) {
+                FileInputStream fileInputStream = new FileInputStream(filePath);
+                Image image = new Image(fileInputStream);
+                imageCircle.setFill(new ImagePattern(image));
+            } else {
+                FileInputStream fileInputStream = new FileInputStream("database\\Images\\Users\\1.png");
+                Image image = new Image(fileInputStream);
+                imageCircle.setFill(new ImagePattern(image));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private String getUserImageFileName(String username) {
+        String fileName = "database\\Images\\Users\\" + username;
+        //System.out.println(new File(fileName + "." + "jpg"));
+        String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
+        for (String validImageExtension : validImageExtensions) {
+            String filePath = fileName + "." + validImageExtension;
+            //System.out.println(filePath);
+            if(new File(filePath).exists())
+                return filePath;
+        }
+        return null;
     }
 
     private void terminateOptions() {
