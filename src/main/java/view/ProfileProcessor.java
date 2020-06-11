@@ -18,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -55,7 +56,7 @@ public class ProfileProcessor implements Initializable {
     public Label creditLabel, brandLabel;
     public JFXButton saveChangesButton;
 
-    public Circle imageFieldCircle;
+    public Circle pictureCircle;
     public Rectangle rightLine, rightLine1;
 
     public JFXTextField currentCreditField, additionCreditField;
@@ -359,6 +360,8 @@ public class ProfileProcessor implements Initializable {
 
             //Todo Sending Image To Controller
             //Todo Showing Image
+
+            pictureCircle.setFill(new ImagePattern(image));
         }
 
     }
