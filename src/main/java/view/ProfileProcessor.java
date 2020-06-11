@@ -138,6 +138,8 @@ public class ProfileProcessor implements Initializable {
             brandField.setDisable(true);
 
             pictureCircle.setOnMouseClicked(null);
+            pictureCircle.setOnMouseEntered(null);
+            pictureCircle.setOnMouseExited(null);
         }
     }
 
