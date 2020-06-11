@@ -86,6 +86,7 @@ public class ProfileProcessor implements Initializable {
         }
         if(!account.getUsername().equals(Control.getUsername())) {
             optionsHBox.getChildren().remove(profilePasswordButton);
+            optionsHBox.getChildren().remove(profileCreditButton);
         }
     }
 
@@ -111,6 +112,18 @@ public class ProfileProcessor implements Initializable {
 
         if(!account.getUsername().equals(Control.getUsername())) {
             profileInfoPane.getChildren().remove(saveChangesButton);
+
+            firstNameField.setEditable(false);
+            firstNameField.setDisable(true);
+
+            lastNameField.setEditable(false);
+            lastNameField.setDisable(true);
+
+            emailField.setEditable(false);
+            emailField.setDisable(true);
+
+            brandField.setEditable(false);
+            brandField.setDisable(true);
         }
     }
 
