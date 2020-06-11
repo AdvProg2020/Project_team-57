@@ -14,16 +14,21 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import model.existence.Account;
 import notification.Notification;
 
 import javax.swing.text.html.ImageView;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -331,5 +336,30 @@ public class ProfileProcessor implements Initializable {
     public void passwordFieldMouseClicked(MouseEvent mouseEvent) {
         JFXPasswordField passwordField = (JFXPasswordField) mouseEvent.getSource();
         passwordField.setStyle("");
+    }
+
+    public void chooseAccountPictureMouseClicked(MouseEvent mouseEvent) throws FileNotFoundException {
+        FileChooser pictureChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter jpgExtensionFilter = new FileChooser.ExtensionFilter("JPG Files", "*.JPG");
+        FileChooser.ExtensionFilter jpegExtensionFilter = new FileChooser.ExtensionFilter("JPEG Files", "*.JPEG");
+        FileChooser.ExtensionFilter pngExtensionFilter = new FileChooser.ExtensionFilter("PNG Files", "*.PNG");
+        FileChooser.ExtensionFilter bmpExtensionFilter = new FileChooser.ExtensionFilter("BMP Files", "*.BMP");
+
+        pictureChooser.getExtensionFilters().add(jpgExtensionFilter);
+        pictureChooser.getExtensionFilters().add(jpegExtensionFilter);
+        pictureChooser.getExtensionFilters().add(pngExtensionFilter);
+        pictureChooser.getExtensionFilters().add(bmpExtensionFilter);
+
+        File pictureFile = pictureChooser.showOpenDialog(null);
+
+        if(pictureFile != null) {
+            FileInputStream fileInputStream = new FileInputStream(pictureFile);
+            Image image = new Image(fileInputStream);
+
+            //Todo Sending Image To Controller
+            //Todo Showing Image
+        }
+
     }
 }
