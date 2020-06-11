@@ -397,8 +397,6 @@ public class ProfileProcessor implements Initializable {
     }
 
     public void profilePictureMouseExited(MouseEvent mouseEvent) {
-        //Todo
-
         Circle circle = (Circle) profilePictureStackPane.getChildren().get(1);
 
         Timeline timeline = new Timeline();
