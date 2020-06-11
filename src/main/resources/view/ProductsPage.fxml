@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="1000.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="70.0" layoutY="825.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Customer_Credit_Menu.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="416.0" layoutY="825.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Customer_Lock_Icon.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

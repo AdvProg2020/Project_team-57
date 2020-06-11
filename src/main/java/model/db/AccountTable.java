@@ -1,7 +1,12 @@
 package model.db;
 
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
 import model.existence.Account;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -211,5 +216,20 @@ public class AccountTable extends Database {
         HashMap<Date, Date> map = new HashMap<>();
         map.put(resultSet.getDate("StartDate"), resultSet.getDate("FinishDate"));
         return map;
+    }
+
+    public static String getUserImageFilePath(String username) {
+        String fileName = "database\\Images\\Users\\" + username;
+        String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
+        for (String validImageExtension : validImageExtensions) {
+            String filePath = fileName + "." + validImageExtension;
+            if(new File(filePath).exists())
+                return filePath;
+        }
+        return null;
+    }
+
+    public static FileInputStream getProfileImageInputStream(String username) throws FileNotFoundException {
+        return new FileInputStream(getUserImageFilePath(username));
     }
 }

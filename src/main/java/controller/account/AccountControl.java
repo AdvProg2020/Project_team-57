@@ -1,6 +1,7 @@
 package controller.account;
 
 import controller.Control;
+import javafx.scene.image.Image;
 import model.db.AccountTable;
 import model.db.LogTable;
 import model.db.OffTable;
@@ -10,6 +11,8 @@ import model.existence.Log;
 import model.existence.Off;
 import notification.Notification;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -355,4 +358,20 @@ public class AccountControl extends Control implements IOValidity {
         }
         return null;
     }
+
+    public Image getProfileImageByUsername(String username) {
+        try {
+            if(doesUserHaveImage(username))
+                return new Image(AccountTable.getProfileImageInputStream(username));
+            return new Image(AccountTable.getProfileImageInputStream("1"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private boolean doesUserHaveImage(String username) {
+        return AccountTable.getUserImageFilePath(username) != null;
+    }
+
 }

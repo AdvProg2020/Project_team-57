@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductsProcessor">
+   <left>
+      <VBox prefHeight="770.0" prefWidth="250.0" style="-fx-background-color: #eceff1;" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER" prefHeight="350.0" prefWidth="250.0">
+               <children>
+                  <Pane maxHeight="-Infinity" prefHeight="320.0" prefWidth="220.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="350.0" prefWidth="250.0" />
+            <HBox prefHeight="100.0" prefWidth="200.0" />
+         </children></VBox>
+   </left>
+   <center>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <top>
+            <Pane prefHeight="100.0" prefWidth="1050.0" BorderPane.alignment="CENTER" />
+         </top>
+         <center>
+            <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </center>
+   <top>
+      <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #cfd8dc;" BorderPane.alignment="CENTER">
+         <children>
+            <Pane prefHeight="100.0" prefWidth="250.0">
+               <children>
+                  <JFXTextField layoutX="21.0" layoutY="35.0" prefHeight="30.0" prefWidth="168.0" promptText="Search" />
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="200.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/Icons/ProductsMenu/search%20icon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+            <Pane prefHeight="100.0" prefWidth="250.0" />
+            <Pane prefHeight="100.0" prefWidth="250.0" />
+            <Pane prefHeight="100.0" prefWidth="310.0" />
+            <Pane prefHeight="100.0" prefWidth="250.0" />
+         </children>
+      </HBox>
+   </top>
+</BorderPane>

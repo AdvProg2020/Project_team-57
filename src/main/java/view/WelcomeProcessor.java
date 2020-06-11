@@ -123,4 +123,15 @@ public class WelcomeProcessor implements Initializable {
                 break;
         }
     }
+
+    public void openProductsMenu(ActionEvent actionEvent) {
+        try {
+            Parent root = null;
+            Main.getStage().getIcons().remove(0);
+            root = FXMLLoader.load(Main.class.getResource("ProductsMenu.fxml"));
+            Main.setScene( "Products Menu", root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
