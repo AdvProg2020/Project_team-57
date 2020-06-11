@@ -43,19 +43,19 @@ public class WelcomeProcessor implements Initializable {
                 Main.getStage().getIcons().remove(0);
                 switch (Control.getType()) {
                     case "Admin" :
-                        root = FXMLLoader.load(Main.class.getResource("AdminMenu.fxml"));
-                        Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Admin Icon.png")));
+                        initAdminMenu();
                         break;
                     case "Vendor" :
                         root = FXMLLoader.load(Main.class.getResource("VendorMenu.fxml"));
                         Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Vendor Icon.png")));
+                        Main.setScene(Control.getUsername() + " Menu", root);
                         break;
                     case "Customer" :
                         root = FXMLLoader.load(Main.class.getResource("CustomerProfile.fxml"));
                         Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Customer Icon.png")));
+                        Main.setScene(Control.getUsername() + " Menu", root);
                         break;
                 }
-                Main.setScene(Control.getUsername() + " Menu", root);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -77,6 +77,21 @@ public class WelcomeProcessor implements Initializable {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void initAdminMenu() {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("AdminMenu.fxml"));
+            Parent root = loader.load();
+            AdminProcessor adminProcessor = loader.getController();
+            //adminProcessor.setParentProcessor(adminProcessor);
+            adminProcessor.setMyStage(Main.getStage());
+            Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Admin Icon.png")));
+            Main.setScene(Control.getUsername() + " Menu", root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void buttonOnMouse(MouseEvent mouseEvent) {

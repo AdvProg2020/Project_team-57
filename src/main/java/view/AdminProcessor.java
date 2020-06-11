@@ -2,7 +2,6 @@ package view;
 
 import com.jfoenix.controls.JFXButton;
 import controller.Control;
-import controller.IOControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -33,7 +32,10 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     public Pane manageCustomers;
     public Pane manageVendors;
     public Pane manageAdmins;
+    private Stage myStage;
+    private ArrayList<Stage> subStages = new ArrayList<>();
     private ArrayList<JFXButton> buttons = new ArrayList<>();
+    private AdminProcessor parentProcessor;
 
 
     @Override
@@ -51,8 +53,8 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             }
             loader.setController(this);
             mainPane.setCenter(subRoot);
-        }
 
+        }
     }
 
     private void initLabelsForUsername() {
@@ -92,25 +94,23 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             if (selectedButton.equals(dashboardButton)) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("AdminDashboard.fxml"));
                 Parent subRoot = loader.load();
-                loader.setController(this);
+                ((AdminProcessor)loader.getController()).setParentProcessor(this);
                 mainPane.setCenter(subRoot);
             } else if (selectedButton.equals(accountsButton)) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("AdminAccounts.fxml"));
                 Parent subRoot = loader.load();
-                loader.setController(this);
+                ((AdminProcessor)loader.getController()).setParentProcessor(this);
                 mainPane.setCenter(subRoot);
             } else if(selectedButton.equals(productsButton)) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("AdminProducts.fxml"));
                 Parent subRoot = loader.load();
-                loader.setController(this);
+                ((AdminProcessor)loader.getController()).setParentProcessor(this);
                 mainPane.setCenter(subRoot);
             } else if(selectedButton.equals(offsButton)) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("AdminOffs.fxml"));
                 Parent subRoot = loader.load();
-                loader.setController(this);
+                ((AdminProcessor)loader.getController()).setParentProcessor(this);
                 mainPane.setCenter(subRoot);
-            } else if(selectedButton.equals(mainMenuButton)) {
-                System.out.println("Back To Main Menu");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,22 +135,67 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 break;
         }
         title += " View";
-        //System.out.println(accountType);
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewAccounts.fxml"));
-            Parent root = loader.load();
-            ViewAccountsProcessor viewAccountsProcessor = loader.getController();
-            viewAccountsProcessor.initProcessor(accountType);
-            Stage newStage = new Stage();
-            newStage.setScene(new Scene(root));
-            viewAccountsProcessor.setMyStage(newStage);
-            newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
-            newStage.setResizable(false);
-            newStage.setTitle(title);
-            newStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        openManageAccountsStage(title, accountType);
+    }
+
+    private void openManageAccountsStage(String title, Account.AccountType accountType) {
+        if(canOpenSubStage(title)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewAccounts.fxml"));
+                Parent root = loader.load();
+                ViewAccountsProcessor viewAccountsProcessor = loader.getController();
+                viewAccountsProcessor.initProcessor(accountType);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                viewAccountsProcessor.setMyStage(newStage);
+                newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
+                newStage.setResizable(false);
+                newStage.setTitle(title);
+                newStage.setOnCloseRequest(event -> {
+                    parentProcessor.removeSubStage(newStage);
+                });
+                parentProcessor.addSubStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    private boolean canOpenSubStage(String title) {
+        for (Stage subStage : parentProcessor.getSubStages()) {
+            if(subStage.getTitle().equals(title)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setMyStage(Stage myStage) {
+        this.subStages = new ArrayList<>();
+        this.myStage = myStage;
+        this.myStage.setOnCloseRequest(event -> {
+            for (Stage subStage : this.subStages) {
+                subStage.close();
+            }
+        });
+    }
+
+    public void addSubStage(Stage subStage) {
+        this.subStages.add(subStage);
+    }
+
+    private void removeSubStage(Stage subStage) {
+        this.subStages.removeIf(stage -> {
+            return stage.getTitle().equals(subStage.getTitle());
+        });
+    }
+
+    public ArrayList<Stage> getSubStages() {
+        return subStages;
+    }
+
+    public void setParentProcessor(AdminProcessor parentProcessor) {
+        this.parentProcessor = parentProcessor;
+    }
 }
