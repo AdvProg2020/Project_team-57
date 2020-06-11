@@ -7,6 +7,8 @@ import model.existence.Account;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -231,5 +233,12 @@ public class AccountTable extends Database {
 
     public static FileInputStream getProfileImageInputStream(String username) throws FileNotFoundException {
         return new FileInputStream(getUserImageFilePath(username));
+    }
+
+    public static void setProfileImage(String username, File pictureFile) throws IOException {
+        String[] splitPath = pictureFile.getPath().split("\\.");
+        String fileExtension = splitPath[splitPath.length - 1];
+        File saveImage = new File("database\\Images\\Users\\" + username + "." + fileExtension);
+        Files.copy(pictureFile.toPath(), saveImage.toPath());
     }
 }

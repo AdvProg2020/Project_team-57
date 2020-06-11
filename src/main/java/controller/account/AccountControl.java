@@ -13,6 +13,8 @@ import notification.Notification;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -374,4 +376,14 @@ public class AccountControl extends Control implements IOValidity {
         return AccountTable.getUserImageFilePath(username) != null;
     }
 
+    public void setAccountPicture(String username, File pictureFile) {
+        if(pictureFile != null) {
+            try {
+                AccountTable.setProfileImage(username, pictureFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 }

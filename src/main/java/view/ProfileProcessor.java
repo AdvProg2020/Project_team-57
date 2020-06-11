@@ -102,6 +102,9 @@ public class ProfileProcessor implements Initializable {
         lastNameField.setText(account.getLastName());
         emailField.setText(account.getEmail());
 
+        ImagePattern imagePattern = new ImagePattern(accountControl.getProfileImageByUsername(account.getUsername()));
+        pictureCircle.setFill(imagePattern);
+
         if(account.getType().equals("Vendor"))
             brandField.setText(account.getBrand());
         else {
@@ -130,6 +133,8 @@ public class ProfileProcessor implements Initializable {
 
             brandField.setEditable(false);
             brandField.setDisable(true);
+
+            pictureCircle.setOnMouseClicked(null);
         }
     }
 
@@ -360,6 +365,8 @@ public class ProfileProcessor implements Initializable {
 
             //Todo Sending Image To Controller
             //Todo Showing Image
+
+            accountControl.setAccountPicture(account.getUsername(), pictureFile);
 
             pictureCircle.setFill(new ImagePattern(image));
         }
