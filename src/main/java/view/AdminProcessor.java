@@ -151,9 +151,6 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
                 newStage.setResizable(false);
                 newStage.setTitle(title);
-                newStage.setOnCloseRequest(event -> {
-                    parentProcessor.removeSubStage(newStage);
-                });
                 parentProcessor.addSubStage(newStage);
                 newStage.show();
             } catch (IOException e) {
@@ -183,6 +180,9 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
 
     public void addSubStage(Stage subStage) {
         this.subStages.add(subStage);
+        subStage.setOnCloseRequest(event -> {
+            this.removeSubStage(subStage);
+        });
     }
 
     private void removeSubStage(Stage subStage) {
@@ -197,5 +197,26 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
 
     public void setParentProcessor(AdminProcessor parentProcessor) {
         this.parentProcessor = parentProcessor;
+    }
+
+    public void manageCategories(MouseEvent mouseEvent) {
+        if(canOpenSubStage("Manage Categories")) {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("CategoriesMenu.fxml"));
+            Parent root = null;
+            try {
+                root = loader.load();
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.getIcons().add(new Image(getClass().getResourceAsStream("categories icon.png")));
+                newStage.setResizable(false);
+                newStage.setTitle("Manage Categories");
+                parentProcessor.addSubStage(newStage);
+                CategoryProcessor.setCategoriesStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

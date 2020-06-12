@@ -37,13 +37,14 @@ public class ProductsProcessor implements Initializable {
     public Label pageNumberLabel;
     public ImageView nextPageButton;
     public ImageView previousPageButton;
+    //Product Pane
     public JFXButton viewSortButton;
     public JFXButton timeSortButton;
     public JFXButton nameSortButton;
     public JFXButton scoreSortButton;
     public JFXToggleButton descendingSortButton;
     private JFXButton selectedSort;
-    //Product Pane
+
     private ArrayList<Product> allProducts;
     private int pageSize = 12;
     private int pageNumber = 0;
@@ -88,7 +89,15 @@ public class ProductsProcessor implements Initializable {
         Pane root = loader.load();
         ProductsProcessor pagesBarProcessor = loader.getController();
         pagesBarProcessor.setParentProcessor(this);
-        pagesBarProcessor.pageNumberLabel.setText("Page " + (pageNumber + 1) + " of " + (int)Math.ceil(allProducts.size()/12.0));
+        if((int)Math.ceil(allProducts.size()/12.0) != 0)
+            pagesBarProcessor.pageNumberLabel.setText("Page " + (pageNumber + 1) + " of " + (int)Math.ceil(allProducts.size()/12.0));
+        else {
+            pagesBarProcessor.pageNumberLabel.setText("Page " + (pageNumber + 1) + " of " + 1);
+            pagesBarProcessor.nextPageButton.setDisable(true);
+            pagesBarProcessor.nextPageButton.setOpacity(0.3);
+            pagesBarProcessor.previousPageButton.setDisable(true);
+            pagesBarProcessor.previousPageButton.setOpacity(0.3);
+        }
         if(pageNumber == 0) {
             pagesBarProcessor.previousPageButton.setDisable(true);
             pagesBarProcessor.previousPageButton.setOpacity(0.3);

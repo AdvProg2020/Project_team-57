@@ -40,6 +40,15 @@ public class CategoryProcessor implements Initializable {
     public JFXTextField nameTextField, parentNameTextField, featuresTextField;
     public JFXButton addCategoryButton;
 
+    private CategoryProcessor parentProcessor;
+
+    public CategoryProcessor(CategoryProcessor parentProcessor) {
+        this.parentProcessor = parentProcessor;
+    }
+
+    public CategoryProcessor() {
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Todo
@@ -53,6 +62,8 @@ public class CategoryProcessor implements Initializable {
                 mainPane.getChildren().remove(editCategoryButton);
                 mainPane.getChildren().remove(deleteCategoryButton);
             }
+            categoriesTableView.getSelectionModel().selectFirst();
+            initButtons();
         } else if(locationFile.contains("addSubCategoryMenu")) {
             if(categorySubMenuName.equals("Edit Category Menu")) {
                 nameTextField.setText(parentCategory.getName());
@@ -64,6 +75,15 @@ public class CategoryProcessor implements Initializable {
                 parentNameTextField.setDisable(true);
                 parentNameTextField.setEditable(false);
             }
+        }
+
+    }
+
+    public void initButtons() {
+        if(categoriesTableView.getSelectionModel().getSelectedItem().getValue().getName().equals("All Products")){
+            deleteCategoryButton.setDisable(true); editCategoryButton.setDisable(true);
+        } else {
+            deleteCategoryButton.setDisable(false); editCategoryButton.setDisable(false);
         }
     }
 
@@ -88,10 +108,15 @@ public class CategoryProcessor implements Initializable {
                 parentCategory = categoriesTableView.getSelectionModel().getSelectedItem().getValue();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("addSubCategoryMenu.fxml"));
                 Parent root = loader.load();
+                ((CategoryProcessor)loader.getController()).setParentProcessor(this);
                 addSubCategoryStage = new Stage();
                 addSubCategoryStage.setScene(new Scene(root));
                 addSubCategoryStage.setResizable(false);
-                addSubCategoryStage.setOnCloseRequest(event -> addSubCategoryStage = null);
+                addSubCategoryStage.setOnCloseRequest(event -> {
+                    addSubCategoryStage = null;
+                    categoriesTableView.getSelectionModel().selectFirst();
+                    initButtons();
+                });
                 addSubCategoryStage.show();
             }
         }
@@ -99,12 +124,17 @@ public class CategoryProcessor implements Initializable {
 
 
     public void deleteCategoryMouseClicked(MouseEvent mouseEvent) {
-        Category selectedCategory = categoriesTableView.getSelectionModel().getSelectedItem().getValue();
-        Notification notification = adminControl.removeCategory(selectedCategory);
-        notification.getAlert().show();
+        if(categoriesTableView.getSelectionModel().getSelectedItem() != null) {
+            Category selectedCategory = categoriesTableView.getSelectionModel().getSelectedItem().getValue();
+            Notification notification = adminControl.removeCategory(selectedCategory);
+            notification.getAlert().show();
 
-        if(notification.equals(Notification.CATEGORY_DELETED))
-            categoriesTableView.setRoot(productControl.getCategoryTableRoot());
+            if(notification.equals(Notification.CATEGORY_DELETED)) {
+                categoriesTableView.setRoot(productControl.getCategoryTableRoot());
+                categoriesTableView.getSelectionModel().selectFirst();
+                initButtons();
+            }
+        }
     }
 
 
@@ -180,6 +210,9 @@ public class CategoryProcessor implements Initializable {
     private void closeSubStage() {
         addSubCategoryStage.close();
         addSubCategoryStage = null;
+        parentProcessor.categoriesTableView.getSelectionModel().selectFirst();
+        parentProcessor.initButtons();
+        addSubCategoryStage = null;
         parentCategory = null;
         categorySubMenuName = null;
         updateTreeTableOutSideOfStage();
@@ -193,5 +226,9 @@ public class CategoryProcessor implements Initializable {
 
     public static void setCategoriesStage(Stage categoriesStage) {
         CategoryProcessor.categoriesStage = categoriesStage;
+    }
+
+    public void setParentProcessor(CategoryProcessor parentProcessor) {
+        this.parentProcessor = parentProcessor;
     }
 }

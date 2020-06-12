@@ -17,8 +17,8 @@ public class Main extends Application {
     private static Stage stage;
 
     public static void main(String[] args) {
-        /*try {
-            VendorTable.addAnotherTempProducts();
+/*        try {
+            VendorTable.addTempProducts();
             System.out.println("Products added");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -31,9 +31,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
-        Control.setType("Admin");
-        CategoryProcessor.setCategoriesStage(stage);
-        Parent root = FXMLLoader.load(getClass().getResource("CategoriesMenu.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("WelcomeMenu.fxml"));
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Boos Market");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Main Icon.png")));
