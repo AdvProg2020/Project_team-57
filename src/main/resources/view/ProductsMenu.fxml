@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductsProcessor">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1300.0" stylesheets="@../CSS%20files/ProductsMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductsProcessor">
    <left>
       <VBox prefHeight="770.0" prefWidth="250.0" style="-fx-background-color: #eceff1;" BorderPane.alignment="CENTER">
          <children>
@@ -36,16 +36,16 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <JFXButton buttonType="RAISED" layoutX="128.0" layoutY="24.0" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="View" />
-                  <JFXButton buttonType="RAISED" layoutX="198.0" layoutY="24.0" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Time" />
-                  <JFXButton buttonType="RAISED" layoutX="268.0" layoutY="24.0" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Name" />
-                  <JFXButton buttonType="RAISED" layoutX="338.0" layoutY="24.0" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Score" />
+                  <JFXButton fx:id="viewSortButton" buttonType="RAISED" layoutX="128.0" layoutY="24.0" onAction="#changeSort" onMouseEntered="#sortButtonOnMouse" onMouseExited="#sortButtonOutMouse" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="View" />
+                  <JFXButton fx:id="timeSortButton" buttonType="RAISED" layoutX="198.0" layoutY="24.0" onAction="#changeSort" onMouseEntered="#sortButtonOnMouse" onMouseExited="#sortButtonOutMouse" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Time" />
+                  <JFXButton fx:id="nameSortButton" buttonType="RAISED" layoutX="268.0" layoutY="24.0" onAction="#changeSort" onMouseEntered="#sortButtonOnMouse" onMouseExited="#sortButtonOutMouse" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Name" />
+                  <JFXButton fx:id="scoreSortButton" buttonType="RAISED" layoutX="338.0" layoutY="24.0" onAction="#changeSort" onMouseEntered="#sortButtonOnMouse" onMouseExited="#sortButtonOutMouse" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Score" />
                   <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/ProductsMenu/sorting%20icon.png" />
                      </image>
                   </ImageView>
-                  <JFXToggleButton layoutX="398.0" layoutY="19.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="43.0" prefWidth="145.0" selected="true" text="Descending" toggleColor="#607d8b" toggleLineColor="#b0bec5" unToggleLineColor="WHITE">
+                  <JFXToggleButton fx:id="descendingSortButton" layoutX="398.0" layoutY="19.0" maxHeight="-Infinity" minHeight="-Infinity" onAction="#setSort" prefHeight="43.0" prefWidth="145.0" selected="true" text="Descending" toggleColor="#607d8b" toggleLineColor="#b0bec5" unToggleLineColor="WHITE">
                      <font>
                         <Font size="13.0" />
                      </font>
@@ -63,7 +63,8 @@
             <Pane prefHeight="100.0" prefWidth="272.0">
                <children>
                   <JFXTextField layoutX="21.0" layoutY="35.0" prefHeight="30.0" prefWidth="168.0" promptText="Search" />
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="200.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true">
+                  <JFXButton layoutX="195.0" layoutY="31.0" prefHeight="40.0" prefWidth="40.0" styleClass="Up_Button" text=" " />
+                  <ImageView disable="true" fitHeight="30.0" fitWidth="30.0" layoutX="200.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/ProductsMenu/search%20icon.png" />
                      </image>
@@ -80,17 +81,18 @@
                </children></Pane>
             <Pane prefHeight="100.0" prefWidth="287.0">
                <children>
-                  <JFXButton alignment="CENTER_RIGHT" buttonType="RAISED" layoutX="26.0" layoutY="23.0" prefHeight="55.0" prefWidth="160.0" style="-fx-background-radius: 10 10 10 10;" text="Account Menu">
+                  <JFXButton layoutX="194.0" layoutY="26.0" prefHeight="50.0" prefWidth="50.0" styleClass="Up_Button" text=" " />
+                  <JFXButton alignment="CENTER_RIGHT" buttonType="RAISED" layoutX="26.0" layoutY="24.0" onAction="#openAccountMenu" prefHeight="55.0" prefWidth="160.0" style="-fx-background-radius: 10 10 10 10;" styleClass="Up_Button" text="Account Menu">
                      <font>
                         <Font name="Calibri" size="17.0" />
                      </font>
                   </JFXButton>
-                  <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="26.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView disable="true" fitHeight="45.0" fitWidth="45.0" layoutX="24.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/ProductsMenu/user%20icon.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="196.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView disable="true" fitHeight="45.0" fitWidth="45.0" layoutX="197.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/ProductsMenu/cart%20icon.png" />
                      </image>

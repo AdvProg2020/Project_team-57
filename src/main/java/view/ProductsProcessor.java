@@ -1,10 +1,12 @@
 package view;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXToggleButton;
 import controller.product.ProductControl;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -14,7 +16,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import model.existence.Product;
 
-import javax.swing.text.Style;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,13 +30,19 @@ public class ProductsProcessor implements Initializable {
     public ImageView productImage;
     public Label productNameLabel;
     public Label viewLabel;
-    public ImageView availabelImage;
-    public Label availableLable;
+    public ImageView availableImage;
+    public Label availableLabel;
     public Label oldPriceLabel;
     public Label newPriceLabel;
     public Label pageNumberLabel;
     public ImageView nextPageButton;
     public ImageView previousPageButton;
+    public JFXButton viewSortButton;
+    public JFXButton timeSortButton;
+    public JFXButton nameSortButton;
+    public JFXButton scoreSortButton;
+    public JFXToggleButton descendingSortButton;
+    private JFXButton selectedSort;
     //Product Pane
     private ArrayList<Product> allProducts;
     private int pageSize = 12;
@@ -49,12 +56,13 @@ public class ProductsProcessor implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         if(location.toString().contains("ProductsMenu")) {
             productControl.initSort(); productControl.initFilter();
-            getAllProducts();
-            initProductsPage();
+            selectedSort = viewSortButton;
+            selectSort();
         }
     }
 
     private void initProductsPage() {
+        allProducts = productControl.getAllShowingProducts();
         try {
             BorderPane borderPane = new BorderPane();
             pageLim = (allProducts.size() -(pageNumber * pageSize) < 12 ? (allProducts.size() -(pageNumber * pageSize)) : 12);
@@ -87,6 +95,7 @@ public class ProductsProcessor implements Initializable {
         }
         if(pageNumber == Math.ceil(allProducts.size()/12.0) - 1) {
             pagesBarProcessor.nextPageButton.setDisable(true);
+            pagesBarProcessor.nextPageButton.setOpacity(0.3);
         }
         return root;
     }
@@ -124,14 +133,10 @@ public class ProductsProcessor implements Initializable {
         }
         productsProcessor.viewLabel.setText("" + product.getSeen());
         if(!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
-            productsProcessor.availabelImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
-            productsProcessor.availableLable.setText((product.getStatus() != 1 ? "Editing" : "Out Of Stock"));
+            productsProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
+            productsProcessor.availableLabel.setText((product.getStatus() != 1 ? "Editing" : "Out Of Stock"));
         }
         return root;
-    }
-
-    private void getAllProducts() {
-        allProducts = productControl.getAllShowingProducts();
     }
 
     public void setParentProcessor(ProductsProcessor parentProcessor) {
@@ -156,5 +161,41 @@ public class ProductsProcessor implements Initializable {
     public void changePageOutMouse(MouseEvent mouseEvent) {
         String style = "-fx-opacity: 0.7;";
         ((ImageView)mouseEvent.getSource()).setStyle(style);
+    }
+
+    public void sortButtonOnMouse(MouseEvent mouseEvent) {
+        if ((JFXButton) mouseEvent.getSource() != selectedSort) {
+            String style ="-fx-background-radius: 10 10 10 10; -fx-background-color: #90a4ae; -fx-cursor: hand;";
+            ((JFXButton)mouseEvent.getSource()).setStyle(style);
+        }
+    }
+
+    public void sortButtonOutMouse(MouseEvent mouseEvent) {
+        if ((JFXButton) mouseEvent.getSource() != selectedSort) {
+            String style ="-fx-background-radius: 10 10 10 10;";
+            ((JFXButton)mouseEvent.getSource()).setStyle(style);
+        }
+    }
+
+    public void changeSort(ActionEvent actionEvent) {
+        String style ="-fx-background-radius: 10 10 10 10;";
+        selectedSort.setStyle(style);
+        selectedSort = (JFXButton) actionEvent.getSource();
+        selectSort();
+    }
+
+    private void selectSort() {
+        String style ="-fx-background-radius: 10 10 10 10; -fx-background-color: #607d8b;";
+        selectedSort.setStyle(style);
+        setSort();
+    }
+
+    public void setSort() {
+        productControl.setSort(selectedSort.getText(), !descendingSortButton.isSelected());
+        initProductsPage();
+    }
+
+    public void openAccountMenu(ActionEvent actionEvent) {
+        new WelcomeProcessor().openAccountMenu();
     }
 }

@@ -113,7 +113,7 @@
                         <Font name="Calibri" size="17.0" />
                      </font>
                   </JFXButton>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="49.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView disable="true" fitHeight="40.0" fitWidth="40.0" layoutX="49.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/logout%20Icon.png" />
                      </image>
