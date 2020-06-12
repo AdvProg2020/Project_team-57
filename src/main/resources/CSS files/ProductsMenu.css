@@ -1,0 +1,5 @@
+.Up_Button:hover {
+    -fx-background-radius: 10 10 10 10;
+    -fx-background-color: #90a4ae;
+    -fx-cursor: hand;
+}

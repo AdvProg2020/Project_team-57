@@ -36,7 +36,7 @@ public class WelcomeProcessor implements Initializable {
         mainPane.setBackground(background);
     }
 
-    public void openAccountMenu(ActionEvent actionEvent) {
+    public void openAccountMenu() {
         if(IOControl.isLoggedIn()) {
             try {
                 Parent root = null;
@@ -84,7 +84,6 @@ public class WelcomeProcessor implements Initializable {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("AdminMenu.fxml"));
             Parent root = loader.load();
             AdminProcessor adminProcessor = loader.getController();
-            //adminProcessor.setParentProcessor(adminProcessor);
             adminProcessor.setMyStage(Main.getStage());
             Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Admin Icon.png")));
             Main.setScene(Control.getUsername() + " Menu", root);
@@ -128,6 +127,7 @@ public class WelcomeProcessor implements Initializable {
         try {
             Parent root = null;
             Main.getStage().getIcons().remove(0);
+            Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Market Logo.png")));
             root = FXMLLoader.load(Main.class.getResource("ProductsMenu.fxml"));
             Main.setScene( "Products Menu", root);
         } catch (IOException e) {

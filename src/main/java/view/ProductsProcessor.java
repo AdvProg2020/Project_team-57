@@ -175,7 +175,6 @@ public class ProductsProcessor implements Initializable {
             String style ="-fx-background-radius: 10 10 10 10;";
             ((JFXButton)mouseEvent.getSource()).setStyle(style);
         }
-
     }
 
     public void changeSort(ActionEvent actionEvent) {
@@ -191,9 +190,12 @@ public class ProductsProcessor implements Initializable {
         setSort();
     }
 
-
     public void setSort() {
         productControl.setSort(selectedSort.getText(), !descendingSortButton.isSelected());
         initProductsPage();
+    }
+
+    public void openAccountMenu(ActionEvent actionEvent) {
+        new WelcomeProcessor().openAccountMenu();
     }
 }
