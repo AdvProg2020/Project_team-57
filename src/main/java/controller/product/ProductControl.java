@@ -638,7 +638,7 @@ public class ProductControl extends Control {
         return ProductTable.getProductImageFilePath(ID) != null;
     }
 
-    public TreeItem getCategoryTableRoot() {
+    public TreeItem<Category> getCategoryTableRoot() {
         try {
             TreeItem rootCategory = new TreeItem(CategoryTable.getCategoryWithName("All Products"));
             setSubCategories(rootCategory);

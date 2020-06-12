@@ -101,6 +101,8 @@ public class AdminControl extends AccountControl{
     public Notification removeCategory(Category category)
     {
         try {
+            if(category == null)
+                return Notification.NOT_SELECTED_CATEGORY;
             if (CategoryTable.isThereCategoryWithName(category.getName())) {
                 ArrayList<Category> subCategories = CategoryTable.getSubCategories(category.getName());
                 for (Category subCategory : subCategories) {

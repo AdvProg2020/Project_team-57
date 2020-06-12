@@ -52,9 +52,11 @@ public enum Notification {
     NOT_YOUR_CART_PRODUCT("Wait WTF \uD83D\uDE10 This is Product Isn't in your cart."),
     CATEGORY_ADDED("SuccessFully Added The Category."),
     DUPLICATE_CATEGORY_NAME("This Category Name Is Already Used. \uD83D\uDE36"),
-    CATEGORY_DELETED("Category And It's Product Deleted In Whole. \uD83D\uDE0E"),
+    CATEGORY_DELETED("Category And It's Product Deleted In Whole. \uD83D\uDE0E", Alert.AlertType.INFORMATION,
+            "Delete Successful", "Congratulations"),
     CATEGORY_MODIFIED("Category Modified Successfuly."),
-    CATEGORY_NOT_FOUND("Category With This Name Not Found. \uD83E\uDD2B"),
+    CATEGORY_NOT_FOUND("Do You Think This Category Exists ? \nCause, Category With This Name Not Found. \uD83E\uDD2B",
+            Alert.AlertType.ERROR, "Remove Category Error", "Category Not Found"),
     PARENT_CATEGORY_NOT_FOUND("There Is No Parent Category With This Name. \uD83E\uDD2B"),
     INVALID_CATEGORY_NAME("Length Of Category Name Must Be Between 6 & 16."),
     INVALID_FEATURES("Length Of Category Features Must Be Less Than 100."),
@@ -147,7 +149,8 @@ public enum Notification {
             Alert.AlertType.ERROR, "Edit Account Error", "Empty FirstName"),
     EMPTY_LAST_NAME_EDIT("Please Enter Some Non-Empty Last Name, Dude. " +
             "\nWe Can't Have SomeOne Anonymous In Our Shop. \nIt's Not Safe!!!! 😱😱😱",
-            Alert.AlertType.ERROR, "Edit Account Error", "Empty LastName");
+            Alert.AlertType.ERROR, "Edit Account Error", "Empty LastName"),
+    NOT_SELECTED_CATEGORY("You haven't selected Any Category", Alert.AlertType.ERROR, "Jesus", "Hey You");
 
 
     private String message;
