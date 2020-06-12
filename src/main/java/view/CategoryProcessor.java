@@ -114,15 +114,49 @@ public class CategoryProcessor implements Initializable {
         }
     }
 
-    private void editCategory() {
-
-    }
-
-    private void addCreatedCategory() {
+    private Category createCategoryWithFields() {
         Category category = new Category();
         category.setName(nameTextField.getText());
         category.setFeatures(featuresTextField.getText());
-        category.setParentCategory(parentCategory.getName());
+        category.setParentCategory(parentNameTextField.getText());
+        return category;
+    }
+
+    private void editCategory() {
+        Category category = createCategoryWithFields();
+
+        Alert alert = null;
+        alert = editField(parentCategory, category, "Name", alert, nameTextField);
+        alert = editField(parentCategory, category, "Parent Name", alert, nameTextField);
+        alert = editField(parentCategory, category, "Features", alert, nameTextField);
+
+        if(alert.getTitle().equals("Modify Successful")) {
+            Optional<ButtonType> optionalButtonType = alert.showAndWait();
+            if(optionalButtonType.get() == ButtonType.OK) {
+                addSubCategoryStage.close();
+                parentCategory = null;
+                categorySubMenuName = null;
+            }
+        } else {
+            alert.show();
+        }
+    }
+
+    private Alert editField(Category oldCategory, Category newCategory, String fieldName,
+                            Alert previousAlert, JFXTextField textField) {
+        Alert alert = adminControl.editCategory(oldCategory, newCategory, fieldName).getAlert();
+
+        if(!alert.getTitle().equals("Edit Successful"))
+            textField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
+
+        if(previousAlert == null || previousAlert.getTitle().equals("Edit Successful"))
+            return alert;
+        else
+            return previousAlert;
+    }
+
+    private void addCreatedCategory() {
+        Category category = createCategoryWithFields();
 
         Notification notification = adminControl.addCategory(category);
 

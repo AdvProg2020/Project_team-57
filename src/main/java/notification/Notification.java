@@ -54,7 +54,7 @@ public enum Notification {
     DUPLICATE_CATEGORY_NAME("This Category Name Is Already Used. \uD83D\uDE36"),
     CATEGORY_DELETED("Category And It's Product Deleted In Whole. \uD83D\uDE0E", Alert.AlertType.INFORMATION,
             "Delete Successful", "Congratulations"),
-    CATEGORY_MODIFIED("Category Modified Successfuly."),
+    CATEGORY_MODIFIED("Category Modified Successfuly.", Alert.AlertType.INFORMATION, "Modify Successful", "Congratulations"),
     CATEGORY_NOT_FOUND("Do You Think This Category Exists ? \nCause, Category With This Name Not Found. \uD83E\uDD2B",
             Alert.AlertType.ERROR, "Remove Category Error", "Category Not Found"),
     PARENT_CATEGORY_NOT_FOUND("There Is No Parent Category With This Name. \uD83E\uDD2B"),

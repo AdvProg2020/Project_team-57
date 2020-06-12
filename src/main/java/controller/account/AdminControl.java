@@ -98,10 +98,9 @@ public class AdminControl extends AccountControl{
         return Notification.UNKNOWN_ERROR;
     }
 
-    public Notification removeCategory(Category category)
-    {
+    public Notification removeCategory(Category category) {
         try {
-            if(category == null)
+            if (category == null)
                 return Notification.NOT_SELECTED_CATEGORY;
             if (CategoryTable.isThereCategoryWithName(category.getName())) {
                 ArrayList<Category> subCategories = CategoryTable.getSubCategories(category.getName());
@@ -125,6 +124,26 @@ public class AdminControl extends AccountControl{
         }
 
         return Notification.UNKNOWN_ERROR;
+    }
+
+    public Notification editCategory(Category oldCategory, Category newCategory, String fieldName) {
+        Notification notification = null;
+
+        switch (fieldName) {
+            case "Name" :
+                notification = editCategoryName(oldCategory, newCategory);
+                break;
+            case "Parent Name" :
+                notification = editCategoryParentName(oldCategory, newCategory);
+                break;
+            case "Features" :
+                notification = editCategoryFeatures(oldCategory, newCategory);
+                break;
+            default:
+                System.out.println("Shit. Error In Edit Category.");
+        }
+
+        return notification;
     }
 
     public Notification editCategoryName(Category oldCategory, Category newCategory)
