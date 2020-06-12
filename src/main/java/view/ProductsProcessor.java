@@ -10,9 +10,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import model.existence.Product;
 
+import javax.swing.text.Style;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -31,6 +33,9 @@ public class ProductsProcessor implements Initializable {
     public Label availableLable;
     public Label oldPriceLabel;
     public Label newPriceLabel;
+    public Label pageNumberLabel;
+    public ImageView nextPageButton;
+    public ImageView previousPageButton;
     //Product Pane
     private ArrayList<Product> allProducts;
     private int pageSize = 12;
@@ -38,9 +43,12 @@ public class ProductsProcessor implements Initializable {
     private int productFieldsNumber;
     private int pageLim;
     private ProductsProcessor parentProcessor;
+    private ProductControl productControl = ProductControl.getController();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if(location.toString().contains("ProductsMenu")) {
+            productControl.initSort(); productControl.initFilter();
             getAllProducts();
             initProductsPage();
         }
@@ -49,16 +57,12 @@ public class ProductsProcessor implements Initializable {
     private void initProductsPage() {
         try {
             BorderPane borderPane = new BorderPane();
-            pageLim = allProducts.size() -(pageNumber * pageSize);
+            pageLim = (allProducts.size() -(pageNumber * pageSize) < 12 ? (allProducts.size() -(pageNumber * pageSize)) : 12);
             productFieldsNumber = (pageLim < 9 ? 8 : 12);
             double borderPaneHeight = ((productFieldsNumber/4) * PRODUCT_FIELD_HEIGHT) + PRODUCT_PAGES_BAR_HEIGHT;
-            System.out.println(borderPaneHeight);
             borderPane.setPrefSize(PRODUCT_SCROLL_PANE_WIDTH - 50, borderPaneHeight);
             productsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductsPagesBar.fxml"));
-            Parent root = loader.load();
-            ((ProductsProcessor)loader.getController()).setParentProcessor(this);
+            Pane root = setPageNumberBar();
             borderPane.setBottom(root);
             GridPane gridPane = new GridPane();
             gridPane.getChildren().addAll(getProductsPanes());
@@ -66,14 +70,28 @@ public class ProductsProcessor implements Initializable {
             gridPane.setMinHeight(Control.USE_COMPUTED_SIZE); gridPane.setMaxHeight(Control.USE_COMPUTED_SIZE); gridPane.setPrefHeight(Control.USE_COMPUTED_SIZE);
             borderPane.setCenter(gridPane);
             productsScrollPane.setContent(borderPane);
+            productsScrollPane.setVvalue(0);
         } catch (IOException e) { e.printStackTrace(); }
 
     }
 
+    private Pane setPageNumberBar() throws IOException {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductsPagesBar.fxml"));
+        Pane root = loader.load();
+        ProductsProcessor pagesBarProcessor = loader.getController();
+        pagesBarProcessor.setParentProcessor(this);
+        pagesBarProcessor.pageNumberLabel.setText("Page " + (pageNumber + 1) + " of " + (int)Math.ceil(allProducts.size()/12.0));
+        if(pageNumber == 0) {
+            pagesBarProcessor.previousPageButton.setDisable(true);
+            pagesBarProcessor.previousPageButton.setOpacity(0.3);
+        }
+        if(pageNumber == Math.ceil(allProducts.size()/12.0) - 1) {
+            pagesBarProcessor.nextPageButton.setDisable(true);
+        }
+        return root;
+    }
+
     private ArrayList<HBox> getProductsPanes() throws IOException {
-/*        for (Product product : allProducts) {
-            System.out.println(product.getName());
-        }*/
         ArrayList<HBox> hBoxes = new ArrayList<>();
         for(int y = 0; y < productFieldsNumber/4; ++y) {
             for(int x = 0; x < 4; ++ x) {
@@ -88,7 +106,6 @@ public class ProductsProcessor implements Initializable {
         for(int i = 0; i < pageLim; ++i) {
             hBoxes.get(i).getChildren().add(getProductPane(i));
         }
-        //System.out.println(hBoxes.size());
         return hBoxes;
     }
 
@@ -97,16 +114,16 @@ public class ProductsProcessor implements Initializable {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPane.fxml"));
         Pane root = loader.load();
         ProductsProcessor productsProcessor = loader.getController();
-        productsProcessor.productImage.setImage(ProductControl.getController().getProductImageByID(product.getID()));
+        productsProcessor.productImage.setImage(productControl.getProductImageByID(product.getID()));
         productsProcessor.productNameLabel.setText(product.getName());
-        if(ProductControl.getController().isThereProductInOff(product.getID())) {
+        if(productControl.isThereProductInOff(product.getID())) {
             System.out.println("Product In Off");
         } else {
             root.getChildren().remove(productsProcessor.newPriceLabel);
             productsProcessor.oldPriceLabel.setText(product.getPrice() +"$");
         }
         productsProcessor.viewLabel.setText("" + product.getSeen());
-        if(!(product.getStatus() == 1 && product.getCount() > 0)) {
+        if(!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
             productsProcessor.availabelImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
             productsProcessor.availableLable.setText((product.getStatus() != 1 ? "Editing" : "Out Of Stock"));
         }
@@ -114,11 +131,30 @@ public class ProductsProcessor implements Initializable {
     }
 
     private void getAllProducts() {
-        allProducts = ProductControl.getController().getAllShowingProducts();
-        //System.out.println(allProducts.size());
+        allProducts = productControl.getAllShowingProducts();
     }
 
     public void setParentProcessor(ProductsProcessor parentProcessor) {
         this.parentProcessor = parentProcessor;
+    }
+
+    public void changePage(MouseEvent mouseEvent) {
+        ImageView button = (ImageView) mouseEvent.getSource();
+        if(button == nextPageButton) {
+            parentProcessor.pageNumber += 1;
+        } else {
+            parentProcessor.pageNumber -= 1;
+        }
+        parentProcessor.initProductsPage();
+    }
+
+    public void changePageOnMouse(MouseEvent mouseEvent) {
+        String style = "-fx-opacity: 1; -fx-cursor: hand;";
+        ((ImageView)mouseEvent.getSource()).setStyle(style);
+    }
+
+    public void changePageOutMouse(MouseEvent mouseEvent) {
+        String style = "-fx-opacity: 0.7;";
+        ((ImageView)mouseEvent.getSource()).setStyle(style);
     }
 }

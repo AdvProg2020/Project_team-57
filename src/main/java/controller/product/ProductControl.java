@@ -294,10 +294,11 @@ public class ProductControl extends Control {
     }
 
     public ArrayList<Product> getAllShowingProducts() {
-        //TODO(FILTER)
-        //TODO(SORT)
         try {
-            return ProductTable.getAllShowingProducts();
+            ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts());
+            filterProductsWithPrice(showingProducts);
+            sortProducts(showingProducts);
+            return showingProducts;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

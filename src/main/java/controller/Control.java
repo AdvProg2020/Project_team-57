@@ -179,7 +179,7 @@ public class Control {
         }
     }
 
-    public Notification disableSore() {
+    public Notification disableSort() {
         sort.setSortType(Sort.SortType.VIEW);
         sort.setAscending(false);
         return Notification.SORT_DISABLED;
