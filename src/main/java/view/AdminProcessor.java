@@ -139,6 +139,37 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     }
 
     private void openManageAccountsStage(String title, Account.AccountType accountType) {
+        if (canOpenSubStage(title)) {
+            try {
+                TableViewProcessor.TableViewType tableViewType;
+                switch (accountType) {
+                    case ADMIN:
+                        tableViewType = TableViewProcessor.TableViewType.ADMINS;
+                        break;
+                    case VENDOR:
+                        tableViewType = TableViewProcessor.TableViewType.VENDORS;
+                        break;
+                    default:
+                        tableViewType = TableViewProcessor.TableViewType.CUSTOMERS;
+                }
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
+                Parent root = loader.load();
+                TableViewProcessor<Account> tableViewProcessor = loader.getController();
+                tableViewProcessor.initProcessor(tableViewType);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
+                newStage.setResizable(false);
+                newStage.setTitle(title);
+                parentProcessor.addSubStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+/*    private void openManageAccountsStage(String title, Account.AccountType accountType) {
         if(canOpenSubStage(title)) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewAccounts.fxml"));
@@ -157,7 +188,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     private boolean canOpenSubStage(String title) {
         for (Stage subStage : parentProcessor.getSubStages()) {

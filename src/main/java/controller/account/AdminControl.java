@@ -232,6 +232,18 @@ public class AdminControl extends AccountControl{
         return null;
     }
 
+    public ArrayList<Discount> getAllDiscounts() {
+        try {
+            DiscountTable.updateDiscountCodesTime();
+            return DiscountTable.getAllDiscountCodes();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
     public ArrayList<String> getAllDiscountCodes() {
         ArrayList<String> discountCodes = new ArrayList<>();
         try {
