@@ -207,7 +207,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 root = loader.load();
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
-                newStage.getIcons().add(new Image(getClass().getResourceAsStream("categories icon.png")));
+                //newStage.getIcons().add(new Image(getClass().getResourceAsStream("categories icon.png")));
                 newStage.setResizable(false);
                 newStage.setTitle("Manage Categories");
                 parentProcessor.addSubStage(newStage);
