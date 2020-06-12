@@ -1,6 +1,7 @@
 package controller.product;
 
 import controller.Control;
+import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import model.db.*;
 import model.existence.Category;
@@ -635,5 +636,28 @@ public class ProductControl extends Control {
 
     private boolean doesProductHaveImage(String ID) {
         return ProductTable.getProductImageFilePath(ID) != null;
+    }
+
+    public TreeItem getCategoryTableRoot() {
+        try {
+            TreeItem rootCategory = new TreeItem(CategoryTable.getCategoryWithName("All Products"));
+            setSubCategories(rootCategory);
+            return rootCategory;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void setSubCategories(TreeItem parentCategoryTreeItem) throws SQLException, ClassNotFoundException {
+        Category parentCategory = (Category) parentCategoryTreeItem.getValue();
+        for (Category subCategory : CategoryTable.getSubCategories(parentCategory.getName())) {
+            TreeItem subCategoryTreeItem = new TreeItem(subCategory);
+            parentCategoryTreeItem.getChildren().add(subCategoryTreeItem);
+            setSubCategories(subCategoryTreeItem);
+        }
     }
 }
