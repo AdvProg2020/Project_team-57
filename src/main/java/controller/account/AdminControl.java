@@ -167,7 +167,7 @@ public class AdminControl extends AccountControl{
                 }
                 return Notification.DUPLICATE_CATEGORY_NAME;
             }
-            return Notification.SAME_FIELD_ERROR;
+            return Notification.SAME_CATEGORY_FIELD_ERROR;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -186,7 +186,7 @@ public class AdminControl extends AccountControl{
                 }
                 return Notification.INVALID_FEATURES;
             }
-            return Notification.SAME_FIELD_ERROR;
+            return Notification.SAME_CATEGORY_FIELD_ERROR;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
