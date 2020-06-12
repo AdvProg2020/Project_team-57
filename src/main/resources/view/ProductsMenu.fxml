@@ -36,16 +36,16 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <JFXButton buttonType="RAISED" layoutX="128.0" layoutY="24.0" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="View" />
-                  <JFXButton buttonType="RAISED" layoutX="198.0" layoutY="24.0" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Time" />
-                  <JFXButton buttonType="RAISED" layoutX="268.0" layoutY="24.0" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Name" />
-                  <JFXButton buttonType="RAISED" layoutX="338.0" layoutY="24.0" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Score" />
+                  <JFXButton fx:id="viewSortButton" buttonType="RAISED" layoutX="128.0" layoutY="24.0" onAction="#changeSort" onMouseEntered="#sortButtonOnMouse" onMouseExited="#sortButtonOutMouse" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="View" />
+                  <JFXButton fx:id="timeSortButton" buttonType="RAISED" layoutX="198.0" layoutY="24.0" onAction="#changeSort" onMouseEntered="#sortButtonOnMouse" onMouseExited="#sortButtonOutMouse" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Time" />
+                  <JFXButton fx:id="nameSortButton" buttonType="RAISED" layoutX="268.0" layoutY="24.0" onAction="#changeSort" onMouseEntered="#sortButtonOnMouse" onMouseExited="#sortButtonOutMouse" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Name" />
+                  <JFXButton fx:id="scoreSortButton" buttonType="RAISED" layoutX="338.0" layoutY="24.0" onAction="#changeSort" onMouseEntered="#sortButtonOnMouse" onMouseExited="#sortButtonOutMouse" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Score" />
                   <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/ProductsMenu/sorting%20icon.png" />
                      </image>
                   </ImageView>
-                  <JFXToggleButton layoutX="398.0" layoutY="19.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="43.0" prefWidth="145.0" selected="true" text="Descending" toggleColor="#607d8b" toggleLineColor="#b0bec5" unToggleLineColor="WHITE">
+                  <JFXToggleButton fx:id="descendingSortButton" layoutX="398.0" layoutY="19.0" maxHeight="-Infinity" minHeight="-Infinity" onAction="#setSort" prefHeight="43.0" prefWidth="145.0" selected="true" text="Descending" toggleColor="#607d8b" toggleLineColor="#b0bec5" unToggleLineColor="WHITE">
                      <font>
                         <Font size="13.0" />
                      </font>
