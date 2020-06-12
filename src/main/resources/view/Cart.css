@@ -1,0 +1,16 @@
+
+.list-cell:selected{
+    -fx-background-color: #4aedf0;
+}
+
+.list-cell:hover{
+    -fx-background-color: #3ef0e3;
+    -fx-translate-y: -3;
+}
+
+#purchase:hover{
+    -fx-background-color: #de8787;
+    -fx-opacity: 1;
+    -fx-translate-y: -1;
+    -fx-translate-x: 1;
+}
