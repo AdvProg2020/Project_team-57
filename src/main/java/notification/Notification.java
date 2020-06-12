@@ -50,7 +50,7 @@ public enum Notification {
     MORE_THAN_CART_UNCOUNTABLE("You Are Subtracting The Amount More Than Or Equal To Your Cart.\nUse The Remove Option If you Want."),
     CART_PRODUCT_REMOVED("SuccessFully Deleted This Product From Your Cart.\nBut Don't Do That Again. Man Ghahram \uD83D\uDE2D\uD83D\uDE2D"),
     NOT_YOUR_CART_PRODUCT("Wait WTF \uD83D\uDE10 This is Product Isn't in your cart."),
-    CATEGORY_ADDED("SuccessFully Added The Category."),
+    CATEGORY_ADDED("SuccessFully Added The Category.", Alert.AlertType.INFORMATION, "Add Category Successful", "Congratulations"),
     DUPLICATE_CATEGORY_NAME("This Category Name Is Already Used. \uD83D\uDE36", Alert.AlertType.ERROR, "Edit Category Error", "Duplicate Name"),
     SAME_CATEGORY_FIELD_ERROR("Are you ok???\uD83D\uDE10\nEntered value is identical with initial value", Alert.AlertType.ERROR, "Edit Category Error", "Duplicate Value"),
     CATEGORY_DELETED("Category And It's Product Deleted In Whole. \uD83D\uDE0E", Alert.AlertType.INFORMATION,

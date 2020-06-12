@@ -5,8 +5,10 @@ import com.jfoenix.controls.JFXTextField;
 import controller.Control;
 import controller.account.AdminControl;
 import controller.product.ProductControl;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -31,7 +33,7 @@ public class CategoryProcessor implements Initializable {
     public TreeTableView<Category> categoriesTableView;
     public JFXButton addSubCategoryButton, editCategoryButton, deleteCategoryButton;
     
-    private static Stage addSubCategoryStage = null, editCategoryStage = null;
+    private static Stage categoriesStage = null, addSubCategoryStage = null;
     private static Category parentCategory = null;
     private static String categorySubMenuName = null;
 
@@ -54,7 +56,7 @@ public class CategoryProcessor implements Initializable {
         } else if(locationFile.contains("addSubCategoryMenu")) {
             if(categorySubMenuName.equals("Edit Category Menu")) {
                 nameTextField.setText(parentCategory.getName());
-                parentNameTextField.setText(parentCategory.getName());
+                parentNameTextField.setText(parentCategory.getParentCategory());
                 featuresTextField.setText(parentCategory.getFeatures());
                 addCategoryButton.setText("Edit");
             } else if(categorySubMenuName.equals("Add Category Menu")) {
@@ -65,6 +67,7 @@ public class CategoryProcessor implements Initializable {
         }
     }
 
+
     public void addSubCategoryMouseClicked(MouseEvent mouseEvent) throws IOException {
         setSubStage("Add Category Menu");
     }
@@ -74,23 +77,26 @@ public class CategoryProcessor implements Initializable {
     }
 
     public void setSubStage(String subStageName) throws IOException {
-        if(addSubCategoryStage != null) {
+        if(addSubCategoryStage == null) {
             if(categoriesTableView.getSelectionModel().getSelectedItem() == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "You haven't selected Any Category");
                 alert.setTitle("Jesus");
                 alert.setHeaderText("Hey You");
                 alert.show();
             } else {
+                categorySubMenuName = subStageName;
                 parentCategory = categoriesTableView.getSelectionModel().getSelectedItem().getValue();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("addSubCategoryMenu.fxml"));
                 Parent root = loader.load();
                 addSubCategoryStage = new Stage();
                 addSubCategoryStage.setScene(new Scene(root));
-                categorySubMenuName = subStageName;
+                addSubCategoryStage.setResizable(false);
+                addSubCategoryStage.setOnCloseRequest(event -> addSubCategoryStage = null);
                 addSubCategoryStage.show();
             }
         }
     }
+
 
     public void deleteCategoryMouseClicked(MouseEvent mouseEvent) {
         Category selectedCategory = categoriesTableView.getSelectionModel().getSelectedItem().getValue();
@@ -100,6 +106,7 @@ public class CategoryProcessor implements Initializable {
         if(notification.equals(Notification.CATEGORY_DELETED))
             categoriesTableView.setRoot(productControl.getCategoryTableRoot());
     }
+
 
     public void addCategory(MouseEvent mouseEvent) {
         switch (categorySubMenuName) {
@@ -114,12 +121,20 @@ public class CategoryProcessor implements Initializable {
         }
     }
 
-    private Category createCategoryWithFields() {
-        Category category = new Category();
-        category.setName(nameTextField.getText());
-        category.setFeatures(featuresTextField.getText());
-        category.setParentCategory(parentNameTextField.getText());
-        return category;
+    private void addCreatedCategory() {
+        Category category = createCategoryWithFields();
+
+        Notification notification = adminControl.addCategory(category);
+
+        if(notification.equals(Notification.CATEGORY_ADDED)) {
+            Optional<ButtonType> optionalButtonType = notification.getAlert().showAndWait();
+            if(optionalButtonType.get() == ButtonType.OK) {
+                closeSubStage();
+            }
+        } else {
+            notification.getAlert().show();
+        }
+
     }
 
     private void editCategory() {
@@ -127,15 +142,13 @@ public class CategoryProcessor implements Initializable {
 
         Alert alert = null;
         alert = editField(parentCategory, category, "Name", alert, nameTextField);
-        alert = editField(parentCategory, category, "Parent Name", alert, nameTextField);
-        alert = editField(parentCategory, category, "Features", alert, nameTextField);
+        alert = editField(parentCategory, category, "Parent Name", alert, parentNameTextField);
+        alert = editField(parentCategory, category, "Features", alert, featuresTextField);
 
         if(alert.getTitle().equals("Modify Successful")) {
             Optional<ButtonType> optionalButtonType = alert.showAndWait();
             if(optionalButtonType.get() == ButtonType.OK) {
-                addSubCategoryStage.close();
-                parentCategory = null;
-                categorySubMenuName = null;
+                closeSubStage();
             }
         } else {
             alert.show();
@@ -146,30 +159,39 @@ public class CategoryProcessor implements Initializable {
                             Alert previousAlert, JFXTextField textField) {
         Alert alert = adminControl.editCategory(oldCategory, newCategory, fieldName).getAlert();
 
-        if(!alert.getTitle().equals("Edit Successful"))
+        if(!alert.getTitle().equals("Modify Successful"))
             textField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
 
-        if(previousAlert == null || previousAlert.getTitle().equals("Edit Successful"))
+        if(previousAlert == null || previousAlert.getTitle().equals("Modify Successful"))
             return alert;
         else
             return previousAlert;
     }
 
-    private void addCreatedCategory() {
-        Category category = createCategoryWithFields();
+    private Category createCategoryWithFields() {
+        Category category = new Category();
+        category.setName(nameTextField.getText());
+        category.setFeatures(featuresTextField.getText());
+        category.setParentCategory(parentNameTextField.getText());
+        return category;
+    }
 
-        Notification notification = adminControl.addCategory(category);
 
-        if(notification.equals(Notification.CATEGORY_ADDED)) {
-            Optional<ButtonType> optionalButtonType = notification.getAlert().showAndWait();
-            if(optionalButtonType.get() == ButtonType.OK) {
-                addSubCategoryStage.close();
-                parentCategory = null;
-                categorySubMenuName = null;
-            }
-        } else {
-            notification.getAlert().show();
-        }
+    private void closeSubStage() {
+        addSubCategoryStage.close();
+        addSubCategoryStage = null;
+        parentCategory = null;
+        categorySubMenuName = null;
+        updateTreeTableOutSideOfStage();
+    }
 
+    private void updateTreeTableOutSideOfStage() {
+        ObservableList<Node> nodes = categoriesStage.getScene().getRoot().getChildrenUnmodifiable();
+        TreeTableView<Category> treeTableView = (TreeTableView<Category>) nodes.get(0);
+        treeTableView.setRoot(productControl.getCategoryTableRoot());
+    }
+
+    public static void setCategoriesStage(Stage categoriesStage) {
+        CategoryProcessor.categoriesStage = categoriesStage;
     }
 }

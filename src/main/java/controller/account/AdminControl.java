@@ -149,7 +149,7 @@ public class AdminControl extends AccountControl{
     public Notification editCategoryName(Category oldCategory, Category newCategory)
     {
         try {
-            if(!oldCategory.getName().equals(newCategory))
+            if(!oldCategory.getName().equals(newCategory.getName()))
             {
                 if(!CategoryTable.isThereCategoryWithName(newCategory.getName()))
                 {
@@ -167,7 +167,8 @@ public class AdminControl extends AccountControl{
                 }
                 return Notification.DUPLICATE_CATEGORY_NAME;
             }
-            return Notification.SAME_CATEGORY_FIELD_ERROR;
+            return Notification.CATEGORY_MODIFIED;
+            //return Notification.SAME_CATEGORY_FIELD_ERROR;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -186,7 +187,8 @@ public class AdminControl extends AccountControl{
                 }
                 return Notification.INVALID_FEATURES;
             }
-            return Notification.SAME_CATEGORY_FIELD_ERROR;
+            return Notification.CATEGORY_MODIFIED;
+            //return Notification.SAME_CATEGORY_FIELD_ERROR;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -213,7 +215,8 @@ public class AdminControl extends AccountControl{
                 e.printStackTrace();
             }
         }
-        return Notification.SAME_FIELD_ERROR;
+        return Notification.CATEGORY_MODIFIED;
+        //return Notification.SAME_FIELD_ERROR;
     }
 
     public Category getCategoryByName(String categoryName) {

@@ -6,18 +6,19 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.Pane?>
 
+<?import javafx.scene.control.cell.TreeItemPropertyValueFactory?>
 <Pane fx:id="mainPane" prefHeight="630.0" prefWidth="828.0" style="-fx-background-color: #E0F2F1;" stylesheets="@../CSS%20files/CategoriesMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CategoryProcessor">
    <children>
       <TreeTableView fx:id="categoriesTableView" layoutX="84.0" layoutY="82.0" prefHeight="430.0" prefWidth="660.0">
          <columns>
             <TreeTableColumn prefWidth="156.0" text="Name">
                <cellValueFactory>
-                  <PropertyValueFactory property="Name" />
+                  <TreeItemPropertyValueFactory property="Name" />
                </cellValueFactory>
             </TreeTableColumn>
             <TreeTableColumn prefWidth="492.0" text="Features">
                <cellValueFactory>
-                  <PropertyValueFactory property="Features" />
+                  <TreeItemPropertyValueFactory property="Features" />
                </cellValueFactory>
             </TreeTableColumn>
          </columns>
