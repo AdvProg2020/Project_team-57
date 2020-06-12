@@ -5,6 +5,9 @@
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.control.cell.TreeItemPropertyValueFactory?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -17,13 +20,38 @@
    <left>
       <VBox prefHeight="770.0" prefWidth="250.0" style="-fx-background-color: #eceff1;" BorderPane.alignment="CENTER">
          <children>
-            <HBox alignment="CENTER" prefHeight="350.0" prefWidth="250.0">
+            <Pane prefHeight="419.0" prefWidth="250.0">
                <children>
-                  <Pane maxHeight="-Infinity" prefHeight="320.0" prefWidth="220.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" />
+                  <TreeTableView fx:id="categoriesTableTreeView" layoutX="21.0" layoutY="73.0" prefHeight="306.0" prefWidth="209.0">
+                    <columns>
+                      <TreeTableColumn prefWidth="197.0" sortable="false" text="Name">
+                         <cellValueFactory>
+                            <TreeItemPropertyValueFactory property="Name" />
+                         </cellValueFactory>
+                      </TreeTableColumn>
+                    </columns>
+                  </TreeTableView>
+                  <Label alignment="CENTER" layoutX="38.0" layoutY="20.0" prefHeight="36.0" prefWidth="176.0" style="-fx-background-color: #D5D5D5; -fx-background-radius: 10;" text="Categories" />
                </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="350.0" prefWidth="250.0" />
-            <HBox prefHeight="100.0" prefWidth="200.0" />
+            </Pane>
+            <Pane prefHeight="272.0" prefWidth="250.0">
+               <children>
+                  <ScrollPane layoutX="25.0" layoutY="36.0" prefHeight="200.0" prefWidth="200.0">
+                     <content>
+                        <VBox fx:id="filteredCategoriesVBox" prefHeight="198.0" prefWidth="180.0" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </Pane>
+            <Pane prefHeight="108.0" prefWidth="250.0">
+               <children>
+                  <JFXTextField layoutX="42.0" layoutY="54.0" prefHeight="11.0" prefWidth="69.0" />
+                  <Label layoutX="16.0" layoutY="59.0" text="To:" />
+                  <JFXTextField layoutX="164.0" layoutY="54.0" prefHeight="11.0" prefWidth="69.0" />
+                  <Label layoutX="120.0" layoutY="59.0" text="From:" />
+                  <Label alignment="CENTER" layoutX="85.0" layoutY="14.0" prefHeight="36.0" prefWidth="84.0" style="-fx-background-color: #D5D5D5; -fx-background-radius: 10;" text="Price :" />
+               </children>
+            </Pane>
          </children></VBox>
    </left>
    <center>

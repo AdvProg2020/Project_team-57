@@ -7,13 +7,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.control.Control;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import model.existence.Category;
 import model.existence.Product;
 
 import java.io.IOException;
@@ -45,6 +45,15 @@ public class ProductsProcessor implements Initializable {
     public JFXToggleButton descendingSortButton;
     private JFXButton selectedSort;
 
+    //Categories Pane
+    public TreeTableView<Category> categoriesTableTreeView;
+
+    //Filter Pane
+    public Pane mainFilterPane;
+    public VBox filteredCategoriesVBox;
+    public Label filterNameLabel;
+    private Category category;
+
     private ArrayList<Product> allProducts;
     private int pageSize = 12;
     private int pageNumber = 0;
@@ -59,7 +68,49 @@ public class ProductsProcessor implements Initializable {
             productControl.initSort(); productControl.initFilter();
             selectedSort = viewSortButton;
             selectSort();
+
+            initCategoriesTableTreeView();
         }
+    }
+
+    private void initCategoriesTableTreeView() {
+        categoriesTableTreeView.setRowFactory( tv -> {
+            TreeTableRow<Category> row = new TreeTableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 /*&& (!row.isEmpty())*/ ) {
+                    Category category = row.getItem();
+                    addCategoryToFilters(category);
+                }
+            });
+            return row ;
+        });
+
+        categoriesTableTreeView.setRoot(ProductControl.getController().getCategoryTableRoot());
+        categoriesTableTreeView.getSelectionModel().selectFirst();
+    }
+
+    private void addCategoryToFilters(Category category) {
+        if(!controller.Control.getController().isThereFilteringCategoryWithName(category.getName())) {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("FilterCategoryPane.fxml"));
+                Node node = fxmlLoader.load();
+                ProductsProcessor productsProcessor = fxmlLoader.getController();
+                productsProcessor.parentProcessor = this;
+                productsProcessor.category = category;
+                productsProcessor.filterNameLabel.setText(category.getName());
+                controller.Control.getController().addToFilterCategoryList(category.getName());
+                initProductsPage();
+                filteredCategoriesVBox.getChildren().add(node);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void deleteFilterCategoryMouseClicked(MouseEvent mouseEvent) {
+        controller.Control.getController().removeFromFilterCategoryList(category.getName());
+        parentProcessor.initProductsPage();
+        parentProcessor.filteredCategoriesVBox.getChildren().remove(mainFilterPane);
     }
 
     private void initProductsPage() {
@@ -207,4 +258,6 @@ public class ProductsProcessor implements Initializable {
     public void openAccountMenu(ActionEvent actionEvent) {
         new WelcomeProcessor().openAccountMenu();
     }
+
+
 }
