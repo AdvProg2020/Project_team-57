@@ -3,6 +3,10 @@ package model.db;
 import model.existence.Comment;
 import model.existence.Product;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -290,6 +294,22 @@ public class ProductTable extends Database {
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1,commentID);
         return new Comment(preparedStatement.executeQuery());
+    }
+
+
+    public static String getProductImageFilePath(String ID) {
+        String fileName = "database\\Images\\Products\\" + ID;
+        String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
+        for (String validImageExtension : validImageExtensions) {
+            String filePath = fileName + "." + validImageExtension;
+            if(new File(filePath).exists())
+                return filePath;
+        }
+        return null;
+    }
+
+    public static FileInputStream getProductImageInputStream(String ID) throws FileNotFoundException {
+        return new FileInputStream(getProductImageFilePath(ID));
     }
 }
 

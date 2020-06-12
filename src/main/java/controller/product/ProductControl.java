@@ -1,16 +1,15 @@
 package controller.product;
 
 import controller.Control;
-import model.db.CategoryTable;
-import model.db.EditingProductTable;
-import model.db.OffTable;
-import model.db.ProductTable;
+import javafx.scene.image.Image;
+import model.db.*;
 import model.existence.Category;
 import model.existence.Comment;
 import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
 
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -292,6 +291,19 @@ public class ProductControl extends Control {
             e.printStackTrace();
         }
 
+    }
+
+    public ArrayList<Product> getAllShowingProducts() {
+        //TODO(FILTER)
+        //TODO(SORT)
+        try {
+            return ProductTable.getAllShowingProducts();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
     public ArrayList<String> getAllShowingProductNames() {
@@ -609,4 +621,18 @@ public class ProductControl extends Control {
         return null;
     }
 
+    public Image getProductImageByID(String ID) {
+        try {
+            if(doesProductHaveImage(ID))
+                return new Image(ProductTable.getProductImageInputStream(ID));
+            return new Image(ProductTable.getProductImageInputStream("1"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private boolean doesProductHaveImage(String ID) {
+        return ProductTable.getProductImageFilePath(ID) != null;
+    }
 }
