@@ -213,8 +213,8 @@ public class VendorTable extends Database {
         addCountableProduct(product, "Geralt Of Rivia");
         ProductTable.setProductStatus(product.getID(), 1);
         product = new Product();
-        product.setID("p1211111");
-        product.setName("Priscilla");
+        product.setID("p1222222");
+        product.setName("Siren");
         product.setCount(1);
         product.setCategory("All Products");
         product.setPrice(500);
@@ -238,16 +238,6 @@ public class VendorTable extends Database {
         product.setCount(1);
         product.setCategory("All Products");
         product.setPrice(3500);
-        product.setStatus(1);
-        product.setApprovalDate(new Date(System.currentTimeMillis()));
-        addCountableProduct(product, "Geralt Of Rivia");
-        ProductTable.setProductStatus(product.getID(), 1);
-        product = new Product();
-        product.setID("p3456712");
-        product.setName("Product2");
-        product.setCount(1);
-        product.setCategory("All Products");
-        product.setPrice(4500);
         product.setStatus(1);
         product.setApprovalDate(new Date(System.currentTimeMillis()));
         addCountableProduct(product, "Geralt Of Rivia");

@@ -17,14 +17,16 @@ public class Main extends Application {
     private static Stage stage;
 
     public static void main(String[] args) {
-        try {
+/*        try {
+            VendorTable.addTempProducts();
+            System.out.println("first");
             VendorTable.addAnotherTempProducts();
             System.out.println("Products added");
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }
+        }*/
         launch(args);
     }
 
