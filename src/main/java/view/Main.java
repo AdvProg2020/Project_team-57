@@ -19,8 +19,6 @@ public class Main extends Application {
     public static void main(String[] args) {
 /*        try {
             VendorTable.addTempProducts();
-            System.out.println("first");
-            VendorTable.addAnotherTempProducts();
             System.out.println("Products added");
         } catch (SQLException e) {
             e.printStackTrace();
