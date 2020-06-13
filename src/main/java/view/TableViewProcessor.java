@@ -167,7 +167,7 @@ public class TableViewProcessor<T> implements TableHold {
     }
 
     private Node initDiscountCustomersOptions() {
-
+        return null;
     }
 
     private Pane initDiscountOptions() {

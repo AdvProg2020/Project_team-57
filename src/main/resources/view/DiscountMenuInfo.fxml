@@ -29,7 +29,7 @@
       <JFXComboBox fx:id="startDateMonthComboBox" layoutX="296.0" layoutY="308.0" prefHeight="31.0" prefWidth="78.0" promptText="Month" />
       <TextField fx:id="startDateHourTextField" alignment="CENTER" layoutX="217.0" layoutY="358.0" prefHeight="31.0" prefWidth="40.0" promptText="HH" />
       <TextField fx:id="startDateSecondTextField" alignment="CENTER" layoutX="415.0" layoutY="358.0" prefHeight="31.0" prefWidth="40.0" promptText="ss" />
-      <TextField fx:id="startDateMonthTextField" alignment="CENTER" layoutX="315.0" layoutY="358.0" prefHeight="31.0" prefWidth="40.0" promptText="mm" />
+      <TextField fx:id="startDateMinuteTextField" alignment="CENTER" layoutX="315.0" layoutY="358.0" prefHeight="31.0" prefWidth="40.0" promptText="mm" />
       <Label layoutX="284.0" layoutY="363.0" text=":" />
       <Label layoutX="382.0" layoutY="363.0" text=":" />
       <JFXTextField fx:id="discountCodeTextField" labelFloat="true" layoutX="205.0" layoutY="53.0" />
