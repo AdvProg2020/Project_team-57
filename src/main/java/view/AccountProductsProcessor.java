@@ -17,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -29,6 +30,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AccountProductsProcessor implements Initializable {
+    public Pane cartPane;
     private CustomerControl control;
     private VendorControl vendorControl;
     public ListView<Product> list;
@@ -90,6 +92,8 @@ public class AccountProductsProcessor implements Initializable {
     }
 
     private void initializeCart(){
+        cartPane.setStyle("-fx-background-image: url(Images/cartPane.jpg);");
+       // cartPane.setStyle("-fx-background-image: url(Images/cartImage.jpg);");
         totalPrice.setText(control.calculateCartTotalPrice() + " $");
         profileLabel.setText(IOControl.getUsername());
         ObservableList<Product> products = FXCollections.observableArrayList(control.getAllCartProducts());

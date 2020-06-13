@@ -14,3 +14,6 @@
     -fx-translate-y: -1;
     -fx-translate-x: 1;
 }
+#cartPane{
+    -fx-background-image: url("Images/cartPane.jpg");
+}
