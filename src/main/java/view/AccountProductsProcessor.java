@@ -29,8 +29,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AccountProductsProcessor implements Initializable {
-    private final CustomerControl control = CustomerControl.getController();
-    private final VendorControl vendorControl = VendorControl.getController();
+    private CustomerControl control;
+    private VendorControl vendorControl;
     public ListView<Product> list;
     public Label profileLabel;
     public Popup popup = new Popup();
@@ -43,8 +43,14 @@ public class AccountProductsProcessor implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-       initializeCart();
-       initializeVendorProducts();
+        if (location.toString().contains("AccountProducts.fxml")) {
+            control = CustomerControl.getController();
+            initializeCart();
+        } else {
+            vendorControl = VendorControl.getController();
+            initializeVendorProducts();
+        }
+
     }
 
     private void initializeVendorProducts() {
@@ -87,7 +93,6 @@ public class AccountProductsProcessor implements Initializable {
         totalPrice.setText(control.calculateCartTotalPrice() + " $");
         profileLabel.setText(IOControl.getUsername());
         ObservableList<Product> products = FXCollections.observableArrayList(control.getAllCartProducts());
-        list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         list.getItems().setAll(products);
         list.setFixedCellSize(150);
         list.setCellFactory(param -> new ListCell<Product>() {
@@ -121,8 +126,10 @@ public class AccountProductsProcessor implements Initializable {
     }
 
     public void showOption(MouseEvent event) {
-        if (list.getSelectionModel().getSelectedItem() == null)
+        if (list.getSelectionModel().getSelectedItem() == null) {
+            popup.hide();
             return;
+        }
         if (event.getButton() == MouseButton.PRIMARY) {
             if (event.getClickCount() == 1) {
                 initPopUp(event);
@@ -159,6 +166,8 @@ public class AccountProductsProcessor implements Initializable {
         });
         VBox vBox = new VBox(inButton, deButton, reButton);
         popup.getContent().add(vBox);
+        popup.setAutoHide(true);
+        popup.setHideOnEscape(true);
         popup.show(list, event.getScreenX(), event.getScreenY());
     }
 
@@ -184,7 +193,7 @@ public class AccountProductsProcessor implements Initializable {
         button.setGraphic(imageView);
         button.setPrefWidth(120);
         button.setPrefHeight(40);
-        button.setStyle("-fx-background-color: #6ca8a4; -fx-font: italic; -fx-font-size: 5");
+        button.setStyle("-fx-background-color: #6ca8a4; -fx-font: italic;");
     }
 
     public void hidePopUp(MouseEvent event) {
@@ -220,5 +229,14 @@ public class AccountProductsProcessor implements Initializable {
     }
 
     public void showVendorOption(MouseEvent event) {
+
+    }
+
+    public void enterAddProduct(MouseEvent event) {
+        addProduct.setStyle("-fx-background-color:  #d50000; -fx-translate-y: -1; -fx-translate-x: 1; -fx-opacity: 1");
+    }
+
+    public void exitAddProduct(MouseEvent event) {
+        addProduct.setStyle("-fx-background-color:  #d50000; -fx-translate-y: 0; -fx-translate-x: 0; -fx-opacity: 0.7");
     }
 }

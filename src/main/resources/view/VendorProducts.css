@@ -1,0 +1,22 @@
+.list-cell:selected {
+    -fx-background-color: #6b1880;
+}
+
+.list-cell:hover {
+    -fx-background-color: #c266d9;
+    -fx-translate-y: -3;
+}
+
+#addProduct:hover {
+    -fx-background-color: #de8787;
+    -fx-opacity: 1;
+    -fx-translate-y: -1;
+    -fx-translate-x: 1;
+}
+
+.button:hover {
+    -fx-background-color: #de8787;
+    -fx-opacity: 1;
+    -fx-translate-y: -1;
+    -fx-translate-x: 1;
+}

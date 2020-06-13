@@ -17,7 +17,7 @@
          <content>
             <VBox prefHeight="503.0" prefWidth="524.0">
                <children>
-                  <ListView fx:id="list" accessibleRole="IMAGE_VIEW" editable="true" onMouseClicked="#showOption" prefHeight="411.0" prefWidth="524.0" stylesheets="@Cart.css" VBox.vgrow="ALWAYS" />
+                  <ListView fx:id="list" accessibleRole="IMAGE_VIEW" editable="true" onMouseClicked="#showOption" stylesheets="@Cart.css" VBox.vgrow="ALWAYS" />
                   <Pane prefHeight="83.0" prefWidth="524.0" style="-fx-background-radius: 10;">
                      <children>
                         <Label layoutX="352.0" layoutY="14.0" text="The amount payable">
