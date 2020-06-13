@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import model.existence.Discount;
 import notification.Notification;
 
@@ -64,7 +65,6 @@ public class DiscountProcessor extends Processor implements Initializable, chang
             discount = new Discount();
             adminControl.addDiscountToHashMap(discount);
             profileInfoMouseClicked(null);
-            //Set On Closed Request
         }
     }
 
@@ -328,4 +328,14 @@ public class DiscountProcessor extends Processor implements Initializable, chang
     private boolean isItEmpty(TextField textField) {
         return textField.getText() == null || textField.getText().isEmpty();
     }
+
+    @Override
+    public void setMyStage(Stage myStage) {
+        this.myStage = myStage;
+        myStage.setOnCloseRequest(event -> {
+            parentProcessor.removeSubStage(myStage);
+            adminControl.removeDiscountFromHashMap(discount);
+        });
+    }
+
 }

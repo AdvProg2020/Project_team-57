@@ -30,6 +30,10 @@ public class AdminControl extends AccountControl{
         discountsAddedUsers.put(discount, new ArrayList<>());
     }
 
+    public void removeDiscountFromHashMap(Discount discount) {
+        discountsAddedUsers.remove(discount);
+    }
+
     public HashMap<Discount, ArrayList<String>> getDiscountsAddedUsers() {
         return discountsAddedUsers;
     }
@@ -363,6 +367,10 @@ public class AdminControl extends AccountControl{
             notification = Notification.EMPTY_DISCOUNT_START_DATE;
         else if(discount.getFinishDate() == null)
             notification = Notification.EMPTY_DISCOUNT_FINISH_DATE;
+        else if(discount.getStartDate().getTime() >= System.currentTimeMillis())
+            notification = Notification.INVALID_START_DATE;
+        else if(discount.getStartDate().getTime() >= discount.getFinishDate().getTime())
+            notification = Notification.INVALID_FINISH_DATE_FOR_START_DATE;
         else if(discount.getDiscountPercent() == 0)
             notification = Notification.EMPTY_DISCOUNT_PERCENT;
         else if(discount.getMaxDiscount() == 0)
