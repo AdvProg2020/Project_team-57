@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-
-<Pane fx:id="mainFilterPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductsProcessor">
+<Pane fx:id="mainFilterPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../CSS%20files/FilterCategoryPane.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductsProcessor">
    <children>
       <HBox layoutX="14.0" prefHeight="40.0">
          <children>
@@ -18,7 +17,7 @@
             </Pane>
             <Pane prefHeight="200.0">
                <children>
-                  <ImageView fx:id="deleteSign" fitHeight="24.0" fitWidth="24.0" layoutY="8.0" onMouseClicked="#deleteFilterCategoryMouseClicked" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="deleteSign" fitHeight="24.0" fitWidth="24.0" layoutY="8.0" onMouseClicked="#deleteFilterCategoryMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="Button">
                      <image>
                         <Image url="@deleteCategorySign.png" />
                      </image>

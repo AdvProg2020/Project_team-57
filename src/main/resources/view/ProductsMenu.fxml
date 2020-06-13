@@ -17,43 +17,6 @@
 <?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1300.0" stylesheets="@../CSS%20files/ProductsMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductsProcessor">
-   <left>
-      <VBox prefHeight="770.0" prefWidth="250.0" style="-fx-background-color: #eceff1;" BorderPane.alignment="CENTER">
-         <children>
-            <Pane prefHeight="398.0" prefWidth="250.0">
-               <children>
-                  <TreeTableView fx:id="categoriesTableTreeView" layoutX="21.0" layoutY="73.0" prefHeight="306.0" prefWidth="209.0">
-                    <columns>
-                      <TreeTableColumn prefWidth="197.0" sortable="false" text="Categories">
-                         <cellValueFactory>
-                            <TreeItemPropertyValueFactory property="Name" />
-                         </cellValueFactory>
-                      </TreeTableColumn>
-                    </columns>
-                  </TreeTableView>
-                  <Label alignment="CENTER" layoutX="38.0" layoutY="20.0" prefHeight="36.0" prefWidth="176.0" style="-fx-background-color: #D5D5D5; -fx-background-radius: 10;" text="Categories" />
-               </children>
-            </Pane>
-            <Pane prefHeight="272.0" prefWidth="250.0">
-               <children>
-                  <ScrollPane layoutX="21.0" prefHeight="100.0" prefWidth="209.0">
-                     <content>
-                        <VBox fx:id="filteredCategoriesVBox" prefWidth="189.0" />
-                     </content>
-                  </ScrollPane>
-               </children>
-            </Pane>
-            <Pane prefHeight="108.0" prefWidth="250.0">
-               <children>
-                  <JFXTextField fx:id="toPriceTextField" layoutX="42.0" layoutY="54.0" onKeyTyped="#changeLowerPriceFilter" prefHeight="11.0" prefWidth="69.0" />
-                  <Label layoutX="16.0" layoutY="59.0" text="To:" />
-                  <JFXTextField fx:id="fromPriceTextField" layoutX="164.0" layoutY="54.0" onKeyTyped="#changeUpperPriceFilter" prefHeight="11.0" prefWidth="69.0" />
-                  <Label layoutX="120.0" layoutY="59.0" text="From:" />
-                  <Label alignment="CENTER" layoutX="85.0" layoutY="14.0" prefHeight="36.0" prefWidth="84.0" style="-fx-background-color: #D5D5D5; -fx-background-radius: 10;" text="Price :" />
-               </children>
-            </Pane>
-         </children></VBox>
-   </left>
    <center>
       <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <top>
@@ -129,4 +92,37 @@
          </children>
       </HBox>
    </top>
+   <left>
+      <Pane prefHeight="800.0" prefWidth="250.0" BorderPane.alignment="CENTER">
+         <children>
+            <Pane prefHeight="661.0" prefWidth="250.0">
+               <children>
+                  <TreeTableView fx:id="categoriesTableTreeView" layoutX="21.0" layoutY="21.0" prefHeight="306.0" prefWidth="209.0">
+                     <columns>
+                        <TreeTableColumn prefWidth="197.0" sortable="false" text="Categories">
+                           <cellValueFactory>
+                              <TreeItemPropertyValueFactory property="Name" />
+                           </cellValueFactory>
+                        </TreeTableColumn>
+                     </columns>
+                  </TreeTableView>
+                  <ScrollPane layoutX="21.0" layoutY="343.0" prefHeight="100.0" prefWidth="209.0">
+                     <content>
+                        <VBox fx:id="filteredCategoriesVBox" prefWidth="189.0" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </Pane>
+            <Pane layoutY="699.0" prefHeight="108.0" prefWidth="250.0">
+               <children>
+                  <JFXTextField fx:id="toPriceTextField" layoutX="42.0" layoutY="54.0" onKeyTyped="#changeLowerPriceFilter" prefHeight="11.0" prefWidth="69.0" />
+                  <Label layoutX="16.0" layoutY="59.0" text="To:" />
+                  <JFXTextField fx:id="fromPriceTextField" layoutX="164.0" layoutY="54.0" onKeyTyped="#changeUpperPriceFilter" prefHeight="11.0" prefWidth="69.0" />
+                  <Label layoutX="120.0" layoutY="59.0" text="From:" />
+                  <Label alignment="CENTER" layoutX="85.0" layoutY="14.0" prefHeight="36.0" prefWidth="84.0" style="-fx-background-color: #D5D5D5; -fx-background-radius: 10;" text="Price :" />
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+   </left>
 </BorderPane>
