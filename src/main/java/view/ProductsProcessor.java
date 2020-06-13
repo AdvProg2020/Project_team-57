@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class ProductsProcessor implements Initializable {
+public class ProductsProcessor implements Initializable, changeTextFieldFeatures {
     private static final int PRODUCT_SCROLL_PANE_WIDTH = 1050;
     private static final int PRODUCT_FIELD_HEIGHT = 335;
     private static final int PRODUCT_PAGES_BAR_HEIGHT = 50;
@@ -135,29 +135,6 @@ public class ProductsProcessor implements Initializable {
         double maxPrice = toPriceTextField.getText().isEmpty() ? Double.MAX_VALUE : Double.parseDouble(toPriceTextField.getText());
         controller.Control.getController().setPriceFilters(minPrice, maxPrice);
         initProductsPage();
-    }
-
-    private String removeDots(String text) {
-        StringBuilder stringBuilder = new StringBuilder(text);
-        boolean foundDot = false;
-        int textSize = text.length();
-
-        for (int i = 0; i < textSize; i++) {
-            if(text.charAt(i) < 48 || text.charAt(i) > 57) {
-                if(text.charAt(i) == '.') {
-                    if(foundDot) {
-                        stringBuilder.deleteCharAt(i);
-                        textSize--;
-                    }
-                    foundDot = true;
-                } else {
-                    stringBuilder.deleteCharAt(i);
-                    textSize--;
-                }
-            }
-        }
-
-        return stringBuilder.toString();
     }
 
     private void addCategoryToFilters(Category category) {

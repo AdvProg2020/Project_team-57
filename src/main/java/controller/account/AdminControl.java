@@ -8,6 +8,7 @@ import notification.Notification;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AdminControl extends AccountControl{
     private static AdminControl adminControl = null;
@@ -17,6 +18,35 @@ public class AdminControl extends AccountControl{
             adminControl = new AdminControl();
 
         return adminControl;
+    }
+
+    private HashMap<Discount, ArrayList<String>> discountsAddedUsers;
+
+    public void createDiscountAddedUsers() {
+        this.discountsAddedUsers = new HashMap<>();
+    }
+
+    public HashMap<Discount, ArrayList<String>> getDiscountsAddedUsers() {
+        return discountsAddedUsers;
+    }
+
+    public void addUserToDiscountAddedUsers(Discount discount, String userName) {
+        if(discountsAddedUsers.containsKey(discount) && !discountsAddedUsers.get(discount).contains(userName)) {
+            discountsAddedUsers.get(discount).add(userName);
+        }
+    }
+
+    public void removeUserFromDiscountAddedUsers(Discount discount, String userName) {
+        if(discountsAddedUsers.containsKey(discount) && discountsAddedUsers.get(discount).contains(userName)) {
+            discountsAddedUsers.get(discount).remove(userName);
+        }
+    }
+
+    public boolean isUserAddedInDiscount(Discount discount, String userName) {
+        if(discountsAddedUsers.containsKey(discount))
+            return discountsAddedUsers.get(discount).contains(userName);
+        else
+            System.out.println("Shit Error In Controller");
     }
 
     public Notification approveProductByID(String id){
