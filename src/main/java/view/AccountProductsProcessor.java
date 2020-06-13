@@ -2,10 +2,10 @@ package view;
 
 import controller.IOControl;
 import controller.account.CustomerControl;
+import controller.account.VendorControl;
 import controller.product.ProductControl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -30,15 +30,60 @@ import java.util.ResourceBundle;
 
 public class AccountProductsProcessor implements Initializable {
     private final CustomerControl control = CustomerControl.getController();
+    private final VendorControl vendorControl = VendorControl.getController();
     public ListView<Product> list;
     public Label profileLabel;
     public Popup popup = new Popup();
     public Label totalPrice;
     public ImageView back;
     public ImageView profile;
+    public ListView<Product> vendorList;
+    public Label goodsNumber;
+    public Button addProduct;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+       initializeCart();
+       initializeVendorProducts();
+    }
+
+    private void initializeVendorProducts() {
+        goodsNumber.setText(vendorControl.getVendorProductIDs().size() + "");
+        ObservableList<Product> products = FXCollections.observableArrayList(vendorControl.getAllProducts());
+        vendorList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        vendorList.getItems().setAll(products);
+        vendorList.setFixedCellSize(150);
+        vendorList.setCellFactory(param -> new ListCell<Product>(){
+            @Override
+            protected void updateItem(final Product product, final boolean empty) {
+                super.updateItem(product, empty);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    final ImageView image = new ImageView(ProductControl.getController().getProductImageByID(product.getID()));
+                    image.setFitHeight(130);
+                    image.setFitWidth(150);
+                    Text name = new Text("\n     " + product.getName());
+                    name.fontProperty().setValue(Font.font("Oswald", 20));
+                    name.fillProperty().setValue(Color.valueOf("#328d97"));
+                    Text category = new Text("\n   " + product.getCategory());
+                    category.fontProperty().setValue(Font.font("Segoe Print", 15));
+                    VBox texts = new VBox(name, category);
+                    Text price;
+                    if (product.getCount() == 0 && product.getAmount() == 0)
+                        price = new Text("\n\n\n                          Unavailable");
+                    else
+                        price = new Text("\n\n\n                          " + product.getPrice() + " $");
+                    price.fontProperty().setValue(Font.font(20));
+                    HBox graphic = new HBox(image, texts, price);
+                    setGraphic(graphic);
+                }
+            }
+        });
+    }
+
+    private void initializeCart(){
         totalPrice.setText(control.calculateCartTotalPrice() + " $");
         profileLabel.setText(IOControl.getUsername());
         ObservableList<Product> products = FXCollections.observableArrayList(control.getAllCartProducts());
@@ -62,7 +107,7 @@ public class AccountProductsProcessor implements Initializable {
                     Text category = new Text("\n   " + product.getCategory());
                     category.fontProperty().setValue(Font.font("Segoe Print", 15));
                     VBox texts = new VBox(name, category);
-                    Text price = null;
+                    Text price;
                     if (product.getCount() == 0 && product.getAmount() == 0)
                         price = new Text("\n\n\n                          Unavailable");
                     else
@@ -172,5 +217,8 @@ public class AccountProductsProcessor implements Initializable {
 
     public void exitBack(MouseEvent event) {
         back.setOpacity(0.7);
+    }
+
+    public void showVendorOption(MouseEvent event) {
     }
 }
