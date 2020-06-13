@@ -20,11 +20,11 @@
    <left>
       <VBox prefHeight="770.0" prefWidth="250.0" style="-fx-background-color: #eceff1;" BorderPane.alignment="CENTER">
          <children>
-            <Pane prefHeight="419.0" prefWidth="250.0">
+            <Pane prefHeight="398.0" prefWidth="250.0">
                <children>
                   <TreeTableView fx:id="categoriesTableTreeView" layoutX="21.0" layoutY="73.0" prefHeight="306.0" prefWidth="209.0">
                     <columns>
-                      <TreeTableColumn prefWidth="197.0" sortable="false" text="Name">
+                      <TreeTableColumn prefWidth="197.0" sortable="false" text="Categories">
                          <cellValueFactory>
                             <TreeItemPropertyValueFactory property="Name" />
                          </cellValueFactory>
@@ -36,18 +36,18 @@
             </Pane>
             <Pane prefHeight="272.0" prefWidth="250.0">
                <children>
-                  <ScrollPane layoutX="25.0" layoutY="36.0" prefHeight="200.0" prefWidth="200.0">
+                  <ScrollPane layoutX="21.0" prefHeight="100.0" prefWidth="209.0">
                      <content>
-                        <VBox fx:id="filteredCategoriesVBox" prefHeight="198.0" prefWidth="180.0" />
+                        <VBox fx:id="filteredCategoriesVBox" prefWidth="189.0" />
                      </content>
                   </ScrollPane>
                </children>
             </Pane>
             <Pane prefHeight="108.0" prefWidth="250.0">
                <children>
-                  <JFXTextField layoutX="42.0" layoutY="54.0" prefHeight="11.0" prefWidth="69.0" />
+                  <JFXTextField fx:id="toPriceTextField" layoutX="42.0" layoutY="54.0" onKeyTyped="#changeLowerPriceFilter" prefHeight="11.0" prefWidth="69.0" />
                   <Label layoutX="16.0" layoutY="59.0" text="To:" />
-                  <JFXTextField layoutX="164.0" layoutY="54.0" prefHeight="11.0" prefWidth="69.0" />
+                  <JFXTextField fx:id="fromPriceTextField" layoutX="164.0" layoutY="54.0" onKeyTyped="#changeUpperPriceFilter" prefHeight="11.0" prefWidth="69.0" />
                   <Label layoutX="120.0" layoutY="59.0" text="From:" />
                   <Label alignment="CENTER" layoutX="85.0" layoutY="14.0" prefHeight="36.0" prefWidth="84.0" style="-fx-background-color: #D5D5D5; -fx-background-radius: 10;" text="Price :" />
                </children>

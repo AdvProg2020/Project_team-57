@@ -10,12 +10,12 @@
    <children>
       <TreeTableView fx:id="categoriesTableView" layoutX="84.0" layoutY="82.0" onMouseClicked="#initButtons" prefHeight="430.0" prefWidth="660.0">
          <columns>
-            <TreeTableColumn prefWidth="156.0" text="Name">
+            <TreeTableColumn editable="false" prefWidth="156.0" sortable="false" text="Name">
                <cellValueFactory>
                   <TreeItemPropertyValueFactory property="Name" />
                </cellValueFactory>
             </TreeTableColumn>
-            <TreeTableColumn prefWidth="492.0" text="Features">
+            <TreeTableColumn editable="false" prefWidth="492.0" sortable="false" text="Features">
                <cellValueFactory>
                   <TreeItemPropertyValueFactory property="Features" />
                </cellValueFactory>

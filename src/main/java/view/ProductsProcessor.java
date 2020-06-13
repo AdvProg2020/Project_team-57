@@ -1,8 +1,11 @@
 package view;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import controller.product.ProductControl;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -11,6 +14,8 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import model.existence.Category;
@@ -54,6 +59,9 @@ public class ProductsProcessor implements Initializable {
     public Label filterNameLabel;
     private Category category;
 
+    //Filter Price Pane
+    public JFXTextField toPriceTextField, fromPriceTextField;
+
     private ArrayList<Product> allProducts;
     private int pageSize = 12;
     private int pageNumber = 0;
@@ -70,6 +78,7 @@ public class ProductsProcessor implements Initializable {
             selectSort();
 
             initCategoriesTableTreeView();
+            initPriceFiltersTextFields();
         }
     }
 
@@ -86,7 +95,92 @@ public class ProductsProcessor implements Initializable {
         });
 
         categoriesTableTreeView.setRoot(ProductControl.getController().getCategoryTableRoot());
-        categoriesTableTreeView.getSelectionModel().selectFirst();
+        categoriesTableTreeView.setShowRoot(false);
+        //categoriesTableTreeView.getSelectionModel().selectFirst();
+    }
+
+    private void initPriceFiltersTextFields() {
+        setPriceFields(toPriceTextField);
+        setPriceFields(fromPriceTextField);
+
+        /*toPriceTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                //Todo Checking
+
+                if(newValue.equals(".")) {
+                    toPriceTextField.setText("0.");
+                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
+                    if(toPriceTextField.getText().contains(".")) {
+                        toPriceTextField.setText(removeDots(toPriceTextField.getText()));
+                    } else {
+                        toPriceTextField.setText(newValue.replaceAll("[^\\d\\.]", ""));
+                    }
+                }
+            }
+        });
+
+        fromPriceTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                //Todo Checking
+
+                if(newValue.equals(".")) {
+                    fromPriceTextField.setText("0.");
+                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
+                    if(fromPriceTextField.getText().contains(".")) {
+                        fromPriceTextField.setText(removeDots(fromPriceTextField.getText()));
+                    } else {
+                        fromPriceTextField.setText(newValue.replaceAll("[^\\d\\.]", ""));
+                    }
+                }
+            }
+        });*/
+    }
+
+    private void setPriceFields(JFXTextField priceTextField) {
+        priceTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                //Todo Checking
+
+                if(newValue.equals(".")) {
+                    priceTextField.setText("0.");
+                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
+                    if(priceTextField.getText().contains(".")) {
+                        priceTextField.setText(removeDots(priceTextField.getText()));
+                    } else {
+                        priceTextField.setText(newValue.replaceAll("[^\\d\\.]", ""));
+                    }
+                }
+            }
+        });
+    }
+
+    private String removeDots(String text) {
+        StringBuilder stringBuilder = new StringBuilder(text);
+        boolean foundDot = false;
+        int textSize = text.length();
+
+        for (int i = 0; i < textSize; i++) {
+            if(text.charAt(i) < 48 || text.charAt(i) > 57) {
+                if(text.charAt(i) == '.') {
+                    if(foundDot) {
+                        stringBuilder.deleteCharAt(i);
+                        textSize--;
+                    }
+                    foundDot = true;
+                } else {
+                    stringBuilder.deleteCharAt(i);
+                    textSize--;
+                }
+            }
+        }
+
+        return stringBuilder.toString();
     }
 
     private void addCategoryToFilters(Category category) {
@@ -259,5 +353,11 @@ public class ProductsProcessor implements Initializable {
         new WelcomeProcessor().openAccountMenu();
     }
 
+    public void changeLowerPriceFilter(KeyEvent keyEvent) {
+        //Todo
+    }
 
+    public void changeUpperPriceFilter(KeyEvent keyEvent) {
+        //Todo
+    }
 }
