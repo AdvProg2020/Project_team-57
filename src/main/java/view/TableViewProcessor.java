@@ -19,6 +19,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import model.existence.Account;
+import model.existence.Discount;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -28,6 +29,11 @@ import java.util.Optional;
 import static model.existence.Account.AccountType.*;
 
 public class TableViewProcessor<T> {
+
+    public JFXButton showDiscountButton;
+    public JFXButton deleteDiscountButton;
+    public JFXButton addDiscountButton;
+    public Label codeLabel;
 
     public static enum TableViewType {
         CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN), DISCOUNTS;
@@ -63,72 +69,7 @@ public class TableViewProcessor<T> {
         this.tableViewType = tableViewType;
         initColumns();
         updateTable();
-        tableView.getSelectionModel().selectFirst();
-        selectedItem = tableView.getSelectionModel().getSelectedItem();
         initOptions();
-    }
-
-    private void initOptions() {
-        switch (tableViewType) {
-            case ADMINS:
-            case VENDORS:
-            case CUSTOMERS:
-                mainBorderPane.setLeft(initAccountOptions());
-                break;
-            case DISCOUNTS:
-                mainBorderPane.setLeft(initDiscountOptions());
-                break;
-        }
-    }
-
-    private Pane initDiscountOptions() {
-        return null;
-    }
-
-    private Pane initAccountOptions() {
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewAccountOptions.fxml"));
-        try {
-            Pane root = loader.load();
-            TableViewProcessor processor = loader.getController();
-            processor.setParentProcessor(this);
-            if(tableViewType != TableViewType.ADMINS) {
-                root.getChildren().remove(processor.addAdminButton);
-            }
-            if(selectedItem != null) {
-                Account account = (Account)selectedItem;
-                processor.nameLabel.setText(account.getFirstName() + " " + account.getLastName());
-                processor.typeLabel.setText(account.getType());
-                processor.imageCircle.setFill
-                        (new ImagePattern(AccountControl.getController().getProfileImageByUsername(account.getUsername())));
-                switch (account.getType()) {
-                    case "Admin" :
-                        processor.showProfileButton.setDisable(false);
-                        processor.approveUserButton.setDisable(account.isApproved());
-                        processor.deleteUserButton.setDisable(true);
-                        break;
-                    default:
-                        processor.showProfileButton.setDisable(false);
-                        processor.approveUserButton.setDisable(account.isApproved());
-                        processor.deleteUserButton.setDisable(false);
-                }
-            } else {
-                processor.terminateAccountOptions();
-            }
-            return root;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private void terminateAccountOptions() {
-        imageCircle.setFill(new ImagePattern
-                (AccountControl.getController().getProfileImageByUsername("1")));
-        showProfileButton.setDisable(true);
-        approveUserButton.setDisable(true);
-        deleteUserButton.setDisable(true);
-        nameLabel.setText("Username");
-        typeLabel.setText("Type");
     }
 
     private void initColumns() {
@@ -162,6 +103,105 @@ public class TableViewProcessor<T> {
         tableView.getColumns().addAll(usernameColumn, firstNameColumn, lastNameColumn, approvalColumn);
     }
 
+    private void initOptions() {
+        switch (tableViewType) {
+            case ADMINS:
+            case VENDORS:
+            case CUSTOMERS:
+                mainBorderPane.setLeft(initAccountOptions());
+                break;
+            case DISCOUNTS:
+                mainBorderPane.setLeft(initDiscountOptions());
+                break;
+        }
+    }
+
+    private Pane initDiscountOptions() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewDiscountOptions.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            if(selectedItem != null) {
+                Discount discount = (Discount)selectedItem;
+                processor.showDiscountButton.setDisable(false);
+                processor.deleteDiscountButton.setDisable(false);
+                processor.codeLabel.setText(discount.getCode());
+            } else {
+                processor.terminateOptions();
+            }
+            return root;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Pane initAccountOptions() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewAccountOptions.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            if(tableViewType != TableViewType.ADMINS) {
+                root.getChildren().remove(processor.addAdminButton);
+            }
+            if(selectedItem != null) {
+                Account account = (Account)selectedItem;
+                processor.nameLabel.setText(account.getFirstName() + " " + account.getLastName());
+                processor.typeLabel.setText(account.getType());
+                processor.imageCircle.setFill
+                        (new ImagePattern(AccountControl.getController().getProfileImageByUsername(account.getUsername())));
+                switch (account.getType()) {
+                    case "Admin" :
+                        processor.showProfileButton.setDisable(false);
+                        processor.approveUserButton.setDisable(account.isApproved());
+                        processor.deleteUserButton.setDisable(true);
+                        break;
+                    default:
+                        processor.showProfileButton.setDisable(false);
+                        processor.approveUserButton.setDisable(account.isApproved());
+                        processor.deleteUserButton.setDisable(false);
+                }
+            } else {
+                processor.terminateOptions();
+            }
+            return root;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void terminateOptions() {
+        switch (parentProcessor.tableViewType) {
+            case ADMINS:
+            case VENDORS:
+            case CUSTOMERS:
+                terminateAccountOptions();
+                break;
+            case DISCOUNTS:
+                terminateDiscountOptions();
+                break;
+        }
+    }
+
+    private void terminateDiscountOptions() {
+        showDiscountButton.setDisable(true);
+        deleteDiscountButton.setDisable(true);
+        codeLabel.setText("Discount Code");
+    }
+
+    private void terminateAccountOptions() {
+        imageCircle.setFill(new ImagePattern
+                (AccountControl.getController().getProfileImageByUsername("1")));
+        showProfileButton.setDisable(true);
+        approveUserButton.setDisable(true);
+        deleteUserButton.setDisable(true);
+        nameLabel.setText("Username");
+        typeLabel.setText("Type");
+    }
+
     private<E> TableColumn<T, E> makeColumn(String text, String property, double sizePercentage){
         TableColumn<T, E> column = new TableColumn<>(text);
         column.prefWidthProperty().bind(tableView.widthProperty().multiply(sizePercentage));
@@ -183,10 +223,15 @@ public class TableViewProcessor<T> {
                 tableList.addAll((ArrayList<T>)AccountControl.getController().getModifiedAccounts(tableViewType.getAccountType()));
                 break;
             case DISCOUNTS:
-                tableList.addAll((T) AdminControl.getController().getAllDiscounts());
+                //System.out.println("Hello");
+                tableList.addAll((ArrayList<T>)AdminControl.getController().getAllDiscounts());
                 break;
         }
         tableView.getItems().addAll(tableList);
+        //System.out.println(tableView.getItems().size());
+        tableView.getSelectionModel().selectFirst();
+        selectedItem = tableView.getSelectionModel().getSelectedItem();
+        //System.out.println(selectedItem);
     }
 
     public void updateSelectedItem() {
@@ -233,8 +278,8 @@ public class TableViewProcessor<T> {
         if(buttonType.get() == ButtonType.YES) {
             AdminControl.getController().deleteUserWithUsername(selectedAccount.getUsername()).getAlert().show();
         }
-        updateTable();
-        updateSelectedItem();
+        parentProcessor.updateTable();
+        parentProcessor.updateSelectedItem();
     }
 
     public void approveUser(ActionEvent actionEvent) {
@@ -244,8 +289,8 @@ public class TableViewProcessor<T> {
         if(buttonType.get() == ButtonType.YES) {
             AccountControl.getController().modifyApprove(selectedAccount.getUsername(), 1).getAlert().show();
         }
-        updateTable();
-        updateSelectedItem();
+        parentProcessor.updateTable();
+        parentProcessor.updateSelectedItem();
     }
 
     public void addNewAdmin(ActionEvent actionEvent) {
@@ -262,8 +307,8 @@ public class TableViewProcessor<T> {
             newStage.setTitle("Register New Admin");
             newStage.show();
             newStage.setOnCloseRequest(event -> {
-                updateTable();
-                updateSelectedItem();
+                parentProcessor.updateTable();
+                parentProcessor.updateSelectedItem();
             });
         } catch (IOException e) {
             e.printStackTrace();
@@ -272,6 +317,18 @@ public class TableViewProcessor<T> {
 
     public void setParentProcessor(TableViewProcessor parentProcessor) {
         this.parentProcessor = parentProcessor;
+    }
+
+    public void showDiscount(ActionEvent actionEvent) {
+
+    }
+
+    public void deleteDiscount(ActionEvent actionEvent) {
+
+    }
+
+    public void addNewDiscount(ActionEvent actionEvent) {
+
     }
 
 }

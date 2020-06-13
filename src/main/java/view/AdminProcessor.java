@@ -15,6 +15,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.existence.Account;
+import model.existence.Discount;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -169,26 +171,6 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
         }
     }
 
-/*    private void openManageAccountsStage(String title, Account.AccountType accountType) {
-        if(canOpenSubStage(title)) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("ViewAccounts.fxml"));
-                Parent root = loader.load();
-                ViewAccountsProcessor viewAccountsProcessor = loader.getController();
-                viewAccountsProcessor.initProcessor(accountType);
-                Stage newStage = new Stage();
-                newStage.setScene(new Scene(root));
-                viewAccountsProcessor.setMyStage(newStage);
-                newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
-                newStage.setResizable(false);
-                newStage.setTitle(title);
-                parentProcessor.addSubStage(newStage);
-                newStage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 
     private boolean canOpenSubStage(String title) {
         for (Stage subStage : parentProcessor.getSubStages()) {
@@ -249,5 +231,25 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             }
         }
 
+    }
+
+    public void manageDiscounts(MouseEvent mouseEvent) {
+        if (canOpenSubStage("Manage Discounts")) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
+                Parent root = loader.load();
+                TableViewProcessor<Discount> tableViewProcessor = loader.getController();
+                tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.DISCOUNTS);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
+                newStage.setResizable(false);
+                newStage.setTitle("Manage Discounts");
+                parentProcessor.addSubStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
