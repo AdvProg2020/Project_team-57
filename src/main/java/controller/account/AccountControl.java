@@ -344,7 +344,7 @@ public class AccountControl extends Control implements IOValidity {
     }
 
     public ArrayList<Account> getModifiedAccounts(Account.AccountType accountType, String... searchs) {
-        if(searchs != null && searchs.length != 0) {
+        if(searchs == null || searchs.length == 0) {
             try {
                 switch (accountType) {
                     case ADMIN:

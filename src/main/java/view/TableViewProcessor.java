@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -76,12 +77,13 @@ public class TableViewProcessor<T> implements TableHold {
     private TableViewType tableViewType;
     private T selectedItem;
     private String searchedUsername;
+    Popup popup;
 
     public void initProcessor(TableViewType tableViewType) {
         this.tableViewType = tableViewType;
         initColumns();
         updateTable();
-        initOptions();
+        initOptions(null);
     }
 
     private void initColumns() {
@@ -105,6 +107,38 @@ public class TableViewProcessor<T> implements TableHold {
         TableColumn<T, String> firstNameColumn = makeColumn("First Name", "firstName", 0.33);
         TableColumn<T, String> lastNameColumn = makeColumn("Last Name", "lastName", 0.33);
         tableView.getColumns().addAll(usernameColumn, firstNameColumn, lastNameColumn);
+        initPopUp();
+/*        tableView.setRowFactory( tv -> {
+            TableRow<T> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                System.out.println("Hello Lambda");
+                if(event.getButton() == MouseButton.SECONDARY) {
+                    System.out.println("Secondary mouse click");
+                    showPopUp(event);
+                }
+
+            });
+            return row;
+        });*/
+    }
+
+    private void initPopUp() {
+        System.out.println(" o e o e " + parentProcessor == null);
+        popup = new Popup();
+        VBox vBox = new VBox();
+        JFXButton addCustomerButton = new JFXButton("Add Customer");
+        JFXButton removeCustomerButton = new JFXButton("Remove Customer");
+        vBox.getChildren().add(removeCustomerButton);
+        vBox.getChildren().add(addCustomerButton);
+        addCustomerButton.setOnAction(event -> {
+            ((DiscountProcessor)parentProcessor).addUserToDiscount(((Account)selectedItem).getUsername());
+        });
+        removeCustomerButton.setOnAction(event -> {
+            ((DiscountProcessor)parentProcessor).removeUserFromDiscount(((Account)selectedItem).getUsername());
+        });
+        addCustomerButton.setPadding(new Insets(10, 10 , 10 , 10));
+        removeCustomerButton.setPadding(new Insets(10, 10 , 10 , 10));
+        popup.getContent().addAll(vBox);
     }
 
     private void initDiscountColumns() {
@@ -160,7 +194,7 @@ public class TableViewProcessor<T> implements TableHold {
         selectedItem = tableView.getSelectionModel().getSelectedItem();
     }
 
-    private void initOptions(MouseEvent... mouseEvents) {
+    private void initOptions(MouseEvent mouseEvent) {
         switch (tableViewType) {
             case ADMINS:
             case VENDORS:
@@ -171,34 +205,35 @@ public class TableViewProcessor<T> implements TableHold {
                 mainBorderPane.setLeft(initDiscountOptions());
                 break;
             case DISCOUNT_CUSTOMERS:
-                if(mouseEvents != null && mouseEvents.length != 0) {
-                    showPopUp(mouseEvents[0]);
+                if(mouseEvent != null) {
+                    hidePopUp();
+                    if(mouseEvent.getButton() == MouseButton.SECONDARY)
+                        showPopUp(mouseEvent);
                 }
                 mainBorderPane.setLeft(initDiscountCustomersOptions());
                 break;
         }
     }
 
+    private void hidePopUp() {
+        popup.hide();
+    }
+
     private void showPopUp(MouseEvent mouseEvent) {
         if(selectedItem != null) {
-            Popup popup = new Popup();
-            VBox vBox = new VBox();
-            JFXButton addCustomerButton = new JFXButton("Add Customer");
-            JFXButton removeCustomerButton = new JFXButton("Remove Customer");
-            if(((DiscountProcessor)parentProcessor).isCustomerAdded(((Account)selectedItem).getUsername()))
-                vBox.getChildren().add(removeCustomerButton);
+            VBox vBox = (VBox) popup.getContent().get(0);
+            if(((DiscountProcessor)parentProcessor).isAccountAddedInDiscount(((Account)selectedItem).getUsername()))
+                vBox.getChildren().removeIf(b -> {
+                    return ((JFXButton)b).getText().equals("Add Customer");
+                });
             else
-                vBox.getChildren().add(addCustomerButton);
-            addCustomerButton.setOnAction(event -> {
-                ((DiscountProcessor)parentProcessor).addCustomer(((Account)selectedItem).getUsername());
-            });
-            removeCustomerButton.setOnAction(event -> {
-                ((DiscountProcessor)parentProcessor).removeCustomer(((Account)selectedItem).getUsername());
-            });
-            addCustomerButton.setPadding(new Insets(10, 10 , 10 , 10));
-            removeCustomerButton.setPadding(new Insets(10, 10 , 10 , 10));
-            popup.getContent().addAll(vBox);
-            popup.show(tableView, mouseEvent.getX(), mouseEvent.getY());
+                vBox.getChildren().removeIf(b -> {
+                    return !((JFXButton)b).getText().equals("Add Customer");
+                });
+            System.out.println(mouseEvent.getX() + " " + mouseEvent.getScreenX() + " " + mouseEvent.getSceneX());
+            System.out.println(mouseEvent.getY() + " " + mouseEvent.getScreenY() + " " + mouseEvent.getSceneY());
+            popup.show(tableView, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+            System.out.println(popup.isShowing());
         }
     }
 
@@ -209,7 +244,7 @@ public class TableViewProcessor<T> implements TableHold {
             TableViewProcessor processor = loader.getController();
             processor.setParentProcessor(this);
             processor.discountCustomersListView.getItems().addAll
-                    (((DiscountProcessor)((TableViewProcessor)parentProcessor).getParentProcessor()).getDicountAddedCustomers());
+                    (((DiscountProcessor)parentProcessor).getDiscountAddedUsers());
             return root;
         } catch (IOException e) {
             e.printStackTrace();
@@ -303,12 +338,12 @@ public class TableViewProcessor<T> implements TableHold {
         typeLabel.setText("Type");
     }
 
-    public void updateSelectedItem(MouseEvent... mouseEvents) {
+    public void updateSelectedItem(MouseEvent mouseEvent) {
         if(tableView.getSelectionModel().getSelectedItem() != null)
             selectedItem = tableView.getSelectionModel().getSelectedItem();
         else
             tableView.getSelectionModel().selectFirst();
-        initOptions(mouseEvents);
+        initOptions(mouseEvent);
     }
 
     public void onMouse(MouseEvent mouseEvent) {
@@ -350,7 +385,7 @@ public class TableViewProcessor<T> implements TableHold {
             AdminControl.getController().deleteUserWithUsername(selectedAccount.getUsername()).getAlert().show();
         }
         ((TableViewProcessor)parentProcessor).updateTable();
-        ((TableViewProcessor)parentProcessor).updateSelectedItem();
+        ((TableViewProcessor)parentProcessor).updateSelectedItem(null);
     }
 
     public void approveUser(ActionEvent actionEvent) {
@@ -361,7 +396,7 @@ public class TableViewProcessor<T> implements TableHold {
             AccountControl.getController().modifyApprove(selectedAccount.getUsername(), 1).getAlert().show();
         }
         ((TableViewProcessor)parentProcessor).updateTable();
-        ((TableViewProcessor)parentProcessor).updateSelectedItem();
+        ((TableViewProcessor)parentProcessor).updateSelectedItem(null);
     }
 
     public void addNewAdmin(ActionEvent actionEvent) {
@@ -379,7 +414,7 @@ public class TableViewProcessor<T> implements TableHold {
             newStage.show();
             newStage.setOnCloseRequest(event -> {
                 ((TableViewProcessor)parentProcessor).updateTable();
-                ((TableViewProcessor)parentProcessor).updateSelectedItem();
+                ((TableViewProcessor)parentProcessor).updateSelectedItem(null);
             });
         } catch (IOException e) {
             e.printStackTrace();
@@ -423,7 +458,7 @@ public class TableViewProcessor<T> implements TableHold {
     public void customerSearch() {
         ((TableViewProcessor)parentProcessor).searchedUsername = discountCustomerSearchField.getText();
         ((TableViewProcessor)parentProcessor).updateTable();
-        ((TableViewProcessor)parentProcessor).updateSelectedItem();
+        ((TableViewProcessor)parentProcessor).updateSelectedItem(null);
     }
 
     public void discountCustomerSearchKeyPressed(KeyEvent keyEvent) {

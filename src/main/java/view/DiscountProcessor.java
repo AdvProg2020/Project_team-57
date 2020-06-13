@@ -8,10 +8,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import model.existence.Discount;
 
@@ -48,13 +50,17 @@ public class DiscountProcessor implements Initializable, TableHold, changeTextFi
     public TextField finishDateHourTextField;
     public TextField finishDateSecondTextField;
     public TextField finishDateMinuteTextField;
-    public Pane discountMainPane;
+    public BorderPane discountMainPane;
 
     private Discount discount;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         String locationFile = location.getFile();
+        if(locationFile.contains("DiscountMenu")) {
+            discount = new Discount();
+            adminControl.addDiscountToHashMap(discount);
+        }
 
         if(locationFile.contains("DiscountMenuInfo")) {
             setTextFieldsSpecifications();
@@ -219,21 +225,22 @@ public class DiscountProcessor implements Initializable, TableHold, changeTextFi
         });
     }
 
-    public void discountCustomersMouseClicked(MouseEvent mouseEvent) {
-        //Todo
+    public void discountCustomersMouseClicked(MouseEvent mouseEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewMenu.fxml"));
+        Parent root = loader.load();
+        TableViewProcessor processor = loader.getController();
+        processor.setParentProcessor(this);
+        processor.initProcessor(TableViewProcessor.TableViewType.DISCOUNT_CUSTOMERS);
+        discountMainPane.setCenter(root);
     }
 
     public void profileInfoMouseClicked(MouseEvent mouseEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DiscountMenuInfo.fxml"));
-
-        if(!discountMainPane.getChildren().isEmpty())
-            discountMainPane.getChildren().remove(0);
-
-        discountMainPane.getChildren().add(loader.load());
+        discountMainPane.setCenter(loader.load());
     }
 
-    public HashMap<Discount, ArrayList<String>> getDiscountAddedUsers() {
-        return adminControl.getDiscountsAddedUsers();
+    public ArrayList<String> getDiscountAddedUsers() {
+        return adminControl.getDiscountsAddedUsers().get(discount);
     }
 
     public boolean isAccountAddedInDiscount(String userName) {
@@ -246,5 +253,9 @@ public class DiscountProcessor implements Initializable, TableHold, changeTextFi
 
     public void removeUserFromDiscount(String userName) {
         adminControl.removeUserFromDiscountAddedUsers(discount, userName);
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
     }
 }

@@ -2,6 +2,7 @@ package view;
 
 import com.jfoenix.controls.JFXButton;
 import controller.Control;
+import controller.account.AdminControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -55,7 +56,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             }
             loader.setController(this);
             mainPane.setCenter(subRoot);
-
+            AdminControl.getController().createDiscountAddedUsers();
         }
     }
 

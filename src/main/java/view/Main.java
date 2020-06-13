@@ -36,7 +36,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         //addProducts();
         stage = primaryStage;
-        Parent root = FXMLLoader.load(getClass().getResource("DiscountMenu.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("WelcomeMenu.fxml"));
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Boos Market");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Main Icon.png")));

@@ -26,6 +26,10 @@ public class AdminControl extends AccountControl{
         this.discountsAddedUsers = new HashMap<>();
     }
 
+    public void addDiscountToHashMap(Discount discount) {
+        discountsAddedUsers.put(discount, new ArrayList<>());
+    }
+
     public HashMap<Discount, ArrayList<String>> getDiscountsAddedUsers() {
         return discountsAddedUsers;
     }
@@ -47,6 +51,7 @@ public class AdminControl extends AccountControl{
             return discountsAddedUsers.get(discount).contains(userName);
         else
             System.out.println("Shit Error In Controller");
+        return false;
     }
 
     public Notification approveProductByID(String id){
