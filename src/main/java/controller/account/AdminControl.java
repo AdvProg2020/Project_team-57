@@ -641,4 +641,14 @@ public class AdminControl extends AccountControl{
             e.printStackTrace();
         }
     }
+
+    public Notification addAddedDiscount(Discount discount) {
+        discount.setCustomersWithRepetition(new HashMap<>());
+
+        for (String addedUser : discountsAddedUsers.get(discount)) {
+            discount.addCustomerWithRepetition(addedUser, 0);
+        }
+
+        return addDiscount(discount);
+    }
 }

@@ -14,18 +14,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import model.existence.Discount;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
-import java.time.Month;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
-public class DiscountProcessor implements Initializable, TableHold, changeTextFieldFeatures {
+public class DiscountProcessor /*extends Processor*/ implements TableHold, Initializable, changeTextFieldFeatures {
     private static AdminControl adminControl = AdminControl.getController();
 
     public Label discountCodeLabel;
@@ -54,32 +52,34 @@ public class DiscountProcessor implements Initializable, TableHold, changeTextFi
 
     private Discount discount;
 
+    public DiscountProcessor parentProcessor;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         String locationFile = location.getFile();
-        if(locationFile.contains("DiscountMenu")) {
-            discount = new Discount();
-            adminControl.addDiscountToHashMap(discount);
-        }
 
         if(locationFile.contains("DiscountMenuInfo")) {
             setTextFieldsSpecifications();
             setComboBoxSpecifications();
-            setFields();
+            //Todo SetFields From Ashkan
+        } else if(locationFile.contains("DiscountMenu")) {
+            discount = new Discount();
+            adminControl.addDiscountToHashMap(discount);
+            profileInfoMouseClicked(null);
         }
     }
 
     private void setFields() {
         if(discount != null) {
-            discountCodeTextField.setText(discount.getCode());
-            discountPercentTextField.setText(Double.toString(discount.getDiscountPercent()));
-            maxRepetitionTextField.setText(Double.toString(discount.getMaxRepetition()));
-            maxDiscountTextField.setText(Double.toString(discount.getMaxDiscount()));
+            discountCodeTextField.setText(parentProcessor.discount.getCode());
+            discountPercentTextField.setText(Double.toString(parentProcessor.discount.getDiscountPercent()));
+            maxRepetitionTextField.setText(Double.toString(parentProcessor.discount.getMaxRepetition()));
+            maxDiscountTextField.setText(Double.toString(parentProcessor.discount.getMaxDiscount()));
 
             setDateComboBox(startDateYearComboBox, startDateMonthComboBox, startDateDayComboBox,
-                    startDateHourTextField, startDateMinuteTextField, startDateSecondTextField, discount.getStartDate());
+                    startDateHourTextField, startDateMinuteTextField, startDateSecondTextField, parentProcessor.discount.getStartDate());
             setDateComboBox(finishDateYearComboBox, finishDateMonthComboBox, finishDateDayComboBox,
-                    finishDateHourTextField, finishDateMinuteTextField, finishDateSecondTextField, discount.getFinishDate());
+                    finishDateHourTextField, finishDateMinuteTextField, finishDateSecondTextField, parentProcessor.discount.getFinishDate());
 
             if(!Control.getType().equals("Admin")) {
                 discountCodeLabel.setDisable(true);
@@ -150,7 +150,7 @@ public class DiscountProcessor implements Initializable, TableHold, changeTextFi
 
     private void setTextFieldsSpecifications() {
         setPriceFields(discountPercentTextField, 100.000001);
-        setPriceFields(maxRepetitionTextField);
+        setTimeFields(maxRepetitionTextField, Integer.MAX_VALUE);
         setPriceFields(maxDiscountTextField);
 
         setTimeFields(startDateHourTextField, 24);
@@ -225,18 +225,28 @@ public class DiscountProcessor implements Initializable, TableHold, changeTextFi
         });
     }
 
-    public void discountCustomersMouseClicked(MouseEvent mouseEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewMenu.fxml"));
-        Parent root = loader.load();
-        TableViewProcessor processor = loader.getController();
-        processor.setParentProcessor(this);
-        processor.initProcessor(TableViewProcessor.TableViewType.DISCOUNT_CUSTOMERS);
-        discountMainPane.setCenter(root);
+    public void discountCustomersMouseClicked(MouseEvent mouseEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewMenu.fxml"));
+            Parent root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            processor.initProcessor(TableViewProcessor.TableViewType.DISCOUNT_CUSTOMERS);
+            discountMainPane.setCenter(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void profileInfoMouseClicked(MouseEvent mouseEvent) throws IOException {
+    public void profileInfoMouseClicked(MouseEvent mouseEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("DiscountMenuInfo.fxml"));
-        discountMainPane.setCenter(loader.load());
+        try {
+            discountMainPane.setCenter(loader.load());
+            DiscountProcessor discountProcessor = loader.getController();
+            discountProcessor.parentProcessor = this;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public ArrayList<String> getDiscountAddedUsers() {
@@ -257,5 +267,56 @@ public class DiscountProcessor implements Initializable, TableHold, changeTextFi
 
     public void setDiscount(Discount discount) {
         this.discount = discount;
+    }
+
+    public void AddDiscountMouseClicked(MouseEvent mouseEvent) {
+        adminControl.addAddedDiscount(discount);
+    }
+
+    public void saveChangesMouseClicked(MouseEvent mouseEvent) {
+        Discount discount = parentProcessor.discount;
+
+        if(startDateYearComboBox.getValue() != null && startDateMonthComboBox.getValue() != null &&
+                startDateDayComboBox.getValue() != null &&
+                (startDateHourTextField.getText() != null || !startDateHourTextField.getText().isEmpty()) &&
+                (startDateMinuteTextField.getText() != null || !startDateMinuteTextField.getText().isEmpty()) &&
+                (startDateSecondTextField.getText() != null || !startDateSecondTextField.getText().isEmpty())
+        ) {
+            java.util.Date startDate = new java.util.Date(startDateYearComboBox.getValue() - 1900,
+                    startDateMonthComboBox.getValue() - 1, startDateDayComboBox.getValue(),
+                    Integer.parseInt(startDateHourTextField.getText()), Integer.parseInt(startDateMinuteTextField.getText()),
+                    Integer.parseInt(startDateSecondTextField.getText()));
+            System.out.println(startDate);
+            discount.setStartDate(new Date(startDate.getTime()));
+        }
+
+        if(finishDateYearComboBox.getValue() != null && finishDateMonthComboBox.getValue() != null &&
+                finishDateDayComboBox.getValue() != null &&
+                (finishDateHourTextField.getText() != null || !finishDateHourTextField.getText().isEmpty()) &&
+                (finishDateMinuteTextField.getText() != null || !finishDateMinuteTextField.getText().isEmpty()) &&
+                (finishDateSecondTextField.getText() != null || !finishDateSecondTextField.getText().isEmpty())
+        ) {
+            java.util.Date finishDate = new java.util.Date(finishDateYearComboBox.getValue() - 1900,
+                    finishDateMonthComboBox.getValue() - 1, finishDateDayComboBox.getValue(),
+                    Integer.parseInt(finishDateHourTextField.getText()), Integer.parseInt(finishDateMinuteTextField.getText()),
+                    Integer.parseInt(finishDateSecondTextField.getText()));
+            discount.setFinishDate(new Date(finishDate.getTime()));
+            System.out.println(finishDate);
+        }
+
+        if(!isItEmpty(discountCodeTextField))
+            discount.setCode(discountCodeTextField.getText());
+        if(!isItEmpty(discountCodeTextField))
+            discount.setDiscountPercent(Double.parseDouble(discountPercentTextField.getText()));
+        if(!isItEmpty(discountCodeTextField))
+            discount.setMaxDiscount(Double.parseDouble(maxDiscountTextField.getText()));
+        if(!isItEmpty(discountCodeTextField))
+            discount.setMaxRepetition(Integer.parseInt(maxRepetitionTextField.getText()));
+
+        parentProcessor.discountCustomersMouseClicked(null);
+    }
+
+    private boolean isItEmpty(TextField textField) {
+        return textField.getText() == null || textField.getText().isEmpty();
     }
 }

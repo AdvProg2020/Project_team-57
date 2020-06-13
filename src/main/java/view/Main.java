@@ -1,6 +1,8 @@
 package view;
 
+import com.sun.corba.se.spi.orbutil.fsm.FSM;
 import controller.Control;
+import controller.account.AdminControl;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -36,7 +38,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         //addProducts();
         stage = primaryStage;
-        Parent root = FXMLLoader.load(getClass().getResource("WelcomeMenu.fxml"));
+        AdminControl.getController().createDiscountAddedUsers();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("DiscountMenu.fxml"));
+        Parent root = fxmlLoader.load();
+        DiscountProcessor discountProcessor = fxmlLoader.getController();
+        discountProcessor.setDiscount(new Discount());
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Boos Market");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Main Icon.png")));
