@@ -118,6 +118,11 @@
                   <JFXTextField fx:id="fromPriceTextField" labelFloat="true" layoutX="84.0" layoutY="16.0" prefHeight="11.0" prefWidth="60.0" promptText=" From" />
                   <JFXTextField fx:id="toPriceTextField" labelFloat="true" layoutX="170.0" layoutY="16.0" prefHeight="31.0" prefWidth="60.0" promptText=" To" />
                   <Label alignment="CENTER" layoutX="20.0" layoutY="14.0" prefHeight="36.0" style="-fx-background-color: #D5D5D5; -fx-background-radius: 10;" text=" Price : " />
+                  <Label layoutX="153.0" layoutY="18.0" text="\\">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
                </children>
             </Pane>
          </children>
