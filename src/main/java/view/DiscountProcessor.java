@@ -9,18 +9,18 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import model.existence.Discount;
+import notification.Notification;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class DiscountProcessor extends Processor implements Initializable, changeTextFieldFeatures {
@@ -52,8 +52,6 @@ public class DiscountProcessor extends Processor implements Initializable, chang
 
     private Discount discount;
 
-    public DiscountProcessor parentProcessor;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         String locationFile = location.getFile();
@@ -66,20 +64,21 @@ public class DiscountProcessor extends Processor implements Initializable, chang
             discount = new Discount();
             adminControl.addDiscountToHashMap(discount);
             profileInfoMouseClicked(null);
+            //Set On Closed Request
         }
     }
 
     private void setFields() {
         if(discount != null) {
-            discountCodeTextField.setText(parentProcessor.discount.getCode());
-            discountPercentTextField.setText(Double.toString(parentProcessor.discount.getDiscountPercent()));
-            maxRepetitionTextField.setText(Double.toString(parentProcessor.discount.getMaxRepetition()));
-            maxDiscountTextField.setText(Double.toString(parentProcessor.discount.getMaxDiscount()));
+            discountCodeTextField.setText(((DiscountProcessor) parentProcessor).discount.getCode());
+            discountPercentTextField.setText(Double.toString(((DiscountProcessor) parentProcessor).discount.getDiscountPercent()));
+            maxRepetitionTextField.setText(Double.toString(((DiscountProcessor) parentProcessor).discount.getMaxRepetition()));
+            maxDiscountTextField.setText(Double.toString(((DiscountProcessor) parentProcessor).discount.getMaxDiscount()));
 
             setDateComboBox(startDateYearComboBox, startDateMonthComboBox, startDateDayComboBox,
-                    startDateHourTextField, startDateMinuteTextField, startDateSecondTextField, parentProcessor.discount.getStartDate());
+                    startDateHourTextField, startDateMinuteTextField, startDateSecondTextField, ((DiscountProcessor) parentProcessor).discount.getStartDate());
             setDateComboBox(finishDateYearComboBox, finishDateMonthComboBox, finishDateDayComboBox,
-                    finishDateHourTextField, finishDateMinuteTextField, finishDateSecondTextField, parentProcessor.discount.getFinishDate());
+                    finishDateHourTextField, finishDateMinuteTextField, finishDateSecondTextField, ((DiscountProcessor) parentProcessor).discount.getFinishDate());
 
             if(!Control.getType().equals("Admin")) {
                 discountCodeLabel.setDisable(true);
@@ -270,11 +269,21 @@ public class DiscountProcessor extends Processor implements Initializable, chang
     }
 
     public void AddDiscountMouseClicked(MouseEvent mouseEvent) {
-        adminControl.addAddedDiscount(discount);
+        //Todo Setting Notifications
+        Notification notification = adminControl.addAddedDiscount(discount);
+
+        if(notification.equals(Notification.ADD_DISCOUNT)) {
+            Optional<ButtonType> optionalButtonType = notification.getAlert().showAndWait();
+
+            if(optionalButtonType.get() == ButtonType.OK)
+                this.myStage.close();
+        } else {
+            notification.getAlert().show();
+        }
     }
 
     public void saveChangesMouseClicked(MouseEvent mouseEvent) {
-        Discount discount = parentProcessor.discount;
+        Discount discount = ((DiscountProcessor) parentProcessor).discount;
 
         if(startDateYearComboBox.getValue() != null && startDateMonthComboBox.getValue() != null &&
                 startDateDayComboBox.getValue() != null &&
@@ -313,7 +322,7 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         if(!isItEmpty(discountCodeTextField))
             discount.setMaxRepetition(Integer.parseInt(maxRepetitionTextField.getText()));
 
-        parentProcessor.discountCustomersMouseClicked(null);
+        ((DiscountProcessor) parentProcessor).discountCustomersMouseClicked(null);
     }
 
     private boolean isItEmpty(TextField textField) {

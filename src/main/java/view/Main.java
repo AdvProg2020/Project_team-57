@@ -60,12 +60,4 @@ public class Main extends Application {
     public static Scene getScene() {
         return stage.getScene();
     }
-
-    /*public static void addDiscount() throws SQLException, ClassNotFoundException {
-        Discount discount = new Discount();
-        discount.setCode("Discount Code1");
-        discount.setStartDate(new Date(System.currentTimeMillis()));
-        discount.setFinishDate(new Date(System.currentTimeMillis() + 500000000));
-
-    }*/
 }
