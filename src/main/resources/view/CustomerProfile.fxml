@@ -57,7 +57,7 @@
       </Pane>
       <Pane fx:id="cartPane" layoutX="319.0" layoutY="186.0" onMouseClicked="#showCart" onMouseEntered="#enterCart" onMouseExited="#exitCart" opacity="0.8" prefHeight="213.0" prefWidth="220.0" style="-fx-background-radius: 10; -fx-background-color: #9ce7f0;">
          <children>
-            <ImageView fx:id="cartImage" fitHeight="92.0" fitWidth="105.0" layoutX="56.0" layoutY="28.0" onMouseClicked="#showCart" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="cartImage" disable="true" fitHeight="92.0" fitWidth="105.0" layoutX="56.0" layoutY="28.0" opacity="0.7" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/Icons/cart.png" />
                </image>
@@ -65,7 +65,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <Label fx:id="cartLabel" layoutX="95.0" layoutY="133.0" onMouseClicked="#showCart" stylesheets="@../CSS%20files/customerProfile.css" text="Cart" textFill="#117d8a">
+            <Label fx:id="cartLabel" layoutX="95.0" layoutY="133.0" stylesheets="@../CSS%20files/customerProfile.css" text="Cart" textFill="#117d8a">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>

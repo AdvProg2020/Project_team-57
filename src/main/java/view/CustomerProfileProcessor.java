@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -154,8 +155,11 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         try {
             Parent root = FXMLLoader.load(getClass().getResource("AccountProducts.fxml"));
             AccountProductsProcessor processor = new AccountProductsProcessor();
-            Main.getStage().setTitle("Cart");
-            Main.getStage().setScene(new Scene(root));
+            Stage stage = new Stage();
+            stage.getIcons().add(new Image("Images/Icons/cart (2).png"));
+            stage.setTitle("Cart");
+            stage.setScene(new Scene(root));
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
