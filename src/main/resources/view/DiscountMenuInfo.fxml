@@ -22,26 +22,26 @@
       <Label fx:id="discountPercentLabel" layoutX="98.0" layoutY="352.0" text="Discount Percent" />
       <Label fx:id="finishDateLabel" layoutX="139.0" layoutY="200.0" text="Finish Date" />
       <Label fx:id="startDateLabel" layoutX="143.0" layoutY="67.0" text="Start Date" />
-      <JFXComboBox fx:id="startDateYearComboBox" layoutX="232.0" layoutY="59.0" prefHeight="31.0" prefWidth="66.0" promptText="Year" styleClass="Button" />
-      <JFXComboBox fx:id="startDateMonthComboBox" layoutX="324.0" layoutY="59.0" prefHeight="31.0" prefWidth="78.0" promptText="Month" styleClass="Button" />
-      <JFXComboBox fx:id="startDateDayComboBox" layoutX="432.0" layoutY="59.0" promptText="Day" styleClass="Button" />
-      <TextField fx:id="startDateHourTextField" alignment="CENTER" layoutX="245.0" layoutY="109.0" prefHeight="31.0" prefWidth="40.0" promptText="HH" />
-      <TextField fx:id="startDateMinuteTextField" alignment="CENTER" layoutX="343.0" layoutY="109.0" prefHeight="31.0" prefWidth="40.0" promptText="mm" />
-      <TextField fx:id="startDateSecondTextField" alignment="CENTER" layoutX="443.0" layoutY="109.0" prefHeight="31.0" prefWidth="40.0" promptText="ss" />
-      <Label layoutX="312.0" layoutY="114.0" text=":" />
-      <Label layoutX="410.0" layoutY="114.0" text=":" />
-      <JFXComboBox fx:id="finishDateYearComboBox" layoutX="232.0" layoutY="193.0" prefHeight="31.0" prefWidth="66.0" promptText="Year" styleClass="Button" />
-      <JFXComboBox fx:id="finishDateMonthComboBox" layoutX="324.0" layoutY="193.0" prefHeight="31.0" prefWidth="78.0" promptText="Month" styleClass="Button" />
-      <JFXComboBox fx:id="finishDateDayComboBox" layoutX="432.0" layoutY="193.0" promptText="Day" styleClass="Button" />
-      <TextField fx:id="finishDateHourTextField" alignment="CENTER" layoutX="245.0" layoutY="243.0" prefHeight="31.0" prefWidth="40.0" promptText="HH" />
-      <TextField fx:id="finishDateMinuteTextField" alignment="CENTER" layoutX="343.0" layoutY="243.0" prefHeight="31.0" prefWidth="40.0" promptText="mm" />
-      <TextField fx:id="finishDateSecondTextField" alignment="CENTER" layoutX="443.0" layoutY="243.0" prefHeight="31.0" prefWidth="40.0" promptText="ss" />
+      <JFXComboBox fx:id="startDateYearComboBox" layoutX="232.0" layoutY="59.0" prefHeight="31.0" prefWidth="90.0" promptText="Year" styleClass="Button" />
+      <JFXComboBox fx:id="startDateMonthComboBox" layoutX="344.0" layoutY="59.0" prefHeight="31.0" prefWidth="78.0" promptText="Month" styleClass="Button" />
+      <JFXComboBox fx:id="startDateDayComboBox" layoutX="456.0" layoutY="59.0" promptText="Day" styleClass="Button" />
+      <TextField fx:id="startDateHourTextField" alignment="CENTER" layoutX="257.0" layoutY="109.0" prefHeight="31.0" prefWidth="40.0" promptText="HH" />
+      <TextField fx:id="startDateMinuteTextField" alignment="CENTER" layoutX="363.0" layoutY="109.0" prefHeight="31.0" prefWidth="40.0" promptText="mm" />
+      <TextField fx:id="startDateSecondTextField" alignment="CENTER" layoutX="475.0" layoutY="109.0" prefHeight="31.0" prefWidth="40.0" promptText="ss" />
+      <Label layoutX="322.0" layoutY="114.0" text=":" />
+      <Label layoutX="434.0" layoutY="114.0" text=":" />
+      <JFXComboBox fx:id="finishDateYearComboBox" layoutX="232.0" layoutY="193.0" prefHeight="31.0" prefWidth="90.0" promptText="Year" styleClass="Button" />
+      <JFXComboBox fx:id="finishDateMonthComboBox" layoutX="344.0" layoutY="193.0" prefHeight="31.0" prefWidth="78.0" promptText="Month" styleClass="Button" />
+      <JFXComboBox fx:id="finishDateDayComboBox" layoutX="456.0" layoutY="193.0" promptText="Day" styleClass="Button" />
+      <TextField fx:id="finishDateHourTextField" alignment="CENTER" layoutX="257.0" layoutY="243.0" prefHeight="31.0" prefWidth="40.0" promptText="HH" />
+      <TextField fx:id="finishDateMinuteTextField" alignment="CENTER" layoutX="363.0" layoutY="243.0" prefHeight="31.0" prefWidth="40.0" promptText="mm" />
+      <TextField fx:id="finishDateSecondTextField" alignment="CENTER" layoutX="475.0" layoutY="243.0" prefHeight="31.0" prefWidth="40.0" promptText="ss" />
       <JFXTextField fx:id="discountCodeTextField" labelFloat="true" layoutX="233.0" layoutY="291.0" />
       <JFXTextField fx:id="discountPercentTextField" labelFloat="true" layoutX="232.0" layoutY="347.0" />
       <JFXTextField fx:id="maxRepetitionTextField" labelFloat="true" layoutX="232.0" layoutY="404.0" />
       <JFXTextField fx:id="maxDiscountTextField" labelFloat="true" layoutX="232.0" layoutY="464.0" />
       <JFXButton layoutX="407.0" layoutY="533.0" onMouseClicked="#saveChangesMouseClicked" style="-fx-background-color: #80CBC4;" styleClass="Button" text="Save Changes" textFill="WHITE" />
-      <Label layoutX="312.0" layoutY="248.0" text=":" />
-      <Label layoutX="410.0" layoutY="248.0" text=":" />
+      <Label layoutX="320.0" layoutY="248.0" text=":" />
+      <Label layoutX="434.0" layoutY="248.0" text=":" />
    </children>
 </Pane>

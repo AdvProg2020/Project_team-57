@@ -286,7 +286,7 @@ public class DiscountProcessor /*extends Processor*/ implements TableHold, Initi
                     startDateMonthComboBox.getValue() - 1, startDateDayComboBox.getValue(),
                     Integer.parseInt(startDateHourTextField.getText()), Integer.parseInt(startDateMinuteTextField.getText()),
                     Integer.parseInt(startDateSecondTextField.getText()));
-            System.out.println(startDate);
+            //System.out.println(startDate);
             discount.setStartDate(new Date(startDate.getTime()));
         }
 
@@ -301,7 +301,7 @@ public class DiscountProcessor /*extends Processor*/ implements TableHold, Initi
                     Integer.parseInt(finishDateHourTextField.getText()), Integer.parseInt(finishDateMinuteTextField.getText()),
                     Integer.parseInt(finishDateSecondTextField.getText()));
             discount.setFinishDate(new Date(finishDate.getTime()));
-            System.out.println(finishDate);
+            //System.out.println(finishDate);
         }
 
         if(!isItEmpty(discountCodeTextField))
