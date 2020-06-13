@@ -1,27 +1,32 @@
 package view;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTextField;
 import controller.account.AccountControl;
 import controller.account.AdminControl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import model.existence.Account;
 import model.existence.Discount;
-
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -35,6 +40,11 @@ public class TableViewProcessor<T> implements TableHold {
     public JFXButton deleteDiscountButton;
     public JFXButton addDiscountButton;
     public Label codeLabel;
+    public JFXButton customerSearchButton;
+    public Label discountAddedUsersCountLabel;
+    public JFXListView<String> discountCustomersListView;
+    public JFXTextField discountCustomerSearchField;
+
 
     public static enum TableViewType {
         CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN), DISCOUNTS, DISCOUNT_CUSTOMERS;
@@ -150,7 +160,7 @@ public class TableViewProcessor<T> implements TableHold {
         selectedItem = tableView.getSelectionModel().getSelectedItem();
     }
 
-    private void initOptions() {
+    private void initOptions(MouseEvent... mouseEvents) {
         switch (tableViewType) {
             case ADMINS:
             case VENDORS:
@@ -161,13 +171,50 @@ public class TableViewProcessor<T> implements TableHold {
                 mainBorderPane.setLeft(initDiscountOptions());
                 break;
             case DISCOUNT_CUSTOMERS:
+                if(mouseEvents != null && mouseEvents.length != 0) {
+                    showPopUp(mouseEvents[0]);
+                }
                 mainBorderPane.setLeft(initDiscountCustomersOptions());
                 break;
         }
     }
 
-    private Node initDiscountCustomersOptions() {
+    private void showPopUp(MouseEvent mouseEvent) {
+        if(selectedItem != null) {
+            Popup popup = new Popup();
+            VBox vBox = new VBox();
+            JFXButton addCustomerButton = new JFXButton("Add Customer");
+            JFXButton removeCustomerButton = new JFXButton("Remove Customer");
+            if(((DiscountProcessor)parentProcessor).isCustomerAdded(((Account)selectedItem).getUsername()))
+                vBox.getChildren().add(removeCustomerButton);
+            else
+                vBox.getChildren().add(addCustomerButton);
+            addCustomerButton.setOnAction(event -> {
+                ((DiscountProcessor)parentProcessor).addCustomer(((Account)selectedItem).getUsername());
+            });
+            removeCustomerButton.setOnAction(event -> {
+                ((DiscountProcessor)parentProcessor).removeCustomer(((Account)selectedItem).getUsername());
+            });
+            addCustomerButton.setPadding(new Insets(10, 10 , 10 , 10));
+            removeCustomerButton.setPadding(new Insets(10, 10 , 10 , 10));
+            popup.getContent().addAll(vBox);
+            popup.show(tableView, mouseEvent.getX(), mouseEvent.getY());
+        }
+    }
 
+    private Pane initDiscountCustomersOptions() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewDiscountCustomersOption.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            processor.discountCustomersListView.getItems().addAll
+                    (((DiscountProcessor)((TableViewProcessor)parentProcessor).getParentProcessor()).getDicountAddedCustomers());
+            return root;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private Pane initDiscountOptions() {
@@ -256,12 +303,12 @@ public class TableViewProcessor<T> implements TableHold {
         typeLabel.setText("Type");
     }
 
-    public void updateSelectedItem() {
+    public void updateSelectedItem(MouseEvent... mouseEvents) {
         if(tableView.getSelectionModel().getSelectedItem() != null)
             selectedItem = tableView.getSelectionModel().getSelectedItem();
         else
             tableView.getSelectionModel().selectFirst();
-        initOptions();
+        initOptions(mouseEvents);
     }
 
     public void onMouse(MouseEvent mouseEvent) {
@@ -339,8 +386,12 @@ public class TableViewProcessor<T> implements TableHold {
         }
     }
 
-    public void setParentProcessor(TableViewProcessor parentProcessor) {
+    public void setParentProcessor(TableHold parentProcessor) {
         this.parentProcessor = parentProcessor;
+    }
+
+    public TableHold getParentProcessor() {
+        return parentProcessor;
     }
 
     public void showDiscount(ActionEvent actionEvent) {
@@ -348,11 +399,37 @@ public class TableViewProcessor<T> implements TableHold {
     }
 
     public void deleteDiscount(ActionEvent actionEvent) {
-
+        Discount selectedDiscount = (Discount) selectedItem;
+        Optional<ButtonType> buttonType = new Alert
+                (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Delete " + selectedDiscount.getCode() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if(buttonType.get() == ButtonType.YES) {
+            AdminControl.getController().removeDiscountByID(selectedDiscount.getID());
+        }
     }
 
     public void addNewDiscount(ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("DiscountMenu.fxml"));
+        try {
+            Parent root = loader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
+
+    public void customerSearch() {
+        ((TableViewProcessor)parentProcessor).searchedUsername = discountCustomerSearchField.getText();
+        ((TableViewProcessor)parentProcessor).updateTable();
+        ((TableViewProcessor)parentProcessor).updateSelectedItem();
+    }
+
+    public void discountCustomerSearchKeyPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode() == KeyCode.ENTER)
+            customerSearch();
+    }
+
 
 }
