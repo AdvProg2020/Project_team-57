@@ -1,6 +1,7 @@
 package controller.account;
 
 import controller.Control;
+import controller.IOControl;
 import model.db.*;
 import model.existence.*;
 import notification.Notification;
@@ -20,6 +21,17 @@ public class CustomerControl extends AccountControl{
             customerControl = new CustomerControl();
 
         return customerControl;
+    }
+
+    public ArrayList<Product> getAllCartProducts(){
+        try {
+            return CartTable.getAllCartWithUsername(IOControl.getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
     public Notification addToCartCountable(String username, String id, int count){

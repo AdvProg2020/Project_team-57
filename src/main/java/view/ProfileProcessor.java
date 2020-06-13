@@ -66,6 +66,8 @@ public class ProfileProcessor implements Initializable {
     public JFXPasswordField oldPasswordField, newPasswordField;
     public JFXButton changePasswordButton;
 
+    private File pictureFile;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -271,9 +273,11 @@ public class ProfileProcessor implements Initializable {
         alert = editField("FirstName", firstNameField, alert);
         alert = editField("LastName", lastNameField, alert);
         alert = editField("Email", emailField, alert);
+        accountControl.setAccountPicture(account.getUsername(), pictureFile);
 
         if(account.getType().equals("Vendor"))
             alert = editField("Brand", brandField, alert);
+
 
         if(alert.getTitle().equals("Edit Successful")) {
             account = accountControl.getAccountByUsername(account.getUsername());
@@ -369,7 +373,7 @@ public class ProfileProcessor implements Initializable {
             //Todo Sending Image To Controller
             //Todo Showing Image
 
-            accountControl.setAccountPicture(account.getUsername(), pictureFile);
+            this.pictureFile = pictureFile;
 
             pictureCircle.setFill(new ImagePattern(image));
         }

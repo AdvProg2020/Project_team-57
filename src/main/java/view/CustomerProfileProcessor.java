@@ -150,6 +150,14 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         back.setOpacity(0.7);
     }
 
-    public void goCustomerProfile(MouseEvent mouseEvent) {
+    public void showCart(MouseEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("AccountProducts.fxml"));
+            AccountProductsProcessor processor = new AccountProductsProcessor();
+            Main.getStage().setTitle("Cart");
+            Main.getStage().setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
