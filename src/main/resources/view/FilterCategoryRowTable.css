@@ -1,0 +1,4 @@
+.Row:hover {
+    -fx-opacity: 0.7;
+    -fx-cursor: hand;
+}

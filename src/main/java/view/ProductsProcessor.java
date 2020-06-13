@@ -14,7 +14,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -91,6 +90,8 @@ public class ProductsProcessor implements Initializable {
                     addCategoryToFilters(category);
                 }
             });
+            row.getStylesheets().add(getClass().getResource("FilterCategoryRowTable.css").toExternalForm());
+            row.getStyleClass().add("Row");
             return row ;
         });
 
