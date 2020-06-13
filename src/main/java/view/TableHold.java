@@ -1,4 +1,4 @@
 package view;
 
-public interface TableHold {
+public interface TableHold  {
 }

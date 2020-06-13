@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.ResourceBundle;
 
-public class DiscountProcessor /*extends Processor*/ implements TableHold, Initializable, changeTextFieldFeatures {
+public class DiscountProcessor extends Processor implements Initializable, changeTextFieldFeatures {
     private static AdminControl adminControl = AdminControl.getController();
 
     public Label discountCodeLabel;

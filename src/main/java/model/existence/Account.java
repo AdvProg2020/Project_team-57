@@ -1,5 +1,7 @@
 package model.existence;
 
+import com.jfoenix.controls.JFXCheckBox;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -22,6 +24,7 @@ public class Account {
     private String brand;
     private String isApproved;
     private double credit;
+    private JFXCheckBox checkBox = new JFXCheckBox("");
 
     public static Account makeAccount(ResultSet resultSet) throws SQLException {
         Account account = new Account(resultSet.getString("Username"), resultSet.getString("Password"));
@@ -163,5 +166,13 @@ public class Account {
 
     public void setCredit(double credit) {
         this.credit = credit;
+    }
+
+    public JFXCheckBox getCheckBox() {
+        return checkBox;
+    }
+
+    public void setCheckBox(JFXCheckBox checkBox) {
+        this.checkBox = checkBox;
     }
 }

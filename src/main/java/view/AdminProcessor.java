@@ -35,10 +35,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     public Pane manageCustomers;
     public Pane manageVendors;
     public Pane manageAdmins;
-    private Stage myStage;
-    private ArrayList<Stage> subStages = new ArrayList<>();
     private ArrayList<JFXButton> buttons = new ArrayList<>();
-    private AdminProcessor parentProcessor;
 
 
     @Override
@@ -83,14 +80,11 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
         }
     }
 
-    public void personalInfo(MouseEvent mouseEvent) {
-
-    }
-
     public void marketStats(MouseEvent mouseEvent) {
     }
 
     public void setOptions(ActionEvent actionEvent) {
+        System.out.println(this);
         JFXButton selectedButton = (JFXButton) actionEvent.getSource();
         selectThisButton(selectedButton);
         try {
@@ -110,6 +104,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 ((AdminProcessor)loader.getController()).setParentProcessor(this);
                 mainPane.setCenter(subRoot);
             } else if(selectedButton.equals(offsButton)) {
+                System.out.println(this);
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("AdminOffs.fxml"));
                 Parent subRoot = loader.load();
                 ((AdminProcessor)loader.getController()).setParentProcessor(this);
@@ -142,7 +137,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     }
 
     private void openManageAccountsStage(String title, Account.AccountType accountType) {
-        if (canOpenSubStage(title)) {
+        if (canOpenSubStage(title, parentProcessor)) {
             try {
                 TableViewProcessor.TableViewType tableViewType;
                 switch (accountType) {
@@ -172,49 +167,8 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
         }
     }
 
-
-    private boolean canOpenSubStage(String title) {
-        for (Stage subStage : parentProcessor.getSubStages()) {
-            if(subStage.getTitle().equals(title)){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public void setMyStage(Stage myStage) {
-        this.subStages = new ArrayList<>();
-        this.myStage = myStage;
-        this.myStage.setOnCloseRequest(event -> {
-            for (Stage subStage : this.subStages) {
-                subStage.close();
-            }
-        });
-    }
-
-    public void addSubStage(Stage subStage) {
-        this.subStages.add(subStage);
-        subStage.setOnCloseRequest(event -> {
-            this.removeSubStage(subStage);
-        });
-    }
-
-    private void removeSubStage(Stage subStage) {
-        this.subStages.removeIf(stage -> {
-            return stage.getTitle().equals(subStage.getTitle());
-        });
-    }
-
-    public ArrayList<Stage> getSubStages() {
-        return subStages;
-    }
-
-    public void setParentProcessor(AdminProcessor parentProcessor) {
-        this.parentProcessor = parentProcessor;
-    }
-
     public void manageCategories(MouseEvent mouseEvent) {
-        if(canOpenSubStage("Manage Categories")) {
+        if(canOpenSubStage("Manage Categories", parentProcessor)) {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("CategoriesMenu.fxml"));
             Parent root = null;
             try {
@@ -235,8 +189,9 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     }
 
     public void manageDiscounts(MouseEvent mouseEvent) {
-        if (canOpenSubStage("Manage Discounts")) {
+        if (canOpenSubStage("Manage Discounts", parentProcessor)) {
             try {
+                System.out.println(parentProcessor);
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
                 Parent root = loader.load();
                 TableViewProcessor<Discount> tableViewProcessor = loader.getController();
@@ -247,6 +202,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 newStage.setResizable(false);
                 newStage.setTitle("Manage Discounts");
                 parentProcessor.addSubStage(newStage);
+                tableViewProcessor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
                 e.printStackTrace();

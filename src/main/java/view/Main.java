@@ -36,13 +36,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //addProducts();
         stage = primaryStage;
-        AdminControl.getController().createDiscountAddedUsers();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("DiscountMenu.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
         Parent root = fxmlLoader.load();
-        DiscountProcessor discountProcessor = fxmlLoader.getController();
-        discountProcessor.setDiscount(new Discount());
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Boos Market");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Main Icon.png")));

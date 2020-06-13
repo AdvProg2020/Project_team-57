@@ -15,7 +15,7 @@ import model.existence.Account;
 import java.io.IOException;
 import java.util.Optional;
 
-public class AccountProcessor {
+public class AccountProcessor extends Processor{
 
 
     public void logOutButton() {
