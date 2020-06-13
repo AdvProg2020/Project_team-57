@@ -1,6 +1,7 @@
 package controller.account;
 
 import controller.Control;
+import controller.IOControl;
 import model.db.*;
 import model.existence.Log;
 import model.existence.Off;
@@ -430,5 +431,16 @@ public class VendorControl extends AccountControl{
         }
 
         return 0;
+    }
+
+    public ArrayList<Product> getAllProducts() {
+        try {
+            return VendorTable.getProductsWithUsername(Control.getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }
