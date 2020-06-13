@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="230.0" style="-fx-background-color: #e0f2f1;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.TableViewProcessor">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutX="170.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
+      <Label fx:id="codeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="228.0" prefWidth="210.0" text="Discount Code">
+         <font>
+            <Font name="Calibri" size="17.0" />
+         </font>
+      </Label>
+      <JFXButton fx:id="showDiscountButton" buttonType="RAISED" layoutX="45.0" layoutY="316.0" onAction="#showDiscount" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show/Edit Discount">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="deleteDiscountButton" buttonType="RAISED" layoutX="68.0" layoutY="368.0" onAction="#deleteDiscount" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefWidth="95.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Delete">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="addDiscountButton" buttonType="RAISED" layoutX="23.0" layoutY="556.0" onAction="#addNewDiscount" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="30.0" prefWidth="184.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Add New Discount">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="65.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/TableViewMenu/discount.png" />
+         </image>
+      </ImageView>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
+   </children>
+</Pane>
