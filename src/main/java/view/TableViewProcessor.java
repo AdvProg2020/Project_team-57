@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -28,7 +29,7 @@ import java.util.Optional;
 
 import static model.existence.Account.AccountType.*;
 
-public class TableViewProcessor<T> {
+public class TableViewProcessor<T> implements TableHold {
 
     public JFXButton showDiscountButton;
     public JFXButton deleteDiscountButton;
@@ -36,7 +37,7 @@ public class TableViewProcessor<T> {
     public Label codeLabel;
 
     public static enum TableViewType {
-        CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN), DISCOUNTS;
+        CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN), DISCOUNTS, DISCOUNT_CUSTOMERS;
 
         Account.AccountType accountType;
 
@@ -61,9 +62,10 @@ public class TableViewProcessor<T> {
     public JFXButton addAdminButton;
     public BorderPane mainBorderPane;
     public TableView<T> tableView;
-    private TableViewProcessor parentProcessor;
+    private TableHold parentProcessor;
     private TableViewType tableViewType;
     private T selectedItem;
+    private String searchedUsername;
 
     public void initProcessor(TableViewType tableViewType) {
         this.tableViewType = tableViewType;
@@ -82,7 +84,17 @@ public class TableViewProcessor<T> {
             case DISCOUNTS:
                 initDiscountColumns();
                 break;
+            case DISCOUNT_CUSTOMERS:
+                initDiscountCustomersColumns();
+                break;
         }
+    }
+
+    private void initDiscountCustomersColumns() {
+        TableColumn<T, String> usernameColumn = makeColumn("Username", "username", 0.30);
+        TableColumn<T, String> firstNameColumn = makeColumn("First Name", "firstName", 0.33);
+        TableColumn<T, String> lastNameColumn = makeColumn("Last Name", "lastName", 0.33);
+        tableView.getColumns().addAll(usernameColumn, firstNameColumn, lastNameColumn);
     }
 
     private void initDiscountColumns() {
@@ -103,6 +115,41 @@ public class TableViewProcessor<T> {
         tableView.getColumns().addAll(usernameColumn, firstNameColumn, lastNameColumn, approvalColumn);
     }
 
+    private<E> TableColumn<T, E> makeColumn(String text, String property, double sizePercentage){
+        TableColumn<T, E> column = new TableColumn<>(text);
+        column.prefWidthProperty().bind(tableView.widthProperty().multiply(sizePercentage));
+        column.setResizable(false);
+        column.setSortable(false);
+        column.setEditable(false);
+        column.setStyle("-fx-alignment: CENTER");
+        column.setCellValueFactory(new PropertyValueFactory<>(property));
+        return column;
+    }
+
+    public void updateTable() {
+        ObservableList<T> tableList = FXCollections.observableArrayList();
+        tableView.getItems().remove(0, tableView.getItems().size());
+        switch (tableViewType) {
+            case ADMINS:
+            case VENDORS:
+            case CUSTOMERS:
+                tableList.addAll((ArrayList<T>)AccountControl.getController().getModifiedAccounts(tableViewType.getAccountType()));
+                break;
+            case DISCOUNTS:
+                tableList.addAll((ArrayList<T>)AdminControl.getController().getAllDiscounts());
+                break;
+            case DISCOUNT_CUSTOMERS:
+                if(searchedUsername != null && searchedUsername.length() > 0) {
+                    tableList.addAll((ArrayList<T>)AccountControl.getController().getModifiedAccounts(CUSTOMER, searchedUsername));
+                } else
+                    tableList.addAll((ArrayList<T>)AccountControl.getController().getModifiedAccounts(CUSTOMER));
+                break;
+        }
+        tableView.getItems().addAll(tableList);
+        tableView.getSelectionModel().selectFirst();
+        selectedItem = tableView.getSelectionModel().getSelectedItem();
+    }
+
     private void initOptions() {
         switch (tableViewType) {
             case ADMINS:
@@ -113,7 +160,14 @@ public class TableViewProcessor<T> {
             case DISCOUNTS:
                 mainBorderPane.setLeft(initDiscountOptions());
                 break;
+            case DISCOUNT_CUSTOMERS:
+                mainBorderPane.setLeft(initDiscountCustomersOptions());
+                break;
         }
+    }
+
+    private Node initDiscountCustomersOptions() {
+
     }
 
     private Pane initDiscountOptions() {
@@ -174,7 +228,7 @@ public class TableViewProcessor<T> {
     }
 
     private void terminateOptions() {
-        switch (parentProcessor.tableViewType) {
+        switch (((TableViewProcessor)parentProcessor).tableViewType) {
             case ADMINS:
             case VENDORS:
             case CUSTOMERS:
@@ -202,38 +256,6 @@ public class TableViewProcessor<T> {
         typeLabel.setText("Type");
     }
 
-    private<E> TableColumn<T, E> makeColumn(String text, String property, double sizePercentage){
-        TableColumn<T, E> column = new TableColumn<>(text);
-        column.prefWidthProperty().bind(tableView.widthProperty().multiply(sizePercentage));
-        column.setResizable(false);
-        column.setSortable(false);
-        column.setEditable(false);
-        column.setStyle("-fx-alignment: CENTER");
-        column.setCellValueFactory(new PropertyValueFactory<>(property));
-        return column;
-    }
-
-    public void updateTable() {
-        ObservableList<T> tableList = FXCollections.observableArrayList();
-        tableView.getItems().remove(0, tableView.getItems().size());
-        switch (tableViewType) {
-            case ADMINS:
-            case VENDORS:
-            case CUSTOMERS:
-                tableList.addAll((ArrayList<T>)AccountControl.getController().getModifiedAccounts(tableViewType.getAccountType()));
-                break;
-            case DISCOUNTS:
-                //System.out.println("Hello");
-                tableList.addAll((ArrayList<T>)AdminControl.getController().getAllDiscounts());
-                break;
-        }
-        tableView.getItems().addAll(tableList);
-        //System.out.println(tableView.getItems().size());
-        tableView.getSelectionModel().selectFirst();
-        selectedItem = tableView.getSelectionModel().getSelectedItem();
-        //System.out.println(selectedItem);
-    }
-
     public void updateSelectedItem() {
         if(tableView.getSelectionModel().getSelectedItem() != null)
             selectedItem = tableView.getSelectionModel().getSelectedItem();
@@ -254,9 +276,11 @@ public class TableViewProcessor<T> {
                 "-fx-background-radius: 10 10 10 10;");
     }
 
+    //Inside Methods
+
     public void showProfile(ActionEvent actionEvent) {
         try {
-            Account selectedAccount = (Account) parentProcessor.selectedItem;
+            Account selectedAccount = (Account) ((TableViewProcessor)parentProcessor).selectedItem;
             ProfileProcessor.setAccount(selectedAccount);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileMenu.fxml"));
             Parent root = loader.load();
@@ -272,25 +296,25 @@ public class TableViewProcessor<T> {
     }
 
     public void deleteUser(ActionEvent actionEvent) {
-        Account selectedAccount = (Account) parentProcessor.selectedItem;
+        Account selectedAccount = (Account) ((TableViewProcessor)parentProcessor).selectedItem;
         Optional<ButtonType> buttonType = new Alert
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Delete " + selectedAccount.getUsername() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
             AdminControl.getController().deleteUserWithUsername(selectedAccount.getUsername()).getAlert().show();
         }
-        parentProcessor.updateTable();
-        parentProcessor.updateSelectedItem();
+        ((TableViewProcessor)parentProcessor).updateTable();
+        ((TableViewProcessor)parentProcessor).updateSelectedItem();
     }
 
     public void approveUser(ActionEvent actionEvent) {
-        Account selectedAccount = (Account) parentProcessor.selectedItem;
+        Account selectedAccount = (Account) ((TableViewProcessor)parentProcessor).selectedItem;
         Optional<ButtonType> buttonType = new Alert
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Approve " + selectedAccount.getUsername() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
             AccountControl.getController().modifyApprove(selectedAccount.getUsername(), 1).getAlert().show();
         }
-        parentProcessor.updateTable();
-        parentProcessor.updateSelectedItem();
+        ((TableViewProcessor)parentProcessor).updateTable();
+        ((TableViewProcessor)parentProcessor).updateSelectedItem();
     }
 
     public void addNewAdmin(ActionEvent actionEvent) {
@@ -307,8 +331,8 @@ public class TableViewProcessor<T> {
             newStage.setTitle("Register New Admin");
             newStage.show();
             newStage.setOnCloseRequest(event -> {
-                parentProcessor.updateTable();
-                parentProcessor.updateSelectedItem();
+                ((TableViewProcessor)parentProcessor).updateTable();
+                ((TableViewProcessor)parentProcessor).updateSelectedItem();
             });
         } catch (IOException e) {
             e.printStackTrace();

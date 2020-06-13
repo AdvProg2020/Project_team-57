@@ -343,22 +343,36 @@ public class AccountControl extends Control implements IOValidity {
         return null;
     }
 
-    public ArrayList<Account> getModifiedAccounts(Account.AccountType accountType) {
-        try {
-            switch (accountType) {
-                case ADMIN:
-                    return AccountTable.getAllAdmins();
-                case VENDOR:
-                    return AccountTable.getAllVendors();
-                case CUSTOMER:
-                    return AccountTable.getAllCustomers();
+    public ArrayList<Account> getModifiedAccounts(Account.AccountType accountType, String... searchs) {
+        if(searchs != null && searchs.length != 0) {
+            try {
+                switch (accountType) {
+                    case ADMIN:
+                        return AccountTable.getAllAdmins();
+                    case VENDOR:
+                        return AccountTable.getAllVendors();
+                    case CUSTOMER:
+                        return AccountTable.getAllCustomers();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            return null;
+        } else {
+            ArrayList<Account> accounts = getModifiedAccounts(accountType);
+            accounts.removeIf(account -> {
+                boolean result = true;
+                for (int i = 0; i < searchs.length; i++) {
+                    if(account.getUsername().contains(searchs[i])) {
+                        result = false;
+                    }
+                }
+                return result;
+            });
+            return accounts;
         }
-        return null;
     }
 
     public Image getProfileImageByUsername(String username) {
