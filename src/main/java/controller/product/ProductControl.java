@@ -365,9 +365,7 @@ public class ProductControl extends Control {
             }
         }
         if (filter.getFilterNames().size() != 0) {
-            for (String filterName : filter.getFilterNames()) {
-                filterOnName(filteredProductIds, filterName);
-            }
+            filterOnName(filteredProductIds, filter.getFilterNames());
         }
         return filteredProductIds;
     }
@@ -455,13 +453,24 @@ public class ProductControl extends Control {
         return productIds;
     }
 
-    private void filterOnName(ArrayList<String> filteredProductIds, String filterName) throws SQLException, ClassNotFoundException {
-        for (int i = 0; i < filteredProductIds.size(); i++) {
-            if (!ProductTable.getProductByID(filteredProductIds.get(i)).getName().contains(filterName)) {
-                filteredProductIds.remove(i);
-                i--;
+    private void filterOnName(ArrayList<String> filteredProductIds, ArrayList<String> filterNames) {
+        filteredProductIds.removeIf(filterProductId -> {
+            boolean result = true;
+
+            try {
+                for (String filterName : filterNames) {
+                    if(ProductTable.getProductByID(filterProductId).getName().contains(filterName)) {
+                        result = false;
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        }
+
+            return result;
+        });
     }
 
     public void addSeenToProduct(String productID) {
