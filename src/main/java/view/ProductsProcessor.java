@@ -52,11 +52,14 @@ public class ProductsProcessor implements Initializable {
     //Categories Pane
     public TreeTableView<Category> categoriesTableTreeView;
 
+    public JFXTextField searchTextField;
+
     //Filter Pane
     public Pane mainFilterPane;
     public VBox filteredCategoriesVBox;
     public Label filterNameLabel;
-    private Category category;
+    private Category filterCategory;
+    private String filterName;
 
     //Filter Price Pane
     public JFXTextField toPriceTextField, fromPriceTextField;
@@ -103,42 +106,6 @@ public class ProductsProcessor implements Initializable {
     private void initPriceFiltersTextFields() {
         setPriceFields(toPriceTextField);
         setPriceFields(fromPriceTextField);
-
-        /*toPriceTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                //Todo Checking
-
-                if(newValue.equals(".")) {
-                    toPriceTextField.setText("0.");
-                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
-                    if(toPriceTextField.getText().contains(".")) {
-                        toPriceTextField.setText(removeDots(toPriceTextField.getText()));
-                    } else {
-                        toPriceTextField.setText(newValue.replaceAll("[^\\d\\.]", ""));
-                    }
-                }
-            }
-        });
-
-        fromPriceTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                //Todo Checking
-
-                if(newValue.equals(".")) {
-                    fromPriceTextField.setText("0.");
-                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
-                    if(fromPriceTextField.getText().contains(".")) {
-                        fromPriceTextField.setText(removeDots(fromPriceTextField.getText()));
-                    } else {
-                        fromPriceTextField.setText(newValue.replaceAll("[^\\d\\.]", ""));
-                    }
-                }
-            }
-        });*/
     }
 
     private void setPriceFields(JFXTextField priceTextField) {
@@ -157,8 +124,17 @@ public class ProductsProcessor implements Initializable {
                         priceTextField.setText(newValue.replaceAll("[^\\d\\.]", ""));
                     }
                 }
+
+                setPriceFilter(/*priceTextField*/);
             }
         });
+    }
+
+    private void setPriceFilter(/*JFXTextField priceTextField*/) {
+        double minPrice = fromPriceTextField.getText().isEmpty() ? 0 : Double.parseDouble(fromPriceTextField.getText());
+        double maxPrice = toPriceTextField.getText().isEmpty() ? Double.MAX_VALUE : Double.parseDouble(toPriceTextField.getText());
+        controller.Control.getController().setPriceFilters(minPrice, maxPrice);
+        initProductsPage();
     }
 
     private String removeDots(String text) {
@@ -187,23 +163,49 @@ public class ProductsProcessor implements Initializable {
     private void addCategoryToFilters(Category category) {
         if(!controller.Control.getController().isThereFilteringCategoryWithName(category.getName())) {
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("FilterCategoryPane.fxml"));
+                /*FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("FilterCategoryPane.fxml"));
                 Node node = fxmlLoader.load();
                 ProductsProcessor productsProcessor = fxmlLoader.getController();
                 productsProcessor.parentProcessor = this;
-                productsProcessor.category = category;
+                productsProcessor.filterCategory = category;
                 productsProcessor.filterNameLabel.setText(category.getName());
                 controller.Control.getController().addToFilterCategoryList(category.getName());
                 initProductsPage();
-                filteredCategoriesVBox.getChildren().add(node);
+                filteredCategoriesVBox.getChildren().add(node);*/
+                loadFilterPane(category, null);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    private void loadFilterPane(Category filterCategory, String filterName) throws IOException {
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("FilterCategoryPane.fxml"));
+            Node node = fxmlLoader.load();
+            ProductsProcessor productsProcessor = fxmlLoader.getController();
+            productsProcessor.parentProcessor = this;
+
+            if (filterCategory == null) {
+                productsProcessor.filterName = filterName;
+                productsProcessor.filterNameLabel.setText(" " + filterName + " ");
+                controller.Control.getController().addToFilterNameList(filterName);
+                searchTextField.setText(null);
+            } else if (filterName == null) {
+                productsProcessor.filterCategory = filterCategory;
+                productsProcessor.filterNameLabel.setText(" " + filterCategory.getName() + " ");
+                controller.Control.getController().addToFilterCategoryList(filterCategory.getName());
+            }
+
+            initProductsPage();
+            filteredCategoriesVBox.getChildren().add(node);
+    }
+
     public void deleteFilterCategoryMouseClicked(MouseEvent mouseEvent) {
-        controller.Control.getController().removeFromFilterCategoryList(category.getName());
+        if(filterCategory == null)
+            controller.Control.getController().removeFromFilterNameList(filterName);
+        else if(filterName == null)
+            controller.Control.getController().removeFromFilterCategoryList(filterCategory.getName());
+
         parentProcessor.initProductsPage();
         parentProcessor.filteredCategoriesVBox.getChildren().remove(mainFilterPane);
     }
@@ -354,11 +356,26 @@ public class ProductsProcessor implements Initializable {
         new WelcomeProcessor().openAccountMenu();
     }
 
-    public void changeLowerPriceFilter(KeyEvent keyEvent) {
-        //Todo
+    public void filterByNameKeyTyped(KeyEvent keyEvent) {
+        //System.out.println("here : " + keyEvent.getCharacter() + "\nhere : ");
+        if((int) keyEvent.getCharacter().charAt(0) == 13) {
+            //System.out.println((int) keyEvent.getCharacter().charAt(0));
+            filterByNameMouseClicked();
+        }
     }
 
-    public void changeUpperPriceFilter(KeyEvent keyEvent) {
-        //Todo
+    public void filterByNameMouseClicked() {
+        String searchFieldText = searchTextField.getText();
+
+        if(searchFieldText == null || searchFieldText.isEmpty()) {
+            searchTextField.requestFocus();
+        } else if(!controller.Control.getController().isThereFilteringNameWithName(searchFieldText)) {
+            try {
+                loadFilterPane(null, searchTextField.getText());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

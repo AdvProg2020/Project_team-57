@@ -53,8 +53,8 @@
          <children>
             <Pane prefHeight="100.0" prefWidth="272.0">
                <children>
-                  <JFXTextField layoutX="21.0" layoutY="35.0" prefHeight="30.0" prefWidth="168.0" promptText="Search" />
-                  <JFXButton layoutX="195.0" layoutY="31.0" prefHeight="40.0" prefWidth="40.0" styleClass="Up_Button" text=" " />
+                  <JFXTextField fx:id="searchTextField" layoutX="21.0" layoutY="35.0" onKeyTyped="#filterByNameKeyTyped" prefHeight="30.0" prefWidth="168.0" promptText="Search" />
+                  <JFXButton layoutX="195.0" layoutY="31.0" onMouseClicked="#filterByNameMouseClicked" prefHeight="40.0" prefWidth="40.0" styleClass="Up_Button" text=" " />
                   <ImageView disable="true" fitHeight="30.0" fitWidth="30.0" layoutX="200.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/ProductsMenu/search%20icon.png" />
@@ -113,13 +113,11 @@
                   </ScrollPane>
                </children>
             </Pane>
-            <Pane layoutY="699.0" prefHeight="108.0" prefWidth="250.0">
+            <Pane layoutY="732.0" prefHeight="68.0" prefWidth="250.0">
                <children>
-                  <JFXTextField fx:id="toPriceTextField" layoutX="42.0" layoutY="54.0" onKeyTyped="#changeLowerPriceFilter" prefHeight="11.0" prefWidth="69.0" />
-                  <Label layoutX="16.0" layoutY="59.0" text="To:" />
-                  <JFXTextField fx:id="fromPriceTextField" layoutX="164.0" layoutY="54.0" onKeyTyped="#changeUpperPriceFilter" prefHeight="11.0" prefWidth="69.0" />
-                  <Label layoutX="120.0" layoutY="59.0" text="From:" />
-                  <Label alignment="CENTER" layoutX="85.0" layoutY="14.0" prefHeight="36.0" prefWidth="84.0" style="-fx-background-color: #D5D5D5; -fx-background-radius: 10;" text="Price :" />
+                  <JFXTextField fx:id="fromPriceTextField" labelFloat="true" layoutX="84.0" layoutY="16.0" prefHeight="11.0" prefWidth="60.0" promptText=" From" />
+                  <JFXTextField fx:id="toPriceTextField" labelFloat="true" layoutX="170.0" layoutY="16.0" prefHeight="31.0" prefWidth="60.0" promptText=" To" />
+                  <Label alignment="CENTER" layoutX="20.0" layoutY="14.0" prefHeight="36.0" style="-fx-background-color: #D5D5D5; -fx-background-radius: 10;" text=" Price : " />
                </children>
             </Pane>
          </children>
