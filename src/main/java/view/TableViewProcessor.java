@@ -167,6 +167,17 @@ public class TableViewProcessor<T> implements TableHold {
     }
 
     private Node initDiscountCustomersOptions() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewDiscountCustomersOption.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            processor.discountCustomersListView.getItems().addAll
+                    (((DiscountProcessor)((TableViewProcessor)parentProcessor).getParentProcessor()).getDicountAddedCustomers());
+            return root;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
