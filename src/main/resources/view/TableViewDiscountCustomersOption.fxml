@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="230.0" style="-fx-background-color: #e0f2f1;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.TableViewProcessor">
+   <children>
+      <JFXTextField layoutX="14.0" layoutY="34.0" promptText="Search Username" />
+      <JFXButton fx:id="searchButton" layoutX="147.0" layoutY="73.0" prefHeight="35.0" prefWidth="35.0" text=" " />
+      <ImageView disable="true" fitHeight="30.0" fitWidth="30.0" layoutX="150.0" layoutY="76.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/ProductsMenu/search%20icon.png" />
+         </image>
+      </ImageView>
+      <TableView fx:id="discountAddedUsersTableView" layoutX="15.0" layoutY="146.0" prefHeight="373.0" prefWidth="200.0" style="-fx-background-radius: 10 10 10 10;">
+        <columns>
+          <TableColumn editable="false" prefWidth="188.0" sortable="false" text="Username" />
+        </columns>
+      </TableView>
+      <Label layoutX="15.0" layoutY="538.0" text="Added Users:" />
+      <Label fx:id="discountAddedUsersCountLabel" layoutX="115.0" layoutY="538.0" text="0" />
+   </children>
+</Pane>
