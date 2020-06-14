@@ -1,12 +1,12 @@
 package view;
 
-import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXTimePicker;
 import controller.Control;
 import controller.account.AdminControl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -20,6 +20,8 @@ import notification.Notification;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -39,21 +41,17 @@ public class DiscountProcessor extends Processor implements Initializable, chang
     public JFXTextField maxRepetitionTextField;
     public JFXTextField discountPercentTextField;
 
-    public JFXComboBox<Integer> startDateYearComboBox;
-    public JFXComboBox<Integer> startDateDayComboBox;
-    public JFXComboBox<Integer> startDateMonthComboBox;
-
-    public TextField startDateHourTextField;
+    public JFXDatePicker startDatePicker;
+    public JFXTimePicker startTimePicker;
+    /*public TextField startDateHourTextField;
     public TextField startDateSecondTextField;
-    public TextField startDateMinuteTextField;
+    public TextField startDateMinuteTextField;*/
 
-    public JFXComboBox<Integer> finishDateYearComboBox;
-    public JFXComboBox<Integer> finishDateDayComboBox;
-    public JFXComboBox<Integer> finishDateMonthComboBox;
-
-    public TextField finishDateHourTextField;
+    public JFXDatePicker finishDatePicker;
+    public JFXTimePicker finishTimePicker;
+    /*public TextField finishDateHourTextField;
     public TextField finishDateSecondTextField;
-    public TextField finishDateMinuteTextField;
+    public TextField finishDateMinuteTextField;*/
 
     public BorderPane discountMainPane;
 
@@ -64,8 +62,7 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         String locationFile = location.getFile();
 
         if(locationFile.contains("DiscountMenuInfo")) {
-            setTextFieldsSpecifications();
-            setComboBoxSpecifications();
+            setFieldsSpecifications();
             setFields();
         } else if(locationFile.contains("DiscountMenu")) {
             discount = new Discount();
@@ -75,18 +72,21 @@ public class DiscountProcessor extends Processor implements Initializable, chang
     }
 
 
-    private void setTextFieldsSpecifications() {
+    private void setFieldsSpecifications() {
         setDoubleFields(discountPercentTextField, 100.000001);
         setIntegerFields(maxRepetitionTextField, Integer.MAX_VALUE);
         setDoubleFields(maxDiscountTextField, Double.MAX_VALUE);
 
-        setIntegerFields(startDateHourTextField, 24);
+        startTimePicker.set24HourView(true);
+        finishTimePicker.set24HourView(true);
+
+        /*setIntegerFields(startDateHourTextField, 24);
         setIntegerFields(startDateMinuteTextField, 60);
         setIntegerFields(startDateSecondTextField, 60);
 
         setIntegerFields(finishDateHourTextField, 24);
         setIntegerFields(finishDateMinuteTextField, 60);
-        setIntegerFields(finishDateSecondTextField, 60);
+        setIntegerFields(finishDateSecondTextField, 60);*/
     }
 
     private void setDoubleFields(TextField priceTextField, double maxValue) {
@@ -133,76 +133,6 @@ public class DiscountProcessor extends Processor implements Initializable, chang
     }
 
 
-    private void setComboBoxSpecifications() {
-        java.util.Date date = new java.util.Date();
-        int currentYear = date.getYear() + 1900;
-
-        setArrayListToComboBox(currentYear, currentYear + 10, startDateYearComboBox);
-        setArrayListToComboBox(1, 13, startDateMonthComboBox);
-        setArrayListToComboBox(1, 31, startDateDayComboBox);
-
-        setArrayListToComboBox(2020, 2030, finishDateYearComboBox);
-        setArrayListToComboBox(1, 13, finishDateMonthComboBox);
-        setArrayListToComboBox(1, 31, finishDateDayComboBox);
-
-        setStartDateComboBoxAutomatic(currentYear, date.getMonth() + 1, date.getDate(),
-                startDateYearComboBox, startDateMonthComboBox, startDateDayComboBox);
-
-        setStartDateComboBoxAutomatic(currentYear, date.getMonth() + 1, date.getDate(),
-                finishDateYearComboBox, finishDateMonthComboBox, finishDateDayComboBox);
-    }
-
-    private void setStartDateComboBoxAutomatic(Integer currentYear, Integer currentMonth, Integer currentDay,
-                    JFXComboBox<Integer> DateYearComboBox, JFXComboBox<Integer> DateMonthComboBox,
-                                               JFXComboBox<Integer> DateDayComboBox) {
-        DateYearComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            ObservableList<Integer> observableList = DateMonthComboBox.getItems();
-            if(newValue != null && newValue.equals(currentYear)) {
-                for(int i = 1; i < currentMonth; i++)
-                    observableList.remove((Integer) i);
-
-            } else if(!observableList.contains(1)) {
-                Integer month = DateMonthComboBox.getValue();
-                DateMonthComboBox.getSelectionModel().clearSelection(month);
-                observableList.removeAll(observableList);
-
-                for(int i = 1; i < 13; i++)
-                    observableList.add(i);
-
-                DateMonthComboBox.getSelectionModel().select(month);
-            }
-        });
-        DateMonthComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            ObservableList<Integer> observableList = DateDayComboBox.getItems();
-            if(newValue != null && newValue.equals(currentMonth) &&
-                (DateYearComboBox.getValue() != null && DateYearComboBox.getValue().equals(currentYear))) {
-                for(int i = 1; i < currentDay; i++)
-                    observableList.remove((Integer) i);
-
-            } else if(!observableList.contains(1)) {
-                Integer day = DateDayComboBox.getValue();
-                DateDayComboBox.getSelectionModel().clearSelection();
-                observableList.removeAll(observableList);
-
-                for(int i = 1; i < 31; i++)
-                    observableList.add(i);
-
-                DateDayComboBox.getSelectionModel().select(day);
-            }
-        });
-    }
-
-    private void setArrayListToComboBox(int min, int max, ComboBox<Integer> comboBox) {
-        ArrayList<Integer> comboBoxOptions = new ArrayList<>();
-
-        for(int i = min; i < max; i++)
-            comboBoxOptions.add(i);
-
-        for (Integer comboBoxOption : comboBoxOptions)
-            comboBox.getItems().add(comboBoxOption);
-    }
-
-
     private void setFields() {
         if(discount != null) {
             discountCodeTextField.setText(((DiscountProcessor) parentProcessor).discount.getCode());
@@ -210,12 +140,10 @@ public class DiscountProcessor extends Processor implements Initializable, chang
             maxRepetitionTextField.setText(Double.toString(((DiscountProcessor) parentProcessor).discount.getMaxRepetition()));
             maxDiscountTextField.setText(Double.toString(((DiscountProcessor) parentProcessor).discount.getMaxDiscount()));
 
-            setDateComboBox(startDateYearComboBox, startDateMonthComboBox, startDateDayComboBox,
-                    startDateHourTextField, startDateMinuteTextField, startDateSecondTextField,
+            setDateFieldsFromDate(startDatePicker, startTimePicker,
                     ((DiscountProcessor) parentProcessor).discount.getStartDate());
 
-            setDateComboBox(finishDateYearComboBox, finishDateMonthComboBox, finishDateDayComboBox,
-                    finishDateHourTextField, finishDateMinuteTextField, finishDateSecondTextField,
+            setDateFieldsFromDate(finishDatePicker, finishTimePicker,
                     ((DiscountProcessor) parentProcessor).discount.getFinishDate());
 
             if(!Control.getType().equals("Admin")) {
@@ -229,36 +157,20 @@ public class DiscountProcessor extends Processor implements Initializable, chang
                 maxDiscountTextField.setDisable(true);
 
                 startDateLabel.setDisable(true);
-                startDateYearComboBox.setDisable(true);
-                startDateMonthComboBox.setDisable(true);
-                startDateDayComboBox.setDisable(true);
-                startDateHourTextField.setDisable(true);
-                startDateMinuteTextField.setDisable(true);
-                startDateSecondTextField.setDisable(true);
+                startDatePicker.setDisable(true);
+                startTimePicker.setDisable(true);
 
                 finishDateLabel.setDisable(true);
-                finishDateYearComboBox.setDisable(true);
-                finishDateMonthComboBox.setDisable(true);
-                finishDateDayComboBox.setDisable(true);
-                finishDateHourTextField.setDisable(true);
-                finishDateMinuteTextField.setDisable(true);
-                finishDateSecondTextField.setDisable(true);
+                finishDatePicker.setDisable(true);
+                finishTimePicker.setDisable(true);
             }
         }
     }
 
-    private void setDateComboBox(JFXComboBox<Integer> startDateYearComboBox, JFXComboBox<Integer> startDateMonthComboBox,
-                                 JFXComboBox<Integer> startDateDayComboBox, TextField startDateHourTextField,
-                                 TextField startDateMinuteTextField, TextField startDateSecondTextField, Date startDate) {
-
-        startDateYearComboBox.getSelectionModel().select(startDate.getYear());
-        startDateMonthComboBox.getSelectionModel().select(startDate.getMonth());
-        startDateDayComboBox.getSelectionModel().select(startDate.getDay());
-
-        startDateHourTextField.setText(Integer.toString(startDate.getHours()));
-        startDateMinuteTextField.setText(Integer.toString(startDate.getMinutes()));
-        startDateSecondTextField.setText(Integer.toString(startDate.getSeconds()));
-
+    private void setDateFieldsFromDate(JFXDatePicker datePicker, JFXTimePicker timePicker, Date date) {
+        LocalDateTime localDateTime = new Timestamp(date.getTime()).toLocalDateTime();
+        datePicker.setValue(localDateTime.toLocalDate());
+        timePicker.setValue(localDateTime.toLocalTime());
     }
 
 
@@ -306,31 +218,17 @@ public class DiscountProcessor extends Processor implements Initializable, chang
     public void saveChangesMouseClicked(MouseEvent mouseEvent) {
         Discount discount = ((DiscountProcessor) parentProcessor).discount;
 
-        if(startDateYearComboBox.getValue() != null && startDateMonthComboBox.getValue() != null &&
-                startDateDayComboBox.getValue() != null &&
-                (startDateHourTextField.getText() != null || !startDateHourTextField.getText().isEmpty()) &&
-                (startDateMinuteTextField.getText() != null || !startDateMinuteTextField.getText().isEmpty()) &&
-                (startDateSecondTextField.getText() != null || !startDateSecondTextField.getText().isEmpty())
-        ) {
-            java.util.Date startDate = new java.util.Date(startDateYearComboBox.getValue() - 1900,
-                    startDateMonthComboBox.getValue() - 1, startDateDayComboBox.getValue(),
-                    Integer.parseInt(startDateHourTextField.getText()), Integer.parseInt(startDateMinuteTextField.getText()),
-                    Integer.parseInt(startDateSecondTextField.getText()));
+        if(isDateTimeEmpty(startDatePicker, startTimePicker)) {
+            LocalDateTime localStartDateTime = LocalDateTime.of(startDatePicker.getValue(), startTimePicker.getValue());
+            Date startDate = new Date(Timestamp.valueOf(localStartDateTime).getTime());
+            discount.setStartDate(startDate);
             //System.out.println(startDate);
-            discount.setStartDate(new Date(startDate.getTime()));
         }
 
-        if(finishDateYearComboBox.getValue() != null && finishDateMonthComboBox.getValue() != null &&
-                finishDateDayComboBox.getValue() != null &&
-                (finishDateHourTextField.getText() != null || !finishDateHourTextField.getText().isEmpty()) &&
-                (finishDateMinuteTextField.getText() != null || !finishDateMinuteTextField.getText().isEmpty()) &&
-                (finishDateSecondTextField.getText() != null || !finishDateSecondTextField.getText().isEmpty())
-        ) {
-            java.util.Date finishDate = new java.util.Date(finishDateYearComboBox.getValue() - 1900,
-                    finishDateMonthComboBox.getValue() - 1, finishDateDayComboBox.getValue(),
-                    Integer.parseInt(finishDateHourTextField.getText()), Integer.parseInt(finishDateMinuteTextField.getText()),
-                    Integer.parseInt(finishDateSecondTextField.getText()));
-            discount.setFinishDate(new Date(finishDate.getTime()));
+        if(isDateTimeEmpty(finishDatePicker, startTimePicker)) {
+            LocalDateTime localFinishDateTime = LocalDateTime.of(finishDatePicker.getValue(), finishTimePicker.getValue());
+            Date finishDate = new Date(Timestamp.valueOf(localFinishDateTime).getTime());
+            discount.setFinishDate(finishDate);
             //System.out.println(finishDate);
         }
 
@@ -344,6 +242,10 @@ public class DiscountProcessor extends Processor implements Initializable, chang
             discount.setMaxRepetition(Integer.parseInt(maxRepetitionTextField.getText()));
 
         ((DiscountProcessor) parentProcessor).discountCustomersMouseClicked(null);
+    }
+
+    private boolean isDateTimeEmpty(JFXDatePicker datePicker, JFXTimePicker timePicker) {
+        return datePicker.getValue() != null && timePicker.getValue() != null;
     }
 
     private boolean isTextFieldEmpty(TextField textField) {
