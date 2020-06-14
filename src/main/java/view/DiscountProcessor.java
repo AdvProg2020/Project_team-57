@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -33,22 +32,28 @@ public class DiscountProcessor extends Processor implements Initializable, chang
     public Label discountPercentLabel;
     public Label finishDateLabel;
     public Label startDateLabel;
+
+    public JFXTextField discountCodeTextField;
     public JFXTextField maxDiscountTextField;
     public JFXTextField maxRepetitionTextField;
     public JFXTextField discountPercentTextField;
+
     public JFXComboBox<Integer> startDateYearComboBox;
     public JFXComboBox<Integer> startDateDayComboBox;
     public JFXComboBox<Integer> startDateMonthComboBox;
+
     public TextField startDateHourTextField;
     public TextField startDateSecondTextField;
     public TextField startDateMinuteTextField;
-    public JFXTextField discountCodeTextField;
+
     public JFXComboBox<Integer> finishDateYearComboBox;
     public JFXComboBox<Integer> finishDateDayComboBox;
     public JFXComboBox<Integer> finishDateMonthComboBox;
+
     public TextField finishDateHourTextField;
     public TextField finishDateSecondTextField;
     public TextField finishDateMinuteTextField;
+
     public BorderPane discountMainPane;
 
     private Discount discount;
@@ -68,19 +73,64 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         }
     }
 
+
     private void setTextFieldsSpecifications() {
-        setPriceFields(discountPercentTextField, 100.000001);
-        setTimeFields(maxRepetitionTextField, Integer.MAX_VALUE);
-        setPriceFields(maxDiscountTextField, Double.MAX_VALUE);
+        setDoubleFields(discountPercentTextField, 100.000001);
+        setIntegerFields(maxRepetitionTextField, Integer.MAX_VALUE);
+        setDoubleFields(maxDiscountTextField, Double.MAX_VALUE);
 
-        setTimeFields(startDateHourTextField, 24);
-        setTimeFields(startDateMinuteTextField, 60);
-        setTimeFields(startDateSecondTextField, 60);
+        setIntegerFields(startDateHourTextField, 24);
+        setIntegerFields(startDateMinuteTextField, 60);
+        setIntegerFields(startDateSecondTextField, 60);
 
-        setTimeFields(finishDateHourTextField, 24);
-        setTimeFields(finishDateMinuteTextField, 60);
-        setTimeFields(finishDateSecondTextField, 60);
+        setIntegerFields(finishDateHourTextField, 24);
+        setIntegerFields(finishDateMinuteTextField, 60);
+        setIntegerFields(finishDateSecondTextField, 60);
     }
+
+    private void setDoubleFields(TextField priceTextField, double maxValue) {
+        priceTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                //Todo Checking
+
+                if(newValue.equals(".")) {
+                    priceTextField.setText("0.");
+                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
+                    if(priceTextField.getText().contains(".")) {
+                        priceTextField.setText(removeDots(priceTextField.getText()));
+                    } else {
+                        priceTextField.setText(newValue.replaceAll("[^\\d\\.]", ""));
+                    }
+                } else if(newValue.matches("\\d+(.(\\d)+)?") && Double.parseDouble(newValue) >= maxValue) {
+                    //Todo checking
+                    priceTextField.setText(oldValue);
+                }
+
+            }
+        });
+    }
+
+    private void setIntegerFields(TextField priceTextField, Integer maxValue) {
+        priceTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                //Todo Checking
+
+                int newValueLength = newValue.length(), maxValueLength = Integer.toString(maxValue).length();
+
+                if (!newValue.matches("\\d+")) {
+                    priceTextField.setText(newValue.replaceAll("[^\\d]", ""));
+                } else if(newValue.matches("\\d+") && (newValueLength > maxValueLength ||
+                        (newValueLength == maxValueLength && newValue.compareTo(Integer.toString(maxValue)) >= 0))) {
+                    priceTextField.setText(oldValue);
+                }
+            }
+        });
+    }
+
 
     private void setComboBoxSpecifications() {
         setArrayListToComboBox(2020, 2030, startDateYearComboBox);
@@ -103,6 +153,7 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         for (Integer comboBoxOption : comboBoxOptions)
             comboBox.getItems().add(comboBoxOption);
     }
+
 
     private void setFields() {
         if(discount != null) {
@@ -162,50 +213,6 @@ public class DiscountProcessor extends Processor implements Initializable, chang
 
     }
 
-    private void setPriceFields(TextField priceTextField, double maxValue) {
-        priceTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                //Todo Checking
-
-                if(newValue.equals(".")) {
-                    priceTextField.setText("0.");
-                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
-                    if(priceTextField.getText().contains(".")) {
-                        priceTextField.setText(removeDots(priceTextField.getText()));
-                    } else {
-                        priceTextField.setText(newValue.replaceAll("[^\\d\\.]", ""));
-                    }
-                } else if(newValue.matches("\\d+(.(\\d)+)?") && Double.parseDouble(newValue) >= maxValue) {
-                    //Todo checking
-                    priceTextField.setText(oldValue);
-                }
-
-            }
-        });
-    }
-
-    private void setTimeFields(TextField priceTextField, Integer maxValue) {
-        priceTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                //Todo Checking
-
-                int newValueLength = newValue.length(), maxValueLength = Integer.toString(maxValue).length();
-
-                if (!newValue.matches("\\d+")) {
-                    priceTextField.setText(newValue.replaceAll("[^\\d]", ""));
-                } else if(newValue.matches("\\d+") && (newValueLength > maxValueLength ||
-                         (newValueLength == maxValueLength && newValue.compareTo(Integer.toString(maxValue)) >= 0))) {
-                    //Todo checking
-                    priceTextField.setText(oldValue);
-                }
-
-            }
-        });
-    }
 
     public void discountCustomersMouseClicked(MouseEvent mouseEvent) {
         try {
@@ -231,25 +238,6 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         }
     }
 
-    public ArrayList<String> getDiscountAddedUsers() {
-        return adminControl.getDiscountsAddedUsers().get(discount);
-    }
-
-    public boolean isAccountAddedInDiscount(String userName) {
-        return adminControl.isUserAddedInDiscount(discount, userName);
-    }
-
-    public void addUserToDiscount(String userName) {
-        adminControl.addUserToDiscountAddedUsers(discount, userName);
-    }
-
-    public void removeUserFromDiscount(String userName) {
-        adminControl.removeUserFromDiscountAddedUsers(discount, userName);
-    }
-
-    public void setDiscount(Discount discount) {
-        this.discount = discount;
-    }
 
     public void AddDiscountMouseClicked(MouseEvent mouseEvent) {
         //Todo Setting Notifications
@@ -297,20 +285,41 @@ public class DiscountProcessor extends Processor implements Initializable, chang
             //System.out.println(finishDate);
         }
 
-        if(!isItEmpty(discountCodeTextField))
+        if(!isTextFieldEmpty(discountCodeTextField))
             discount.setCode(discountCodeTextField.getText());
-        if(!isItEmpty(discountCodeTextField))
+        if(!isTextFieldEmpty(discountCodeTextField))
             discount.setDiscountPercent(Double.parseDouble(discountPercentTextField.getText()));
-        if(!isItEmpty(discountCodeTextField))
+        if(!isTextFieldEmpty(discountCodeTextField))
             discount.setMaxDiscount(Double.parseDouble(maxDiscountTextField.getText()));
-        if(!isItEmpty(discountCodeTextField))
+        if(!isTextFieldEmpty(discountCodeTextField))
             discount.setMaxRepetition(Integer.parseInt(maxRepetitionTextField.getText()));
 
         ((DiscountProcessor) parentProcessor).discountCustomersMouseClicked(null);
     }
 
-    private boolean isItEmpty(TextField textField) {
+    private boolean isTextFieldEmpty(TextField textField) {
         return textField.getText() == null || textField.getText().isEmpty();
+    }
+
+
+    public ArrayList<String> getDiscountAddedUsers() {
+        return adminControl.getDiscountsAddedUsers().get(discount);
+    }
+
+    public boolean isAccountAddedInDiscount(String userName) {
+        return adminControl.isUserAddedInDiscount(discount, userName);
+    }
+
+    public void addUserToDiscount(String userName) {
+        adminControl.addUserToDiscountAddedUsers(discount, userName);
+    }
+
+    public void removeUserFromDiscount(String userName) {
+        adminControl.removeUserFromDiscountAddedUsers(discount, userName);
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
     }
 
     @Override
