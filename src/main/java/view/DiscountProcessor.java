@@ -60,12 +60,48 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         if(locationFile.contains("DiscountMenuInfo")) {
             setTextFieldsSpecifications();
             setComboBoxSpecifications();
-            //Todo SetFields From Ashkan
+            setFields();
         } else if(locationFile.contains("DiscountMenu")) {
             discount = new Discount();
             adminControl.addDiscountToHashMap(discount);
             profileInfoMouseClicked(null);
         }
+    }
+
+    private void setTextFieldsSpecifications() {
+        setPriceFields(discountPercentTextField, 100.000001);
+        setTimeFields(maxRepetitionTextField, Integer.MAX_VALUE);
+        setPriceFields(maxDiscountTextField, Double.MAX_VALUE);
+
+        setTimeFields(startDateHourTextField, 24);
+        setTimeFields(startDateMinuteTextField, 60);
+        setTimeFields(startDateSecondTextField, 60);
+
+        setTimeFields(finishDateHourTextField, 24);
+        setTimeFields(finishDateMinuteTextField, 60);
+        setTimeFields(finishDateSecondTextField, 60);
+    }
+
+    private void setComboBoxSpecifications() {
+        setArrayListToComboBox(2020, 2030, startDateYearComboBox);
+        setArrayListToComboBox(1, 13, startDateMonthComboBox);
+        setArrayListToComboBox(1, 31, startDateDayComboBox);
+
+        setArrayListToComboBox(2020, 2030, finishDateYearComboBox);
+        setArrayListToComboBox(1, 13, finishDateMonthComboBox);
+        setArrayListToComboBox(1, 31, finishDateDayComboBox);
+
+        //Todo Checking Current Date
+    }
+
+    private void setArrayListToComboBox(int min, int max, ComboBox<Integer> comboBox) {
+        ArrayList<Integer> comboBoxOptions = new ArrayList<>();
+
+        for(int i = min; i < max; i++)
+            comboBoxOptions.add(i);
+
+        for (Integer comboBoxOption : comboBoxOptions)
+            comboBox.getItems().add(comboBoxOption);
     }
 
     private void setFields() {
@@ -76,9 +112,12 @@ public class DiscountProcessor extends Processor implements Initializable, chang
             maxDiscountTextField.setText(Double.toString(((DiscountProcessor) parentProcessor).discount.getMaxDiscount()));
 
             setDateComboBox(startDateYearComboBox, startDateMonthComboBox, startDateDayComboBox,
-                    startDateHourTextField, startDateMinuteTextField, startDateSecondTextField, ((DiscountProcessor) parentProcessor).discount.getStartDate());
+                    startDateHourTextField, startDateMinuteTextField, startDateSecondTextField,
+                    ((DiscountProcessor) parentProcessor).discount.getStartDate());
+
             setDateComboBox(finishDateYearComboBox, finishDateMonthComboBox, finishDateDayComboBox,
-                    finishDateHourTextField, finishDateMinuteTextField, finishDateSecondTextField, ((DiscountProcessor) parentProcessor).discount.getFinishDate());
+                    finishDateHourTextField, finishDateMinuteTextField, finishDateSecondTextField,
+                    ((DiscountProcessor) parentProcessor).discount.getFinishDate());
 
             if(!Control.getType().equals("Admin")) {
                 discountCodeLabel.setDisable(true);
@@ -112,6 +151,7 @@ public class DiscountProcessor extends Processor implements Initializable, chang
     private void setDateComboBox(JFXComboBox<Integer> startDateYearComboBox, JFXComboBox<Integer> startDateMonthComboBox,
                                  JFXComboBox<Integer> startDateDayComboBox, TextField startDateHourTextField,
                                  TextField startDateMinuteTextField, TextField startDateSecondTextField, Date startDate) {
+
         startDateYearComboBox.getSelectionModel().select(startDate.getYear());
         startDateMonthComboBox.getSelectionModel().select(startDate.getMonth());
         startDateDayComboBox.getSelectionModel().select(startDate.getDay());
@@ -120,66 +160,6 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         startDateMinuteTextField.setText(Integer.toString(startDate.getMinutes()));
         startDateSecondTextField.setText(Integer.toString(startDate.getSeconds()));
 
-    }
-
-    private void setComboBoxSpecifications() {
-        setArrayListToComboBox(2020, 2030, startDateYearComboBox);
-        setArrayListToComboBox(1, 13, startDateMonthComboBox);
-        setArrayListToComboBox(1, 31, startDateDayComboBox);
-
-        setArrayListToComboBox(2020, 2030, finishDateYearComboBox);
-        setArrayListToComboBox(1, 13, finishDateMonthComboBox);
-        setArrayListToComboBox(1, 31, finishDateDayComboBox);
-
-        //Todo Checking Current Date
-    }
-
-    private void setArrayListToComboBox(int min, int max, ComboBox<Integer> comboBox) {
-        ArrayList<Integer> comboBoxOptions = new ArrayList<>();
-        for(int i = min; i < max; i++)
-            comboBoxOptions.add(i);
-        setSpecificComboBoxOptions(comboBoxOptions, comboBox);
-    }
-
-    private void setSpecificComboBoxOptions(ArrayList<Integer> comboBoxOptions, ComboBox<Integer> comboBox) {
-        for (Integer comboBoxOption : comboBoxOptions) {
-            comboBox.getItems().add(comboBoxOption);
-        }
-    }
-
-    private void setTextFieldsSpecifications() {
-        setPriceFields(discountPercentTextField, 100.000001);
-        setTimeFields(maxRepetitionTextField, Integer.MAX_VALUE);
-        setPriceFields(maxDiscountTextField);
-
-        setTimeFields(startDateHourTextField, 24);
-        setTimeFields(startDateMinuteTextField, 60);
-        setTimeFields(startDateSecondTextField, 60);
-
-        setTimeFields(finishDateHourTextField, 24);
-        setTimeFields(finishDateMinuteTextField, 60);
-        setTimeFields(finishDateSecondTextField, 60);
-    }
-
-    private void setPriceFields(TextField priceTextField) {
-        priceTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                //Todo Checking
-
-                if(newValue.equals(".")) {
-                    priceTextField.setText("0.");
-                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
-                    if(priceTextField.getText().contains(".")) {
-                        priceTextField.setText(removeDots(priceTextField.getText()));
-                    } else {
-                        priceTextField.setText(newValue.replaceAll("[^\\d\\.]", ""));
-                    }
-                }
-
-            }
-        });
     }
 
     private void setPriceFields(TextField priceTextField, double maxValue) {
@@ -206,16 +186,19 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         });
     }
 
-    private void setTimeFields(TextField priceTextField, double maxValue) {
+    private void setTimeFields(TextField priceTextField, Integer maxValue) {
         priceTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
                                 String newValue) {
                 //Todo Checking
 
+                int newValueLength = newValue.length(), maxValueLength = Integer.toString(maxValue).length();
+
                 if (!newValue.matches("\\d+")) {
                     priceTextField.setText(newValue.replaceAll("[^\\d]", ""));
-                } else if(newValue.matches("\\d+") && (Integer.parseInt(newValue) < 0 ||Integer.parseInt(newValue) >= maxValue)) {
+                } else if(newValue.matches("\\d+") && (newValueLength > maxValueLength ||
+                         (newValueLength == maxValueLength && newValue.compareTo(Integer.toString(maxValue)) >= 0))) {
                     //Todo checking
                     priceTextField.setText(oldValue);
                 }
@@ -278,6 +261,7 @@ public class DiscountProcessor extends Processor implements Initializable, chang
             if(optionalButtonType.get() == ButtonType.OK)
                 this.myStage.close();
         } else {
+            profileInfoMouseClicked(null);
             notification.getAlert().show();
         }
     }
@@ -333,6 +317,7 @@ public class DiscountProcessor extends Processor implements Initializable, chang
     public void setMyStage(Stage myStage) {
         this.myStage = myStage;
         myStage.setOnCloseRequest(event -> {
+            System.out.println("Hello");
             parentProcessor.removeSubStage(myStage);
             adminControl.removeDiscountFromHashMap(discount);
         });

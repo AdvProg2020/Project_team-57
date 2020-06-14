@@ -164,7 +164,9 @@ public enum Notification {
             "\nWe Can't Have SomeOne Anonymous In Our Shop. \nIt's Not Safe!!!! 😱😱😱",
             Alert.AlertType.ERROR, "Edit Account Error", "Empty LastName"),
     NOT_SELECTED_CATEGORY("You haven't selected Any Category", Alert.AlertType.ERROR, "Jesus", "Hey You"),
-    CANT_DELETE_CATEGORY("You Can't Delete All Products Category. That's The Main Node Of All Categories Sire!", Alert.AlertType.ERROR, "Category Delete Failed", "Cant Delete All Products");
+    CANT_DELETE_CATEGORY("You Can't Delete All Products Category. That's The Main Node Of All Categories Sire!", Alert.AlertType.ERROR, "Category Delete Failed", "Cant Delete All Products"),
+    INVALID_DISCOUNT_CODE_LENGTH("Discount Code's Length Must Be Less Than 16.", Alert.AlertType.ERROR,
+            "Add Discount Error", "Invalid Discount Code");
 
 
     private String message;
