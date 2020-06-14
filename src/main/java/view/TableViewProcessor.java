@@ -27,6 +27,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.existence.Account;
 import model.existence.Discount;
 import java.io.IOException;
@@ -187,6 +188,8 @@ public class TableViewProcessor<T> extends Processor {
                     customer.getCheckBox().setSelected(true);
                 }
             }
+            customer.getCheckBox().setOnMouseEntered(event -> simpleButtonOnMouse(event));
+            customer.getCheckBox().setOnMouseExited(event -> simpleButtonOutMouse(event));
         });
 
         return (ArrayList<T>) customers;
@@ -209,18 +212,7 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private Pane initDiscountCustomersOptions() {
-/*        tableView.getItems().forEach(t -> {
-            System.out.println("Hello");
-            Account account = (Account)t;
-            DiscountProcessor processor = ((DiscountProcessor)parentProcessor);
-            if(account.getCheckBox().isSelected()) {
-                if(!processor.isAccountAddedInDiscount(account.getUsername()))
-                    processor.addUserToDiscount(account.getUsername());
-            } else {
-                if(processor.isAccountAddedInDiscount(account.getUsername()))
-                    processor.removeUserFromDiscount(account.getUsername());
-            }
-        });*/
+        tableView.getSelectionModel().clearSelection();
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewDiscountCustomersOption.fxml"));
         try {
             Pane root = loader.load();
@@ -228,6 +220,9 @@ public class TableViewProcessor<T> extends Processor {
             processor.setParentProcessor(this);
             processor.discountCustomersListView.getItems().addAll
                     (((DiscountProcessor)parentProcessor).getDiscountAddedUsers());
+            processor.discountAddedUsersCountLabel.setText("" + processor.discountCustomersListView.getItems().size());
+            processor.discountCustomerSearchField.setText
+                    ((searchedUsername == null ? "" : searchedUsername));
             return root;
         } catch (IOException e) {
             e.printStackTrace();
@@ -344,6 +339,14 @@ public class TableViewProcessor<T> extends Processor {
                 "-fx-background-radius: 10 10 10 10;");
     }
 
+    public void simpleButtonOnMouse(MouseEvent mouseEvent) {
+        ((Parent)mouseEvent.getSource()).setStyle("-fx-cursor: hand;");
+    }
+
+    public void simpleButtonOutMouse(MouseEvent mouseEvent) {
+        ((Parent)mouseEvent.getSource()).setStyle(null);
+    }
+
     //Inside Methods
 
     public void showProfile(ActionEvent actionEvent) {
@@ -425,10 +428,12 @@ public class TableViewProcessor<T> extends Processor {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("DiscountMenu.fxml"));
             try {
                 Parent root = loader.load();
+                DiscountProcessor processor = loader.getController();
+               //processor.setMyStage(newStage);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
                 newStage.setTitle("Add New Discount");
-                addSubStage(newStage);
+                newStage.setResizable(false);
                 newStage.show();
             } catch (IOException e) {
                 e.printStackTrace();
