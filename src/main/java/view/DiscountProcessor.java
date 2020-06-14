@@ -228,11 +228,13 @@ public class DiscountProcessor extends Processor implements Initializable, chang
     }
 
     public void profileInfoMouseClicked(MouseEvent mouseEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("DiscountMenuInfo.fxml"));
         try {
-            discountMainPane.setCenter(loader.load());
-            DiscountProcessor discountProcessor = loader.getController();
-            discountProcessor.parentProcessor = this;
+            if(discountMainPane.getCenter() == null || discountMainPane.getCenter().getId().equals("mainBorderPane")) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("DiscountMenuInfo.fxml"));
+                discountMainPane.setCenter(loader.load());
+                DiscountProcessor discountProcessor = loader.getController();
+                discountProcessor.parentProcessor = this;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -243,14 +245,13 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         //Todo Setting Notifications
         Notification notification = adminControl.addAddedDiscount(discount);
 
-        if(notification.equals(Notification.ADD_DISCOUNT)) {
-            Optional<ButtonType> optionalButtonType = notification.getAlert().showAndWait();
+        Optional<ButtonType> optionalButtonType = notification.getAlert().showAndWait();
 
-            if(optionalButtonType.get() == ButtonType.OK)
+        if(optionalButtonType.get() == ButtonType.OK) {
+            if(notification.equals(Notification.ADD_DISCOUNT))
                 this.myStage.close();
-        } else {
-            profileInfoMouseClicked(null);
-            notification.getAlert().show();
+            else
+                profileInfoMouseClicked(null);
         }
     }
 
