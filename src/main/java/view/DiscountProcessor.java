@@ -6,6 +6,7 @@ import controller.Control;
 import controller.account.AdminControl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -133,7 +134,10 @@ public class DiscountProcessor extends Processor implements Initializable, chang
 
 
     private void setComboBoxSpecifications() {
-        setArrayListToComboBox(2020, 2030, startDateYearComboBox);
+        java.util.Date date = new java.util.Date();
+        int currentYear = date.getYear() + 1900;
+
+        setArrayListToComboBox(currentYear, currentYear + 10, startDateYearComboBox);
         setArrayListToComboBox(1, 13, startDateMonthComboBox);
         setArrayListToComboBox(1, 31, startDateDayComboBox);
 
@@ -141,7 +145,51 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         setArrayListToComboBox(1, 13, finishDateMonthComboBox);
         setArrayListToComboBox(1, 31, finishDateDayComboBox);
 
-        //Todo Checking Current Date
+        setStartDateComboBoxAutomatic(currentYear, date.getMonth() + 1, date.getDate(),
+                startDateYearComboBox, startDateMonthComboBox, startDateDayComboBox);
+
+        setStartDateComboBoxAutomatic(currentYear, date.getMonth() + 1, date.getDate(),
+                finishDateYearComboBox, finishDateMonthComboBox, finishDateDayComboBox);
+    }
+
+    private void setStartDateComboBoxAutomatic(Integer currentYear, Integer currentMonth, Integer currentDay,
+                    JFXComboBox<Integer> DateYearComboBox, JFXComboBox<Integer> DateMonthComboBox,
+                                               JFXComboBox<Integer> DateDayComboBox) {
+        DateYearComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            ObservableList<Integer> observableList = DateMonthComboBox.getItems();
+            if(newValue != null && newValue.equals(currentYear)) {
+                for(int i = 1; i < currentMonth; i++)
+                    observableList.remove((Integer) i);
+
+            } else if(!observableList.contains(1)) {
+                Integer month = DateMonthComboBox.getValue();
+                DateMonthComboBox.getSelectionModel().clearSelection(month);
+                observableList.removeAll(observableList);
+
+                for(int i = 1; i < 13; i++)
+                    observableList.add(i);
+
+                DateMonthComboBox.getSelectionModel().select(month);
+            }
+        });
+        DateMonthComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            ObservableList<Integer> observableList = DateDayComboBox.getItems();
+            if(newValue != null && newValue.equals(currentMonth) &&
+                (DateYearComboBox.getValue() != null && DateYearComboBox.getValue().equals(currentYear))) {
+                for(int i = 1; i < currentDay; i++)
+                    observableList.remove((Integer) i);
+
+            } else if(!observableList.contains(1)) {
+                Integer day = DateDayComboBox.getValue();
+                DateDayComboBox.getSelectionModel().clearSelection();
+                observableList.removeAll(observableList);
+
+                for(int i = 1; i < 31; i++)
+                    observableList.add(i);
+
+                DateDayComboBox.getSelectionModel().select(day);
+            }
+        });
     }
 
     private void setArrayListToComboBox(int min, int max, ComboBox<Integer> comboBox) {
