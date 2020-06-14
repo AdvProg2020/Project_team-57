@@ -43,15 +43,9 @@ public class DiscountProcessor extends Processor implements Initializable, chang
 
     public JFXDatePicker startDatePicker;
     public JFXTimePicker startTimePicker;
-    /*public TextField startDateHourTextField;
-    public TextField startDateSecondTextField;
-    public TextField startDateMinuteTextField;*/
 
     public JFXDatePicker finishDatePicker;
     public JFXTimePicker finishTimePicker;
-    /*public TextField finishDateHourTextField;
-    public TextField finishDateSecondTextField;
-    public TextField finishDateMinuteTextField;*/
 
     public BorderPane discountMainPane;
 
@@ -79,14 +73,6 @@ public class DiscountProcessor extends Processor implements Initializable, chang
 
         startTimePicker.set24HourView(true);
         finishTimePicker.set24HourView(true);
-
-        /*setIntegerFields(startDateHourTextField, 24);
-        setIntegerFields(startDateMinuteTextField, 60);
-        setIntegerFields(startDateSecondTextField, 60);
-
-        setIntegerFields(finishDateHourTextField, 24);
-        setIntegerFields(finishDateMinuteTextField, 60);
-        setIntegerFields(finishDateSecondTextField, 60);*/
     }
 
     private void setDoubleFields(TextField priceTextField, double maxValue) {
@@ -222,14 +208,12 @@ public class DiscountProcessor extends Processor implements Initializable, chang
             LocalDateTime localStartDateTime = LocalDateTime.of(startDatePicker.getValue(), startTimePicker.getValue());
             Date startDate = new Date(Timestamp.valueOf(localStartDateTime).getTime());
             discount.setStartDate(startDate);
-            //System.out.println(startDate);
         }
 
         if(isDateTimeEmpty(finishDatePicker, startTimePicker)) {
             LocalDateTime localFinishDateTime = LocalDateTime.of(finishDatePicker.getValue(), finishTimePicker.getValue());
             Date finishDate = new Date(Timestamp.valueOf(localFinishDateTime).getTime());
             discount.setFinishDate(finishDate);
-            //System.out.println(finishDate);
         }
 
         if(!isTextFieldEmpty(discountCodeTextField))
