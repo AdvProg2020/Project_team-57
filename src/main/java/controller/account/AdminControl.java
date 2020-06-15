@@ -396,7 +396,7 @@ public class AdminControl extends AccountControl{
         return ID.toString();
     }
 
-    public Notification editCode(String ID, String code) {
+    public Notification editDiscountCode(String ID, String code) {
         try {
             if (code.length() > 16 || code.length() < 6)
                 return Notification.INVALID_DISCOUNT_CODE;

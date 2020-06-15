@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXTimePicker?>
@@ -20,16 +19,20 @@
       <Label fx:id="maxDiscountLabel" layoutX="104.0" layoutY="227.0" text="Max Discount" />
       <Label fx:id="maxRepetitionLabel" layoutX="95.0" layoutY="167.0" text="Max Repetition" />
       <Label fx:id="discountPercentLabel" layoutX="86.0" layoutY="110.0" text="Discount Percent" />
-      <Label fx:id="finishDateLabel" layoutX="120.0" layoutY="437.0" text="Finish Date" />
+      <Label fx:id="finishDateLabel" layoutX="120.0" layoutY="429.0" text="Finish Date" />
       <Label fx:id="startDateLabel" layoutX="129.0" layoutY="306.0" text="Start Date" />
       <JFXDatePicker fx:id="startDatePicker" defaultColor="#3498db" layoutX="219.0" layoutY="297.0" promptText=" Start Date" styleClass="Button" />
       <JFXTextField fx:id="discountCodeTextField" labelFloat="true" layoutX="221.0" layoutY="49.0" />
       <JFXTextField fx:id="discountPercentTextField" labelFloat="true" layoutX="220.0" layoutY="105.0" />
       <JFXTextField fx:id="maxRepetitionTextField" labelFloat="true" layoutX="220.0" layoutY="162.0" />
       <JFXTextField fx:id="maxDiscountTextField" labelFloat="true" layoutX="220.0" layoutY="222.0" />
-      <JFXButton layoutX="450.0" layoutY="516.0" onMouseClicked="#saveChangesMouseClicked" style="-fx-background-color: #3498db;" styleClass="Button" text="Save Changes" textFill="WHITE" />
-      <JFXDatePicker fx:id="finishDatePicker" defaultColor="#3498db" layoutX="219.0" layoutY="432.0" promptText=" Finish Date" styleClass="Button" />
-      <JFXTimePicker fx:id="startTimePicker" defaultColor="#3498db" layoutX="218.0" layoutY="359.0" promptText=" Start Time" styleClass="Button" />
-      <JFXTimePicker fx:id="finishTimePicker" defaultColor="#3498db" layoutX="218.0" layoutY="484.0" promptText=" Finish Time" styleClass="Button" />
+      <JFXDatePicker fx:id="finishDatePicker" defaultColor="#3498db" layoutX="219.0" layoutY="424.0" promptText=" Finish Date" styleClass="Button" />
+      <JFXTimePicker fx:id="startTimePicker" defaultColor="#3498db" layoutX="218.0" layoutY="349.0" promptText=" Start Time" styleClass="Button" />
+      <JFXTimePicker fx:id="finishTimePicker" defaultColor="#3498db" layoutX="218.0" layoutY="476.0" promptText=" Finish Time" styleClass="Button" />
+      <ImageView fx:id="saveChangeButton" fitHeight="32.0" fitWidth="32.0" layoutX="390.0" layoutY="535.0" onMouseClicked="#saveChangesMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+         <image>
+            <Image url="@../Images/Icons/Check%20In%20Discount%20Info%20Menu.png" />
+         </image>
+      </ImageView>
    </children>
 </Pane>

@@ -11,8 +11,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.existence.Discount;
 import notification.Notification;
@@ -47,7 +49,10 @@ public class DiscountProcessor extends Processor implements Initializable, chang
     public JFXDatePicker finishDatePicker;
     public JFXTimePicker finishTimePicker;
 
+    public ImageView saveChangeButton;
+
     public BorderPane discountMainPane;
+    public Pane discountInfoPane, discountCustomersPane;
 
     private Discount discount;
 
@@ -57,11 +62,9 @@ public class DiscountProcessor extends Processor implements Initializable, chang
 
         if(locationFile.contains("DiscountMenuInfo")) {
             setFieldsSpecifications();
-            setFields();
         } else if(locationFile.contains("DiscountMenu")) {
-            discount = new Discount();
+            discountInfoMouseClicked(null);
             adminControl.addDiscountToHashMap(discount);
-            profileInfoMouseClicked(null);
         }
     }
 
@@ -120,19 +123,34 @@ public class DiscountProcessor extends Processor implements Initializable, chang
 
 
     private void setFields() {
-        if(discount != null) {
-            discountCodeTextField.setText(((DiscountProcessor) parentProcessor).discount.getCode());
-            discountPercentTextField.setText(Double.toString(((DiscountProcessor) parentProcessor).discount.getDiscountPercent()));
-            maxRepetitionTextField.setText(Double.toString(((DiscountProcessor) parentProcessor).discount.getMaxRepetition()));
-            maxDiscountTextField.setText(Double.toString(((DiscountProcessor) parentProcessor).discount.getMaxDiscount()));
+        Discount mainDiscount = ((DiscountProcessor) parentProcessor).discount;
 
-            setDateFieldsFromDate(startDatePicker, startTimePicker,
-                    ((DiscountProcessor) parentProcessor).discount.getStartDate());
+        if(mainDiscount == null) {
+            ((DiscountProcessor) parentProcessor).discount = new Discount();
+        } else {
+            discountCodeTextField.setText(mainDiscount.getCode());
 
-            setDateFieldsFromDate(finishDatePicker, finishTimePicker,
-                    ((DiscountProcessor) parentProcessor).discount.getFinishDate());
+            if(mainDiscount.getDiscountPercent() != 0)
+                discountPercentTextField.setText(Double.toString(mainDiscount.getDiscountPercent()));
 
-            if(!Control.getType().equals("Admin")) {
+            if(mainDiscount.getMaxRepetition() != 0)
+                maxRepetitionTextField.setText(Integer.toString(mainDiscount.getMaxRepetition()));
+
+            if(mainDiscount.getMaxDiscount() != 0)
+                maxDiscountTextField.setText(Double.toString(mainDiscount.getMaxDiscount()));
+
+            if(mainDiscount.getStartDate() != null)
+                setDateFieldsFromDate(startDatePicker, startTimePicker, mainDiscount.getStartDate());
+
+            if(mainDiscount.getFinishDate() != null)
+                setDateFieldsFromDate(finishDatePicker, finishTimePicker, mainDiscount.getFinishDate());
+
+            if(Control.getType().equals("Admin")) {
+                if(mainDiscount.getID() != null) {
+                    startDatePicker.setEditable(false);
+                    startTimePicker.setEditable(false);
+                }
+            } else  {
                 discountCodeLabel.setDisable(true);
                 discountCodeTextField.setDisable(true);
                 discountPercentLabel.setDisable(true);
@@ -149,6 +167,9 @@ public class DiscountProcessor extends Processor implements Initializable, chang
                 finishDateLabel.setDisable(true);
                 finishDatePicker.setDisable(true);
                 finishTimePicker.setDisable(true);
+
+                Pane pane = (Pane)discountMainPane.getCenter();
+                pane.getChildren().remove(saveChangeButton);
             }
         }
     }
@@ -164,6 +185,9 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewMenu.fxml"));
             Parent root = loader.load();
+            discountInfoPane.setStyle("");
+            discountCustomersPane.setStyle("-fx-background-color: #90CAF9;   -fx-background-radius: 0 10 10 0;");
+
             TableViewProcessor processor = loader.getController();
             processor.setParentProcessor(this);
             processor.initProcessor(TableViewProcessor.TableViewType.DISCOUNT_CUSTOMERS);
@@ -173,13 +197,17 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         }
     }
 
-    public void profileInfoMouseClicked(MouseEvent mouseEvent) {
+    public void discountInfoMouseClicked(MouseEvent mouseEvent) {
         try {
             if(discountMainPane.getCenter() == null || discountMainPane.getCenter().getId().equals("mainBorderPane")) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("DiscountMenuInfo.fxml"));
                 discountMainPane.setCenter(loader.load());
+                discountCustomersPane.setStyle("");
+                discountInfoPane.setStyle("-fx-background-color: #90CAF9;   -fx-background-radius: 0 10 10 0;");
+
                 DiscountProcessor discountProcessor = loader.getController();
                 discountProcessor.parentProcessor = this;
+                discountProcessor.setFields();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -194,23 +222,24 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         Optional<ButtonType> optionalButtonType = notification.getAlert().showAndWait();
 
         if(optionalButtonType.get() == ButtonType.OK) {
-            if(notification.equals(Notification.ADD_DISCOUNT))
+            if(notification.equals(Notification.ADD_DISCOUNT)) {
+                updateParentTable();
                 this.myStage.close();
-            else
-                profileInfoMouseClicked(null);
+            } else
+                discountInfoMouseClicked(null);
         }
     }
 
     public void saveChangesMouseClicked(MouseEvent mouseEvent) {
         Discount discount = ((DiscountProcessor) parentProcessor).discount;
 
-        if(isDateTimeEmpty(startDatePicker, startTimePicker)) {
+        if(!isDateTimeEmpty(startDatePicker, startTimePicker)) {
             LocalDateTime localStartDateTime = LocalDateTime.of(startDatePicker.getValue(), startTimePicker.getValue());
             Date startDate = new Date(Timestamp.valueOf(localStartDateTime).getTime());
             discount.setStartDate(startDate);
         }
 
-        if(isDateTimeEmpty(finishDatePicker, startTimePicker)) {
+        if(!isDateTimeEmpty(finishDatePicker, finishTimePicker)) {
             LocalDateTime localFinishDateTime = LocalDateTime.of(finishDatePicker.getValue(), finishTimePicker.getValue());
             Date finishDate = new Date(Timestamp.valueOf(localFinishDateTime).getTime());
             discount.setFinishDate(finishDate);
@@ -218,18 +247,18 @@ public class DiscountProcessor extends Processor implements Initializable, chang
 
         if(!isTextFieldEmpty(discountCodeTextField))
             discount.setCode(discountCodeTextField.getText());
-        if(!isTextFieldEmpty(discountCodeTextField))
+        if(!isTextFieldEmpty(discountPercentTextField))
             discount.setDiscountPercent(Double.parseDouble(discountPercentTextField.getText()));
-        if(!isTextFieldEmpty(discountCodeTextField))
+        if(!isTextFieldEmpty(maxDiscountTextField))
             discount.setMaxDiscount(Double.parseDouble(maxDiscountTextField.getText()));
-        if(!isTextFieldEmpty(discountCodeTextField))
+        if(!isTextFieldEmpty(maxRepetitionTextField))
             discount.setMaxRepetition(Integer.parseInt(maxRepetitionTextField.getText()));
 
         ((DiscountProcessor) parentProcessor).discountCustomersMouseClicked(null);
     }
 
     private boolean isDateTimeEmpty(JFXDatePicker datePicker, JFXTimePicker timePicker) {
-        return datePicker.getValue() != null && timePicker.getValue() != null;
+        return datePicker.getValue() == null || timePicker.getValue() == null;
     }
 
     private boolean isTextFieldEmpty(TextField textField) {
@@ -255,17 +284,25 @@ public class DiscountProcessor extends Processor implements Initializable, chang
 
     public void setDiscount(Discount discount) {
         this.discount = discount;
+
+        //Todo Jesus
+//        setFields();
     }
 
     @Override
     public void setMyStage(Stage myStage) {
         this.myStage = myStage;
         myStage.setOnCloseRequest(event -> {
-            System.out.println("Hello");
             parentProcessor.removeSubStage(myStage);
             adminControl.removeDiscountFromHashMap(discount);
         });
     }
 
+    public void updateParentTable() {
+        TableViewProcessor<Discount> parentTableViewProcessor = (TableViewProcessor<Discount>) parentProcessor;
+        parentTableViewProcessor.removeSubStage(myStage);
+        parentTableViewProcessor.updateTable();
+        parentTableViewProcessor.updateSelectedItem();
+    }
 
 }
