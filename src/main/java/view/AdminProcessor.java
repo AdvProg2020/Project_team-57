@@ -178,8 +178,15 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 //newStage.getIcons().add(new Image(getClass().getResourceAsStream("categories icon.png")));
                 newStage.setResizable(false);
                 newStage.setTitle("Manage Categories");
+                newStage.getIcons().add(new Image(getClass().getResourceAsStream("Manage Categories Menu.png")));
                 parentProcessor.addSubStage(newStage);
-                CategoryProcessor.setCategoriesStage(newStage);
+
+                //Sepehr's Section
+                    CategoryProcessor categoryProcessor = loader.getController();
+                    categoryProcessor.setMyStage(newStage);
+                //Sepehr's Section
+
+                //CategoryProcessor.setCategoriesStage(newStage);
                 newStage.show();
             } catch (IOException e) {
                 e.printStackTrace();

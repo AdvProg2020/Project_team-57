@@ -23,9 +23,9 @@
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="nameTextField" layoutX="167.0" layoutY="40.0" />
-      <JFXTextField fx:id="parentNameTextField" layoutX="167.0" layoutY="101.0" prefHeight="31.0" prefWidth="168.0" />
-      <JFXTextField fx:id="featuresTextField" layoutX="166.0" layoutY="162.0" prefHeight="31.0" prefWidth="498.0" />
+      <JFXTextField fx:id="nameTextField" layoutX="167.0" layoutY="40.0" onMouseClicked="#textFieldMouseClicked" />
+      <JFXTextField fx:id="parentNameTextField" layoutX="167.0" layoutY="101.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="168.0" />
+      <JFXTextField fx:id="featuresTextField" layoutX="166.0" layoutY="162.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="498.0" />
       <JFXButton fx:id="addCategoryButton" layoutX="616.0" layoutY="226.0" onMouseClicked="#addCategory" style="-fx-background-color: #80CBC4;" styleClass="Button" text="Add" textFill="WHITE" />
    </children>
 </Pane>

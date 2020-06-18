@@ -24,6 +24,15 @@ public class Category {
         this.parentCategory = category.parentCategory;
     }
 
+    @Override
+    public Category clone() {
+        Category category = new Category();
+        category.setName(this.name);
+        category.setFeatures(this.features);
+        category.setParentCategory(this.parentCategory);
+        return category;
+    }
+
     public String getName() {
         return name;
     }
