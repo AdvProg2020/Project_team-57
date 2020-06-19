@@ -67,7 +67,7 @@ public class AccountProductsProcessor implements Initializable {
                     setGraphic(null);
                     setText(null);
                 } else {
-                    final ImageView image = new ImageView(ProductControl.getController().getProductImageByID(product.getID()));
+                    final ImageView image = new ImageView(ProductControl.getController().getProductImageByID(product.getID(), 1));
                     image.setFitHeight(130);
                     image.setFitWidth(150);
                     Text name = new Text("\n     " + product.getName());
@@ -103,7 +103,7 @@ public class AccountProductsProcessor implements Initializable {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    ImageView image = new ImageView(ProductControl.getController().getProductImageByID(product.getID()));
+                    ImageView image = new ImageView(ProductControl.getController().getProductImageByID(product.getID(), 1));
                     image.setFitHeight(130);
                     image.setFitWidth(150);
                     Text name = new Text("\n     " + product.getName());

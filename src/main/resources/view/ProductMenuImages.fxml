@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
+   <children>
+      <Pane fx:id="imagePane" prefHeight="300.0" prefWidth="800.0" style="-fx-background-color: #ffffff;">
+         <children>
+            <Rectangle fx:id="productImageRectangle" arcHeight="30.0" arcWidth="30.0" fill="#b0bec5" height="275.0" layoutX="175.0" layoutY="13.0" stroke="#78909c" strokeType="INSIDE" strokeWidth="2.0" width="450.0" />
+            <ImageView fx:id="removeImageButton" fitHeight="45.0" fitWidth="45.0" layoutX="635.0" layoutY="21.0" onMouseEntered="#upperButtonsOnMouse" onMouseExited="#upperButtonsOutMouse" opacity="0.8" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Remove%20Image.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="addImageButton" fitHeight="45.0" fitWidth="45.0" layoutX="635.0" layoutY="73.0" onMouseEntered="#upperButtonsOnMouse" onMouseExited="#upperButtonsOutMouse" opacity="0.8" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Add%20Image.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="mediaButton" fitHeight="45.0" fitWidth="45.0" layoutX="123.0" layoutY="241.0" onMouseEntered="#upperButtonsOnMouse" onMouseExited="#upperButtonsOutMouse" opacity="0.8" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Media.png" />
+               </image>
+            </ImageView>
+         </children></Pane>
+      <Pane prefHeight="50.0" prefWidth="800.0" style="-fx-background-color: #ffffff;">
+         <children>
+            <ImageView fx:id="nextImageButton" fitHeight="35.0" fitWidth="35.0" layoutX="418.0" layoutY="8.0" onMouseClicked="#nextImage" onMouseEntered="#upperButtonsOnMouse" onMouseExited="#upperButtonsOutMouse" opacity="0.8" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/next.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="imageNumberLabel" alignment="CENTER" layoutX="383.0" layoutY="15.0" prefHeight="21.0" prefWidth="35.0" text="1">
+               <font>
+                  <Font name="Calibri Bold" size="19.0" />
+               </font>
+            </Label>
+            <ImageView fx:id="previousImageButton" fitHeight="35.0" fitWidth="35.0" layoutX="348.0" layoutY="8.0" onMouseClicked="#previousImage" onMouseEntered="#upperButtonsOnMouse" onMouseExited="#upperButtonsOutMouse" opacity="0.8" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/previous.png" />
+               </image>
+            </ImageView>
+         </children></Pane>
+   </children>
+</VBox>

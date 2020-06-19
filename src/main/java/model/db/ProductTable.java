@@ -297,8 +297,8 @@ public class ProductTable extends Database {
     }
 
 
-    public static String getProductImageFilePath(String ID) {
-        String fileName = "database\\Images\\Products\\" + ID;
+    public static String getProductImageFilePath(String ID, int number) {
+        String fileName = "database\\Images\\Products\\" + ID + "\\" + number;
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {
             String filePath = fileName + "." + validImageExtension;
@@ -308,8 +308,8 @@ public class ProductTable extends Database {
         return null;
     }
 
-    public static FileInputStream getProductImageInputStream(String ID) throws FileNotFoundException {
-        return new FileInputStream(getProductImageFilePath(ID));
+    public static FileInputStream getProductImageInputStream(String ID, int number) throws FileNotFoundException {
+        return new FileInputStream(getProductImageFilePath(ID, number));
     }
 }
 

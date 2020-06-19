@@ -632,19 +632,30 @@ public class ProductControl extends Control {
         return null;
     }
 
-    public Image getProductImageByID(String ID) {
+    public Image getProductImageByID(String ID, int number) {
         try {
             if(doesProductHaveImage(ID))
-                return new Image(ProductTable.getProductImageInputStream(ID));
-            return new Image(ProductTable.getProductImageInputStream("1"));
+                return new Image(ProductTable.getProductImageInputStream(ID, number));
+            return new Image(ProductTable.getProductImageInputStream("1", 1));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private boolean doesProductHaveImage(String ID) {
-        return ProductTable.getProductImageFilePath(ID) != null;
+    public boolean doesProductHaveImage(String ID) {
+        return ProductTable.getProductImageFilePath(ID, 1) != null;
+    }
+
+    public boolean doesProductHaveImageWithNumber(String ID, int number) {
+        return ProductTable.getProductImageFilePath(ID, number) != null;
+
+    }
+
+    public int getProductImagesNumberByID(String productID) {
+        int counter = 0;
+        while (doesProductHaveImageWithNumber(productID,(++counter))) {}
+        return --counter;
     }
 
     public TreeItem<Category> getCategoryTableRoot() {
@@ -669,4 +680,5 @@ public class ProductControl extends Control {
             setSubCategories(subCategoryTreeItem);
         }
     }
+
 }
