@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.media.MediaView?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
+   <children>
+      <Pane prefHeight="300.0" prefWidth="800.0" style="-fx-background-color: #ffffff;">
+         <children>
+            <ImageView fx:id="deleteMediaButton" fitHeight="45.0" fitWidth="45.0" layoutX="635.0" layoutY="21.0" opacity="0.8" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Remove%20Media.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="addMediaButton" fitHeight="45.0" fitWidth="45.0" layoutX="635.0" layoutY="73.0" opacity="0.8" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Add%20Media.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="ImageButton" fitHeight="45.0" fitWidth="45.0" layoutX="122.0" layoutY="241.0" opacity="0.8" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Image.png" />
+               </image>
+            </ImageView>
+            <MediaView fitHeight="275.0" fitWidth="450.0" layoutX="175.0" layoutY="13.0" />
+         </children>
+      </Pane>
+      <Pane prefHeight="50.0" prefWidth="800.0" style="-fx-background-color: #ffffff;">
+         <children>
+            <ImageView fx:id="nextVideo" fitHeight="35.0" fitWidth="35.0" layoutX="418.0" layoutY="8.0" opacity="0.8" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/next.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="mediaNumberLabel" alignment="CENTER" layoutX="383.0" layoutY="15.0" prefHeight="21.0" prefWidth="35.0" text="1">
+               <font>
+                  <Font name="Calibri Bold" size="19.0" />
+               </font>
+            </Label>
+            <ImageView fx:id="PreviousVideo" fitHeight="35.0" fitWidth="35.0" layoutX="348.0" layoutY="8.0" opacity="0.8" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/previous.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+   </children>
+</VBox>

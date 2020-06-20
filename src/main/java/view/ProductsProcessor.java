@@ -257,9 +257,10 @@ public class ProductsProcessor implements Initializable, changeTextFieldFeatures
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPane.fxml"));
         Pane root = loader.load();
         ProductsProcessor productsProcessor = loader.getController();
-        productsProcessor.productImage.setImage(productControl.getProductImageByID(product.getID()));
+        productsProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
         productsProcessor.productNameLabel.setText(product.getName());
         if(productControl.isThereProductInOff(product.getID())) {
+            //TODO
             System.out.println("Product In Off");
         } else {
             root.getChildren().remove(productsProcessor.newPriceLabel);
