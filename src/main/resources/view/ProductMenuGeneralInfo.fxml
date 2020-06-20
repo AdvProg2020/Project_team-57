@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="117.0" layoutY="105.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Name ">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></Label>
+      <JFXTextField layoutX="173.0" layoutY="105.0" prefHeight="35.0" prefWidth="168.0" />
+      <Label layoutX="93.0" layoutY="173.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Category ">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Label>
+      <JFXTextField layoutX="173.0" layoutY="173.0" prefHeight="35.0" prefWidth="168.0" />
+      <Label layoutX="101.0" layoutY="240.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Amount ">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </Label>
+      <JFXTextField layoutX="173.0" layoutY="240.0" prefHeight="35.0" prefWidth="68.0" />
+      <Label layoutX="79.0" layoutY="393.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Description ">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></Label>
+      <JFXTextArea layoutX="173.0" layoutY="385.0" prefHeight="44.0" prefWidth="296.0" wrapText="true" />
+      <Label layoutX="117.0" layoutY="331.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Brand ">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></Label>
+      <JFXTextField layoutX="173.0" layoutY="331.0" prefHeight="35.0" prefWidth="168.0" />
+      <JFXButton layoutX="353.0" layoutY="466.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text="Save Changes">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></JFXButton>
+   </children>
+</Pane>
