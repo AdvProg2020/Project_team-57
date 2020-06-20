@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
+import controller.account.VendorControl;
 import controller.product.ProductControl;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
@@ -12,7 +13,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -40,6 +43,7 @@ public class ProductProcessor extends Processor {
     }
 
     ProductControl productControl = ProductControl.getController();
+    private static VendorControl vendorControl = VendorControl.getController();
 
     //MainPane
     public BorderPane mainPane;
@@ -343,6 +347,18 @@ public class ProductProcessor extends Processor {
     }
 
     public void saveChangesAction(ActionEvent actionEvent) {
+        ProductMenuType menuType = ((ProductProcessor) parentProcessor).menuType;
+
+        if(menuType == ProductMenuType.VENDOR_ADD) {
+            addProduct();
+        } else if(menuType == ProductMenuType.VENDOR_EDIT) {
+            editProduct();
+        } else {
+            System.out.println("Shit. Error In Save Changes");
+        }
+    }
+
+    private void addProduct() {
         product = new Product();
         product.setName(nameTextField.getText());
         product.setCategory(categoryTextField.getText());
@@ -364,9 +380,42 @@ public class ProductProcessor extends Processor {
         product.setDescription(descriptionTextArea.getText());
 
         //Todo Koodoomaro Taraf Mitoone Khali Bezare?
-        //Todo Editing Or Adding Section
-
+        vendorControl.addProduct(product);
         System.out.println("Yeah, Baby");
+    }
+
+    private void editProduct() {
+        String productID = ((ProductProcessor) parentProcessor).product.getID();
+
+        Alert alert = null;
+        alert = editField("ProductName", nameTextField, productID, alert);
+        alert = editField("Category", categoryTextField, productID, alert);
+
+        String countFieldName = countLabel.getText().equals(" Count ") ? "Count" : "Amount";
+        alert = editField(countFieldName, countTextField, productID, alert);
+
+        alert = editField("Brand", brandTextField, productID, alert);
+        alert = editField("Description", descriptionTextArea, productID, alert);
+
+//        if(alert.getTitle().equals("Edit Successful")) {
+            //Todo
+//        }
+
+        //Todo Koodoomaro Taraf Mitoone Khali Bezare?
+        //Todo Setting Alerts
+        alert.show();
+    }
+
+    private Alert editField(String fieldName, TextInputControl textInputControl, String productID, Alert previousAlert) {
+        Alert alert = productControl.editField(fieldName, textInputControl.getText(), productID).getAlert();
+
+        if(!alert.getTitle().equals("Edit Successful"))
+            textInputControl.setStyle(errorTextFieldStyle);
+
+        if(previousAlert == null || previousAlert.getTitle().equals("Edit Successful"))
+            return alert;
+        else
+            return previousAlert;
     }
 
     public void changeCountableField(ActionEvent actionEvent) {

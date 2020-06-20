@@ -41,9 +41,6 @@ public class CategoryProcessor extends Processor implements Initializable {
     public JFXTextField nameTextField, parentNameTextField, featuresTextField;
     public JFXButton addCategoryButton;
 
-    //Todo
-    private static String errorTextFieldStyle = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Todo

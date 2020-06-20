@@ -34,7 +34,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ProfileProcessor implements Initializable {
+public class ProfileProcessor extends Processor implements Initializable {
     private static AccountControl accountControl = AccountControl.getController();
     private static Account account;
 
@@ -168,29 +168,6 @@ public class ProfileProcessor implements Initializable {
                 }
             }
         });
-    }
-
-    private String removeDots(String text) {
-        StringBuilder stringBuilder = new StringBuilder(text);
-        boolean foundDot = false;
-        int textSize = text.length();
-
-        for (int i = 0; i < textSize; i++) {
-            if(text.charAt(i) < 48 || text.charAt(i) > 57) {
-                if(text.charAt(i) == '.') {
-                    if(foundDot) {
-                        stringBuilder.deleteCharAt(i);
-                        textSize--;
-                    }
-                    foundDot = true;
-                } else {
-                    stringBuilder.deleteCharAt(i);
-                    textSize--;
-                }
-            }
-        }
-
-        return stringBuilder.toString();
     }
 
     private void setProfilePasswordFields() {

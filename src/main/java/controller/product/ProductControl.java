@@ -135,7 +135,7 @@ public class ProductControl extends Control {
 
     public Notification editField(String fieldName, String newField, String ID) {
         try {
-            if(fieldName.equals("Category") && !CategoryTable.isThereCategoryWithName(newField))
+            if (fieldName.equals("Category") && !CategoryTable.isThereCategoryWithName(newField))
                 return Notification.INVALID_CATEGORY_NAME;
 
             if (ProductTable.getProductByID(ID).getStatus() == 2)
@@ -166,8 +166,8 @@ public class ProductControl extends Control {
         try {
             if (fieldName.equals("Name") || fieldName.equals("Brand") ||
                     fieldName.equals("Category") || fieldName.equals("Description")) {
-                if (fieldName.equals("Name"))
-                    fieldName = "ProductName";
+//                if (fieldName.equals("Name"))
+//                    fieldName = "ProductName";
                 EditingProductTable.editFieldWithName(ID, fieldName, newField);
             } else if (fieldName.equals("Count"))
                 EditingProductTable.changeProductCount(ID, Integer.parseInt(newField));

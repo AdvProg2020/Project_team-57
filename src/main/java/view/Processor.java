@@ -12,6 +12,8 @@ public abstract class Processor {
     protected Processor parentProcessor;
     private ArrayList<Stage> subStages = new ArrayList<>();
 
+    protected static final String errorTextFieldStyle = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
+
     public Stage getMyStage() {
         return myStage;
     }
