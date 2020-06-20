@@ -27,7 +27,13 @@ public class AdminControl extends AccountControl{
     }
 
     public void addDiscountToHashMap(Discount discount) {
-        discountsAddedUsers.put(discount, new ArrayList<>());
+        if(discount.getCustomersWithRepetition().isEmpty())
+            discountsAddedUsers.put(discount, new ArrayList<>());
+        else {
+            ArrayList<String> users = new ArrayList<>();
+            users.addAll(discount.getCustomersWithRepetition().keySet());
+            discountsAddedUsers.put(discount, users);
+        }
     }
 
     public void removeDiscountFromHashMap(Discount discount) {
