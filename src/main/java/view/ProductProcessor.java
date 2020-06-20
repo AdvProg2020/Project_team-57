@@ -477,9 +477,7 @@ public class ProductProcessor extends Processor {
 
     public void textFieldMouseClicked(Event actionEvent) {
         TextInputControl textInputControl = (TextInputControl) actionEvent.getSource();
-
-        if(textInputControl.getStyle().contains(errorTextFieldStyle))
-            textInputControl.setStyle(textInputControl.getStyle().replace(errorTextFieldStyle, ""));
+        textInputControl.setStyle(textInputControl.getStyle().replace(errorTextFieldStyle, ""));
     }
 
     //CommentsPane
@@ -558,11 +556,15 @@ public class ProductProcessor extends Processor {
     }
 
     public void addComment(ActionEvent actionEvent) {
-        if(commentTitle.getText() == null || commentTitle.getText().isEmpty()) {
+        boolean isTitleEmpty = false, isContentEmpty = false;
+
+        if(isTitleEmpty = (commentTitle.getText() == null || commentTitle.getText().isEmpty()))
             commentTitle.setStyle(commentTitle.getStyle() + " " + errorTextFieldStyle);
-        } else if(commentContent.getText() == null || commentContent.getText().isEmpty()) {
+
+        if(isContentEmpty = (commentContent.getText() == null || commentContent.getText().isEmpty()))
             commentContent.setStyle(commentContent.getStyle() + " " + errorTextFieldStyle);
-        } else {
+
+        if(!(isContentEmpty && isTitleEmpty)) {
             comment.setTitle(commentTitle.getText());
             comment.setContent(commentContent.getText());
             comment.setScore((int) commentScore.getRating());
