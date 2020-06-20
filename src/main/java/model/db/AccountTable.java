@@ -225,8 +225,10 @@ public class AccountTable extends Database {
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {
             String filePath = fileName + "." + validImageExtension;
-            if(new File(filePath).exists())
+            File file = new File(filePath);
+            if(file.exists()){
                 return filePath;
+            }
         }
         return null;
     }
@@ -240,5 +242,10 @@ public class AccountTable extends Database {
         String fileExtension = splitPath[splitPath.length - 1];
         File saveImage = new File("database\\Images\\Users\\" + username + "." + fileExtension);
         Files.copy(pictureFile.toPath(), saveImage.toPath());
+    }
+
+    public static void deleteProfileImage(String username) {
+        File file = new File(getUserImageFilePath(username));
+        file.delete();
     }
 }

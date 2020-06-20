@@ -12,6 +12,7 @@ import model.existence.Off;
 import notification.Notification;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -378,9 +379,19 @@ public class AccountControl extends Control implements IOValidity {
     public Image getProfileImageByUsername(String username) {
         try {
             if(doesUserHaveImage(username))
-                return new Image(AccountTable.getProfileImageInputStream(username));
-            return new Image(AccountTable.getProfileImageInputStream("1"));
+            {
+                FileInputStream fileInputStream = AccountTable.getProfileImageInputStream(username);
+                Image image = new Image(fileInputStream);
+                fileInputStream.close();
+                return image;
+            }
+            FileInputStream fileInputStream = AccountTable.getProfileImageInputStream("1");
+            Image image = new Image(fileInputStream);
+            fileInputStream.close();
+            return image;
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -392,6 +403,9 @@ public class AccountControl extends Control implements IOValidity {
 
     public void setAccountPicture(String username, File pictureFile) {
         if(pictureFile != null) {
+            if(doesUserHaveImage(username)) {
+                AccountTable.deleteProfileImage(username);
+            }
             try {
                 AccountTable.setProfileImage(username, pictureFile);
             } catch (IOException e) {

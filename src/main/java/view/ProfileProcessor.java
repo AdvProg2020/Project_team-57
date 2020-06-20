@@ -364,8 +364,9 @@ public class ProfileProcessor extends Processor implements Initializable {
         Image image = new Image(fileInputStream);
         ImagePattern imagePattern = new ImagePattern(image);
         circle.setFill(imagePattern);
-
+        profilePictureStackPane.getChildren().remove(1, profilePictureStackPane.getChildren().size());
         profilePictureStackPane.getChildren().add(circle);
+        profilePictureStackPane.setStyle("-fx-cursor: hand");
         circle.setDisable(true);
 
         circle.translateYProperty().set(20);

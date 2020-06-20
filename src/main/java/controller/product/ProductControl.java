@@ -11,6 +11,7 @@ import model.existence.Product;
 import notification.Notification;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -661,13 +662,43 @@ public class ProductControl extends Control {
 
     public Image getProductImageByID(String ID, int number) {
         try {
-            if(doesProductHaveImage(ID))
-                return new Image(ProductTable.getProductImageInputStream(ID, number));
-            return new Image(ProductTable.getProductImageInputStream("1", 1));
+            if(doesProductHaveImage(ID)) {
+                FileInputStream fileInputStream = ProductTable.getProductImageInputStream(ID, number);
+                Image image = new Image(fileInputStream);
+                fileInputStream.close();
+                return image;
+            }
+            FileInputStream fileInputStream = ProductTable.getProductImageInputStream("1", 1);
+            Image image = new Image(fileInputStream);
+            fileInputStream.close();
+            return image;
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Image getOffImageByID(String offID) {
+        try {
+        if(doesOffHaveImage(offID)) {
+            FileInputStream fileInputStream = ProductTable.getOffImageInputStream(offID);
+            Image image = new Image(fileInputStream);
+            fileInputStream.close();
+            return image;
+        }
+        return new Image(ProductTable.getOffImageInputStream("1"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private boolean doesOffHaveImage(String offID) {
+        return ProductTable.getOffImageFilePath(offID) != null;
     }
 
     public boolean doesProductHaveImage(String ID) {
@@ -676,6 +707,20 @@ public class ProductControl extends Control {
 
     public boolean doesProductHaveImageWithNumber(String ID, int number) {
         return ProductTable.getProductImageFilePath(ID, number) != null;
+
+    }
+
+    public void setOffPicture(String offID, File pictureFile) {
+        if(pictureFile != null) {
+            if(doesOffHaveImage(offID)) {
+                ProductTable.removeOffImage(offID);
+            }
+            try {
+                ProductTable.setOffImage(offID, pictureFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 

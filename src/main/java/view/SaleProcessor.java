@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import model.existence.Discount;
 import model.existence.Off;
@@ -37,30 +38,35 @@ public class SaleProcessor extends Processor implements Initializable {
     public Label discountPercentLabel;
     public Label finishDateLabel;
     public Label startDateLabel;
-
     public JFXTextField discountCodeTextField;
     public JFXTextField maxDiscountTextField;
     public JFXTextField maxRepetitionTextField;
     public JFXTextField discountPercentTextField;
-
     public JFXDatePicker startDatePicker;
     public JFXTimePicker startTimePicker;
-
     public JFXDatePicker finishDatePicker;
     public JFXTimePicker finishTimePicker;
-
     public ImageView saveChangeButton;
-
     public BorderPane discountMainPane;
     public Pane discountInfoPane, discountCustomersPane;
 
     private Discount discount;
-
     //OffProcess
     public BorderPane offMainPane;
     public Pane offInfoPane;
     public Pane offProductsPane;
     private Off off;
+    public JFXDatePicker offStartDatePicker;
+    public JFXTextField offNameField;
+    public JFXTextField offPercentField;
+    public JFXDatePicker offFinishDatePicker;
+    public JFXTimePicker offStartTimePicker;
+    public JFXTimePicker offFinishTimePicker;
+    public ImageView saveOffChangeButton;
+    public Pane offInfoMainPane;
+    public Rectangle offImageRectangle;
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -68,10 +74,15 @@ public class SaleProcessor extends Processor implements Initializable {
 
         if(locationFile.contains("DiscountMenuInfo")) {
             setFieldsSpecifications();
-        } else if(locationFile.contains("OffMenu")) {
-            offInfoPaneMouseClick(null);
-            this.off = new Off();
+        } else if(locationFile.contains("OffMenuInfo")) {
+            setOffFieldsSpecifications();
         }
+    }
+
+    private void setOffFieldsSpecifications() {
+        setDoubleFields(offPercentField, 100.000001);
+        offStartTimePicker.set24HourView(true);
+        offFinishTimePicker.set24HourView(true);
     }
 
     private void setFieldsSpecifications() {
@@ -132,6 +143,48 @@ public class SaleProcessor extends Processor implements Initializable {
                 Pane pane = (Pane)discountMainPane.getCenter();
                 pane.getChildren().remove(saveChangeButton);
             }
+        }
+    }
+
+    private void setOffFields() {
+        Off mainOff = ((SaleProcessor)parentProcessor).off;
+        if(mainOff == null) {
+            ((SaleProcessor)parentProcessor).off = new Off();
+        } else {
+            if(off.getOffName() != null && off.getOffName().length() != 0)
+                offNameField.setText(off.getOffName());
+            if(off.getOffPercent() != 0)
+                offPercentField.setText("" + off.getOffPercent());
+            if(off.getStartDate() != null)
+                setDateFieldsFromDate(offStartDatePicker, offStartTimePicker, off.getStartDate());
+            if(off.getFinishDate() != null)
+                setDateFieldsFromDate(offFinishDatePicker, offFinishTimePicker, off.getFinishDate());
+            addOffPicture();
+            if(Control.getType().equals("Admin")) {
+                offNameField.setEditable(false);
+                offPercentField.setEditable(false);
+                offStartDatePicker.setEditable(false);
+                offStartTimePicker.setEditable(false);
+                offFinishDatePicker.setEditable(false);
+                offFinishTimePicker.setEditable(false);
+                offInfoMainPane.getChildren().remove(saveOffChangeButton);
+            } else {
+                offNameField.setEditable(true);
+                offPercentField.setEditable(true);
+                offStartDatePicker.setEditable(true);
+                offStartTimePicker.setEditable(true);
+                offFinishDatePicker.setEditable(true);
+                offFinishTimePicker.setEditable(true);
+            }
+
+        }
+    }
+
+    private void addOffPicture() {
+        if (off.getOffID() != null && off.getOffID().length() != 0) {
+
+        } else {
+
         }
     }
 
@@ -250,10 +303,17 @@ public class SaleProcessor extends Processor implements Initializable {
     @Override
     public void setMyStage(Stage myStage) {
         this.myStage = myStage;
-        myStage.setOnCloseRequest(event -> {
-            parentProcessor.removeSubStage(myStage);
-            adminControl.removeDiscountFromHashMap(discount);
-        });
+        if (!myStage.getTitle().equals("Add New Off")) {
+            myStage.setOnCloseRequest(event -> {
+                parentProcessor.removeSubStage(myStage);
+                adminControl.removeDiscountFromHashMap(discount);
+            });
+        } /*else {
+            myStage.setOnCloseRequest(event -> {
+                parentProcessor.removeSubStage(myStage);
+            });
+        }*/
+
     }
 
     public void updateParentTable() {
@@ -270,13 +330,14 @@ public class SaleProcessor extends Processor implements Initializable {
     //OffMethods
     public void offInfoPaneMouseClick(MouseEvent mouseEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("OffMenuInfo.fxml"));
-            discountMainPane.setCenter(loader.load());
-            discountCustomersPane.setStyle("");
-            discountInfoPane.setStyle("-fx-background-color: #90CAF9;   -fx-background-radius: 0 10 10 0;");
-            SaleProcessor saleProcessor = loader.getController();
-            saleProcessor.parentProcessor = this;
-            saleProcessor.setFields();
+            if(offMainPane.getCenter() == null || offMainPane.getCenter().getId().equals("mainBorderPane")){
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("OffMenuInfo.fxml"));
+                offMainPane.setCenter(loader.load());
+                offInfoPane.setStyle("-fx-background-color: #3498DB;   -fx-background-radius: 0 10 10 0;");
+                SaleProcessor saleProcessor = loader.getController();
+                saleProcessor.parentProcessor = this;
+                saleProcessor.setOffFields();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -288,5 +349,8 @@ public class SaleProcessor extends Processor implements Initializable {
 
     public void AddOffMouseClicked(MouseEvent mouseEvent) {
         //TODO
+    }
+
+    public void saveOffChange(MouseEvent mouseEvent) {
     }
 }
