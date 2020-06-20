@@ -13,27 +13,27 @@
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <Pane prefHeight="100.0" prefWidth="100.0">
+                  <Pane fx:id="discountInfoPane" onMouseClicked="#discountInfoMouseClicked" prefHeight="100.0" prefWidth="100.0" styleClass="Main_Button">
                      <children>
-                        <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="5.0" layoutY="5.0" onMouseClicked="#profileInfoMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+                        <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="5.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../Images/Icons/TableViewMenu/Discount%20Menu.png" />
                            </image>
                         </ImageView>
                      </children>
                   </Pane>
-                  <Pane prefHeight="100.0" prefWidth="100.0">
+                  <Pane fx:id="discountCustomersPane" onMouseClicked="#discountCustomersMouseClicked" prefHeight="100.0" prefWidth="100.0" styleClass="Main_Button">
                      <children>
-                        <ImageView fitHeight="80.0" fitWidth="80.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#discountCustomersMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+                        <ImageView fitHeight="80.0" fitWidth="80.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../Images/Icons/TableViewMenu/Customers.png" />
                            </image>
                         </ImageView>
                      </children>
                   </Pane>
-                  <Pane prefHeight="100.0" prefWidth="100.0">
+                  <Pane onMouseClicked="#AddDiscountMouseClicked" prefHeight="100.0" prefWidth="100.0" styleClass="Main_Button">
                      <children>
-                        <ImageView fitHeight="80.0" fitWidth="80.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#AddDiscountMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+                        <ImageView fitHeight="80.0" fitWidth="80.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../Images/Icons/Correct%20Discount%20Menu.png" />
                            </image>

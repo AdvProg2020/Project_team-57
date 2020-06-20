@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.Rating?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="267.0" prefWidth="440.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <JFXTextField layoutX="39.0" layoutY="82.0" prefHeight="33.0" prefWidth="109.0" promptText=" Title" style="-fx-border-width: 1 1 1 1; -fx-border-color: black; -fx-background-color: #ECEFF1;" />
+      <JFXTextArea layoutX="39.0" layoutY="124.0" prefHeight="80.0" prefWidth="361.0" promptText=" Content" style="-fx-border-width: 1 1 1 1; -fx-border-color: black; -fx-background-color: #ECEFF1;" wrapText="true" />
+      <JFXButton layoutX="352.0" layoutY="224.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text="Add">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </JFXButton>
+      <JFXTextField layoutX="39.0" layoutY="29.0" prefHeight="31.0" prefWidth="127.0" promptText=" Username" style="-fx-background-color: #ECEFF1; -fx-background-radius: 10;" />
+      <Rating layoutX="180.0" layoutY="29.0" />
+      <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="368.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/ProductMenu/Remove.png" />
+         </image></ImageView>
+   </children>
+</Pane>

@@ -56,7 +56,7 @@ public class SignInProcessor{
         if(userNameField.getText().equals("") || passwordField.getText().equals("")) {
           if(userNameField.getText().equals(""))
               userNameField.setStyle(style);
-          if(userNameField.getText().equals(""))
+          if(passwordField.getText().equals(""))
               passwordField.setStyle(style);
         } else {
             Alert alert = ioControl.login(new Account(userNameField.getText(), passwordField.getText())).getAlert();

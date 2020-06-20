@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class ProductsProcessor implements Initializable, changeTextFieldFeatures {
+public class ProductsProcessor extends Processor implements Initializable {
     private static final int PRODUCT_SCROLL_PANE_WIDTH = 1050;
     private static final int PRODUCT_FIELD_HEIGHT = 335;
     private static final int PRODUCT_PAGES_BAR_HEIGHT = 50;
@@ -257,9 +257,10 @@ public class ProductsProcessor implements Initializable, changeTextFieldFeatures
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPane.fxml"));
         Pane root = loader.load();
         ProductsProcessor productsProcessor = loader.getController();
-        productsProcessor.productImage.setImage(productControl.getProductImageByID(product.getID()));
+        productsProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
         productsProcessor.productNameLabel.setText(product.getName());
         if(productControl.isThereProductInOff(product.getID())) {
+            //TODO
             System.out.println("Product In Off");
         } else {
             root.getChildren().remove(productsProcessor.newPriceLabel);

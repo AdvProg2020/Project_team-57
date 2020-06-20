@@ -30,6 +30,10 @@ public class AdminControl extends AccountControl{
         discountsAddedUsers.put(discount, new ArrayList<>());
     }
 
+    public void removeDiscountFromHashMap(Discount discount) {
+        discountsAddedUsers.remove(discount);
+    }
+
     public HashMap<Discount, ArrayList<String>> getDiscountsAddedUsers() {
         return discountsAddedUsers;
     }
@@ -357,12 +361,18 @@ public class AdminControl extends AccountControl{
     public Notification isDiscountComplete(Discount discount) {
         Notification notification = null;
 
-        if(discount.getCode() == null)
+        if(discount.getCode() == null || discount.getCode().isEmpty())
             notification = Notification.EMPTY_DISCOUNT_CODE;
+        else if(discount.getCode().length() > 16)
+            notification = Notification.INVALID_DISCOUNT_CODE_LENGTH;
         else if(discount.getStartDate() == null)
             notification = Notification.EMPTY_DISCOUNT_START_DATE;
         else if(discount.getFinishDate() == null)
             notification = Notification.EMPTY_DISCOUNT_FINISH_DATE;
+        else if(discount.getStartDate().getTime() < System.currentTimeMillis())
+            notification = Notification.INVALID_START_DATE;
+        else if(discount.getStartDate().getTime() >= discount.getFinishDate().getTime())
+            notification = Notification.INVALID_FINISH_DATE_FOR_START_DATE;
         else if(discount.getDiscountPercent() == 0)
             notification = Notification.EMPTY_DISCOUNT_PERCENT;
         else if(discount.getMaxDiscount() == 0)
@@ -386,7 +396,7 @@ public class AdminControl extends AccountControl{
         return ID.toString();
     }
 
-    public Notification editCode(String ID, String code) {
+    public Notification editDiscountCode(String ID, String code) {
         try {
             if (code.length() > 16 || code.length() < 6)
                 return Notification.INVALID_DISCOUNT_CODE;

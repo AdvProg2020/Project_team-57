@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="generalInfoPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
+   <children>
+      <Label layoutX="83.0" layoutY="48.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Name ">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></Label>
+      <JFXTextField fx:id="nameTextField" layoutX="139.0" layoutY="48.0" prefHeight="35.0" prefWidth="128.0" />
+      <Label layoutX="59.0" layoutY="116.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Category ">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Label>
+      <JFXTextField fx:id="categoryTextField" layoutX="139.0" layoutY="116.0" prefHeight="35.0" prefWidth="128.0" />
+      <Label fx:id="countLabel" layoutX="84.0" layoutY="236.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Count ">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </Label>
+      <JFXTextField fx:id="countTextField" layoutX="141.0" layoutY="236.0" prefHeight="35.0" prefWidth="51.0" />
+      <Label layoutX="45.0" layoutY="372.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Description ">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></Label>
+      <JFXTextArea fx:id="descriptionTextArea" layoutX="139.0" layoutY="372.0" prefHeight="82.0" prefWidth="258.0" wrapText="true" />
+      <Label layoutX="83.0" layoutY="310.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Brand ">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></Label>
+      <JFXTextField fx:id="brandTextField" layoutX="139.0" layoutY="310.0" prefHeight="35.0" prefWidth="128.0" />
+      <JFXButton fx:id="saveChangesButton" defaultButton="true" layoutX="280.0" layoutY="480.0" onAction="#saveChangesAction" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text="Save Changes">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></JFXButton>
+      <JFXToggleButton fx:id="countableToggleButton" layoutX="74.0" layoutY="199.0" maxHeight="-Infinity" minHeight="-Infinity" onAction="#changeCountableField" prefHeight="35.0" selected="true" text="Countable" toggleColor="#607d8b" toggleLineColor="#b0bec5">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </JFXToggleButton>
+   </children>
+</Pane>

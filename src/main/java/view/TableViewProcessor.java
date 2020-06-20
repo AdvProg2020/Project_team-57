@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import controller.account.AccountControl;
 import controller.account.AdminControl;
 import javafx.collections.FXCollections;
@@ -27,6 +28,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.existence.Account;
 import model.existence.Discount;
 import java.io.IOException;
@@ -141,6 +143,7 @@ public class TableViewProcessor<T> extends Processor {
 
     public void updateTable() {
         ObservableList<T> tableList = FXCollections.observableArrayList();
+        System.out.println(tableView);
         tableView.getItems().remove(0, tableView.getItems().size());
         switch (tableViewType) {
             case ADMINS:
@@ -187,6 +190,8 @@ public class TableViewProcessor<T> extends Processor {
                     customer.getCheckBox().setSelected(true);
                 }
             }
+            customer.getCheckBox().setOnMouseEntered(event -> simpleButtonOnMouse(event));
+            customer.getCheckBox().setOnMouseExited(event -> simpleButtonOutMouse(event));
         });
 
         return (ArrayList<T>) customers;
@@ -209,18 +214,7 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private Pane initDiscountCustomersOptions() {
-/*        tableView.getItems().forEach(t -> {
-            System.out.println("Hello");
-            Account account = (Account)t;
-            DiscountProcessor processor = ((DiscountProcessor)parentProcessor);
-            if(account.getCheckBox().isSelected()) {
-                if(!processor.isAccountAddedInDiscount(account.getUsername()))
-                    processor.addUserToDiscount(account.getUsername());
-            } else {
-                if(processor.isAccountAddedInDiscount(account.getUsername()))
-                    processor.removeUserFromDiscount(account.getUsername());
-            }
-        });*/
+        tableView.getSelectionModel().clearSelection();
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewDiscountCustomersOption.fxml"));
         try {
             Pane root = loader.load();
@@ -228,6 +222,9 @@ public class TableViewProcessor<T> extends Processor {
             processor.setParentProcessor(this);
             processor.discountCustomersListView.getItems().addAll
                     (((DiscountProcessor)parentProcessor).getDiscountAddedUsers());
+            processor.discountAddedUsersCountLabel.setText("" + processor.discountCustomersListView.getItems().size());
+            processor.discountCustomerSearchField.setText
+                    ((searchedUsername == null ? "" : searchedUsername));
             return root;
         } catch (IOException e) {
             e.printStackTrace();
@@ -344,6 +341,14 @@ public class TableViewProcessor<T> extends Processor {
                 "-fx-background-radius: 10 10 10 10;");
     }
 
+    public void simpleButtonOnMouse(MouseEvent mouseEvent) {
+        ((Parent)mouseEvent.getSource()).setStyle("-fx-cursor: hand;");
+    }
+
+    public void simpleButtonOutMouse(MouseEvent mouseEvent) {
+        ((Parent)mouseEvent.getSource()).setStyle(null);
+    }
+
     //Inside Methods
 
     public void showProfile(ActionEvent actionEvent) {
@@ -408,15 +413,38 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void showDiscount(ActionEvent actionEvent) {
+        //Todo Check By Ashkan
+        Discount discount = (Discount)((TableViewProcessor)parentProcessor).tableView.getSelectionModel().getSelectedItem();
 
+        if(canOpenSubStage("Show Discount " + discount.getID(), this)) {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("DiscountMenu.fxml"));
+            try {
+                Parent root = loader.load();
+                DiscountProcessor processor = loader.getController();
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.setTitle("Show Discount " + discount.getID());
+                newStage.setResizable(false);
+                processor.parentProcessor = this.parentProcessor;
+                System.out.println("Opening : " + processor);
+                processor.setDiscount(discount);
+                processor.discountInfoMouseClicked(null);
+                processor.setMyStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void deleteDiscount(ActionEvent actionEvent) {
-        Discount selectedDiscount = (Discount) selectedItem;
+        Discount selectedDiscount = (Discount) ((TableViewProcessor)parentProcessor).selectedItem;
         Optional<ButtonType> buttonType = new Alert
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Delete " + selectedDiscount.getCode() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
             AdminControl.getController().removeDiscountByID(selectedDiscount.getID());
+            ((TableViewProcessor) parentProcessor).updateTable();
+            ((TableViewProcessor) parentProcessor).updateSelectedItem();
         }
     }
 
@@ -425,10 +453,14 @@ public class TableViewProcessor<T> extends Processor {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("DiscountMenu.fxml"));
             try {
                 Parent root = loader.load();
+                DiscountProcessor processor = loader.getController();
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
                 newStage.setTitle("Add New Discount");
-                addSubStage(newStage);
+                newStage.setResizable(false);
+                processor.parentProcessor = this.parentProcessor;
+                processor.discountInfoMouseClicked(null);
+                processor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
                 e.printStackTrace();

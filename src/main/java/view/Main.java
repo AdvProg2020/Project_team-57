@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import model.db.AccountTable;
 import model.db.ProductTable;
@@ -16,6 +17,7 @@ import model.existence.Account;
 import model.existence.Discount;
 import model.existence.Product;
 
+import java.io.File;
 import java.sql.Date;
 import java.sql.SQLException;
 
@@ -32,13 +34,19 @@ public class Main extends Application {
             e.printStackTrace();
         }*/
         launch(args);
+/*        File file = new File("G:\\College\\2nd semester\\second semester PROJECT\\First Phase\\Codes\\First Version\\database\\Images\\Products\\p3456712.jpg");
+        System.out.println(file.delete());*/
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ProductMenu.fxml"));
         Parent root = fxmlLoader.load();
+        ProductProcessor processor = fxmlLoader.getController();
+        processor.initProcessor(ProductTable.getProductByID("p1234567"));
+/*        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
+        Parent root = fxmlLoader.load();*/
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Boos Market");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Main Icon.png")));
@@ -60,12 +68,4 @@ public class Main extends Application {
     public static Scene getScene() {
         return stage.getScene();
     }
-
-    /*public static void addDiscount() throws SQLException, ClassNotFoundException {
-        Discount discount = new Discount();
-        discount.setCode("Discount Code1");
-        discount.setStartDate(new Date(System.currentTimeMillis()));
-        discount.setFinishDate(new Date(System.currentTimeMillis() + 500000000));
-
-    }*/
 }
