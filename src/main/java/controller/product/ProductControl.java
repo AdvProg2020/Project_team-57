@@ -135,22 +135,23 @@ public class ProductControl extends Control {
 
     public Notification editField(String fieldName, String newField, String ID) {
         try {
-            if (fieldName.equals("Category") && !CategoryTable.isThereCategoryWithName(newField))
-                return Notification.INVALID_CATEGORY_NAME;
-
             if (ProductTable.getProductByID(ID).getStatus() == 2)
                 return Notification.PRODUCT_NOT_AVAILABLE;
 
-            if (checkFieldEquality(fieldName, newField, ID))
-                return Notification.SAME_FIELD_ERROR;
+//            if (checkFieldEquality(fieldName, newField, ID))
+//                return Notification.SAME_FIELD_ERROR;
+            if(newField != null && !newField.isEmpty()) {
+                if (fieldName.equals("Category") && !CategoryTable.isThereCategoryWithName(newField))
+                    return Notification.INVALID_CATEGORY_NAME;
 
-            if (ProductTable.getProductByID(ID).getStatus() == 1)
-                ProductTable.setProductStatus(ID, 3);
+                if (ProductTable.getProductByID(ID).getStatus() == 1)
+                    ProductTable.setProductStatus(ID, 3);
 
-            if (EditingProductTable.isIDFree(ID))
-                EditingProductTable.addProduct(ProductTable.getProductByID(ID));
+                if (EditingProductTable.isIDFree(ID))
+                    EditingProductTable.addProduct(ProductTable.getProductByID(ID));
 
-            editSpecificField(fieldName, newField, ID);
+                editSpecificField(fieldName, newField, ID);
+            }
 
             return Notification.EDIT_FIELD_SUCCESSFULLY;
         } catch (SQLException e) {
@@ -164,10 +165,8 @@ public class ProductControl extends Control {
 
     private void editSpecificField(String fieldName, String newField, String ID) {
         try {
-            if (fieldName.equals("Name") || fieldName.equals("Brand") ||
+            if (fieldName.equals("ProductName") || fieldName.equals("Brand") ||
                     fieldName.equals("Category") || fieldName.equals("Description")) {
-//                if (fieldName.equals("Name"))
-//                    fieldName = "ProductName";
                 EditingProductTable.editFieldWithName(ID, fieldName, newField);
             } else if (fieldName.equals("Count"))
                 EditingProductTable.changeProductCount(ID, Integer.parseInt(newField));

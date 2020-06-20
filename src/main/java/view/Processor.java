@@ -3,6 +3,7 @@ package view;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -107,6 +108,7 @@ public abstract class Processor {
     }
 
     protected void setDoubleFields(TextField textField, double maxValue) {
+        //textField.textProperty().
         textField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
@@ -145,6 +147,17 @@ public abstract class Processor {
                         (newValueLength == maxValueLength && newValue.compareTo(Integer.toString(maxValue)) >= 0))) {
                     textField.setText(oldValue);
                 }
+            }
+        });
+    }
+
+    protected void setStringFields(TextInputControl textInputControl, int maxLength) {
+        textInputControl.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if(newValue != null && newValue.length() > maxLength)
+                    textInputControl.setText(oldValue);
             }
         });
     }

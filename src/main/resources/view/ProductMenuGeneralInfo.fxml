@@ -14,28 +14,43 @@
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font></Label>
-      <JFXTextField fx:id="nameTextField" layoutX="139.0" layoutY="48.0" prefHeight="35.0" prefWidth="128.0" />
+      <JFXTextField fx:id="nameTextField" layoutX="139.0" layoutY="48.0" onAction="#textFieldMouseClicked" prefHeight="35.0" prefWidth="128.0">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></JFXTextField>
       <Label layoutX="59.0" layoutY="116.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Category ">
          <font>
             <Font name="System Bold" size="15.0" />
          </font></Label>
-      <JFXTextField fx:id="categoryTextField" layoutX="139.0" layoutY="116.0" prefHeight="35.0" prefWidth="128.0" />
+      <JFXTextField fx:id="categoryTextField" layoutX="139.0" layoutY="116.0" onAction="#textFieldMouseClicked" prefHeight="35.0" prefWidth="128.0">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></JFXTextField>
       <Label fx:id="countLabel" layoutX="84.0" layoutY="236.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Count ">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="countTextField" layoutX="141.0" layoutY="236.0" prefHeight="35.0" prefWidth="51.0" />
+      <JFXTextField fx:id="countTextField" layoutX="141.0" layoutY="236.0" onAction="#textFieldMouseClicked" prefHeight="35.0" prefWidth="51.0">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></JFXTextField>
       <Label layoutX="45.0" layoutY="372.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Description ">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font></Label>
-      <JFXTextArea fx:id="descriptionTextArea" layoutX="139.0" layoutY="372.0" prefHeight="82.0" prefWidth="258.0" wrapText="true" />
+      <JFXTextArea fx:id="descriptionTextArea" layoutX="139.0" layoutY="372.0" onMouseClicked="#textFieldMouseClicked" prefHeight="82.0" prefWidth="258.0" wrapText="true">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></JFXTextArea>
       <Label layoutX="83.0" layoutY="310.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Brand ">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font></Label>
-      <JFXTextField fx:id="brandTextField" layoutX="139.0" layoutY="310.0" prefHeight="35.0" prefWidth="128.0" />
+      <JFXTextField fx:id="brandTextField" layoutX="139.0" layoutY="310.0" onAction="#textFieldMouseClicked" prefHeight="35.0" prefWidth="128.0">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></JFXTextField>
       <JFXButton fx:id="saveChangesButton" defaultButton="true" layoutX="280.0" layoutY="480.0" onAction="#saveChangesAction" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text="Save Changes">
          <font>
             <Font name="System Bold Italic" size="15.0" />

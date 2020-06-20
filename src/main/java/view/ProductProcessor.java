@@ -10,6 +10,7 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -81,15 +82,15 @@ public class ProductProcessor extends Processor {
     public Pane generalInfoPane;
     public JFXTextField nameTextField;
     public JFXTextField categoryTextField;
-
     public JFXToggleButton countableToggleButton;
     public Label countLabel;
     public JFXTextField countTextField;
-
     public JFXTextField brandTextField;
     public JFXTextArea descriptionTextArea;
-
     public JFXButton saveChangesButton;
+
+    //ProductCommentsPane
+
 
 
     public void initProcessor(Product product, ProductMenuType productMenuType) {
@@ -98,7 +99,7 @@ public class ProductProcessor extends Processor {
         initImagePanel();
 
         //Sepehr's Section
-        initGeneralInfoPane();
+        initGeneralInfoPane(productMenuType);
     }
 
     private void initImagePanel() {
@@ -295,8 +296,11 @@ public class ProductProcessor extends Processor {
 
 
     //Sepehr's Section
-    private void initGeneralInfoPane() {
+    private void initGeneralInfoPane(ProductMenuType productMenuType) {
         try {
+            if(productMenuType == ProductMenuType.VENDOR_EDIT)
+                product = productControl.getEditedProductByID(product.getID());
+
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuGeneralInfo.fxml"));
             Parent root = loader.load();
             ProductProcessor processor = loader.getController();
@@ -312,11 +316,13 @@ public class ProductProcessor extends Processor {
         //Todo Condition Checking With Enum With Unknown Space Of Saving
         Product product = ((ProductProcessor) parentProcessor).product;
         ProductMenuType menuType = ((ProductProcessor) parentProcessor).menuType;
-        
+        setGeneralStringTextFields();
+
         if(menuType == ProductMenuType.VENDOR_ADD) {
             //Todo Changing The Name Of Save Changes Button
         } else {
             nameTextField.setText(product.getName());
+
             categoryTextField.setText(product.getCategory());
 
             countableToggleButton.setSelected(product.isCountable());
@@ -328,6 +334,7 @@ public class ProductProcessor extends Processor {
                 countTextField.setText(Double.toString(product.getAmount()));
 
             brandTextField.setText(product.getBrand());
+
             descriptionTextArea.setText(product.getDescription());
 
             if(menuType != ProductMenuType.VENDOR_EDIT)
@@ -337,10 +344,18 @@ public class ProductProcessor extends Processor {
         }
     }
 
+    private void setGeneralStringTextFields() {
+        setStringFields(nameTextField, 20);
+        setStringFields(categoryTextField, 20);
+        setStringFields(brandTextField, 20);
+        setStringFields(descriptionTextArea, 100);
+    }
+
     private void disableEditingGeneralFields() {
         generalInfoPane.getChildren().remove(saveChangesButton);
         nameTextField.setDisable(true);
         categoryTextField.setDisable(true);
+        countableToggleButton.setDisable(true);
         countTextField.setDisable(true);
         brandTextField.setDisable(true);
         descriptionTextArea.setDisable(true);
@@ -397,9 +412,10 @@ public class ProductProcessor extends Processor {
         alert = editField("Brand", brandTextField, productID, alert);
         alert = editField("Description", descriptionTextArea, productID, alert);
 
-//        if(alert.getTitle().equals("Edit Successful")) {
-            //Todo
-//        }
+        if(alert.getTitle().equals("Edit Successful") ) {
+            ((ProductProcessor) parentProcessor).product = productControl.getEditedProductByID(productID);
+            setGeneralTextFields();
+        }
 
         //Todo Koodoomaro Taraf Mitoone Khali Bezare?
         //Todo Setting Alerts
@@ -419,19 +435,27 @@ public class ProductProcessor extends Processor {
     }
 
     public void changeCountableField(ActionEvent actionEvent) {
-        //Todo Checking Setting Change Listener Multiple Times
+        //Todo Checking Setting Change Listener Multiple Times !!!! Exactly
+        Product product = ((ProductProcessor) parentProcessor).product;
 
         if(countableToggleButton.isSelected() && countLabel.getText().equals(" Amount ")) {
             countLabel.setText(" Count ");
             //Todo Check Layout Function
             countLabel.setLayoutX(countLabel.getLayoutX() + 15);
+            countTextField.setText(Integer.toString(product.getCount()));
             setIntegerFields(countTextField, Integer.MAX_VALUE);
         } else if(!countableToggleButton.isSelected() && countLabel.getText().equals(" Count ")) {
             countLabel.setText(" Amount ");
             //Todo Check Layout Function
+            countTextField.setText(Double.toString(product.getAmount()));
             countLabel.setLayoutX(countLabel.getLayoutX() - 15);
             setDoubleFields(countTextField, Double.MAX_VALUE);
         }
+    }
+
+    public void textFieldMouseClicked(Event actionEvent) {
+        TextInputControl textInputControl = (TextInputControl) actionEvent.getSource();
+        textInputControl.setStyle("");
     }
     //Sepehr's Section
 
