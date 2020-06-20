@@ -36,7 +36,7 @@ public class ProductProcessor extends Processor {
     }
 
     public static enum ProductMenuType {
-        CART, VENDOR, ADMIN, PRODUCTS
+        CART, VENDOR_ADD, VENDOR_EDIT, ADMIN, PRODUCTS
     }
 
     ProductControl productControl = ProductControl.getController();
@@ -120,7 +120,7 @@ public class ProductProcessor extends Processor {
                     }
                 }
             };
-            if(menuType != ProductMenuType.VENDOR) {
+            if(menuType != ProductMenuType.VENDOR_ADD && menuType != ProductMenuType.VENDOR_EDIT) {
                 processor.imagePane.getChildren().removeAll(removeImageButton, editImageButton, addImageButton);
             }
             upBorderPane.setLeft(root);
@@ -297,34 +297,36 @@ public class ProductProcessor extends Processor {
             Parent root = loader.load();
             ProductProcessor processor = loader.getController();
             processor.setParentProcessor(this);
-            processor.setGeneralTextFields(product);
+            processor.setGeneralTextFields();
             mainPane.setLeft(root);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void setGeneralTextFields(Product product) {
+    private void setGeneralTextFields() {
         //Todo Condition Checking With Enum With Unknown Space Of Saving
-
-        if(true /*Product Not For Adding*/) {
+        Product product = ((ProductProcessor) parentProcessor).product;
+        ProductMenuType menuType = ((ProductProcessor) parentProcessor).menuType;
+        
+        if(menuType == ProductMenuType.VENDOR_ADD) {
+            //Todo Changing The Name Of Save Changes Button
+        } else {
             nameTextField.setText(product.getName());
             categoryTextField.setText(product.getCategory());
 
-            if (product.isCountable()) {
-//                countableToggleButton.setSelected(true);
-//                changeCountableField(null);
+            countableToggleButton.setSelected(product.isCountable());
+            changeCountableField(null);
+            
+            if (product.isCountable())
                 countTextField.setText(Integer.toString(product.getCount()));
-            } else {
-                countableToggleButton.setSelected(false);
-                changeCountableField(null);
+            else
                 countTextField.setText(Double.toString(product.getAmount()));
-            }
 
             brandTextField.setText(product.getBrand());
             descriptionTextArea.setText(product.getDescription());
 
-            if(true /*Product Not For Selected Vendor User*/)
+            if(menuType != ProductMenuType.VENDOR_EDIT)
                 disableEditingGeneralFields();
 
             //Todo
@@ -345,13 +347,13 @@ public class ProductProcessor extends Processor {
         product.setName(nameTextField.getText());
         product.setCategory(categoryTextField.getText());
 
+        product.setCountable(countableToggleButton.isSelected());
+
         switch (countLabel.getText()) {
             case " Count " :
-                product.setCountable(true);
                 product.setCount(Integer.parseInt(countTextField.getText()));
                 break;
             case " Amount " :
-                product.setCountable(false);
                 product.setAmount(Double.parseDouble(countTextField.getText()));
                 break;
             default:
