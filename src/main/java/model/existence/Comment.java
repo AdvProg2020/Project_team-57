@@ -11,6 +11,7 @@ public class Comment {
     private String content;
     private int status;
     private String statStr;
+    private int score;
 
     public Comment(ResultSet resultSet) throws SQLException {
         this.commentID = resultSet.getString("CommentID");
@@ -85,5 +86,13 @@ public class Comment {
 
     public String getStatStr() {
         return statStr;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

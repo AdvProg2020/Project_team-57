@@ -10,25 +10,25 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.Rating?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="462.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="462.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
    <children>
-      <JFXScrollPane layoutX="11.0" layoutY="112.0" prefHeight="330.0" prefWidth="440.0">
+      <JFXScrollPane layoutY="91.0" prefHeight="330.0" prefWidth="440.0">
          <children>
-            <VBox prefHeight="284.0" prefWidth="440.0" />
+            <VBox fx:id="commentsVBox" prefHeight="284.0" prefWidth="440.0" />
          </children>
       </JFXScrollPane>
-      <JFXTextField alignment="CENTER" layoutX="392.0" layoutY="64.0" prefHeight="31.0" prefWidth="32.0" text="0">
+      <JFXTextField fx:id="viewsNum" alignment="CENTER" editable="false" layoutX="392.0" layoutY="43.0" prefHeight="31.0" prefWidth="32.0" text="0">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </JFXTextField>
-      <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="360.0" layoutY="64.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="360.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/Icons/ProductMenu/View.png" />
          </image>
       </ImageView>
-      <Rating layoutX="140.0" layoutY="65.0" />
-      <Label layoutX="15.0" layoutY="65.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Average Score : ">
+      <Rating fx:id="averageScore" layoutX="140.0" layoutY="44.0" />
+      <Label layoutX="15.0" layoutY="44.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Average Score : ">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>

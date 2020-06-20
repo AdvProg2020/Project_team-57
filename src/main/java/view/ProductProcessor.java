@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
+import controller.Control;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
 import javafx.animation.AnimationTimer;
@@ -22,11 +23,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+import model.existence.Comment;
 import model.existence.Product;
+import org.controlsfx.control.Rating;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,12 +39,17 @@ import java.io.IOException;
 
 public class ProductProcessor extends Processor {
 
+
     public void setMenuType(ProductMenuType menuType) {
         this.menuType = menuType;
     }
 
     public static enum ProductMenuType {
         CART, VENDOR_ADD, VENDOR_EDIT, ADMIN, PRODUCTS
+    }
+
+    public static enum CommentType {
+        ADD, SHOW;
     }
 
     ProductControl productControl = ProductControl.getController();
@@ -90,7 +99,18 @@ public class ProductProcessor extends Processor {
     public JFXButton saveChangesButton;
 
     //ProductCommentsPane
+    public VBox commentsVBox;
+    public Rating averageScore;
+    public JFXTextField viewsNum;
 
+    //ProductCommentPane
+    public Pane commentPane;
+    public JFXTextField commentTitle;
+    public JFXTextArea commentContent;
+    public JFXButton addComment;
+    public JFXTextField userNameComment;
+    public Rating commentScore;
+    public ImageView deleteComment;
 
 
     public void initProcessor(Product product, ProductMenuType productMenuType) {
@@ -464,21 +484,74 @@ public class ProductProcessor extends Processor {
     //CommentsPane
     private void initCommentsPane(ProductMenuType productMenuType) {
         try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuGeneralInfo.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuCommentsPane.fxml"));
             Parent root = loader.load();
             ProductProcessor processor = loader.getController();
             processor.setParentProcessor(this);
-            processor.initCommentsThroughThePane((((ProductProcessor) parentProcessor).product).getID(), productMenuType);
+            processor.initCommentsThroughThePane(product.getID(), product.getSeen(), productMenuType);
+            mainPane.setRight(root);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
-    private void initCommentsThroughThePane(String id, ProductMenuType productMenuType) {
+    private void initCommentsThroughThePane(String productID, int seen, ProductMenuType productMenuType) {
+        averageScore.setRating(productControl.getAverageScore(productID));
+        averageScore.setDisable(true);
 
+        viewsNum.setText(Integer.toString(seen));
+        viewsNum.setDisable(true);
+
+        for (Comment productComment : productControl.getAllProductComments(productID))
+            commentsVBox.getChildren().add(getCommentPane(productComment, CommentType.SHOW));
+
+        if(Control.getType() != null && Control.getType().equals("Customer"))
+            commentsVBox.getChildren().add(getCommentPane(new Comment(), CommentType.ADD));
     }
 
+    private Pane getCommentPane(Comment comment, CommentType commentType) {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuCommentPane.fxml"));
+            Parent root = loader.load();
+            ProductProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            processor.initCommentFields(comment, commentType);
+            return (Pane) root;
+        } catch (IOException e) {
+            System.out.println("Shit. Error In Loading Comment Pane");
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private void initCommentFields(Comment productComment, CommentType commentType) {
+        switch (commentType) {
+            case SHOW:
+                userNameComment.setText(productComment.getCustomerUsername());
+                commentTitle.setText(productComment.getTitle());
+                commentContent.setText(productComment.getContent());
+                commentScore.setRating(productComment.getScore());
+                userNameComment.setDisable(true);
+                commentTitle.setDisable(true);
+                commentContent.setDisable(true);
+                commentScore.setDisable(true);
+                commentPane.getChildren().remove(addComment);
+                break;
+            case ADD:
+                setStringFields(userNameComment, 16);
+                setStringFields(commentTitle, 16);
+                setStringFields(commentContent, 100);
+                break;
+            default:
+                System.out.println("Shit. Error In InitCommentFields");
+        }
+    }
+
+    public void addComment(ActionEvent actionEvent) {
+        //Todo
+    }
     //Sepehr's Section
 
 }
