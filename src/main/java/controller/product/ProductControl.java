@@ -10,7 +10,9 @@ import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -654,8 +656,11 @@ public class ProductControl extends Control {
 
     public int getProductImagesNumberByID(String productID) {
         int counter = 0;
-        while (doesProductHaveImageWithNumber(productID,(++counter))) {}
-        return --counter;
+        for(int i = 1; i < 6; ++i) {
+            if(doesProductHaveImageWithNumber(productID, i))
+                counter++;
+        }
+        return counter;
     }
 
     public TreeItem<Category> getCategoryTableRoot() {
@@ -681,4 +686,35 @@ public class ProductControl extends Control {
         }
     }
 
+    public void addProductPicture(String productID, File pictureFile) {
+        if(pictureFile != null) {
+            try {
+                ProductTable.addImage(productID, getProductImagesNumberByID(productID) + 1, pictureFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void editProductPicture(String productID, File pictureFile, int imageNumber) {
+        if(pictureFile != null) {
+            try {
+                ProductTable.deleteImage(productID, imageNumber);
+                ProductTable.addImage(productID, imageNumber, pictureFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void deleteProductImage(String productID, int imageNumber) {
+        try {
+            ProductTable.deleteImage(productID, imageNumber);
+            for(int i = imageNumber + 1; doesProductHaveImageWithNumber(productID, i); ++i) {
+                ProductTable.reNumProductImage(productID, i, i-1);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

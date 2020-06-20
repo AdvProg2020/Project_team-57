@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
 
 
-<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor" />
+<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
+   <top>
+      <BorderPane fx:id="upBorderPane" prefHeight="350.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <left>
+            <Pane prefHeight="350.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+         </left>
+         <right>
+            <Pane prefHeight="350.0" prefWidth="300.0" BorderPane.alignment="CENTER" />
+         </right>
+      </BorderPane>
+   </top>
+</BorderPane>

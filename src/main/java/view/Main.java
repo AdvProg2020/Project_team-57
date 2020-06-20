@@ -17,6 +17,7 @@ import model.existence.Account;
 import model.existence.Discount;
 import model.existence.Product;
 
+import java.io.File;
 import java.sql.Date;
 import java.sql.SQLException;
 
@@ -33,6 +34,8 @@ public class Main extends Application {
             e.printStackTrace();
         }*/
         launch(args);
+/*        File file = new File("G:\\College\\2nd semester\\second semester PROJECT\\First Phase\\Codes\\First Version\\database\\Images\\Products\\p3456712.jpg");
+        System.out.println(file.delete());*/
     }
 
     @Override
@@ -42,6 +45,8 @@ public class Main extends Application {
         Parent root = fxmlLoader.load();
         ProductProcessor processor = fxmlLoader.getController();
         processor.initProcessor(ProductTable.getProductByID("p1234567"));
+/*        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
+        Parent root = fxmlLoader.load();*/
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Boos Market");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Main Icon.png")));

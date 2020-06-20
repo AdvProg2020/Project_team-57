@@ -1,32 +1,41 @@
 package view;
 
+import com.jfoenix.controls.JFXToggleButton;
 import controller.product.ProductControl;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import model.existence.Product;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ProductProcessor extends Processor {
+
     ProductControl productControl = ProductControl.getController();
     //MainPane
     public BorderPane mainPane;
     private Product product;
     private AnimationTimer mainTimer;
     private long changePictureTimer = -1;
-    private long changePicturePeriod = 6_000_000_000L;
+    private long changePicturePeriod = 8_000_000_000L;
+    public BorderPane upBorderPane;
 
     //ProductImagePane
     public Rectangle productImageRectangle;
@@ -37,6 +46,8 @@ public class ProductProcessor extends Processor {
     public ImageView nextImageButton;
     public ImageView previousImageButton;
     public Pane imagePane;
+    public JFXToggleButton slideShowToggleButton;
+    public ImageView editImageButton;
 
     //ProductMediaPane
     public ImageView deleteMediaButton;
@@ -47,45 +58,45 @@ public class ProductProcessor extends Processor {
     public ImageView PreviousVideo;
 
     public void initProcessor(Product product) {
-        try {
-            this.product = product;
-            initImagePanel();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.product = product;
+        initImagePanel();
     }
 
-    private void initImagePanel() throws IOException {
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuImages.fxml"));
-        Parent root = loader.load();
-        ProductProcessor processor = loader.getController();
-        processor.setParentProcessor(this);
-        processor.imageNumberLabel.setText("1");
-        processor.setImage();
-        if(!productControl.doesProductHaveImage(product.getID())) {
-            processor.disableChangeButtons(true);
-        }
-        mainTimer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                if(changePictureTimer == -1) {
-                    changePictureTimer = now;
-                }
-                if(now - changePictureTimer > changePicturePeriod) {
-                    nextImage(null);
-                }
+    private void initImagePanel() {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuImages.fxml"));
+            Parent root = loader.load();
+            ProductProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            processor.imageNumberLabel.setText("1");
+            processor.setImage();
+            if(!productControl.doesProductHaveImage(product.getID())) {
+                processor.disableChangeButtons(true);
             }
-        };
-        mainPane.setTop(root);
+            mainTimer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    if(changePictureTimer == -1) {
+                        changePictureTimer = now;
+                    }
+                    if(now - changePictureTimer > changePicturePeriod) {
+                        processor.nextImage(null);
+                        changePictureTimer = now;
+                    }
+                }
+            };
+            upBorderPane.setLeft(root);
+        } catch (IOException e) {
+        e.printStackTrace();
+        }
     }
 
     private void disableChangeButtons(boolean imageButton) {
-        if(imageButton) {
-            nextImageButton.setDisable(true);
-            previousImageButton.setDisable(true);
-        } else {
-
-        }
+        nextImageButton.setDisable(true);
+        previousImageButton.setDisable(true);
+        slideShowToggleButton.setDisable(true);
+        removeImageButton.setDisable(true);
+        editImageButton.setDisable(true);
     }
 
     private void setImage() {
@@ -177,5 +188,67 @@ public class ProductProcessor extends Processor {
         return copyRectangle;
     }
 
+
+    public void changeSlideShow(ActionEvent actionEvent) {
+        if(slideShowToggleButton.isSelected())
+            ((ProductProcessor)parentProcessor).mainTimer.start();
+            else {
+            ((ProductProcessor)parentProcessor).mainTimer.stop();
+            changePictureTimer = -1;
+        }
+    }
+
+    public void deleteImage(MouseEvent mouseEvent) {
+        productControl.deleteProductImage(((ProductProcessor)parentProcessor).product.getID(), Integer.parseInt(imageNumberLabel.getText()));
+        ((ProductProcessor)parentProcessor).initImagePanel();
+    }
+
+    public void addNewImage(MouseEvent mouseEvent) {
+        File pictureFile = getImageChooser().showOpenDialog(null);
+        if(pictureFile != null) {
+            FileInputStream fileInputStream = null;
+            try {
+                fileInputStream = new FileInputStream(pictureFile);
+                Image image = new Image(fileInputStream);
+                productControl.addProductPicture(((ProductProcessor)parentProcessor).product.getID(), pictureFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        ((ProductProcessor)parentProcessor).initImagePanel();
+    }
+
+    public void editImage(MouseEvent mouseEvent) {
+        File pictureFile = getImageChooser().showOpenDialog(null);
+        if(pictureFile != null) {
+            FileInputStream fileInputStream = null;
+            try {
+                fileInputStream = new FileInputStream(pictureFile);
+                Image image = new Image(fileInputStream);
+                productImageRectangle.setFill(null);
+                System.gc();
+                productControl.editProductPicture(((ProductProcessor)parentProcessor).product.getID(), pictureFile, Integer.parseInt(imageNumberLabel.getText()));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        ((ProductProcessor)parentProcessor).initImagePanel();
+    }
+
+    private FileChooser getImageChooser() {
+        FileChooser pictureChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter jpgExtensionFilter = new FileChooser.ExtensionFilter("JPG Files", "*.JPG");
+        FileChooser.ExtensionFilter jpegExtensionFilter = new FileChooser.ExtensionFilter("JPEG Files", "*.JPEG");
+        FileChooser.ExtensionFilter pngExtensionFilter = new FileChooser.ExtensionFilter("PNG Files", "*.PNG");
+        FileChooser.ExtensionFilter bmpExtensionFilter = new FileChooser.ExtensionFilter("BMP Files", "*.BMP");
+
+        pictureChooser.getExtensionFilters().add(jpgExtensionFilter);
+        pictureChooser.getExtensionFilters().add(jpegExtensionFilter);
+        pictureChooser.getExtensionFilters().add(pngExtensionFilter);
+        pictureChooser.getExtensionFilters().add(bmpExtensionFilter);
+
+        return pictureChooser;
+    }
 
 }

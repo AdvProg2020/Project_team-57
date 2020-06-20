@@ -3,10 +3,8 @@ package model.db;
 import model.existence.Comment;
 import model.existence.Product;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Files;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -297,8 +295,8 @@ public class ProductTable extends Database {
     }
 
 
-    public static String getProductImageFilePath(String ID, int number) {
-        String fileName = "database\\Images\\Products\\" + ID + "\\" + number;
+    public static String getProductImageFilePath(String productID, int number) {
+        String fileName = "database\\Images\\Products\\" + productID + "\\" + number;
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {
             String filePath = fileName + "." + validImageExtension;
@@ -310,6 +308,34 @@ public class ProductTable extends Database {
 
     public static FileInputStream getProductImageInputStream(String ID, int number) throws FileNotFoundException {
         return new FileInputStream(getProductImageFilePath(ID, number));
+    }
+
+    public static void addImage(String productID, int productNumber, File pictureFile) throws IOException {
+        File productFolder = new File("database\\Images\\Products\\" + productID );
+        if(!productFolder.exists())
+            productFolder.mkdir();
+        String[] splitPath = pictureFile.getPath().split("\\.");
+        String fileExtension = splitPath[splitPath.length - 1];
+        File saveImage = new File("database\\Images\\Products\\" + productID + "\\" + productNumber + "." + fileExtension);
+        Files.copy(pictureFile.toPath(), saveImage.toPath());
+    }
+
+    public static void deleteImage(String productID, int imageNumber) throws IOException {
+        File deletingImage = new File(String.valueOf(getProductImageFilePath(productID, imageNumber)));
+        System.out.println(String.valueOf(getProductImageFilePath(productID, imageNumber)));
+        System.out.println(deletingImage.exists());
+        //System.out.println(deletingImage.getAbsolutePath());
+        System.out.println(deletingImage.delete());
+//        System.out.println(Files.deleteIfExists(deletingImage.toPath()));
+        //Files.delete(deletingImage.toPath());
+    }
+
+    public static void reNumProductImage(String productID, int firstNumber, int secondNumber) {
+        File imageFile = new File(getProductImageFilePath(productID, firstNumber));
+        File newImageFile =
+                new File("database\\Images\\Products\\" + productID + "\\" + secondNumber +
+                        getProductImageFilePath(productID, firstNumber).split("\\.")[getProductImageFilePath(productID, firstNumber).split("\\.").length - 1]);
+        imageFile.renameTo(newImageFile);
     }
 }
 
