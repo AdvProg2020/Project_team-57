@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class ProductsProcessor implements Initializable, changeTextFieldFeatures {
+public class ProductsProcessor extends Processor implements Initializable {
     private static final int PRODUCT_SCROLL_PANE_WIDTH = 1050;
     private static final int PRODUCT_FIELD_HEIGHT = 335;
     private static final int PRODUCT_PAGES_BAR_HEIGHT = 50;

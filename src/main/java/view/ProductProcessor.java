@@ -1,5 +1,8 @@
 package view;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import controller.product.ProductControl;
 import javafx.animation.AnimationTimer;
@@ -27,8 +30,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ProductProcessor extends Processor {
-
     ProductControl productControl = ProductControl.getController();
+
     //MainPane
     public BorderPane mainPane;
     private Product product;
@@ -57,9 +60,30 @@ public class ProductProcessor extends Processor {
     public Label mediaNumberLabel;
     public ImageView PreviousVideo;
 
+
+    //Sepehr's Section
+
+    //ProductGeneralInfoPane
+    public Pane generalInfoPane;
+    public JFXTextField nameTextField;
+    public JFXTextField categoryTextField;
+
+    public JFXToggleButton countableToggleButton;
+    public Label countLabel;
+    public JFXTextField countTextField;
+
+    public JFXTextField brandTextField;
+    public JFXTextArea descriptionTextArea;
+
+    public JFXButton saveChangesButton;
+
+
     public void initProcessor(Product product) {
         this.product = product;
         initImagePanel();
+
+        //Sepehr's Section
+        initGeneralInfoPane();
     }
 
     private void initImagePanel() {
@@ -250,5 +274,100 @@ public class ProductProcessor extends Processor {
 
         return pictureChooser;
     }
+
+
+    //Sepehr's Section
+    private void initGeneralInfoPane() {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuGeneralInfo.fxml"));
+            Parent root = loader.load();
+            ProductProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            processor.setGeneralTextFields(product);
+            mainPane.setLeft(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setGeneralTextFields(Product product) {
+        //Todo Condition Checking With Enum With Unknown Space Of Saving
+
+        if(true /*Product Not For Adding*/) {
+            nameTextField.setText(product.getName());
+            categoryTextField.setText(product.getCategory());
+
+            if (product.isCountable()) {
+//                countableToggleButton.setSelected(true);
+//                changeCountableField(null);
+                countTextField.setText(Integer.toString(product.getCount()));
+            } else {
+                countableToggleButton.setSelected(false);
+                changeCountableField(null);
+                countTextField.setText(Double.toString(product.getAmount()));
+            }
+
+            brandTextField.setText(product.getBrand());
+            descriptionTextArea.setText(product.getDescription());
+
+            if(true /*Product Not For Selected Vendor User*/)
+                disableEditingGeneralFields();
+
+            //Todo
+        }
+    }
+
+    private void disableEditingGeneralFields() {
+        generalInfoPane.getChildren().remove(saveChangesButton);
+        nameTextField.setDisable(true);
+        categoryTextField.setDisable(true);
+        countTextField.setDisable(true);
+        brandTextField.setDisable(true);
+        descriptionTextArea.setDisable(true);
+    }
+
+    public void saveChangesAction(ActionEvent actionEvent) {
+        product = new Product();
+        product.setName(nameTextField.getText());
+        product.setCategory(categoryTextField.getText());
+
+        switch (countLabel.getText()) {
+            case " Count " :
+                product.setCountable(true);
+                product.setCount(Integer.parseInt(countTextField.getText()));
+                break;
+            case " Amount " :
+                product.setCountable(false);
+                product.setAmount(Double.parseDouble(countTextField.getText()));
+                break;
+            default:
+                System.out.println("Fuck!!!! \nError In Save Changes Count Amount Part");
+        }
+
+        product.setBrand(brandTextField.getText());
+        product.setDescription(descriptionTextArea.getText());
+
+        //Todo Koodoomaro Taraf Mitoone Khali Bezare?
+        //Todo Editing Or Adding Section
+
+        System.out.println("Yeah, Baby");
+    }
+
+    public void changeCountableField(ActionEvent actionEvent) {
+        //Todo Checking Setting Change Listener Multiple Times
+
+        if(countableToggleButton.isSelected() && countLabel.getText().equals(" Amount ")) {
+            countLabel.setText(" Count ");
+            //Todo Check Layout Function
+            countLabel.setLayoutX(countLabel.getLayoutX() + 15);
+            setIntegerFields(countTextField, Integer.MAX_VALUE);
+        } else if(!countableToggleButton.isSelected() && countLabel.getText().equals(" Count ")) {
+            countLabel.setText(" Amount ");
+            //Todo Check Layout Function
+            countLabel.setLayoutX(countLabel.getLayoutX() - 15);
+            setDoubleFields(countTextField, Double.MAX_VALUE);
+        }
+    }
+    //Sepehr's Section
 
 }

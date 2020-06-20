@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class DiscountProcessor extends Processor implements Initializable, changeTextFieldFeatures {
+public class DiscountProcessor extends Processor implements Initializable {
     private static AdminControl adminControl = AdminControl.getController();
 
     public Label discountCodeLabel;
@@ -77,50 +77,6 @@ public class DiscountProcessor extends Processor implements Initializable, chang
         startTimePicker.set24HourView(true);
         finishTimePicker.set24HourView(true);
     }
-
-    private void setDoubleFields(TextField priceTextField, double maxValue) {
-        priceTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                //Todo Checking
-
-                if(newValue.equals(".")) {
-                    priceTextField.setText("0.");
-                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
-                    if(priceTextField.getText().contains(".")) {
-                        priceTextField.setText(removeDots(priceTextField.getText()));
-                    } else {
-                        priceTextField.setText(newValue.replaceAll("[^\\d\\.]", ""));
-                    }
-                } else if(newValue.matches("\\d+(.(\\d)+)?") && Double.parseDouble(newValue) >= maxValue) {
-                    //Todo checking
-                    priceTextField.setText(oldValue);
-                }
-
-            }
-        });
-    }
-
-    private void setIntegerFields(TextField priceTextField, Integer maxValue) {
-        priceTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                //Todo Checking
-
-                int newValueLength = newValue.length(), maxValueLength = Integer.toString(maxValue).length();
-
-                if (!newValue.matches("\\d+")) {
-                    priceTextField.setText(newValue.replaceAll("[^\\d]", ""));
-                } else if(newValue.matches("\\d+") && (newValueLength > maxValueLength ||
-                        (newValueLength == maxValueLength && newValue.compareTo(Integer.toString(maxValue)) >= 0))) {
-                    priceTextField.setText(oldValue);
-                }
-            }
-        });
-    }
-
 
     private void setFields() {
         Discount mainDiscount = ((DiscountProcessor) parentProcessor).discount;
