@@ -104,14 +104,13 @@ public class ProductProcessor extends Processor {
     public JFXTextField viewsNum;
 
     //ProductCommentPane
+    private Comment comment;
     public Pane commentPane;
     public JFXTextField commentTitle;
     public JFXTextArea commentContent;
     public JFXButton addComment;
     public JFXTextField userNameComment;
     public Rating commentScore;
-    public ImageView deleteComment;
-
 
     public void initProcessor(Product product, ProductMenuType productMenuType) {
         this.menuType = productMenuType;
@@ -510,15 +509,18 @@ public class ProductProcessor extends Processor {
         viewsNum.setDisable(true);
 
         for (Comment productComment : productControl.getAllProductComments(productID))
-            commentsVBox.getChildren().add(getCommentPane(productComment, CommentType.SHOW));
+            commentsVBox.getChildren().add(getCommentPane("ProductMenuShowCommentPane", productComment, CommentType.SHOW));
 
-        if(Control.getType() != null && Control.getType().equals("Customer"))
-            commentsVBox.getChildren().add(getCommentPane(new Comment(), CommentType.ADD));
+        if(Control.getType() != null && Control.getType().equals("Customer")) {
+            Comment comment = new Comment();
+            comment.setProductID(productID);
+            commentsVBox.getChildren().add(getCommentPane("ProductMenuAddCommentPane", new Comment(), CommentType.ADD));
+        }
     }
 
-    private Pane getCommentPane(Comment comment, CommentType commentType) {
+    private Pane getCommentPane(String panePath,Comment comment, CommentType commentType) {
         try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuCommentPane.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource(panePath + ".fxml"));
             Parent root = loader.load();
             ProductProcessor processor = loader.getController();
             processor.setParentProcessor(this);
@@ -543,10 +545,10 @@ public class ProductProcessor extends Processor {
                 commentTitle.setDisable(true);
                 commentContent.setDisable(true);
                 commentScore.setDisable(true);
-                commentPane.getChildren().remove(addComment);
+//                commentPane.getChildren().remove(addComment);
                 break;
             case ADD:
-                setStringFields(userNameComment, 16);
+                comment = productComment;
                 setStringFields(commentTitle, 16);
                 setStringFields(commentContent, 100);
                 break;
@@ -556,15 +558,18 @@ public class ProductProcessor extends Processor {
     }
 
     public void addComment(ActionEvent actionEvent) {
-        if(userNameComment.getText() == null || userNameComment.getText().isEmpty()) {
-            userNameComment.setStyle(userNameComment.getStyle() + " " + errorTextFieldStyle);
-        } else if(commentTitle.getText() == null || commentTitle.getText().isEmpty()) {
+        if(commentTitle.getText() == null || commentTitle.getText().isEmpty()) {
             commentTitle.setStyle(commentTitle.getStyle() + " " + errorTextFieldStyle);
         } else if(commentContent.getText() == null || commentContent.getText().isEmpty()) {
             commentContent.setStyle(commentContent.getStyle() + " " + errorTextFieldStyle);
         } else {
-            //Todo Adding Comment
+            comment.setTitle(commentTitle.getText());
+            comment.setContent(commentContent.getText());
+            comment.setScore((int) commentScore.getRating());
+
+            productControl.addComment(comment);
             ((ProductProcessor) parentProcessor).initCommentsThroughThePane();
+            //Todo Showing Alert Or Not
         }
     }
     //Sepehr's Section

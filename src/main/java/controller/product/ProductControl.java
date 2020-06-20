@@ -549,17 +549,17 @@ public class ProductControl extends Control {
         return 1;
     }
 
-    public Notification addComment(String title, String content) {
-        if (title.length() > 16)
+    public Notification addComment(/*String title, String content*/Comment comment) {
+        /*if (title.length() > 16)
             return Notification.ERROR_TITLE_LENGTH;
         if (content.length() > 100)
-            return Notification.ERROR_COMMENT_LENGTH;
-        Comment comment = new Comment();
-        comment.setTitle(title);
-        comment.setContent(content);
+            return Notification.ERROR_COMMENT_LENGTH;*/
+//        Comment comment = new Comment();
+//        comment.setTitle(title);
+//        comment.setContent(content);
         comment.setStatus(2);
         comment.setCustomerUsername(Control.getUsername());
-        comment.setProductID(this.currentProduct);
+//        comment.setProductID(this.currentProduct);
         String commentID;
         try {
             do {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.Rating?>
+
+<Pane fx:id="commentPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="218.0" prefWidth="440.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
+   <children>
+      <JFXTextField fx:id="commentTitle" layoutX="39.0" layoutY="29.0" onAction="#textFieldMouseClicked" prefHeight="33.0" prefWidth="140.0" promptText=" Title" style="-fx-border-width: 1 1 1 1; -fx-border-color: black; -fx-border-radius: 5; -fx-background-color: #ECEFF1;">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></JFXTextField>
+      <JFXTextArea fx:id="commentContent" layoutX="39.0" layoutY="77.0" onMouseClicked="#textFieldMouseClicked" prefHeight="80.0" prefWidth="361.0" promptText=" Content" style="-fx-border-width: 1 1 1 1; -fx-border-color: black; -fx-border-radius: 5; -fx-background-color: #ECEFF1;" wrapText="true">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></JFXTextArea>
+      <JFXButton fx:id="addComment" defaultButton="true" layoutX="352.0" layoutY="170.0" onAction="#addComment" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5; -fx-border-color: black; -fx-border-width: 1; -fx-border-radius: 5;" styleClass="Button" text="Add">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </JFXButton>
+      <Rating fx:id="commentScore" layoutX="213.0" layoutY="29.0" rating="0.0" styleClass="Rating" />
+   </children>
+</Pane>
