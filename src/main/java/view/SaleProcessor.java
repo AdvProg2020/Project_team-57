@@ -5,18 +5,23 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTimePicker;
 import controller.Control;
 import controller.account.AdminControl;
+import controller.product.ProductControl;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import model.existence.Discount;
 import model.existence.Off;
+import model.existence.Product;
 import notification.Notification;
 
 import java.io.IOException;
@@ -30,6 +35,7 @@ import java.util.ResourceBundle;
 
 public class SaleProcessor extends Processor implements Initializable {
     private static AdminControl adminControl = AdminControl.getController();
+    private static ProductControl productControl = ProductControl.getController();
 
     //DiscountProcess
     public Label discountCodeLabel;
@@ -65,7 +71,6 @@ public class SaleProcessor extends Processor implements Initializable {
     public ImageView saveOffChangeButton;
     public Pane offInfoMainPane;
     public Rectangle offImageRectangle;
-
 
 
     @Override
@@ -150,6 +155,7 @@ public class SaleProcessor extends Processor implements Initializable {
         Off mainOff = ((SaleProcessor)parentProcessor).off;
         if(mainOff == null) {
             ((SaleProcessor)parentProcessor).off = new Off();
+            addOffPicture();
         } else {
             if(off.getOffName() != null && off.getOffName().length() != 0)
                 offNameField.setText(off.getOffName());
@@ -181,11 +187,11 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     private void addOffPicture() {
-        if (off.getOffID() != null && off.getOffID().length() != 0) {
-
-        } else {
-
-        }
+        Image image = (off != null && off.getOffID() != null && off.getOffID().length() != 0 ?
+                productControl.getOffImageByID(off.getOffID()) : productControl.getOffImageByID("1"));
+        offImageRectangle.setFill(new ImagePattern(image));
+        if(off == null || off.getOffID() != null || off.getOffID().length() == 0)
+            offImageRectangle.setStrokeWidth(0);
     }
 
     private void setDateFieldsFromDate(JFXDatePicker datePicker, JFXTimePicker timePicker, Date date) {
@@ -333,6 +339,7 @@ public class SaleProcessor extends Processor implements Initializable {
             if(offMainPane.getCenter() == null || offMainPane.getCenter().getId().equals("mainBorderPane")){
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("OffMenuInfo.fxml"));
                 offMainPane.setCenter(loader.load());
+                offProductsPane.setStyle("");
                 offInfoPane.setStyle("-fx-background-color: #3498DB;   -fx-background-radius: 0 10 10 0;");
                 SaleProcessor saleProcessor = loader.getController();
                 saleProcessor.parentProcessor = this;
@@ -352,5 +359,21 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     public void saveOffChange(MouseEvent mouseEvent) {
+        Off off = ((SaleProcessor)parentProcessor).off;
+        if(!isDateTimeEmpty(offStartDatePicker, offStartTimePicker)) {
+            LocalDateTime localStartDateTime = LocalDateTime.of(offStartDatePicker.getValue(), offStartTimePicker.getValue());
+            Date startDate = new Date(Timestamp.valueOf(localStartDateTime).getTime());
+            off.setStartDate(startDate);
+        }
+        if(!isDateTimeEmpty(offFinishDatePicker, offFinishTimePicker)) {
+            LocalDateTime localFinishDateTime = LocalDateTime.of(offFinishDatePicker.getValue(), offFinishTimePicker.getValue());
+            Date finishDate = new Date(Timestamp.valueOf(localFinishDateTime).getTime());
+            off.setFinishDate(finishDate);
+        }
+        if(!isTextFieldEmpty(offNameField))
+            off.setOffName(offNameField.getText());
+        if(!isTextFieldEmpty(offPercentField))
+            off.setOffPercent(Double.parseDouble(offPercentField.getText()));
+        ((SaleProcessor) parentProcessor).offProductsPaneMouseClicked(null);
     }
 }
