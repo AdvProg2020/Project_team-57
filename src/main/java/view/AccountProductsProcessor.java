@@ -1,5 +1,7 @@
 package view;
 
+import com.jfoenix.controls.JFXListView;
+import controller.Control;
 import controller.IOControl;
 import controller.account.CustomerControl;
 import controller.account.VendorControl;
@@ -9,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -16,10 +19,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
@@ -32,6 +36,9 @@ import java.util.ResourceBundle;
 public class AccountProductsProcessor implements Initializable {
     public Pane cartPane;
     public Pane vendorProductsPane;
+    public Button addAll;
+    public Pane offProductPane;
+    public JFXListView<Product> offList;
     private CustomerControl control;
     private VendorControl vendorControl;
     public ListView<Product> list;
@@ -49,11 +56,57 @@ public class AccountProductsProcessor implements Initializable {
         if (location.toString().contains("AccountProducts.fxml")) {
             control = CustomerControl.getController();
             initializeCart();
-        } else {
+        } else if (location.toString().contains("VendorProducts.fxml")) {
             vendorControl = VendorControl.getController();
             initializeVendorProducts();
+        } else {
+            vendorControl = VendorControl.getController();
+            initializeVendorOffProducts();
         }
 
+    }
+
+    private void initializeVendorOffProducts() {
+        Stop[] stops = new Stop[]{
+                new Stop(0, Color.valueOf("#99cfde")),
+                new Stop(1, Color.valueOf("#91d3e6"))
+        };
+        LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+        BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
+        offProductPane.setBackground(new Background(backgroundFill));
+        goodsNumber.setText(vendorControl.getVendorProductIDs().size() + "");
+        ObservableList<Product> products = FXCollections.observableArrayList(vendorControl.getAllProducts());
+        offList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        offList.getItems().setAll(products);
+        offList.setFixedCellSize(200);
+        offList.setCellFactory(param -> new ListCell<Product>() {
+            @Override
+            protected void updateItem(final Product product, final boolean empty) {
+                super.updateItem(product, empty);
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    final ImageView image = new ImageView(ProductControl.getController().getProductImageByID(product.getID(), 1));
+                    image.setFitHeight(200);
+                    image.setFitWidth(180);
+                    Text name = new Text("\n       " + product.getName());
+                    name.fontProperty().setValue(Font.font("Oswald", 20));
+                    name.fillProperty().setValue(Color.valueOf("#328d97"));
+                    Text category = new Text("\n     " + product.getCategory());
+                    category.fontProperty().setValue(Font.font("Segoe Print", 15));
+                    VBox texts = new VBox(name, category);
+                    Text price;
+                    if (product.getCount() == 0 && product.getAmount() == 0)
+                        price = new Text("\n\n\n                             Unavailable");
+                    else
+                        price = new Text("\n\n\n                             " + product.getPrice() + " $");
+                    price.fontProperty().setValue(Font.font(20));
+                    HBox graphic = new HBox(image, texts, price);
+                    setGraphic(graphic);
+                }
+            }
+        });
     }
 
     private void initializeVendorProducts() {
@@ -63,7 +116,7 @@ public class AccountProductsProcessor implements Initializable {
         vendorList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         vendorList.getItems().setAll(products);
         vendorList.setFixedCellSize(150);
-        vendorList.setCellFactory(param -> new ListCell<Product>(){
+        vendorList.setCellFactory(param -> new ListCell<Product>() {
             @Override
             protected void updateItem(final Product product, final boolean empty) {
                 super.updateItem(product, empty);
@@ -95,7 +148,6 @@ public class AccountProductsProcessor implements Initializable {
 
     private void initializeCart(){
         cartPane.setStyle("-fx-background-image: url(Images/cartPane.jpg);");
-       // cartPane.setStyle("-fx-background-image: url(Images/cartImage.jpg);");
         totalPrice.setText(control.calculateCartTotalPrice() + " $");
         profileLabel.setText(IOControl.getUsername());
         ObservableList<Product> products = FXCollections.observableArrayList(control.getAllCartProducts());
@@ -177,6 +229,46 @@ public class AccountProductsProcessor implements Initializable {
         popup.show(list, event.getScreenX(), event.getScreenY());
     }
 
+    public void initOffPopup(MouseEvent event) {
+        Button reMad;
+        if (Control.getController().isThereProductInOff(offList.getSelectionModel().getSelectedItem().getID())) {
+            reMad = new Button("Remove");
+            ImageView inImage = new ImageView(new Image("Images/Icons/remove.png"));
+            setButtonProperties(reMad, inImage);
+            reMad.setOnAction(event1 -> {
+
+            });
+            setMouseEvent(reMad);
+        } else {
+            reMad = new Button("Add");
+            ImageView inImage = new ImageView(new Image("Images/Icons/add.png"));
+            setButtonProperties(reMad, inImage);
+            reMad.setOnAction(event1 -> {
+
+            });
+            setMouseEvent(reMad);
+        }
+        popup.getContent().add(reMad);
+        popup.setAutoHide(true);
+        popup.setHideOnEscape(true);
+        popup.show(offList, event.getScreenX(), event.getScreenY());
+    }
+
+    public void showOffOption(MouseEvent event) {
+        if (offList.getSelectionModel().getSelectedItem() == null) {
+            popup.hide();
+            return;
+        }
+        if (event.getButton() == MouseButton.PRIMARY) {
+            if (event.getClickCount() == 1) {
+                initOffPopup(event);
+            } else {
+                showProductInfo();
+            }
+        }
+
+    }
+
     private void setMouseEvent(Button button) {
         button.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
@@ -226,14 +318,6 @@ public class AccountProductsProcessor implements Initializable {
         profile.setOpacity(0.7);
     }
 
-    public void enterBack(MouseEvent event) {
-        back.setOpacity(1);
-    }
-
-    public void exitBack(MouseEvent event) {
-        back.setOpacity(0.7);
-    }
-
     public void showVendorOption(MouseEvent event) {
 
     }
@@ -244,5 +328,9 @@ public class AccountProductsProcessor implements Initializable {
 
     public void exitAddProduct(MouseEvent event) {
         addProduct.setStyle("-fx-background-color:  #d50000; -fx-translate-y: 0; -fx-translate-x: 0; -fx-opacity: 0.7");
+    }
+
+    public void addAllProductToOff(MouseEvent event) {
+        
     }
 }
