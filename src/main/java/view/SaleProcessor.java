@@ -5,8 +5,6 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTimePicker;
 import controller.Control;
 import controller.account.AdminControl;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -17,6 +15,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.existence.Discount;
+import model.existence.Off;
 import notification.Notification;
 
 import java.io.IOException;
@@ -28,9 +27,10 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class DiscountProcessor extends Processor implements Initializable {
+public class SaleProcessor extends Processor implements Initializable {
     private static AdminControl adminControl = AdminControl.getController();
 
+    //DiscountProcess
     public Label discountCodeLabel;
     public Label maxDiscountLabel;
     public Label maxRepetitionLabel;
@@ -56,18 +56,23 @@ public class DiscountProcessor extends Processor implements Initializable {
 
     private Discount discount;
 
+    //OffProcess
+    public BorderPane offMainPane;
+    public Pane offInfoPane;
+    public Pane offProductsPane;
+    private Off off;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         String locationFile = location.getFile();
 
         if(locationFile.contains("DiscountMenuInfo")) {
             setFieldsSpecifications();
-        } else if(locationFile.contains("DiscountMenu")) {
-            discountInfoMouseClicked(null);
-            adminControl.addDiscountToHashMap(discount);
+        } else if(locationFile.contains("OffMenu")) {
+            offInfoPaneMouseClick(null);
+            this.off = new Off();
         }
     }
-
 
     private void setFieldsSpecifications() {
         setDoubleFields(discountPercentTextField, 100.000001);
@@ -79,10 +84,10 @@ public class DiscountProcessor extends Processor implements Initializable {
     }
 
     private void setFields() {
-        Discount mainDiscount = ((DiscountProcessor) parentProcessor).discount;
+        Discount mainDiscount = ((SaleProcessor) parentProcessor).discount;
 
         if(mainDiscount == null) {
-            ((DiscountProcessor) parentProcessor).discount = new Discount();
+            ((SaleProcessor) parentProcessor).discount = new Discount();
         } else {
             discountCodeTextField.setText(mainDiscount.getCode());
 
@@ -136,7 +141,6 @@ public class DiscountProcessor extends Processor implements Initializable {
         timePicker.setValue(localDateTime.toLocalTime());
     }
 
-
     public void discountCustomersMouseClicked(MouseEvent mouseEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewMenu.fxml"));
@@ -161,15 +165,14 @@ public class DiscountProcessor extends Processor implements Initializable {
                 discountCustomersPane.setStyle("");
                 discountInfoPane.setStyle("-fx-background-color: #90CAF9;   -fx-background-radius: 0 10 10 0;");
 
-                DiscountProcessor discountProcessor = loader.getController();
-                discountProcessor.parentProcessor = this;
-                discountProcessor.setFields();
+                SaleProcessor saleProcessor = loader.getController();
+                saleProcessor.parentProcessor = this;
+                saleProcessor.setFields();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     public void AddDiscountMouseClicked(MouseEvent mouseEvent) {
         //Todo Setting Notifications
@@ -187,7 +190,7 @@ public class DiscountProcessor extends Processor implements Initializable {
     }
 
     public void saveChangesMouseClicked(MouseEvent mouseEvent) {
-        Discount discount = ((DiscountProcessor) parentProcessor).discount;
+        Discount discount = ((SaleProcessor) parentProcessor).discount;
 
         if(!isDateTimeEmpty(startDatePicker, startTimePicker)) {
             LocalDateTime localStartDateTime = LocalDateTime.of(startDatePicker.getValue(), startTimePicker.getValue());
@@ -210,7 +213,7 @@ public class DiscountProcessor extends Processor implements Initializable {
         if(!isTextFieldEmpty(maxRepetitionTextField))
             discount.setMaxRepetition(Integer.parseInt(maxRepetitionTextField.getText()));
 
-        ((DiscountProcessor) parentProcessor).discountCustomersMouseClicked(null);
+        ((SaleProcessor) parentProcessor).discountCustomersMouseClicked(null);
     }
 
     private boolean isDateTimeEmpty(JFXDatePicker datePicker, JFXTimePicker timePicker) {
@@ -220,7 +223,6 @@ public class DiscountProcessor extends Processor implements Initializable {
     private boolean isTextFieldEmpty(TextField textField) {
         return textField.getText() == null || textField.getText().isEmpty();
     }
-
 
     public ArrayList<String> getDiscountAddedUsers() {
         return adminControl.getDiscountsAddedUsers().get(discount);
@@ -261,4 +263,30 @@ public class DiscountProcessor extends Processor implements Initializable {
         parentTableViewProcessor.updateSelectedItem();
     }
 
+    public Discount getDiscount() {
+        return discount;
+    }
+
+    //OffMethods
+    public void offInfoPaneMouseClick(MouseEvent mouseEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("OffMenuInfo.fxml"));
+            discountMainPane.setCenter(loader.load());
+            discountCustomersPane.setStyle("");
+            discountInfoPane.setStyle("-fx-background-color: #90CAF9;   -fx-background-radius: 0 10 10 0;");
+            SaleProcessor saleProcessor = loader.getController();
+            saleProcessor.parentProcessor = this;
+            saleProcessor.setFields();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void offProductsPaneMouseClicked(MouseEvent mouseEvent) {
+        //TODO
+    }
+
+    public void AddOffMouseClicked(MouseEvent mouseEvent) {
+        //TODO
+    }
 }

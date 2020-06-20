@@ -1,7 +1,6 @@
 package view;
 
 import com.jfoenix.controls.*;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import controller.account.AccountControl;
 import controller.account.AdminControl;
 import controller.account.CustomerControl;
@@ -9,7 +8,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,16 +17,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import model.existence.Account;
 import model.existence.Comment;
 import model.existence.Discount;
@@ -197,7 +191,7 @@ public class TableViewProcessor<T> extends Processor {
 
         customers.forEach(customer -> {
             customer.getCheckBox().setOnAction(event -> {
-                DiscountProcessor processor = ((DiscountProcessor)parentProcessor);
+                SaleProcessor processor = ((SaleProcessor)parentProcessor);
                 if(customer.getCheckBox().isSelected()) {
                     if(!processor.isAccountAddedInDiscount(customer.getUsername())) {
                         processor.addUserToDiscount(customer.getUsername());
@@ -210,7 +204,7 @@ public class TableViewProcessor<T> extends Processor {
                     }
                 }
             });
-            for (String discountAddedUser : ((DiscountProcessor) parentProcessor).getDiscountAddedUsers()) {
+            for (String discountAddedUser : ((SaleProcessor) parentProcessor).getDiscountAddedUsers()) {
                 if(customer.getUsername().equals(discountAddedUser)) {
                     customer.getCheckBox().setSelected(true);
                 }
@@ -274,7 +268,7 @@ public class TableViewProcessor<T> extends Processor {
             TableViewProcessor processor = loader.getController();
             processor.setParentProcessor(this);
             processor.discountCustomersListView.getItems().addAll
-                    (((DiscountProcessor)parentProcessor).getDiscountAddedUsers());
+                    (((SaleProcessor)parentProcessor).getDiscountAddedUsers());
             processor.discountAddedUsersCountLabel.setText("" + processor.discountCustomersListView.getItems().size());
             processor.discountCustomerSearchField.setText
                     ((searchedUsername == null ? "" : searchedUsername));
@@ -481,18 +475,21 @@ public class TableViewProcessor<T> extends Processor {
     public void showDiscount(ActionEvent actionEvent) {
         //Todo Check By Ashkan
         Discount discount = (Discount)((TableViewProcessor)parentProcessor).tableView.getSelectionModel().getSelectedItem();
-
+        //System.out.println(discount.getCode());
         if(canOpenSubStage("Show Discount " + discount.getID(), this)) {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("DiscountMenu.fxml"));
             try {
                 Parent root = loader.load();
-                DiscountProcessor processor = loader.getController();
+                SaleProcessor processor = loader.getController();
+                processor.setDiscount(discount);
+                processor.discountInfoMouseClicked(null);
+                AdminControl.getController().addDiscountToHashMap(processor.getDiscount());
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
                 newStage.setTitle("Show Discount " + discount.getID());
                 newStage.setResizable(false);
                 processor.parentProcessor = this.parentProcessor;
-                System.out.println("Opening : " + processor);
+                //System.out.println("Opening : " + processor);
                 processor.setDiscount(discount);
                 processor.discountInfoMouseClicked(null);
                 processor.setMyStage(newStage);
@@ -519,7 +516,9 @@ public class TableViewProcessor<T> extends Processor {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("DiscountMenu.fxml"));
             try {
                 Parent root = loader.load();
-                DiscountProcessor processor = loader.getController();
+                SaleProcessor processor = loader.getController();
+                processor.discountInfoMouseClicked(null);
+                AdminControl.getController().addDiscountToHashMap(processor.getDiscount());
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
                 newStage.setTitle("Add New Discount");
