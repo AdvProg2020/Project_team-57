@@ -322,12 +322,7 @@ public class ProductTable extends Database {
 
     public static void deleteImage(String productID, int imageNumber) throws IOException {
         File deletingImage = new File(String.valueOf(getProductImageFilePath(productID, imageNumber)));
-        System.out.println(String.valueOf(getProductImageFilePath(productID, imageNumber)));
-        System.out.println(deletingImage.exists());
-        //System.out.println(deletingImage.getAbsolutePath());
-        System.out.println(deletingImage.delete());
-//        System.out.println(Files.deleteIfExists(deletingImage.toPath()));
-        //Files.delete(deletingImage.toPath());
+        deletingImage.delete();
     }
 
     public static void reNumProductImage(String productID, int firstNumber, int secondNumber) {
@@ -336,6 +331,33 @@ public class ProductTable extends Database {
                 new File("database\\Images\\Products\\" + productID + "\\" + secondNumber +
                         getProductImageFilePath(productID, firstNumber).split("\\.")[getProductImageFilePath(productID, firstNumber).split("\\.").length - 1]);
         imageFile.renameTo(newImageFile);
+    }
+
+    public static String getOffImageFilePath(String offID) {
+        String fileName = "database\\Images\\Offs\\" + offID;
+        String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
+        for (String validImageExtension : validImageExtensions) {
+            String filePath = fileName + "." + validImageExtension;
+            if(new File(filePath).exists())
+                return filePath;
+        }
+        return null;
+    }
+
+    public static FileInputStream getOffImageInputStream(String offID) throws FileNotFoundException {
+        return new FileInputStream(getOffImageFilePath(offID));
+    }
+
+    public static void setOffImage(String offID, File pictureFile) throws IOException {
+        String[] splitPath = pictureFile.getPath().split("\\.");
+        String fileExtension = splitPath[splitPath.length - 1];
+        File saveImage = new File("database\\Images\\Users\\" + offID + "." + fileExtension);
+        Files.copy(pictureFile.toPath(), saveImage.toPath());
+    }
+
+    public static void removeOffImage(String offID) {
+        File file = new File(getOffImageFilePath(offID));
+        file.delete();
     }
 }
 

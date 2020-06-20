@@ -31,30 +31,20 @@ public abstract class Processor {
     public void setMyStage(Stage myStage) {
         this.subStages = new ArrayList<>();
         this.myStage = myStage;
-        //System.out.println("Fuck");
         this.myStage.setOnCloseRequest(event -> {
-            //System.out.println("Hi");
             for (Stage subStage : this.subStages) {
                 subStage.close();
             }
             if(parentProcessor != null) {
-                //System.out.println("Hello");
-                //System.out.println("2." + myStage.getTitle());
                 parentProcessor.removeSubStage(myStage);
             }
         });
     }
 
     public void addSubStage(Stage subStage) {
-        //System.out.println("1." + subStage.getTitle());
         this.subStages.add(subStage);
-        //System.out.println(this.subStages.size());
-        //System.out.println("This: " + this);
-        //System.out.println("Khastam");
-        //System.out.println(subStage);
         if(parentProcessor == null){
             subStage.setOnCloseRequest(event -> {
-                //System.out.println("Fuck");
                 this.removeSubStage(subStage);
             });
         }
@@ -62,13 +52,7 @@ public abstract class Processor {
     }
 
     protected void removeSubStage(Stage subStage) {
-        //System.out.println(this.subStages.size());
-        //System.out.println("This: " + this);
-/*        for (Stage stage : this.subStages) {
-            System.out.println("3." + stage.getTitle());
-        }*/
         this.subStages.removeIf(stage -> {
-            //System.out.println("HE HE HE");
             return stage.getTitle().equals(subStage.getTitle());
         });
     }
@@ -108,7 +92,6 @@ public abstract class Processor {
     }
 
     protected void setDoubleFields(TextField textField, double maxValue) {
-        //textField.textProperty().
         textField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
