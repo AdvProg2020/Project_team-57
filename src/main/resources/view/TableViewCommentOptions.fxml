@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="230.0" style="-fx-background-color: #e0f2f1;" stylesheets="@../CSS%20files/AdminMenuButtons.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.TableViewProcessor">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutX="170.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
+      <Label fx:id="commentTitle" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="228.0" prefWidth="210.0" text="Discount Code">
+         <font>
+            <Font name="Calibri" size="17.0" />
+         </font>
+      </Label>
+      <JFXButton fx:id="showCommentButton" buttonType="RAISED" layoutX="56.0" layoutY="338.0" onAction="#showComment" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Comment">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="approveCommentButton" buttonType="RAISED" layoutX="30.0" layoutY="386.0" onAction="#modifyCommentApproval" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefWidth="80.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Approve">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="65.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/TableViewMenu/Comment.png" />
+         </image>
+      </ImageView>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
+      <JFXButton fx:id="deleteCommentButton" buttonType="RAISED" layoutX="125.0" layoutY="386.0" onAction="#modifyCommentApproval" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefWidth="80.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Delete">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <Label fx:id="commenterUsername" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="259.0" prefWidth="210.0" text="Username">
+         <font>
+            <Font name="Calibri" size="17.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="commenterProfileButton" fitHeight="75.0" fitWidth="75.0" layoutX="28.0" layoutY="441.0" onMouseClicked="#showCommenterProfile" opacity="0.8" pickOnBounds="true" preserveRatio="true" styleClass="hover_table_view_image_view">
+         <image>
+            <Image url="@../Images/Icons/TableViewMenu/view%20commenter%20profile.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="commentedProductMenuButton" fitHeight="75.0" fitWidth="75.0" layoutX="128.0" layoutY="441.0" onMouseClicked="#showCommentedProductMenu" opacity="0.8" pickOnBounds="true" preserveRatio="true" styleClass="hover_table_view_image_view">
+         <image>
+            <Image url="@../Images/Icons/TableViewMenu/view%20commented%20product.png" />
+         </image>
+      </ImageView>
+   </children>
+</Pane>

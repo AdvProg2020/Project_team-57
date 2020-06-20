@@ -1,22 +1,22 @@
 package view;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXListView;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import controller.account.AccountControl;
 import controller.account.AdminControl;
+import controller.account.CustomerControl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -30,6 +30,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.existence.Account;
+import model.existence.Comment;
 import model.existence.Discount;
 import java.io.IOException;
 import java.sql.Date;
@@ -48,10 +49,21 @@ public class TableViewProcessor<T> extends Processor {
     public Label discountAddedUsersCountLabel;
     public JFXListView<String> discountCustomersListView;
     public JFXTextField discountCustomerSearchField;
+    public Label commentTitle;
+    public JFXButton showCommentButton;
+    public JFXButton approveCommentButton;
+    public JFXButton deleteCommentButton;
+    public Label commenterUsername;
+    public ImageView commenterProfileButton;
+    public ImageView commentedProductMenuButton;
+    public JFXTextField commentTitleField;
+    public JFXTextArea commentContentArea;
+    public JFXCheckBox commenterBoughtCheckBox;
+    public ImageView showCommentBackButton;
 
 
     public static enum TableViewType {
-        CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN), DISCOUNTS, DISCOUNT_CUSTOMERS;
+        CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN), DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS;
 
         Account.AccountType accountType;
 
@@ -76,10 +88,10 @@ public class TableViewProcessor<T> extends Processor {
     public JFXButton addAdminButton;
     public BorderPane mainBorderPane;
     public TableView<T> tableView;
-    //private TableHold parentProcessor;
     private TableViewType tableViewType;
     private T selectedItem;
     private String searchedUsername;
+    private Pane tableViewPane;
 
     public void initProcessor(TableViewType tableViewType) {
         this.tableViewType = tableViewType;
@@ -101,7 +113,18 @@ public class TableViewProcessor<T> extends Processor {
             case DISCOUNT_CUSTOMERS:
                 initDiscountCustomersColumns();
                 break;
+            case ADMIN_COMMENTS:
+                initAdminCommentsColumns();
+                break;
         }
+    }
+
+    private void initAdminCommentsColumns() {
+        TableColumn<T, String> usernameColumn = makeColumn("Username", "customerUsername", 0.23);
+        TableColumn<T, String> firstNameColumn = makeColumn("Title", "title", 0.23);
+        TableColumn<T, String> lastNameColumn = makeColumn("Content", "content", 0.34);
+        TableColumn<T, String> isAdded = makeColumn("Approval", "statStr", 0.15);
+        tableView.getColumns().addAll(usernameColumn, firstNameColumn, lastNameColumn, isAdded);
     }
 
     private void initDiscountCustomersColumns() {
@@ -143,7 +166,6 @@ public class TableViewProcessor<T> extends Processor {
 
     public void updateTable() {
         ObservableList<T> tableList = FXCollections.observableArrayList();
-        System.out.println(tableView);
         tableView.getItems().remove(0, tableView.getItems().size());
         switch (tableViewType) {
             case ADMINS:
@@ -156,6 +178,9 @@ public class TableViewProcessor<T> extends Processor {
                 break;
             case DISCOUNT_CUSTOMERS:
                 tableList.addAll(getAllCustomersForDiscount());
+                break;
+            case ADMIN_COMMENTS:
+                tableList.addAll((ArrayList<T>)AdminControl.getController().getAllUnApprovedComments());
                 break;
         }
         tableView.getItems().addAll(tableList);
@@ -210,7 +235,35 @@ public class TableViewProcessor<T> extends Processor {
             case DISCOUNT_CUSTOMERS:
                 mainBorderPane.setLeft(initDiscountCustomersOptions());
                 break;
+            case ADMIN_COMMENTS:
+                mainBorderPane.setLeft(initAdminCommentsOptions());
+                break;
         }
+    }
+
+    private Node initAdminCommentsOptions() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewCommentOptions.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            if(selectedItem != null) {
+                Comment comment = (Comment) selectedItem;
+                processor.showCommentButton.setDisable(false);
+                processor.approveCommentButton.setDisable(false);
+                processor.deleteCommentButton.setDisable(false);
+                processor.commenterProfileButton.setDisable(false);
+                processor.commentedProductMenuButton.setDisable(false);
+                processor.commentTitle.setText(comment.getTitle());
+                processor.commenterUsername.setText(comment.getCustomerUsername());
+            } else {
+                processor.terminateOptions();
+            }
+            return root;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private Pane initDiscountCustomersOptions() {
@@ -299,7 +352,20 @@ public class TableViewProcessor<T> extends Processor {
             case DISCOUNTS:
                 terminateDiscountOptions();
                 break;
+            case ADMIN_COMMENTS:
+                terminateAdminCommentsOptions();
+                break;
         }
+    }
+
+    private void terminateAdminCommentsOptions() {
+        showCommentButton.setDisable(true);
+        approveCommentButton.setDisable(true);
+        deleteCommentButton.setDisable(true);
+        commenterProfileButton.setDisable(true);
+        commentedProductMenuButton.setDisable(true);
+        commentTitle.setText("Comment Title");
+        commenterUsername.setText("Customer Username");
     }
 
     private void terminateDiscountOptions() {
@@ -479,5 +545,72 @@ public class TableViewProcessor<T> extends Processor {
             customerSearch();
     }
 
+    public void showCommenterProfile(MouseEvent mouseEvent) {
+        try {
+            Account commenterAccount = AccountControl.getController().getAccountByUsername(((Comment)(((TableViewProcessor)parentProcessor).selectedItem)).getCustomerUsername());
+            ProfileProcessor.setAccount(commenterAccount);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileMenu.fxml"));
+            Parent root = loader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.getIcons().add(new Image(getClass().getResourceAsStream("Profile Icon.png")));
+            newStage.setResizable(false);
+            newStage.setTitle(commenterAccount.getUsername() + " Profile");
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showCommentedProductMenu(MouseEvent mouseEvent) {
+        System.out.println("TODO");
+        //TODO
+    }
+
+    public void modifyCommentApproval(ActionEvent actionEvent) {
+        Comment selectedComment = (Comment) ((TableViewProcessor)parentProcessor).selectedItem;
+        String alertStr;
+        boolean approve;
+        if(((JFXButton)actionEvent.getSource()).getText().equals(approveCommentButton.getText())){
+            alertStr = "Are You Sure You Want To Approve " + selectedComment.getCommentID() + "?";
+            approve = true;
+        } else {
+            alertStr = "Are You Sure You Want To Delete " + selectedComment.getCommentID() + "?";
+            approve = false;
+        }
+        Optional<ButtonType> buttonType = new Alert
+                (Alert.AlertType.CONFIRMATION, alertStr, ButtonType.YES, ButtonType.NO).showAndWait();
+        if(buttonType.get() == ButtonType.YES) {
+            AdminControl.getController().modifyCommentApproval(selectedComment.getCommentID(), approve);
+            if(((TableViewProcessor<T>) parentProcessor).tableViewPane != null) {
+                ((TableViewProcessor<T>) parentProcessor).mainBorderPane.setCenter(((TableViewProcessor<T>) parentProcessor).tableViewPane);
+                ((TableViewProcessor) parentProcessor).updateTable();
+                ((TableViewProcessor) parentProcessor).updateSelectedItem();
+            }
+        }
+    }
+
+    public void showComment(ActionEvent actionEvent) {
+        ((TableViewProcessor) parentProcessor).tableViewPane = (Pane) ((TableViewProcessor) parentProcessor).mainBorderPane.getCenter();
+        Comment comment = (Comment) ((TableViewProcessor) parentProcessor).selectedItem;
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewShowComment.fxml"));
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.commentTitleField.setText(comment.getTitle());
+            processor.commentContentArea.setText(comment.getContent());
+            processor.commenterBoughtCheckBox.setSelected
+                    (CustomerControl.getController().isProductPurchasedByCustomer(comment.getProductID(), comment.getCustomerUsername()));
+            processor.showCommentBackButton.setOnMouseClicked(event -> {
+                ((TableViewProcessor) parentProcessor).mainBorderPane.setCenter(((TableViewProcessor) parentProcessor).tableViewPane);
+                ((TableViewProcessor) parentProcessor).updateTable();
+                ((TableViewProcessor) parentProcessor).updateSelectedItem();
+                ((TableViewProcessor<T>) parentProcessor).tableViewPane = null;
+            });
+            ((TableViewProcessor<T>) parentProcessor).mainBorderPane.setCenter(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -583,6 +583,17 @@ public class AdminControl extends AccountControl{
         return Notification.UNKNOWN_ERROR;
     }
 
+    public ArrayList<Comment> getAllUnApprovedComments() {
+        try {
+            return ProductTable.getAllUnApprovedComments();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
     public ArrayList<String> getAllUnApprovedCommentTitles(){
         try {
             ArrayList<String> allUnApprovedCommentTitles = new ArrayList<>();

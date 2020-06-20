@@ -10,6 +10,7 @@ public class Comment {
     private String title;
     private String content;
     private int status;
+    private String statStr;
 
     public Comment(ResultSet resultSet) throws SQLException {
         this.commentID = resultSet.getString("CommentID");
@@ -18,6 +19,17 @@ public class Comment {
         this.content = resultSet.getString("Content");
         this.status = resultSet.getInt("Status");
         this.productID = resultSet.getString("ProductID");
+        switch (this.status) {
+            case 1:
+                this.statStr = "Approved";
+                break;
+            case 2 :
+                this.statStr = "UnChecked";
+                break;
+            case 3 :
+                this.statStr = "Deleted";
+                break;
+        }
     }
 
     public Comment() {
@@ -69,5 +81,9 @@ public class Comment {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getStatStr() {
+        return statStr;
     }
 }

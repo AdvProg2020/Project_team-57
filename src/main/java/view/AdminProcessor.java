@@ -16,6 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.existence.Account;
+import model.existence.Comment;
 import model.existence.Discount;
 
 import java.io.IOException;
@@ -209,6 +210,29 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
                 newStage.setResizable(false);
                 newStage.setTitle("Manage Discounts");
+                parentProcessor.addSubStage(newStage);
+                tableViewProcessor.setMyStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void manageComments(MouseEvent mouseEvent) {
+        if (canOpenSubStage("Manage Comment Requests", parentProcessor)) {
+            try {
+                //System.out.println(parentProcessor);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
+                Parent root = loader.load();
+                TableViewProcessor<Comment> tableViewProcessor = loader.getController();
+                tableViewProcessor.setParentProcessor(parentProcessor);
+                tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.ADMIN_COMMENTS);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
+                newStage.setResizable(false);
+                newStage.setTitle("Manage Comment Requests");
                 parentProcessor.addSubStage(newStage);
                 tableViewProcessor.setMyStage(newStage);
                 newStage.show();

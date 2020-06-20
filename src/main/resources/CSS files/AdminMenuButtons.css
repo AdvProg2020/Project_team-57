@@ -16,3 +16,8 @@
     -fx-background-color: #80cbc4;
     -fx-cursor: hand;
 }
+
+.hover_table_view_image_view:hover {
+    -fx-opacity: 1;
+    -fx-cursor: hand;
+}
