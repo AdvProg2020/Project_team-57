@@ -9,3 +9,10 @@
     -fx-border-width: 0 0 0 3;
     -fx-border-color: #0277BD;
 }
+
+.main_button_off:hover {
+    -fx-opacity: 0.7;
+    -fx-cursor: hand;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-color: #C822FF;
+}

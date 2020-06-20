@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTimePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="730.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="650.0" fitWidth="650.0" layoutX="408.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/OffMenu/man%20suits.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="discountCodeLabel" layoutX="116.0" layoutY="167.0" text="Off Name" />
+      <Label fx:id="discountPercentLabel" layoutX="104.0" layoutY="223.0" text="Off Percent" />
+      <Label fx:id="finishDateLabel" layoutX="104.0" layoutY="411.0" text="Finish Date" />
+      <Label fx:id="startDateLabel" layoutX="113.0" layoutY="288.0" text="Start Date" />
+      <JFXDatePicker fx:id="offStartDatePicker" defaultColor="#3498db" layoutX="203.0" layoutY="279.0" promptText=" Start Date" styleClass="Button" />
+      <JFXTextField fx:id="offNameField" labelFloat="true" layoutX="207.0" layoutY="162.0" />
+      <JFXTextField fx:id="offPercentField" labelFloat="true" layoutX="206.0" layoutY="218.0" />
+      <JFXDatePicker fx:id="offFinishDatePicker" defaultColor="#3498db" layoutX="203.0" layoutY="406.0" promptText=" Finish Date" styleClass="Button" />
+      <JFXTimePicker fx:id="offStartTimePicker" defaultColor="#3498db" layoutX="202.0" layoutY="331.0" promptText=" Start Time" styleClass="Button" />
+      <JFXTimePicker fx:id="offFinishTimePicker" defaultColor="#3498db" layoutX="202.0" layoutY="458.0" promptText=" Finish Time" styleClass="Button" />
+   </children>
+</Pane>
