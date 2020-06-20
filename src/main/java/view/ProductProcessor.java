@@ -100,6 +100,7 @@ public class ProductProcessor extends Processor {
 
         //Sepehr's Section
         initGeneralInfoPane(productMenuType);
+        initCommentsPane(productMenuType);
     }
 
     private void initImagePanel() {
@@ -296,6 +297,8 @@ public class ProductProcessor extends Processor {
 
 
     //Sepehr's Section
+
+    //GeneralInfoPane
     private void initGeneralInfoPane(ProductMenuType productMenuType) {
         try {
             if(productMenuType == ProductMenuType.VENDOR_EDIT)
@@ -457,6 +460,25 @@ public class ProductProcessor extends Processor {
         TextInputControl textInputControl = (TextInputControl) actionEvent.getSource();
         textInputControl.setStyle("");
     }
+
+    //CommentsPane
+    private void initCommentsPane(ProductMenuType productMenuType) {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuGeneralInfo.fxml"));
+            Parent root = loader.load();
+            ProductProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            processor.initCommentsThroughThePane((((ProductProcessor) parentProcessor).product).getID(), productMenuType);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void initCommentsThroughThePane(String id, ProductMenuType productMenuType) {
+
+    }
+
     //Sepehr's Section
 
 }
