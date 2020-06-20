@@ -30,6 +30,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class ProductProcessor extends Processor {
+
+    public void setMenuType(ProductMenuType menuType) {
+        this.menuType = menuType;
+    }
+
+    public static enum ProductMenuType {
+        CART, VENDOR, ADMIN, PRODUCTS
+    }
+
     ProductControl productControl = ProductControl.getController();
 
     //MainPane
@@ -39,6 +48,7 @@ public class ProductProcessor extends Processor {
     private long changePictureTimer = -1;
     private long changePicturePeriod = 8_000_000_000L;
     public BorderPane upBorderPane;
+    private ProductMenuType menuType;
 
     //ProductImagePane
     public Rectangle productImageRectangle;
@@ -78,7 +88,8 @@ public class ProductProcessor extends Processor {
     public JFXButton saveChangesButton;
 
 
-    public void initProcessor(Product product) {
+    public void initProcessor(Product product, ProductMenuType productMenuType) {
+        this.menuType = productMenuType;
         this.product = product;
         initImagePanel();
 
@@ -109,6 +120,9 @@ public class ProductProcessor extends Processor {
                     }
                 }
             };
+            if(menuType != ProductMenuType.VENDOR) {
+                processor.imagePane.getChildren().removeAll(removeImageButton, editImageButton, addImageButton);
+            }
             upBorderPane.setLeft(root);
         } catch (IOException e) {
         e.printStackTrace();
