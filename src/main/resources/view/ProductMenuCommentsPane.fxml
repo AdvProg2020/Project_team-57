@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXScrollPane?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
@@ -12,11 +12,11 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="462.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
    <children>
-      <JFXScrollPane layoutY="91.0" prefHeight="330.0" prefWidth="440.0">
-         <children>
+      <ScrollPane fitToWidth="true" layoutY="91.0" prefHeight="284.0" prefWidth="459.0">
+         <content>
             <VBox fx:id="commentsVBox" prefHeight="284.0" prefWidth="440.0" />
-         </children>
-      </JFXScrollPane>
+         </content>
+      </ScrollPane>
       <JFXTextField fx:id="viewsNum" alignment="CENTER" editable="false" layoutX="392.0" layoutY="43.0" prefHeight="31.0" prefWidth="32.0" text="0">
          <font>
             <Font name="System Bold Italic" size="15.0" />
