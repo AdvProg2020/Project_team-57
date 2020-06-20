@@ -51,7 +51,7 @@
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font></JFXTextField>
-      <JFXButton fx:id="saveChangesButton" defaultButton="true" layoutX="280.0" layoutY="480.0" onAction="#saveChangesAction" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text="Save Changes">
+      <JFXButton fx:id="saveChangesButton" defaultButton="true" layoutX="280.0" layoutY="480.0" onAction="#saveChangesAction" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" styleClass="Button" text="Save Changes">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font></JFXButton>

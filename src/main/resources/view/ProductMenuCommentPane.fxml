@@ -26,6 +26,6 @@
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font></JFXTextField>
-      <Rating fx:id="commentScore" layoutX="213.0" layoutY="29.0" partialRating="true" rating="0.0" />
+      <Rating fx:id="commentScore" layoutX="213.0" layoutY="29.0" rating="0.0" styleClass="Rating" />
    </children>
 </Pane>

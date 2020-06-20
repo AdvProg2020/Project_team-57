@@ -488,7 +488,7 @@ public class ProductProcessor extends Processor {
             Parent root = loader.load();
             ProductProcessor processor = loader.getController();
             processor.setParentProcessor(this);
-            processor.initCommentsThroughThePane(product.getID(), product.getSeen(), productMenuType);
+            processor.initCommentsThroughThePane();
             mainPane.setRight(root);
         } catch (IOException e) {
             e.printStackTrace();
@@ -496,7 +496,11 @@ public class ProductProcessor extends Processor {
 
     }
 
-    private void initCommentsThroughThePane(String productID, int seen, ProductMenuType productMenuType) {
+    private void initCommentsThroughThePane() {
+        Product product = ((ProductProcessor) parentProcessor).product;
+        String productID = product.getID();
+        int seen = product.getSeen();
+
         averageScore.setRating(productControl.getAverageScore(productID));
         averageScore.setDisable(true);
 
@@ -550,7 +554,16 @@ public class ProductProcessor extends Processor {
     }
 
     public void addComment(ActionEvent actionEvent) {
-        //Todo
+        if(userNameComment.getText() == null || userNameComment.getText().isEmpty()) {
+            userNameComment.setStyle(errorTextFieldStyle);
+        } else if(commentTitle.getText() == null || commentTitle.getText().isEmpty()) {
+            commentTitle.setStyle(errorTextFieldStyle);
+        } else if(commentContent.getText() == null || commentContent.getText().isEmpty()) {
+            commentContent.setStyle(errorTextFieldStyle);
+        } else {
+            //Todo Adding Comment
+            ((ProductProcessor) parentProcessor).initCommentsThroughThePane();
+        }
     }
     //Sepehr's Section
 
