@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import controller.IOControl;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -51,7 +52,7 @@ public class SignInProcessor{
         button.setTextFill(Color.WHITE);
     }
 
-    public void login(MouseEvent mouseEvent) {
+    public void login(ActionEvent actionEvent) {
         String style = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
         if(userNameField.getText().equals("") || passwordField.getText().equals("")) {
           if(userNameField.getText().equals(""))

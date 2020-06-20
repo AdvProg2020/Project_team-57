@@ -572,10 +572,10 @@ public class TableViewProcessor<T> extends Processor {
         String alertStr;
         boolean approve;
         if(((JFXButton)actionEvent.getSource()).getText().equals(approveCommentButton.getText())){
-            alertStr = "Are You Sure You Want To Approve " + selectedComment.getCommentID() + "?";
+            alertStr = "Are You Sure You Want To Approve " + selectedComment.getTitle() + "?";
             approve = true;
         } else {
-            alertStr = "Are You Sure You Want To Delete " + selectedComment.getCommentID() + "?";
+            alertStr = "Are You Sure You Want To Delete " + selectedComment.getTitle()+ "?";
             approve = false;
         }
         Optional<ButtonType> buttonType = new Alert
