@@ -31,6 +31,7 @@ import java.util.ResourceBundle;
 
 public class AccountProductsProcessor implements Initializable {
     public Pane cartPane;
+    public Pane vendorProductsPane;
     private CustomerControl control;
     private VendorControl vendorControl;
     public ListView<Product> list;
@@ -56,6 +57,7 @@ public class AccountProductsProcessor implements Initializable {
     }
 
     private void initializeVendorProducts() {
+        vendorProductsPane.setStyle("-fx-background-image: url(Images/mall-918472_1280.jpg);");
         goodsNumber.setText(vendorControl.getVendorProductIDs().size() + "");
         ObservableList<Product> products = FXCollections.observableArrayList(vendorControl.getAllProducts());
         vendorList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
