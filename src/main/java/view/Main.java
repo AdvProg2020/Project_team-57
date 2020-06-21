@@ -45,12 +45,12 @@ public class Main extends Application {
         Parent root = fxmlLoader.load();
         ProductProcessor processor = fxmlLoader.getController();
         Control.setType("Customer");
-        Control.setUsername("hossein");
+        Control.setUsername("hossein1");
         Product product = ProductTable.getProductByID("p2345678");
         processor.initProcessor(product, ProductProcessor.ProductMenuType.VENDOR_EDIT);
-        /*FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
-        Parent root = fxmlLoader.load();
-        */primaryStage.setScene(new Scene(root));
+//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
+//        Parent root = fxmlLoader.load();
+        primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Boos Market");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Main Icon.png")));
         primaryStage.setResizable(false);

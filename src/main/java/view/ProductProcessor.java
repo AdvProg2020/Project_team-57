@@ -506,13 +506,14 @@ public class ProductProcessor extends Processor {
         viewsNum.setText(Integer.toString(seen));
         viewsNum.setDisable(true);
 
+        commentsVBox.getChildren().removeAll(commentsVBox.getChildren());
         for (Comment productComment : productControl.getAllProductComments(productID))
             commentsVBox.getChildren().add(getCommentPane("ProductMenuShowCommentPane", productComment, CommentType.SHOW));
 
         if(Control.getType() != null && Control.getType().equals("Customer")) {
             Comment comment = new Comment();
             comment.setProductID(productID);
-            commentsVBox.getChildren().add(getCommentPane("ProductMenuAddCommentPane", new Comment(), CommentType.ADD));
+            commentsVBox.getChildren().add(getCommentPane("ProductMenuAddCommentPane", comment, CommentType.ADD));
         }
     }
 

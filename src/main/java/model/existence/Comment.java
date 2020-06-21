@@ -95,4 +95,15 @@ public class Comment {
     public void setScore(int score) {
         this.score = score;
     }
+
+    @Override
+    public String toString() {
+        return "Comment : " +
+                "\nID : " + commentID +
+                "\nUserName : " + customerUsername +
+                "\nTitle : " + title +
+                "\nContent : " + content +
+                "\nStatus : " + status +
+                "\nScore : " + score;
+    }
 }

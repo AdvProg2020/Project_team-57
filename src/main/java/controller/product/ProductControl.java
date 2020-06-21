@@ -534,6 +534,37 @@ public class ProductControl extends Control {
         return comparingProductIDs;
     }
 
+    //Comment Scoring
+    public int getScore(Comment comment){
+        try {
+            if (ProductTable.didScore(comment.getCustomerUsername(), comment.getProductID()))
+                return ProductTable.getScore(comment.getCustomerUsername(), comment.getProductID());
+            return 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println("Shit. Error In Getting Score");
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public Notification setScore(Comment comment){
+        try {
+            if (ProductTable.didScore(Control.getUsername(), comment.getProductID())){
+                ProductTable.updateScore(Control.getUsername(), comment.getProductID(), comment.getScore());
+                ProductTable.updateProductsAvgScore(comment.getProductID());
+                return Notification.UPDATE_SCORE;
+            }
+            ProductTable.setScore(comment.getCustomerUsername(), comment.getProductID(), comment.getScore());
+            ProductTable.updateProductsAvgScore(comment.getProductID());
+            return Notification.SET_SCORE;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return Notification.UNKNOWN_ERROR;
+    }
+    //Comment Scoring
+
     public double getAverageScore(String productID){
         try {
             double averageScore = 0;
@@ -549,28 +580,24 @@ public class ProductControl extends Control {
         return 1;
     }
 
-    public Notification addComment(/*String title, String content*/Comment comment) {
-        /*if (title.length() > 16)
-            return Notification.ERROR_TITLE_LENGTH;
-        if (content.length() > 100)
-            return Notification.ERROR_COMMENT_LENGTH;*/
-//        Comment comment = new Comment();
-//        comment.setTitle(title);
-//        comment.setContent(content);
+    public Notification addComment(Comment comment) {
         comment.setStatus(2);
         comment.setCustomerUsername(Control.getUsername());
-//        comment.setProductID(this.currentProduct);
         String commentID;
+
         try {
             do {
                 commentID = generateCommentID();
             } while (ProductTable.isThereCommentByID(commentID));
             comment.setCommentID(commentID);
             ProductTable.addComment(comment);
+
+            //Todo Approving Score Haminjori Nemishe Score Gozasht. Bas Taeid Beshe
+            if(comment.getScore() != 0)
+                setScore(comment);
+
             return Notification.ADD_COMMENT;
-        } catch (SQLException e){
-            e.printStackTrace();
-        } catch (ClassNotFoundException e){
+        } catch (SQLException | ClassNotFoundException e){
             e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;
@@ -591,21 +618,17 @@ public class ProductControl extends Control {
 
         try {
             for (Comment comment : ProductTable.getAllApprovedCommentsOnThisProduct(productId)) {
-                comment.setScore(ProductTable.getScore(comment.getCustomerUsername(), productId));
+                comment.setScore(getScore(comment));
                 productComments.add(comment);
             }
 
             if(Control.getType() != null && Control.getType().equals("Customer")) {
                 for (Comment comment : ProductTable.getAllLoggedInUserComment(Control.getUsername(), productId)) {
-                    if(comment.getStatus() != 1) {
-                        comment.setScore(ProductTable.getScore(comment.getCustomerUsername(), productId));
-                        productComments.add(comment);
-                    }
+                    comment.setScore(getScore(comment));
+                    productComments.add(comment);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 

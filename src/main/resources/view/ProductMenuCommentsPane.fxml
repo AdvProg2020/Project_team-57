@@ -12,23 +12,23 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="462.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
    <children>
-      <ScrollPane fitToWidth="true" layoutY="91.0" prefHeight="284.0" prefWidth="459.0">
+      <ScrollPane fitToWidth="true" layoutY="95.0" prefHeight="400.0" prefWidth="417.0">
          <content>
-            <VBox fx:id="commentsVBox" prefHeight="284.0" prefWidth="440.0" />
+            <VBox fx:id="commentsVBox" prefHeight="398.0" prefWidth="417.0" />
          </content>
       </ScrollPane>
-      <JFXTextField fx:id="viewsNum" alignment="CENTER" editable="false" layoutX="392.0" layoutY="43.0" prefHeight="31.0" prefWidth="32.0" text="0">
+      <JFXTextField fx:id="viewsNum" alignment="CENTER" editable="false" layoutX="381.0" layoutY="47.0" prefHeight="31.0" prefWidth="32.0" text="0">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </JFXTextField>
-      <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="360.0" layoutY="43.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="349.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/Icons/ProductMenu/View.png" />
          </image>
       </ImageView>
-      <Rating fx:id="averageScore" layoutX="140.0" layoutY="44.0" />
-      <Label layoutX="15.0" layoutY="44.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Average Score : ">
+      <Rating fx:id="averageScore" layoutX="129.0" layoutY="48.0" partialRating="true" rating="0.0" />
+      <Label layoutX="4.0" layoutY="48.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Average Score : ">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
