@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="specialPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
+   <children>
+      <JFXTextField fx:id="price" layoutX="57.0" layoutY="105.0" prefHeight="32.0" prefWidth="90.0" promptText=" Price">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></JFXTextField>
+      <ImageView fx:id="statusIcon" fitHeight="32.0" fitWidth="32.0" layoutX="23.0" layoutY="262.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/ProductMenu/Status.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="sellerIcon" fitHeight="32.0" fitWidth="32.0" layoutX="23.0" layoutY="182.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/ProductMenu/Seller3.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="23.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/ProductMenu/Price.png" />
+         </image>
+      </ImageView>
+      <JFXTextField fx:id="status" layoutX="57.0" layoutY="262.0" prefHeight="32.0" prefWidth="213.0" promptText=" Status">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></JFXTextField>
+      <JFXTextField fx:id="seller" layoutX="57.0" layoutY="182.0" prefHeight="32.0" prefWidth="213.0" promptText=" Seller">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font></JFXTextField>
+      <ImageView fx:id="offArrow" fitHeight="32.0" fitWidth="32.0" layoutX="147.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/ProductMenu/Right%20Arrow.png" />
+         </image>
+      </ImageView>
+      <JFXTextField fx:id="offPrice" layoutX="180.0" layoutY="105.0" prefHeight="32.0" prefWidth="90.0" promptText=" Off Price">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </JFXTextField>
+      <HBox layoutX="165.0" layoutY="14.0">
+         <children>
+            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </HBox>
+   </children>
+</Pane>

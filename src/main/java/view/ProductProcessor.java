@@ -4,7 +4,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
-import controller.Control;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
 import javafx.animation.AnimationTimer;
@@ -39,13 +38,12 @@ import java.io.IOException;
 
 public class ProductProcessor extends Processor {
 
-
     public void setMenuType(ProductMenuType menuType) {
         this.menuType = menuType;
     }
 
     public static enum ProductMenuType {
-        CART, VENDOR_ADD, VENDOR_EDIT, ADMIN, PRODUCTS
+        CART, VENDOR_ADD, VENDOR_EDIT, ADMIN, CUSTOMER, PRODUCTS;
     }
 
     public static enum CommentType {
@@ -87,8 +85,8 @@ public class ProductProcessor extends Processor {
 
     //Sepehr's Section
 
-    //ProductGeneralInfoPane
-    public Pane generalInfoPane;
+    //GeneralPane
+    public Pane generalPane;
     public JFXTextField nameTextField;
     public JFXTextField categoryTextField;
     public JFXToggleButton countableToggleButton;
@@ -98,12 +96,12 @@ public class ProductProcessor extends Processor {
     public JFXTextArea descriptionTextArea;
     public JFXButton saveChangesButton;
 
-    //ProductCommentsPane
+    //CommentsPane
     public VBox commentsVBox;
     public Rating averageScore;
     public JFXTextField viewsNum;
 
-    //ProductCommentPane
+    //CommentPane
     private Comment comment;
     public Pane commentPane;
     public JFXTextField commentTitle;
@@ -112,14 +110,29 @@ public class ProductProcessor extends Processor {
     public JFXTextField userNameComment;
     public Rating commentScore;
 
+    //SpecialPane
+    public Pane specialPane;
+    public JFXTextField price;
+    public ImageView offArrow;
+    public JFXTextField offPrice;
+    public ImageView sellerIcon;
+    public JFXTextField seller;
+    public ImageView statusIcon;
+    public JFXTextField status;
+    public JFXTextField cartCount;
+    public ImageView plusButton;
+    public ImageView minusButton;
+    public JFXButton addToCart;
+
     public void initProcessor(Product product, ProductMenuType productMenuType) {
         this.menuType = productMenuType;
         this.product = product;
         initImagePanel();
 
         //Sepehr's Section
-        initGeneralInfoPane(productMenuType);
-        initCommentsPane(productMenuType);
+        initGeneralInfoPane();
+        initCommentsPane();
+        initSpecialPane();
     }
 
     private void initImagePanel() {
@@ -318,20 +331,21 @@ public class ProductProcessor extends Processor {
     //Sepehr's Section
 
     //GeneralInfoPane
-    private void initGeneralInfoPane(ProductMenuType productMenuType) {
-        try {
-            if(productMenuType == ProductMenuType.VENDOR_EDIT)
-                product = productControl.getEditedProductByID(product.getID());
+    private void initGeneralInfoPane() {
+        if(menuType == ProductMenuType.VENDOR_EDIT)
+            product = productControl.getEditedProductByID(product.getID());
 
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuGeneralInfo.fxml"));
+            /*FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuGeneralInfo.fxml"));
             Parent root = loader.load();
             ProductProcessor processor = loader.getController();
-            processor.setParentProcessor(this);
-            processor.setGeneralTextFields();
-            mainPane.setLeft(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            processor.parentProcessor = this;*/
+
+        FXMLLoader loader = loadThePane("ProductMenuGeneralInfo");
+        ProductProcessor processor = loader.getController();
+        //Todo Check The Use Of MenuType
+
+        processor.setGeneralTextFields();
+        mainPane.setLeft(loader.getRoot());
     }
 
     private void setGeneralTextFields() {
@@ -374,7 +388,7 @@ public class ProductProcessor extends Processor {
     }
 
     private void disableEditingGeneralFields() {
-        generalInfoPane.getChildren().remove(saveChangesButton);
+        generalPane.getChildren().remove(saveChangesButton);
         nameTextField.setDisable(true);
         categoryTextField.setDisable(true);
         countableToggleButton.setDisable(true);
@@ -481,17 +495,16 @@ public class ProductProcessor extends Processor {
     }
 
     //CommentsPane
-    private void initCommentsPane(ProductMenuType productMenuType) {
-        try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuCommentsPane.fxml"));
-            Parent root = loader.load();
-            ProductProcessor processor = loader.getController();
-            processor.setParentProcessor(this);
-            processor.initCommentsThroughThePane();
-            mainPane.setRight(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void initCommentsPane() {
+        /*FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuCommentsPane.fxml"));
+        Parent root = loader.load();
+        ProductProcessor processor = loader.getController();
+        processor.parentProcessor = this;
+        processor.menuType = menuType;*/
+        FXMLLoader loader = loadThePane("ProductMenuCommentsPane");
+        ProductProcessor processor = loader.getController();
+        processor.initCommentsThroughThePane();
+        mainPane.setRight(loader.getRoot());
 
     }
 
@@ -510,27 +523,23 @@ public class ProductProcessor extends Processor {
         for (Comment productComment : productControl.getAllProductComments(productID))
             commentsVBox.getChildren().add(getCommentPane("ProductMenuShowCommentPane", productComment, CommentType.SHOW));
 
-        if(Control.getType() != null && Control.getType().equals("Customer")) {
+        if(menuType == ProductMenuType.CUSTOMER) {
             Comment comment = new Comment();
             comment.setProductID(productID);
             commentsVBox.getChildren().add(getCommentPane("ProductMenuAddCommentPane", comment, CommentType.ADD));
         }
     }
 
+    //CommentPane
     private Pane getCommentPane(String panePath,Comment comment, CommentType commentType) {
-        try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource(panePath + ".fxml"));
-            Parent root = loader.load();
-            ProductProcessor processor = loader.getController();
-            processor.setParentProcessor(this);
-            processor.initCommentFields(comment, commentType);
-            return (Pane) root;
-        } catch (IOException e) {
-            System.out.println("Shit. Error In Loading Comment Pane");
-            e.printStackTrace();
-        }
-
-        return null;
+        /*FXMLLoader loader = new FXMLLoader(Main.class.getResource(panePath + ".fxml"));
+        Parent root = loader.load();
+        ProductProcessor processor = loader.getController();
+        processor.setParentProcessor(this);*/
+        FXMLLoader loader = loadThePane(panePath);
+        ProductProcessor processor = loader.getController();
+        processor.initCommentFields(comment, commentType);
+        return (Pane) loader.getRoot();
     }
 
     private void initCommentFields(Comment productComment, CommentType commentType) {
@@ -571,9 +580,48 @@ public class ProductProcessor extends Processor {
             comment.setScore((int) commentScore.getRating());
 
             productControl.addComment(comment);
+
+            //Todo Check If It Works Without The ProductType Or Not
             ((ProductProcessor) parentProcessor).initCommentsThroughThePane();
             //Todo Showing Alert Or Not
         }
+    }
+
+    //SpecialInfoPane
+    private void initSpecialPane() {
+        //Todo Condition Making For Choosing The Right Special Pane
+        FXMLLoader loader = loadThePane("ProductMenuSpecialInfoCustomer");
+        ProductProcessor processor = loader.getController();
+        processor.initSpecialFields();
+    }
+
+    private void initSpecialFields() {
+        //Getting Off Price From parentProduct (Setting It From Control)
+
+        switch (menuType) {
+            case VENDOR_ADD:
+                specialPane.getChildren().removeAll(offArrow, offPrice);
+                specialPane.getChildren().removeAll(sellerIcon, seller);
+                //Todo Putting Buttons For Adding And Other Stuff Of The Product Commands
+                specialPane.getChildren().removeAll(statusIcon, status);
+                specialPane.getChildren().removeAll(cartCount, minusButton, plusButton, addToCart);
+        }
+    }
+
+    private FXMLLoader loadThePane(String paneName) {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource(paneName + ".fxml"));
+            Parent root = loader.load();
+            ProductProcessor processor = loader.getController();
+            processor.parentProcessor = this;
+            processor.menuType = menuType;
+            return loader;
+        } catch (IOException e) {
+            System.out.println("Shit. Error In Loading The Pane : " + paneName);
+            e.printStackTrace();
+        }
+
+        return null;
     }
     //Sepehr's Section
 
