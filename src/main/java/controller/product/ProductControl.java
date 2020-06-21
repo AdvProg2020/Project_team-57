@@ -624,6 +624,7 @@ public class ProductControl extends Control {
 
             if(Control.getType() != null && Control.getType().equals("Customer")) {
                 for (Comment comment : ProductTable.getAllLoggedInUserComment(Control.getUsername(), productId)) {
+                    comment.setCustomerUsername("*You*");           //Todo Hal Kendi
                     comment.setScore(getScore(comment));
                     productComments.add(comment);
                 }
