@@ -8,6 +8,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
 <Pane fx:id="offInfoMainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="730.0" stylesheets="@../CSS%20files/VendorMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.SaleProcessor">
    <children>
@@ -31,9 +32,14 @@
             <Image url="@../Images/Icons/OffMenu/save.png" />
          </image>
       </ImageView>
-      <Rectangle fx:id="offImageRectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="150.0" layoutX="81.0" layoutY="14.0" stroke="#1a6dff" strokeType="INSIDE" strokeWidth="2.0" width="150.0" />
+      <Rectangle fx:id="offImageRectangle" arcHeight="30.0" arcWidth="30.0" fill="DODGERBLUE" height="150.0" layoutX="81.0" layoutY="14.0" stroke="#1a6dff" strokeType="INSIDE" strokeWidth="2.0" width="150.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c822ff" height="10.0" layoutX="243.0" layoutY="84.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="330.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c822ff" height="10.0" layoutY="84.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="70.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c822ff" height="10.0" layoutX="680.0" layoutY="84.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="50.0" />
+      <Label layoutX="83.0" layoutY="164.0" text="off Image">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
    </children>
 </Pane>
