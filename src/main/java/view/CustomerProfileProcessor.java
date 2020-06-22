@@ -152,13 +152,17 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     }
 
     public void showCart(MouseEvent event) {
+        if(canOpenSubStage(Control.getUsername() + " Cart", this))
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("AccountProducts.fxml"));
-            AccountProductsProcessor processor = new AccountProductsProcessor();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerCartProducts.fxml"));
+            Parent root = loader.load();
+            ProductsProcessor processor = loader.getController();
+            processor.initProcessor(ProductsProcessor.ProductsMenuType.CUSTOMER_CART);
             Stage stage = new Stage();
             stage.getIcons().add(new Image("Images/Icons/cart (2).png"));
-            stage.setTitle("Cart");
+            stage.setTitle(Control.getUsername() + " Cart");
             stage.setScene(new Scene(root));
+            addSubStage(stage);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
