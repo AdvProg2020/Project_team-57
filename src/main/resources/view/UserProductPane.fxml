@@ -29,7 +29,7 @@
       </StackPane>
       <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="184.0" layoutY="260.0" pickOnBounds="true" preserveRatio="true" styleClass="vendor_delete_product_button">
          <image>
-            <Image url="@../Images/Icons/ProductsMenu/icons8-delete-bin-48.png" />
+            <Image url="@../Images/Icons/VendorProduts/delete.png" />
          </image>
       </ImageView>
    </children>

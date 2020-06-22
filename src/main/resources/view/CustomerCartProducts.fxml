@@ -26,7 +26,7 @@
                <children>
                   <ImageView disable="true" fitHeight="96.0" fitWidth="96.0" layoutX="40.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../Images/Icons/VendorProduts/icons8-buying-96.png" />
+                        <Image url="@../Images/Icons/VendorProduts/purchase.png" />
                      </image>
                   </ImageView>
                   <Label layoutX="56.0" layoutY="149.0" text="Purchase">

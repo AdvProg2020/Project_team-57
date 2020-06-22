@@ -13,7 +13,7 @@
    <children>
       <ImageView fitHeight="350.0" fitWidth="350.0" layoutX="306.0" layoutY="258.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Images/Icons/TableViewMenu/133-1336496_student-girl-png-girl-with-laptop-png.png" />
+            <Image url="@../Images/Icons/TableViewMenu/girl%20commenting.png" />
          </image>
       </ImageView>
       <JFXTextField fx:id="commentTitleField" editable="false" layoutX="116.0" layoutY="73.0" style="-fx-background-color: #eceff1; -fx-background-radius: 10 10 0 0;" />
