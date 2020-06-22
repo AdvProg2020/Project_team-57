@@ -613,7 +613,7 @@ public class ProductProcessor extends Processor {
         product.setOnSale(true);
         product.setOffPrice(3000);
         product.setOffPercent(2500.0 / 55);
-        System.out.println(product.isOnSale());
+//        System.out.println(product.isOnSale());
         switch (menuType) {
             //Except Customer Section
             case VENDOR_ADD:
@@ -655,9 +655,10 @@ public class ProductProcessor extends Processor {
                 addToCart.setText("Remove From Cart");
                 addToCart.setLayoutX(122);
                 specialPane.getChildren().removeAll(cartCount, minusButton, plusButton);
-                //Todo Checkpoint
             case PRODUCTS:
             case CUSTOMER:
+                initSpecialFieldsInGeneral();
+                setCartFields();
                 break;
 
             default:
@@ -671,6 +672,17 @@ public class ProductProcessor extends Processor {
         }
 
 
+    }
+
+    private void initSpecialFieldsInGeneral() {
+        Product product = ((ProductProcessor) parentProcessor).product;
+
+        setPrices();
+        seller.setText(product.getSellerUserName());
+        seller.setDisable(true);
+
+        status.setText(product.getTheStatus());
+        status.setDisable(true);
     }
 
     private void setPrices() {
@@ -708,17 +720,79 @@ public class ProductProcessor extends Processor {
         });
     }
 
-    private void initSpecialFieldsInGeneral() {
-        Product product = ((ProductProcessor) parentProcessor).product;
 
-        setPrices();
-        seller.setText(product.getSellerUserName());
-        seller.setDisable(true);
-
-        status.setText(product.getTheStatus());
-        status.setDisable(true);
+    private void setCartFields() {
+        if(product.isCountable())
+            setCartCountable();
+        else
+            setCartUnCountable();
     }
 
+    private void setCartCountable() {
+        Product product = ((ProductProcessor) parentProcessor).product;
+
+        setIntegerFields(cartCount, product.getCount());
+        cartCount.textProperty().addListener((observable, oldValue, newValue) -> {
+            //Todo Check
+            if(newValue.isEmpty() || newValue.equals("0")) {
+                cartCount.setText("1");
+            }
+        });
+        plusButton.setOnMouseClicked(event -> addCartCount());
+        minusButton.setOnMouseClicked(event -> subtractCartCount());
+    }
+
+    public void addCartCount() {
+        Product product = ((ProductProcessor) parentProcessor).product;
+
+        int previousCartCount = Integer.parseInt(cartCount.getText());
+
+        if(previousCartCount < product.getCount())
+            cartCount.setText(Integer.toString(++previousCartCount));
+    }
+
+    public void subtractCartCount() {
+        int previousCartCount = Integer.parseInt(cartCount.getText());
+
+        if(previousCartCount > 1)
+            cartCount.setText(Integer.toString(--previousCartCount));
+
+    }
+
+
+    private void setCartUnCountable() {
+        Product product = ((ProductProcessor) parentProcessor).product;
+
+        setDoubleFields(cartCount, product.getAmount() + 0.000001);
+        cartCount.textProperty().addListener((observable, oldValue, newValue) -> {
+            //Todo Check
+            if(newValue.isEmpty() || newValue.equals("0")) {
+                if (product.getAmount() > 0.2)
+                    cartCount.setText("0.2");
+                else
+                    cartCount.setText("0.000002");
+            }
+        });
+        plusButton.setOnMouseClicked(event -> addCartAmount());
+        minusButton.setOnMouseClicked(event -> subtractCartAmount());
+    }
+
+    public void addCartAmount() {
+        Product product = ((ProductProcessor) parentProcessor).product;
+
+        double previousCartAmount = Double.parseDouble(cartCount.getText());
+
+        if(previousCartAmount < product.getAmount())
+            cartCount.setText(Double.toString(product.getAmount() - previousCartAmount > 0.2 ? previousCartAmount + 0.2 : product.getAmount()));
+    }
+
+    public void subtractCartAmount() {
+        double previousCartAmount = Double.parseDouble(cartCount.getText());
+
+        //Todo Check
+        if(previousCartAmount > 0.2)
+            cartCount.setText(Double.toString(0.2 * Math.ceil(previousCartAmount * 5) - 0.2));
+    }
 
     public void addCreatedProduct() {
         //Todo

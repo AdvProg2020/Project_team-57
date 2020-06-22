@@ -21,6 +21,7 @@ public class Product {
     private Date approvalDate;
     private int seen;
 
+    //Off Section
     private boolean isOnSale;
     private double offPrice;
     private double offPercent;
