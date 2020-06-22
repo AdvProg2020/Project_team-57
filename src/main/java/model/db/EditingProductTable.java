@@ -1,6 +1,7 @@
 package model.db;
 
 import model.existence.Product;
+import view.Processor;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -23,6 +24,44 @@ public class EditingProductTable extends Database{
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productId);
         return !(preparedStatement.executeQuery().next());
+    }
+
+    public static void updateCountableProduct(Product product) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE EditingProducts SET Price = ?, " +
+                "ProductName = ?, " +
+                "Category = ?, " +
+                "Count = ?, " +
+                "Brand = ?, " +
+                "Description = ? " +
+                "WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setDouble(1, product.getPrice());
+        preparedStatement.setString(2, product.getName());
+        preparedStatement.setString(3, product.getCategory());
+        preparedStatement.setInt(4, product.getCount());
+        preparedStatement.setString(5, product.getBrand());
+        preparedStatement.setString(6, product.getDescription());
+        preparedStatement.setString(7, product.getID());
+        preparedStatement.execute();
+    }
+
+    public static void updateUnCountableProduct(Product product) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE EditingProducts SET Price = ?, " +
+                "ProductName = ?, " +
+                "Category = ?, " +
+                "Amount = ?, " +
+                "Brand = ?, " +
+                "Description = ? " +
+                "WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setDouble(1, product.getPrice());
+        preparedStatement.setString(2, product.getName());
+        preparedStatement.setString(3, product.getCategory());
+        preparedStatement.setDouble(4, product.getAmount());
+        preparedStatement.setString(5, product.getBrand());
+        preparedStatement.setString(6, product.getDescription());
+        preparedStatement.setString(7, product.getID());
+        preparedStatement.execute();
     }
 
     public static void editFieldWithName(String ID, String fieldName, String newValue) throws SQLException, ClassNotFoundException {

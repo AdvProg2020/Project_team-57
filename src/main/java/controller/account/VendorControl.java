@@ -6,6 +6,7 @@ import model.existence.Log;
 import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
+import view.Processor;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -51,8 +52,7 @@ public class VendorControl extends AccountControl{
         return productsIDs;
     }
 
-    public ArrayList<Notification> addProduct(Product product)
-    {
+    public ArrayList<Notification> addProduct(Product product) {
         ArrayList<Notification> addingProductNotifications = new ArrayList<>();
 
         try {
@@ -81,11 +81,6 @@ public class VendorControl extends AccountControl{
         return addingProductNotifications;
     }
 
-    public ArrayList<Notification> editProduct(Product product) {
-        //Todo
-        return null;
-    }
-
     private ArrayList<Notification> checkProductFields(Product product) throws SQLException, ClassNotFoundException {
         ArrayList<Notification> checkNotifications = new ArrayList<>();
 
@@ -108,6 +103,60 @@ public class VendorControl extends AccountControl{
         }
 
         return checkNotifications;
+    }
+
+
+    public Notification editProduct(Product currentProduct, Product editingProduct) {
+        Notification editProductNotification = null;
+
+        try {
+            editProductNotification = checkEditingProduct(currentProduct, editingProduct);
+
+            if (editProductNotification == null) {
+                if (EditingProductTable.isIDFree(editingProduct.getID())) {
+                    EditingProductTable.addProduct(editingProduct);
+                } else {
+                    if (editingProduct.isCountable())
+                        EditingProductTable.updateCountableProduct(editingProduct);
+                    else
+                        EditingProductTable.updateUnCountableProduct(editingProduct);
+                }
+
+                editProductNotification = Notification.EDIT_PRODUCT;
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            editProductNotification = Notification.UNKNOWN_ERROR;
+            e.printStackTrace();
+        }
+
+        return editProductNotification;
+    }
+
+    private Notification checkEditingProduct(Product currentProduct, Product editingProduct) throws SQLException, ClassNotFoundException {
+
+        if(editingProduct.getPrice() == 0)
+            editingProduct.setPrice(currentProduct.getPrice());
+
+        if(editingProduct.getName() == null || editingProduct.getName().isEmpty())
+            editingProduct.setName(currentProduct.getName());
+
+        if(editingProduct.getCategory() == null || editingProduct.getCategory().isEmpty())
+            editingProduct.setCategory(currentProduct.getCategory());
+        else if(editingProduct.getCategory() != null && !CategoryTable.isThereCategoryWithName(editingProduct.getCategory()))
+            return Notification.INVALID_PRODUCT_CATEGORY;
+
+        if(editingProduct.isCountable() && editingProduct.getCount() == 0)
+            editingProduct.setCount(currentProduct.getCount());
+        if(!editingProduct.isCountable() && editingProduct.getAmount() == 0)
+            editingProduct.setAmount(currentProduct.getAmount());
+
+        if(editingProduct.getBrand() == null || editingProduct.getBrand().isEmpty())
+            editingProduct.setBrand(currentProduct.getBrand());
+
+        if(editingProduct.getDescription() == null || editingProduct.getDescription().isEmpty())
+            editingProduct.setDescription(currentProduct.getDescription());
+
+        return null;
     }
 
     private String generateProductID()
