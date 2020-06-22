@@ -1,0 +1,4 @@
+.product_pane:hover {
+    -fx-cursor: hand;
+    -fx-opacity: 0.8;
+}

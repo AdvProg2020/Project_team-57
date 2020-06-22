@@ -4,6 +4,8 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
+import controller.Control;
+import controller.account.CustomerControl;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
 import javafx.animation.AnimationTimer;
@@ -84,6 +86,7 @@ public class ProductProcessor extends Processor {
     public Pane imagePane;
     public JFXToggleButton slideShowToggleButton;
     public ImageView editImageButton;
+    private ArrayList<File> productImageFiles;
 
     //ProductMediaPane
     public ImageView deleteMediaButton;
@@ -141,30 +144,22 @@ public class ProductProcessor extends Processor {
     public void initProcessor(Product product, ProductMenuType productMenuType) {
         this.menuType = productMenuType;
         this.product = product;
-        initImagePanel();
-
-        //Sepehr's Section
         subProcessors = new ArrayList<>();
+        initImagePanel();
+        //sep
         initGeneralInfoPane();
         initCommentsPane();
         initSpecialPane();
     }
 
     private void initImagePanel() {
-
-    }
-
-    private void initAddProductImage() {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuImages.fxml"));
             Parent root = loader.load();
             ProductProcessor processor = loader.getController();
             processor.setParentProcessor(this);
+            subProcessors.add(processor);
             processor.imageNumberLabel.setText("1");
-            processor.setImage();
-            if(!productControl.doesProductHaveImage(product.getID())) {
-                processor.disableChangeButtons(true);
-            }
             mainTimer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
@@ -177,27 +172,55 @@ public class ProductProcessor extends Processor {
                     }
                 }
             };
-            if(menuType != ProductMenuType.VENDOR_ADD && menuType != ProductMenuType.VENDOR_EDIT) {
-                processor.imagePane.getChildren().removeAll(removeImageButton, editImageButton, addImageButton);
+            switch (menuType) {
+                case ADMIN:
+                case PRODUCTS:
+                case CUSTOMER:
+                case CART:
+                    processor.imagePane.getChildren().removeAll(processor.addImageButton, processor.editImageButton, processor.removeImageButton);
             }
+            processor.productImageFiles = new ArrayList<>();
+            processor.getImages();
             upBorderPane.setLeft(root);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void disableChangeButtons(boolean imageButton) {
-        nextImageButton.setDisable(true);
-        previousImageButton.setDisable(true);
-        slideShowToggleButton.setDisable(true);
-        removeImageButton.setDisable(true);
-        editImageButton.setDisable(true);
+    private void getImages() {
+        switch (((ProductProcessor)parentProcessor).menuType) {
+            //TODO
+        }
+        updateImages();
     }
 
-    private void setImage() {
-        int imageNumber = Integer.parseInt(imageNumberLabel.getText());
-        productImageRectangle.setFill(new ImagePattern
-                        (productControl.getProductImageByID(((ProductProcessor)parentProcessor).product.getID(), imageNumber)));
+    private void updateImages() {
+        if(productImageFiles.size() != 0) {
+            if(productImageFiles.size() > 1) {
+                modifyChangeButtons(true);
+                modifyVendorButtons(true);
+            }
+            else {
+                modifyChangeButtons(false);
+                modifyVendorButtons(true);
+            }
+            productImageRectangle.setFill(new ImagePattern
+                    (getImageFromFileArray((Integer.parseInt(imageNumberLabel.getText()) - 1))));
+        } else {
+            modifyVendorButtons(false);
+            modifyChangeButtons(false);
+        }
+    }
+
+    private void modifyVendorButtons(boolean isEnable) {
+        removeImageButton.setDisable(!isEnable);
+        editImageButton.setDisable(!isEnable);
+    }
+
+    private void modifyChangeButtons(boolean isEnable) {
+        nextImageButton.setDisable(!isEnable);
+        previousImageButton.setDisable(!isEnable);
+        slideShowToggleButton.setDisable(!isEnable);
     }
 
     public void upperButtonsOnMouse(MouseEvent mouseEvent) {
@@ -213,45 +236,30 @@ public class ProductProcessor extends Processor {
     }
 
     public void previousImage(MouseEvent mouseEvent) {
-        Rectangle firstRectangle = copyRectangle(productImageRectangle);
-        firstRectangle.setFill(new ImagePattern(productControl.getProductImageByID(((ProductProcessor)parentProcessor).product.getID(), Integer.parseInt(imageNumberLabel.getText()))));
-        FadeTransition firstTransition = getFadeTransition(1, 0, 1, firstRectangle);
-
-        int imagesNumber = productControl.getProductImagesNumberByID(((ProductProcessor)parentProcessor).product.getID());
-        int nextNumber = Integer.parseInt(imageNumberLabel.getText()) - 1;
-        if(nextNumber == 0) {
-            nextNumber = imagesNumber;
-        }
-        imageNumberLabel.setText("" + nextNumber);
-
-        Rectangle secondRectangle = copyRectangle(productImageRectangle);
-        secondRectangle.setFill(new ImagePattern(productControl.getProductImageByID(((ProductProcessor)parentProcessor).product.getID(), Integer.parseInt(imageNumberLabel.getText()))));
-        FadeTransition secondTransition = getFadeTransition(0, 1, 1, secondRectangle);
-        ParallelTransition parallelTransition = new ParallelTransition(firstTransition, secondTransition);
-        imagePane.getChildren().addAll(firstRectangle, secondRectangle);
-        parallelTransition.play();
-        productImageRectangle.setFill(null);
-        parallelTransition.setOnFinished(event -> {
-            imagePane.getChildren().removeAll(firstRectangle, secondRectangle);
-            setImage();
-        });
-        setImage();
+        changeImage(-1);
     }
 
     public void nextImage(MouseEvent mouseEvent) {
+        changeImage(+1);
+    }
+
+    private void changeImage(int k) {
         Rectangle firstRectangle = copyRectangle(productImageRectangle);
-        firstRectangle.setFill(new ImagePattern(productControl.getProductImageByID(((ProductProcessor)parentProcessor).product.getID(), Integer.parseInt(imageNumberLabel.getText()))));
+        firstRectangle.setFill(new ImagePattern(getImageFromFileArray((Integer.parseInt(imageNumberLabel.getText()) - 1))));
         FadeTransition firstTransition = getFadeTransition(1, 0, 1, firstRectangle);
 
-        int imagesNumber = productControl.getProductImagesNumberByID(((ProductProcessor)parentProcessor).product.getID());
-        int nextNumber = Integer.parseInt(imageNumberLabel.getText()) + 1;
-        if(nextNumber == imagesNumber + 1) {
+        int imagesNumber = productImageFiles.size();
+        int nextNumber = Integer.parseInt(imageNumberLabel.getText()) + k;
+
+        if(nextNumber == 0) {
+            nextNumber = imagesNumber;
+        } else if(nextNumber == imagesNumber + 1) {
             nextNumber = 1;
         }
         imageNumberLabel.setText("" + nextNumber);
 
         Rectangle secondRectangle = copyRectangle(productImageRectangle);
-        secondRectangle.setFill(new ImagePattern(productControl.getProductImageByID(((ProductProcessor)parentProcessor).product.getID(), Integer.parseInt(imageNumberLabel.getText()))));
+        secondRectangle.setFill(new ImagePattern(getImageFromFileArray((Integer.parseInt(imageNumberLabel.getText()) - 1))));
         FadeTransition secondTransition = getFadeTransition(0, 1, 1, secondRectangle);
         ParallelTransition parallelTransition = new ParallelTransition(firstTransition, secondTransition);
         imagePane.getChildren().addAll(firstRectangle, secondRectangle);
@@ -259,9 +267,18 @@ public class ProductProcessor extends Processor {
         productImageRectangle.setFill(null);
         parallelTransition.setOnFinished(event -> {
             imagePane.getChildren().removeAll(firstRectangle, secondRectangle);
-            setImage();
+            updateImages();
         });
+    }
 
+    private Image getImageFromFileArray(int index) {
+        try {
+            FileInputStream inStream = new FileInputStream(productImageFiles.get(index));
+            Image image = new Image(inStream);
+            inStream.close();
+            return image;
+        } catch (IOException e) { e.printStackTrace(); }
+        return null;
     }
 
     private FadeTransition getFadeTransition(double from, double to, double seconds, Node node) {
@@ -294,40 +311,29 @@ public class ProductProcessor extends Processor {
     }
 
     public void deleteImage(MouseEvent mouseEvent) {
-        productControl.deleteProductImage(((ProductProcessor)parentProcessor).product.getID(), Integer.parseInt(imageNumberLabel.getText()));
-        ((ProductProcessor)parentProcessor).initImagePanel();
+        productImageFiles.remove(Integer.parseInt(imageNumberLabel.getText()) - 1);
+        imageNumberLabel.setText("1");
+        updateImages();
     }
 
     public void addNewImage(MouseEvent mouseEvent) {
         File pictureFile = getImageChooser().showOpenDialog(null);
         if(pictureFile != null) {
-            FileInputStream fileInputStream = null;
-            try {
-                fileInputStream = new FileInputStream(pictureFile);
-                Image image = new Image(fileInputStream);
-//                productControl.addProductPicture(((ProductProcessor)parentProcessor).product.getID(), pictureFile);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            productImageFiles.add(pictureFile);
+            imageNumberLabel.setText("1");
+            updateImages();
         }
-        ((ProductProcessor)parentProcessor).initImagePanel();
     }
 
     public void editImage(MouseEvent mouseEvent) {
         File pictureFile = getImageChooser().showOpenDialog(null);
         if(pictureFile != null) {
-            FileInputStream fileInputStream = null;
-            try {
-                fileInputStream = new FileInputStream(pictureFile);
-                Image image = new Image(fileInputStream);
-                productImageRectangle.setFill(null);
-                System.gc();
-                productControl.editProductPicture(((ProductProcessor)parentProcessor).product.getID(), pictureFile, Integer.parseInt(imageNumberLabel.getText()));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            int number = Integer.parseInt(imageNumberLabel.getText());
+            productImageFiles.remove(number - 1);
+            productImageFiles.add(number - 1, pictureFile);
+            imageNumberLabel.setText("1");
+            updateImages();
         }
-        ((ProductProcessor)parentProcessor).initImagePanel();
     }
 
     private FileChooser getImageChooser() {
@@ -351,8 +357,10 @@ public class ProductProcessor extends Processor {
     //TheMainPane
 
     private void sendProduct() {
-        ProductProcessor generalFieldProcessor = subProcessors.get(0);
-        ProductProcessor specialFieldProcessor = subProcessors.get(2);
+        ProductProcessor imageProcessor = subProcessors.get(0);
+        //sep
+        ProductProcessor generalFieldProcessor = subProcessors.get(1);
+        ProductProcessor specialFieldProcessor = subProcessors.get(3);
 
         specialFieldProcessor.setProductSpecialFields();
         generalFieldProcessor.setProductGeneralFields();
@@ -361,10 +369,10 @@ public class ProductProcessor extends Processor {
 
         switch (menuType) {
             case VENDOR_ADD:
-                productNotifications = vendorControl.addProduct(product);
+                productNotifications = vendorControl.addProduct(product, imageProcessor.productImageFiles);
                 break;
             case VENDOR_EDIT:
-                productNotifications = vendorControl.editProduct(product);
+                productNotifications.add(vendorControl.editProduct(product, null));
                 break;
             default:
                 System.out.println("Serious Error In Sending Product");
@@ -381,9 +389,10 @@ public class ProductProcessor extends Processor {
     }
 
     private void successSending(Notification notification) {
-        Alert alert = notification.getAlert();
-        Optional<ButtonType> optionalButtonType = alert.showAndWait();
-        if(optionalButtonType.get() == ButtonType.OK) {
+        //TODO(Sangin)
+        //Alert alert = notification.getAlert();
+        //Optional<ButtonType> optionalButtonType = alert.showAndWait();
+        if(/*optionalButtonType.get() == ButtonType.OK*/ true) {
             closeSubStage(myStage, parentProcessor);
             ((ProductsProcessor)parentProcessor).initProductsPage();
         }
@@ -396,6 +405,7 @@ public class ProductProcessor extends Processor {
 
         FXMLLoader loader = loadThePane("ProductMenuGeneralInfo");
         ProductProcessor processor = loader.getController();
+        subProcessors.add(processor);
         //Todo Check The Use Of MenuType
 
         processor.setGeneralTextFields();
@@ -557,6 +567,7 @@ public class ProductProcessor extends Processor {
     private void initCommentsPane() {
         FXMLLoader loader = loadThePane("ProductMenuCommentsPane");
         ProductProcessor processor = loader.getController();
+        subProcessors.add(processor);
         processor.initCommentsThroughThePane();
         mainPane.setRight(loader.getRoot());
     }
@@ -576,7 +587,7 @@ public class ProductProcessor extends Processor {
         for (Comment productComment : productControl.getAllProductComments(productID))
             commentsVBox.getChildren().add(getCommentPane("ProductMenuShowCommentPane", productComment, CommentType.SHOW));
 
-        if(menuType == ProductMenuType.CUSTOMER) {
+        if(menuType == ProductMenuType.CUSTOMER || menuType == ProductMenuType.CART) {
             Comment comment = new Comment();
             comment.setProductID(productID);
             commentsVBox.getChildren().add(getCommentPane("ProductMenuAddCommentPane", comment, CommentType.ADD));
@@ -587,11 +598,13 @@ public class ProductProcessor extends Processor {
     private Pane getCommentPane(String panePath,Comment comment, CommentType commentType) {
         FXMLLoader loader = loadThePane(panePath);
         ProductProcessor processor = loader.getController();
+
         processor.initCommentFields(comment, commentType);
         return (Pane) loader.getRoot();
     }
 
     private void initCommentFields(Comment productComment, CommentType commentType) {
+        Product product = ((ProductProcessor)parentProcessor.parentProcessor).product;
         switch (commentType) {
             case SHOW:
                 userNameComment.setText(productComment.getCustomerUsername());
@@ -608,7 +621,10 @@ public class ProductProcessor extends Processor {
                 comment = productComment;
                 setStringFields(commentTitle, 16);
                 setStringFields(commentContent, 100);
-                break;
+                if(CustomerControl.getController().isProductPurchasedByCustomer(product.getID(), Control.getUsername())) {
+                    commentPane.getChildren().remove(commentScore);
+                }
+                    break;
             default:
                 System.out.println("Shit. Error In InitCommentFields");
         }
@@ -658,6 +674,7 @@ public class ProductProcessor extends Processor {
 
         FXMLLoader loader = loadThePane(paneName);
         ProductProcessor processor = loader.getController();
+        subProcessors.add(processor);
         processor.initSpecialFields();
         upBorderPane.setRight(loader.getRoot());
     }
@@ -665,9 +682,6 @@ public class ProductProcessor extends Processor {
     private void initSpecialFields() {
         //Getting Off Price From parentProduct (Setting It From Control)
         Product product = ((ProductProcessor) parentProcessor).product;
-        product.setOnSale(true);
-        product.setOffPrice(3000);
-        product.setOffPercent(2500.0 / 55);
 //        System.out.println(product.isOnSale());
         switch (menuType) {
             //Except Customer Section
@@ -879,7 +893,7 @@ public class ProductProcessor extends Processor {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource(paneName + ".fxml"));
             Parent root = loader.load();
             ProductProcessor processor = loader.getController();
-            subProcessors.add(processor);
+            //subProcessors.add(processor);
             processor.parentProcessor = this;
             processor.menuType = menuType;
             return loader;

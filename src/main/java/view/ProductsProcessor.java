@@ -303,7 +303,7 @@ public class ProductsProcessor extends Processor{
     private Pane getProductPane(int productNumberInPage) throws IOException {
         Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPane.fxml"));
-        Pane root = loader.load();
+        Pane productPane = loader.load();
         ProductsProcessor productsProcessor = loader.getController();
         productsProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
         productsProcessor.productNameLabel.setText(product.getName());
@@ -311,15 +311,56 @@ public class ProductsProcessor extends Processor{
             //TODO
             System.out.println("Product In Off");
         } else {
-            root.getChildren().remove(productsProcessor.newPriceLabel);
+            productPane.getChildren().remove(productsProcessor.newPriceLabel);
             productsProcessor.oldPriceLabel.setText(product.getPrice() +"$");
         }
         productsProcessor.viewLabel.setText("" + product.getSeen());
         if(!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
             productsProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
-            productsProcessor.availableLabel.setText((product.getStatus() != 1 ? "Editing" : "Out Of Stock"));
+            productsProcessor.availableLabel.setText(product.getTheStatus());
         }
-        return root;
+        setProductPaneOnMouseClick(productPane, productNumberInPage, this);
+        return productPane;
+    }
+
+    private void setProductPaneOnMouseClick(Pane productPane, int productNumberInPage, ProductsProcessor parentProcessor) {
+        productPane.setOnMouseClicked(event -> {
+            Product product = allProducts.get(productNumberInPage);
+            ProductProcessor.ProductMenuType productMenuType = null;
+            switch (menuType) {
+                case VENDOR_PRODUCTS:
+                    productMenuType = ProductProcessor.ProductMenuType.VENDOR_EDIT;
+                    break;
+                case MAIN_PRODUCTS:
+                    if(controller.Control.getType() != null && controller.Control.getType().equals("Admin")){
+                        productMenuType = ProductProcessor.ProductMenuType.ADMIN;
+                    } else if(controller.Control.getType() != null && controller.Control.getType().equals("Customer")) {
+                        productMenuType = ProductProcessor.ProductMenuType.CUSTOMER;
+                    } else
+                        productMenuType = ProductProcessor.ProductMenuType.PRODUCTS;
+                    break;
+                case CUSTOMER_CART:
+                    productMenuType = ProductProcessor.ProductMenuType.CART;
+                    break;
+                //TODO(MORE)
+            }
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));
+            try {
+                if(menuType == ProductsMenuType.MAIN_PRODUCTS) {
+                    productControl.addSeenToProduct(product.getID());
+                }
+                Parent root = loader.load();
+                ProductProcessor processor = loader.getController();
+                processor.setParentProcessor(parentProcessor);
+                processor.initProcessor(product, productMenuType);
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.setTitle(product.getName());
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void setParentProcessor(ProductsProcessor parentProcessor) {
@@ -417,7 +458,7 @@ public class ProductsProcessor extends Processor{
                 Stage stage = new Stage();
                 stage.setScene(new Scene(root));
                 stage.setTitle("Add New Product");
-                this.subStages.add(stage);
+                addSubStage(stage);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();

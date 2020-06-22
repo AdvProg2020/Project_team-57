@@ -23,8 +23,7 @@ public class AccountProcessor extends Processor{
         Optional<ButtonType> buttonType =
                 new Alert(Alert.AlertType.CONFIRMATION, "Are You Sure About Logging Out?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
-            Control.setLoggedIn(false);
-            Control.setUsername(null);
+            Control.logOut();
             backToMainMenu();
         }
 

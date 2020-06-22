@@ -41,15 +41,15 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ProductMenu.fxml"));
+/*        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ProductMenu.fxml"));
         Parent root = fxmlLoader.load();
         ProductProcessor processor = fxmlLoader.getController();
         Control.setType("Vendor");
         Control.setUsername("sepehr");
         Product product = ProductTable.getProductByID("p2345678");
-        processor.initProcessor(new Product(), ProductProcessor.ProductMenuType.VENDOR_ADD);
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
-//        Parent root = fxmlLoader.load();
+        processor.initProcessor(new Product(), ProductProcessor.ProductMenuType.VENDOR_ADD);*/
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
+        Parent root = fxmlLoader.load();
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Boos Market");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Main Icon.png")));

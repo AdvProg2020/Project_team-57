@@ -1,6 +1,7 @@
 package controller.account;
 
 import controller.Control;
+import controller.product.ProductControl;
 import model.db.*;
 import model.existence.Log;
 import model.existence.Off;
@@ -8,6 +9,7 @@ import model.existence.Product;
 import notification.Notification;
 import view.Processor;
 
+import java.io.File;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ public class VendorControl extends AccountControl{
         return productsIDs;
     }
 
-    public ArrayList<Notification> addProduct(Product product) {
+    public ArrayList<Notification> addProduct(Product product, ArrayList<File> productImageFiles) {
         ArrayList<Notification> addingProductNotifications = new ArrayList<>();
 
         try {
@@ -70,7 +72,9 @@ public class VendorControl extends AccountControl{
                     VendorTable.addCountableProduct(product, getUsername());
                 else
                     VendorTable.addUnCountableProduct(product, getUsername());
-
+                for (File productImageFile : productImageFiles) {
+                    ProductControl.getController().addProductPicture(product.getID(), productImageFile);
+                }
                 addingProductNotifications.add(Notification.ADD_PRODUCT);
             }
         } catch (SQLException | ClassNotFoundException e) {
@@ -89,7 +93,7 @@ public class VendorControl extends AccountControl{
         } else if(product.getName() == null || product.getName().isEmpty()) {
             checkNotifications.add(Notification.EMPTY_PRODUCT_NAME);
         } else if(product.getCategory() == null || product.getCategory().isEmpty()) {
-            checkNotifications.add(Notification.EMPTY_PRODUCT_CATEGORY);
+            product.setCategory("All Products");
         } else if(product.getCategory() != null && !CategoryTable.isThereCategoryWithName(product.getCategory())) {
             checkNotifications.add(Notification.INVALID_PRODUCT_CATEGORY);
         } else if(product.isCountable() && product.getCount() == 0) {

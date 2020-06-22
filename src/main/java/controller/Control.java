@@ -273,4 +273,10 @@ public class Control {
         }
         return false;
     }
+
+    public static void logOut() {
+        isLoggedIn = false;
+        username = null;
+        type = null;
+    }
 }

@@ -67,10 +67,10 @@ public class Product {
                 status = "Approved";
                 break;
             case 2 :
-                status = "Waiting For Approve";
+                status = "Unapproved";
                 break;
             case 3 :
-                status = "Waiting For Editing Approve";
+                status = "Editing";
                 break;
             default:
                 status = "What The Shit?!";
