@@ -21,6 +21,9 @@ public class Product {
     private Date approvalDate;
     private int seen;
 
+    private boolean isOnSale;
+    private double offPrice;
+
     public Product(ResultSet resultSet) throws SQLException {
         this.ID = resultSet.getString("ID");
         this.status = resultSet.getInt("Status");
@@ -138,27 +141,43 @@ public class Product {
         this.averageScore = averageScore;
     }
 
-    public Date getApprovalDate() {
-        return approvalDate;
-    }
-
-    public int getSeen() {
-        return seen;
-    }
-
-    public void setApprovalDate(Date approvalDate) {
-        this.approvalDate = approvalDate;
-    }
-
-    public void setSeen(int seen) {
-        this.seen = seen;
-    }
-
     public int getScoreNum() {
         return scoreNum;
     }
 
     public void setScoreNum(int scoreNum) {
         this.scoreNum = scoreNum;
+    }
+
+    public Date getApprovalDate() {
+        return approvalDate;
+    }
+
+    public void setApprovalDate(Date approvalDate) {
+        this.approvalDate = approvalDate;
+    }
+
+    public int getSeen() {
+        return seen;
+    }
+
+    public void setSeen(int seen) {
+        this.seen = seen;
+    }
+
+    public boolean isOnSale() {
+        return isOnSale;
+    }
+
+    public void setOnSale(boolean onSale) {
+        isOnSale = onSale;
+    }
+
+    public double getOffPrice() {
+        return offPrice;
+    }
+
+    public void setOffPrice(double offPrice) {
+        this.offPrice = offPrice;
     }
 }

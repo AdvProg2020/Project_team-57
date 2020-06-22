@@ -82,7 +82,15 @@ public class ProductControl extends Control {
 
     public Product getProductById(String productId) {
         try {
-            return ProductTable.getProductByID(productId);
+            Product product = ProductTable.getProductByID(productId);
+
+            if(OffTable.isThereProductInOff(productId)) {
+                product.setOnSale(true);
+                double offPercent = OffTable.getOffPercentByProductID(productId);
+                product.setOffPrice( (1.0 - offPercent / 100) * product.getPrice());
+            }
+
+            return product;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
