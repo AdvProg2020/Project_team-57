@@ -21,6 +21,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
@@ -112,6 +113,10 @@ public class ProductProcessor extends Processor {
 
     //SpecialPane
     public Pane specialPane;
+    public HBox specialImages;
+    public ImageView tickImage;
+    public ImageView buyersImage;
+    public ImageView removeImage;
     public JFXTextField price;
     public ImageView offArrow;
     public JFXTextField offPrice;
@@ -335,11 +340,6 @@ public class ProductProcessor extends Processor {
         if(menuType == ProductMenuType.VENDOR_EDIT)
             product = productControl.getEditedProductByID(product.getID());
 
-            /*FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuGeneralInfo.fxml"));
-            Parent root = loader.load();
-            ProductProcessor processor = loader.getController();
-            processor.parentProcessor = this;*/
-
         FXMLLoader loader = loadThePane("ProductMenuGeneralInfo");
         ProductProcessor processor = loader.getController();
         //Todo Check The Use Of MenuType
@@ -496,16 +496,10 @@ public class ProductProcessor extends Processor {
 
     //CommentsPane
     private void initCommentsPane() {
-        /*FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuCommentsPane.fxml"));
-        Parent root = loader.load();
-        ProductProcessor processor = loader.getController();
-        processor.parentProcessor = this;
-        processor.menuType = menuType;*/
         FXMLLoader loader = loadThePane("ProductMenuCommentsPane");
         ProductProcessor processor = loader.getController();
         processor.initCommentsThroughThePane();
         mainPane.setRight(loader.getRoot());
-
     }
 
     private void initCommentsThroughThePane() {
@@ -532,10 +526,6 @@ public class ProductProcessor extends Processor {
 
     //CommentPane
     private Pane getCommentPane(String panePath,Comment comment, CommentType commentType) {
-        /*FXMLLoader loader = new FXMLLoader(Main.class.getResource(panePath + ".fxml"));
-        Parent root = loader.load();
-        ProductProcessor processor = loader.getController();
-        processor.setParentProcessor(this);*/
         FXMLLoader loader = loadThePane(panePath);
         ProductProcessor processor = loader.getController();
         processor.initCommentFields(comment, commentType);
@@ -590,6 +580,23 @@ public class ProductProcessor extends Processor {
     //SpecialInfoPane
     private void initSpecialPane() {
         //Todo Condition Making For Choosing The Right Special Pane
+        String paneName = null;
+
+        switch (menuType) {
+            case VENDOR_ADD:
+            case VENDOR_EDIT:
+            case ADMIN:
+                paneName = "ProductMenuSpecialInfoExceptCustomer";
+                break;
+            case CART:
+            case CUSTOMER:
+            case PRODUCTS:
+                paneName = "ProductMenuSpecialInfoCustomer";
+                break;
+            default:
+                System.out.println("Error In Init Special Pane");
+        }
+
         FXMLLoader loader = loadThePane("ProductMenuSpecialInfoCustomer");
         ProductProcessor processor = loader.getController();
         processor.initSpecialFields();
@@ -599,14 +606,49 @@ public class ProductProcessor extends Processor {
         //Getting Off Price From parentProduct (Setting It From Control)
 
         switch (menuType) {
+            //Except Customer Section
             case VENDOR_ADD:
-                specialPane.getChildren().removeAll(offArrow, offPrice);
-                specialPane.getChildren().removeAll(sellerIcon, seller);
-                //Todo Putting Buttons For Adding And Other Stuff Of The Product Commands
-                specialPane.getChildren().removeAll(statusIcon, status);
-                specialPane.getChildren().removeAll(cartCount, minusButton, plusButton, addToCart);
+                specialImages.getChildren().removeAll(buyersImage, removeImage);
+                specialImages.setLayoutX(specialImages.getLayoutX() + 80);
+            case VENDOR_EDIT:
+                //Todo Checking Removing Seller Part From Pane
+                break;
+            case ADMIN:
+                specialImages.getChildren().removeAll(tickImage, buyersImage);
+                specialImages.setLayoutX(specialImages.getLayoutX() + 80);
+                break;
+
+            //Customer Section
+            case CART:
+                addToCart.setText("Remove From Cart");
+                addToCart.setLayoutX(122);
+                specialPane.getChildren().removeAll(cartCount, minusButton, plusButton);
+
+            case PRODUCTS:
+            case CUSTOMER:
+                break;
+
+            default:
+                System.out.println("Error In #initSpecialFields");
+                break;
         }
+
+
     }
+
+    public void tickImageMouseClicked(MouseEvent mouseEvent) {
+        //Todo
+    }
+
+    public void viewBuyers(MouseEvent mouseEvent) {
+        //Todo
+    }
+
+    public void removeProduct(MouseEvent mouseEvent) {
+        //Todo
+    }
+
+
 
     private FXMLLoader loadThePane(String paneName) {
         try {

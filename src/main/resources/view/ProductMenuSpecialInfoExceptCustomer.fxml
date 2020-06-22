@@ -46,11 +46,20 @@
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </JFXTextField>
-      <HBox layoutX="165.0" layoutY="14.0">
+      <HBox fx:id="specialImages" layoutX="165.0" layoutY="15.0">
          <children>
-            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="tickImage" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#tickImageMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Tick%205.png" />
+               </image></ImageView>
+            <ImageView fx:id="buyersImage" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#viewBuyers" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Buyers.png" />
+               </image></ImageView>
+            <ImageView fx:id="removeImage" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#removeProduct" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Special%20Remove%202.png" />
+               </image></ImageView>
          </children>
       </HBox>
    </children>
