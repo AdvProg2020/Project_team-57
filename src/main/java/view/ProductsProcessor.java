@@ -3,12 +3,13 @@ package view;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
+import controller.account.CustomerControl;
+import controller.account.VendorControl;
 import controller.product.ProductControl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -21,14 +22,23 @@ import model.existence.Category;
 import model.existence.Product;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 
-public class ProductsProcessor extends Processor implements Initializable {
+public class ProductsProcessor extends Processor{
     private static final int PRODUCT_SCROLL_PANE_WIDTH = 1050;
     private static final int PRODUCT_FIELD_HEIGHT = 335;
     private static final int PRODUCT_PAGES_BAR_HEIGHT = 50;
+    //UserProducts
+    public BorderPane vendorProductsMainBorderPane;
+    public ScrollPane vendorProductsScrollPane;
+    public Pane vendorProductsOptionPane;
+    public ScrollPane cartProductsScrollPane;
+
+    public static enum ProductsMenuType {
+        MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART;
+    }
+    private ProductsMenuType menuType;
+
     public ScrollPane productsScrollPane;
     //ProductPane
     public ImageView productImage;
@@ -72,16 +82,29 @@ public class ProductsProcessor extends Processor implements Initializable {
     private ProductsProcessor parentProcessor;
     private ProductControl productControl = ProductControl.getController();
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        if(location.toString().contains("ProductsMenu")) {
-            productControl.initSort(); productControl.initFilter();
-            selectedSort = viewSortButton;
-            selectSort();
 
-            initCategoriesTableTreeView();
-            initPriceFiltersTextFields();
+    public void initProcessor (ProductsMenuType menuType) {
+        this.menuType = menuType;
+        switch (menuType) {
+            case MAIN_PRODUCTS:
+                initMainProductsMenu();
+                break;
+            case CUSTOMER_CART:
+            case VENDOR_PRODUCTS:
+                initProductsPage();
+                break;
         }
+    }
+
+    private void initVendorProductsMenu() {
+    }
+
+    private void initMainProductsMenu() {
+        productControl.initSort(); productControl.initFilter();
+        selectedSort = viewSortButton;
+        selectSort();
+        initCategoriesTableTreeView();
+        initPriceFiltersTextFields();
     }
 
     private void initCategoriesTableTreeView() {
@@ -187,15 +210,32 @@ public class ProductsProcessor extends Processor implements Initializable {
         parentProcessor.filteredCategoriesVBox.getChildren().remove(mainFilterPane);
     }
 
+    //initProductsScrollPane
     private void initProductsPage() {
-        allProducts = productControl.getAllShowingProducts();
+        switch (menuType) {
+            case MAIN_PRODUCTS:
+                allProducts = productControl.getAllShowingProducts();
+                initCertainProductsPage(productsScrollPane);
+                break;
+            case VENDOR_PRODUCTS:
+                allProducts = VendorControl.getController().getAllProducts();
+                initCertainProductsPage(vendorProductsScrollPane);
+                break;
+            case CUSTOMER_CART:
+                allProducts = CustomerControl.getController().getAllCartProducts();
+                initCertainProductsPage(cartProductsScrollPane);
+                break;
+        }
+    }
+
+    private void initCertainProductsPage(ScrollPane scrollPane) {
         try {
             BorderPane borderPane = new BorderPane();
             pageLim = (allProducts.size() -(pageNumber * pageSize) < 12 ? (allProducts.size() -(pageNumber * pageSize)) : 12);
             productFieldsNumber = (pageLim < 9 ? 8 : 12);
             double borderPaneHeight = ((productFieldsNumber/4) * PRODUCT_FIELD_HEIGHT) + PRODUCT_PAGES_BAR_HEIGHT;
             borderPane.setPrefSize(PRODUCT_SCROLL_PANE_WIDTH - 50, borderPaneHeight);
-            productsScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+            scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             Pane root = setPageNumberBar();
             borderPane.setBottom(root);
             GridPane gridPane = new GridPane();
@@ -203,10 +243,9 @@ public class ProductsProcessor extends Processor implements Initializable {
             gridPane.setMinWidth(Control.USE_COMPUTED_SIZE); gridPane.setMaxWidth(Control.USE_COMPUTED_SIZE); gridPane.setPrefWidth(Control.USE_COMPUTED_SIZE);
             gridPane.setMinHeight(Control.USE_COMPUTED_SIZE); gridPane.setMaxHeight(Control.USE_COMPUTED_SIZE); gridPane.setPrefHeight(Control.USE_COMPUTED_SIZE);
             borderPane.setCenter(gridPane);
-            productsScrollPane.setContent(borderPane);
-            productsScrollPane.setVvalue(0);
+            scrollPane.setContent(borderPane);
+            scrollPane.setVvalue(0);
         } catch (IOException e) { e.printStackTrace(); }
-
     }
 
     private Pane setPageNumberBar() throws IOException {
@@ -253,6 +292,42 @@ public class ProductsProcessor extends Processor implements Initializable {
     }
 
     private Pane getProductPane(int productNumberInPage) throws IOException {
+        switch (menuType) {
+            case MAIN_PRODUCTS:
+                return getMainProductPane(productNumberInPage);
+            case CUSTOMER_CART:
+            case VENDOR_PRODUCTS:
+                return getUserProductPane(productNumberInPage);
+            default:
+                return new Pane();
+        }
+    }
+
+    private Pane getUserProductPane(int productNumberInPage) throws IOException {
+        Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("UserProductPane.fxml"));
+        Pane root = loader.load();
+        ProductsProcessor productsProcessor = loader.getController();
+        productsProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
+        productsProcessor.productNameLabel.setText(product.getName());
+        if(productControl.isThereProductInOff(product.getID())) {
+            //TODO
+            System.out.println("Product In Off");
+        } else {
+            root.getChildren().remove(productsProcessor.newPriceLabel);
+            productsProcessor.oldPriceLabel.setText(product.getPrice() +"$");
+        }
+        if(!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
+            productsProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
+            if(product.getStatus() == 2)
+                productsProcessor.availableLabel.setText("UnApproved");
+            else
+                productsProcessor.availableLabel.setText((product.getStatus() != 1 ? "Editing" : "Out Of Stock"));
+        }
+        return root;
+    }
+
+    private Pane getMainProductPane(int productNumberInPage) throws IOException {
         Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPane.fxml"));
         Pane root = loader.load();
@@ -355,5 +430,18 @@ public class ProductsProcessor extends Processor implements Initializable {
             }
         }
 
+    }
+
+
+    public void addNewProduct(MouseEvent mouseEvent) {
+        //TODO
+    }
+
+    public void addNewOff(MouseEvent mouseEvent) {
+        //TODO
+    }
+
+    public void purchaseProducts(MouseEvent mouseEvent) {
+        //TODO
     }
 }

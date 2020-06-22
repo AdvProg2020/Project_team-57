@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import model.existence.Product;
 
 import java.io.IOException;
 import java.net.URL;
@@ -128,7 +129,10 @@ public class WelcomeProcessor implements Initializable {
             Parent root = null;
             Main.getStage().getIcons().remove(0);
             Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Market Logo.png")));
-            root = FXMLLoader.load(Main.class.getResource("ProductsMenu.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductsMenu.fxml"));
+            root = loader.load();
+            ProductsProcessor productsProcessor = loader.getController();
+            productsProcessor.initProcessor(ProductsProcessor.ProductsMenuType.MAIN_PRODUCTS);
             Main.setScene( "Products Menu", root);
         } catch (IOException e) {
             e.printStackTrace();

@@ -18,6 +18,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
+import model.existence.Product;
 
 import java.io.IOException;
 import java.net.URL;
@@ -43,18 +44,24 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
     }
 
     public void showProducts(){
-        Stage stage = new Stage();
-        stage.setTitle(Control.getUsername() + " Products");
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("VendorProducts.fxml"));
-        Parent parent = null;
-        try {
-            parent = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(canOpenSubStage(Control.getUsername() + " Products", this)) {
+            Stage stage = new Stage();
+            stage.setTitle(Control.getUsername() + " Products");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerCartProducts.fxml"));
+            Parent parent = null;
+            try {
+                parent = loader.load();
+                ProductsProcessor processor = loader.getController();
+                processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_PRODUCTS);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stage.setScene(new Scene(parent));
+            stage.setResizable(false);
+            addSubStage(stage);
+            stage.show();
         }
-        stage.setScene(new Scene(parent));
-        stage.setResizable(false);
-        stage.show();
+
     }
 
     public void addOff(MouseEvent mouseEvent) {
