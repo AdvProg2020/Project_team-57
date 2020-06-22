@@ -4,7 +4,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
 import javafx.animation.AnimationTimer;
@@ -31,12 +30,14 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import model.existence.Comment;
 import model.existence.Product;
+import notification.Notification;
 import org.controlsfx.control.Rating;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ProductProcessor extends Processor {
 
@@ -58,6 +59,8 @@ public class ProductProcessor extends Processor {
 
     ProductControl productControl = ProductControl.getController();
     private static VendorControl vendorControl = VendorControl.getController();
+
+    private ArrayList<ProductProcessor> subProcessors;
 
     //MainPane
     public BorderPane mainPane;
@@ -100,7 +103,6 @@ public class ProductProcessor extends Processor {
     public JFXTextField countTextField;
     public JFXTextField brandTextField;
     public JFXTextArea descriptionTextArea;
-    public JFXButton saveChangesButton;
 
     //CommentsPane
     public VBox commentsVBox;
@@ -140,6 +142,7 @@ public class ProductProcessor extends Processor {
         initImagePanel();
 
         //Sepehr's Section
+        subProcessors = new ArrayList<>();
         initGeneralInfoPane();
         initCommentsPane();
         initSpecialPane();
@@ -296,7 +299,7 @@ public class ProductProcessor extends Processor {
             try {
                 fileInputStream = new FileInputStream(pictureFile);
                 Image image = new Image(fileInputStream);
-                productControl.addProductPicture(((ProductProcessor)parentProcessor).product.getID(), pictureFile);
+//                productControl.addProductPicture(((ProductProcessor)parentProcessor).product.getID(), pictureFile);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -339,6 +342,41 @@ public class ProductProcessor extends Processor {
 
 
     //Sepehr's Section
+
+    //TheMainPane
+
+    private void sendProduct() {
+        ProductProcessor generalFieldProcessor = subProcessors.get(0);
+        ProductProcessor specialFieldProcessor = subProcessors.get(2);
+
+        generalFieldProcessor.setProductGeneralFields();
+        specialFieldProcessor.setProductSpecialFields();
+
+        ArrayList<Notification> productNotifications = null;
+
+        switch (menuType) {
+            case VENDOR_ADD:
+//                productNotifications = vendorControl.addProduct(product);
+                break;
+            case VENDOR_EDIT:
+//                productNotifications = vendorControl.editProduct(product);
+                break;
+            default:
+                System.out.println("Serious Error In Sending Product");
+        }
+
+        if(productNotifications.size() == 0) {
+            successSending();
+        } else {
+            generalFieldProcessor.showProductGeneralErrors(productNotifications);
+            specialFieldProcessor.showProductSpecialErrors(productNotifications);
+        }
+
+    }
+
+    private void successSending() {
+        //Todo Successful Adding Or Editing
+    }
 
     //GeneralInfoPane
     private void initGeneralInfoPane() {
@@ -393,7 +431,6 @@ public class ProductProcessor extends Processor {
     }
 
     private void disableEditingGeneralFields() {
-        generalPane.getChildren().remove(saveChangesButton);
         nameTextField.setDisable(true);
         categoryTextField.setDisable(true);
         countableToggleButton.setDisable(true);
@@ -402,20 +439,8 @@ public class ProductProcessor extends Processor {
         descriptionTextArea.setDisable(true);
     }
 
-    public void saveChangesAction(ActionEvent actionEvent) {
-        ProductMenuType menuType = ((ProductProcessor) parentProcessor).menuType;
-
-        if(menuType == ProductMenuType.VENDOR_ADD) {
-            addProduct();
-        } else if(menuType == ProductMenuType.VENDOR_EDIT) {
-            editProduct();
-        } else {
-            System.out.println("Shit. Error In Save Changes");
-        }
-    }
-
-    private void addProduct() {
-        product = new Product();
+    private void setProductGeneralFields() {
+        Product product = ((ProductProcessor) parentProcessor).product;
         product.setName(nameTextField.getText());
         product.setCategory(categoryTextField.getText());
 
@@ -436,8 +461,11 @@ public class ProductProcessor extends Processor {
         product.setDescription(descriptionTextArea.getText());
 
         //Todo Koodoomaro Taraf Mitoone Khali Bezare?
-        vendorControl.addProduct(product);
         System.out.println("Yeah, Baby");
+    }
+
+    private void showProductGeneralErrors(ArrayList<Notification> productNotifications) {
+        //Todo
     }
 
     private void editProduct() {
@@ -618,7 +646,6 @@ public class ProductProcessor extends Processor {
         switch (menuType) {
             //Except Customer Section
             case VENDOR_ADD:
-                tickImage.setOnMouseClicked(event -> addCreatedProduct());
                 specialImages.getChildren().removeAll(buyersImage, removeImage);
                 specialImages.setLayoutX(specialImages.getLayoutX() + 80);
                 pricePane.getChildren().removeAll(offArrow, offPrice);
@@ -627,7 +654,6 @@ public class ProductProcessor extends Processor {
                 setDoubleFields(price, Double.MAX_VALUE);
                 break;
             case VENDOR_EDIT:
-                tickImage.setOnMouseClicked(event -> editCreatedProduct());
                 setPrices();
                 /*price.setText(Double.toString(product.getPrice()));
                 setDoubleFields(price, Double.MAX_VALUE);
@@ -799,12 +825,8 @@ public class ProductProcessor extends Processor {
             cartCount.setText(Double.toString(Math.ceil(previousCartAmount * 5) / 5 - 0.2));
     }
 
-    public void addCreatedProduct() {
-        //Todo
-    }
-
-    public void editCreatedProduct() {
-        //Todo
+    public void tickMouseClicked(MouseEvent mouseEvent) {
+        ((ProductProcessor) parentProcessor).sendProduct();
     }
 
     public void viewBuyers(MouseEvent mouseEvent) {
@@ -815,13 +837,21 @@ public class ProductProcessor extends Processor {
         //Todo
     }
 
+    private void setProductSpecialFields() {
+        Product product = ((ProductProcessor) parentProcessor).product;
+        product.setPrice(Double.parseDouble(price.getText()));
+    }
 
+    private void showProductSpecialErrors(ArrayList<Notification> productNotifications) {
+        //Todo
+    }
 
     private FXMLLoader loadThePane(String paneName) {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource(paneName + ".fxml"));
             Parent root = loader.load();
             ProductProcessor processor = loader.getController();
+            subProcessors.add(processor);
             processor.parentProcessor = this;
             processor.menuType = menuType;
             return loader;

@@ -63,13 +63,11 @@ public class VendorControl extends AccountControl{
                 }
             }
             if(product.isCountable())
-                VendorTable.addCountableProduct(product, Control.getUsername());
+                VendorTable.addCountableProduct(product, getUsername());
             else
-                VendorTable.addUnCountableProduct(product, Control.getUsername());
+                VendorTable.addUnCountableProduct(product, getUsername());
             return Notification.ADD_PRODUCT;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;

@@ -11,7 +11,7 @@
    <children>
       <HBox fx:id="specialImages" layoutX="165.0" layoutY="15.0">
          <children>
-            <ImageView fx:id="tickImage" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+            <ImageView fx:id="tickImage" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#tickMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="Button">
                <image>
                   <Image url="@../Images/Icons/ProductMenu/Tick%205.png" />
                </image></ImageView>
