@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
 import javafx.animation.AnimationTimer;
@@ -655,6 +656,8 @@ public class ProductProcessor extends Processor {
                 addToCart.setText("Remove From Cart");
                 addToCart.setLayoutX(122);
                 specialPane.getChildren().removeAll(cartCount, minusButton, plusButton);
+                initSpecialFieldsInGeneral();
+                break;
             case PRODUCTS:
             case CUSTOMER:
                 initSpecialFieldsInGeneral();
@@ -687,14 +690,13 @@ public class ProductProcessor extends Processor {
 
     private void setPrices() {
         Product product = ((ProductProcessor) parentProcessor).product;
-
         price.setText(Double.toString(product.getPrice()));
         setDoubleFields(price, Double.MAX_VALUE);
 
         if(product.isOnSale()) {
             //Todo Set Price StrikeThrough
             offPrice.setText(Double.toString(product.getOffPrice()));
-            offPrice.setEditable(false);
+            offPrice.setDisable(true);
             setTheCommunicationOfPrices();
         } else {
             pricePane.getChildren().removeAll(offArrow, offPrice);
@@ -707,7 +709,7 @@ public class ProductProcessor extends Processor {
     private void setTheCommunicationOfPrices() {
         price.textProperty().addListener((observable, oldValue, newValue) -> {
             Product product = ((ProductProcessor) parentProcessor).product;
-            offPrice.setEditable(true);
+            offPrice.setDisable(false);
 
             if(newValue == null || newValue.isEmpty()) {
                 offPrice.setText("");
@@ -716,12 +718,14 @@ public class ProductProcessor extends Processor {
                 offPrice.setText(Double.toString(newOffPrice));
             }
 
-            offPrice.setEditable(false);
+            offPrice.setDisable(true);
         });
     }
 
 
     private void setCartFields() {
+        Product product = ((ProductProcessor) parentProcessor).product;
+
         if(product.isCountable())
             setCartCountable();
         else
@@ -731,7 +735,7 @@ public class ProductProcessor extends Processor {
     private void setCartCountable() {
         Product product = ((ProductProcessor) parentProcessor).product;
 
-        setIntegerFields(cartCount, product.getCount());
+        setIntegerFields(cartCount, product.getCount() + 1);
         cartCount.textProperty().addListener((observable, oldValue, newValue) -> {
             //Todo Check
             if(newValue.isEmpty() || newValue.equals("0")) {
@@ -749,6 +753,7 @@ public class ProductProcessor extends Processor {
 
         if(previousCartCount < product.getCount())
             cartCount.setText(Integer.toString(++previousCartCount));
+
     }
 
     public void subtractCartCount() {
@@ -766,7 +771,7 @@ public class ProductProcessor extends Processor {
         setDoubleFields(cartCount, product.getAmount() + 0.000001);
         cartCount.textProperty().addListener((observable, oldValue, newValue) -> {
             //Todo Check
-            if(newValue.isEmpty() || newValue.equals("0")) {
+            if(newValue.isEmpty() || newValue.equals("0") || newValue.equals("0.")) {
                 if (product.getAmount() > 0.2)
                     cartCount.setText("0.2");
                 else
@@ -791,7 +796,7 @@ public class ProductProcessor extends Processor {
 
         //Todo Check
         if(previousCartAmount > 0.2)
-            cartCount.setText(Double.toString(0.2 * Math.ceil(previousCartAmount * 5) - 0.2));
+            cartCount.setText(Double.toString(Math.ceil(previousCartAmount * 5) / 5 - 0.2));
     }
 
     public void addCreatedProduct() {

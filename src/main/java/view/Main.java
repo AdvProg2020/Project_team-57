@@ -44,10 +44,14 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ProductMenu.fxml"));
         Parent root = fxmlLoader.load();
         ProductProcessor processor = fxmlLoader.getController();
+
+        //Todo **CheckPoint** Checking cart Buttons For Amount
         Control.setType("Customer");
         Control.setUsername("hossein1");
         Product product = ProductTable.getProductByID("p2345678");
-        processor.initProcessor(product, ProductProcessor.ProductMenuType.VENDOR_EDIT);
+        product.setCountable(false);
+        product.setAmount(2.0);
+        processor.initProcessor(product, ProductProcessor.ProductMenuType.PRODUCTS);
 //        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
 //        Parent root = fxmlLoader.load();
         primaryStage.setScene(new Scene(root));
