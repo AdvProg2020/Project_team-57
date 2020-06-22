@@ -65,6 +65,11 @@ public abstract class Processor {
         }
         return true;
     }
+
+    protected void closeSubStage(Stage stage, Processor stageProcessor) {
+        stageProcessor.removeSubStage(stage);
+        stage.close();
+    }
     //Stage Managing Section
 
     //TextField Special Setting Section

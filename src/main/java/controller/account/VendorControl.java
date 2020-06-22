@@ -1,7 +1,6 @@
 package controller.account;
 
 import controller.Control;
-import controller.IOControl;
 import model.db.*;
 import model.existence.Log;
 import model.existence.Off;
@@ -52,25 +51,63 @@ public class VendorControl extends AccountControl{
         return productsIDs;
     }
 
-    public Notification addProduct(Product product)
+    public ArrayList<Notification> addProduct(Product product)
     {
+        ArrayList<Notification> addingProductNotifications = new ArrayList<>();
+
         try {
-            while (true) {
-                String productId = generateProductID();
-                if (ProductTable.isIDFree(productId)) {
-                    product.setID(productId);
-                    break;
+            addingProductNotifications.addAll(checkProductFields(product));
+
+            if (addingProductNotifications.isEmpty()) {
+                while (true) {
+                    String productId = generateProductID();
+                    if (ProductTable.isIDFree(productId)) {
+                        product.setID(productId);
+                        break;
+                    }
                 }
+                if (product.isCountable())
+                    VendorTable.addCountableProduct(product, getUsername());
+                else
+                    VendorTable.addUnCountableProduct(product, getUsername());
+
+                addingProductNotifications.add(Notification.ADD_PRODUCT);
             }
-            if(product.isCountable())
-                VendorTable.addCountableProduct(product, getUsername());
-            else
-                VendorTable.addUnCountableProduct(product, getUsername());
-            return Notification.ADD_PRODUCT;
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+            return null;
         }
-        return Notification.UNKNOWN_ERROR;
+
+        return addingProductNotifications;
+    }
+
+    public ArrayList<Notification> editProduct(Product product) {
+        //Todo
+        return null;
+    }
+
+    private ArrayList<Notification> checkProductFields(Product product) throws SQLException, ClassNotFoundException {
+        ArrayList<Notification> checkNotifications = new ArrayList<>();
+
+        if(product.getPrice() == 0) {
+            checkNotifications.add(Notification.EMPTY_PRODUCT_PRICE);
+        } else if(product.getName() == null || product.getName().isEmpty()) {
+            checkNotifications.add(Notification.EMPTY_PRODUCT_NAME);
+        } else if(product.getCategory() == null || product.getCategory().isEmpty()) {
+            checkNotifications.add(Notification.EMPTY_PRODUCT_CATEGORY);
+        } else if(product.getCategory() != null && !CategoryTable.isThereCategoryWithName(product.getCategory())) {
+            checkNotifications.add(Notification.INVALID_PRODUCT_CATEGORY);
+        } else if(product.isCountable() && product.getCount() == 0) {
+            checkNotifications.add(Notification.EMPTY_PRODUCT_COUNT);
+        } else if(!product.isCountable() && product.getAmount() == 0) {
+            checkNotifications.add(Notification.EMPTY_PRODUCT_AMOUNT);
+        } else if(product.getBrand() == null || product.getBrand().isEmpty()) {
+            checkNotifications.add(Notification.EMPTY_PRODUCT_BRAND);
+        } else if(product.getDescription() == null || product.getDescription().isEmpty()) {
+            checkNotifications.add(Notification.EMPTY_PRODUCT_DESCRIPTION);
+        }
+
+        return checkNotifications;
     }
 
     private String generateProductID()
@@ -441,4 +478,5 @@ public class VendorControl extends AccountControl{
         }
         return new ArrayList<>();
     }
+
 }

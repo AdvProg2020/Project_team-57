@@ -15,6 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
@@ -38,6 +39,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ProductProcessor extends Processor {
 
@@ -349,33 +351,38 @@ public class ProductProcessor extends Processor {
         ProductProcessor generalFieldProcessor = subProcessors.get(0);
         ProductProcessor specialFieldProcessor = subProcessors.get(2);
 
-        generalFieldProcessor.setProductGeneralFields();
         specialFieldProcessor.setProductSpecialFields();
+        generalFieldProcessor.setProductGeneralFields();
 
         ArrayList<Notification> productNotifications = null;
 
         switch (menuType) {
             case VENDOR_ADD:
-//                productNotifications = vendorControl.addProduct(product);
+                productNotifications = vendorControl.addProduct(product);
                 break;
             case VENDOR_EDIT:
-//                productNotifications = vendorControl.editProduct(product);
+                productNotifications = vendorControl.editProduct(product);
                 break;
             default:
                 System.out.println("Serious Error In Sending Product");
         }
 
-        if(productNotifications.size() == 0) {
-            successSending();
+        if(productNotifications.get(0).equals(Notification.ADD_PRODUCT)
+                || productNotifications.get(0).equals(Notification.EDIT_PRODUCT)) {
+            successSending(productNotifications.get(0));
         } else {
-            generalFieldProcessor.showProductGeneralErrors(productNotifications);
             specialFieldProcessor.showProductSpecialErrors(productNotifications);
+            generalFieldProcessor.showProductGeneralErrors(productNotifications);
         }
 
     }
 
-    private void successSending() {
-        //Todo Successful Adding Or Editing
+    private void successSending(Notification notification) {
+        Alert alert = notification.getAlert();
+        Optional<ButtonType> optionalButtonType = alert.showAndWait();
+        if(optionalButtonType.get() == ButtonType.OK) {
+            closeSubStage(myStage, parentProcessor);
+        }
     }
 
     //GeneralInfoPane
@@ -465,7 +472,22 @@ public class ProductProcessor extends Processor {
     }
 
     private void showProductGeneralErrors(ArrayList<Notification> productNotifications) {
-        //Todo
+        if(productNotifications.contains(Notification.EMPTY_PRODUCT_NAME))
+            nameTextField.setStyle(errorTextFieldStyle);
+
+        if(productNotifications.contains(Notification.EMPTY_PRODUCT_CATEGORY)
+                || productNotifications.contains(Notification.INVALID_PRODUCT_CATEGORY)) {
+            categoryTextField.setStyle(errorTextFieldStyle);
+        }
+
+        if(productNotifications.contains(Notification.EMPTY_PRODUCT_COUNT))
+            countTextField.setStyle(errorTextFieldStyle);
+
+        if(productNotifications.contains(Notification.EMPTY_PRODUCT_BRAND))
+            brandTextField.setStyle(errorTextFieldStyle);
+
+        if(productNotifications.contains(Notification.EMPTY_PRODUCT_NAME))
+            descriptionTextArea.setStyle(errorTextFieldStyle);
     }
 
     private void editProduct() {
@@ -843,7 +865,9 @@ public class ProductProcessor extends Processor {
     }
 
     private void showProductSpecialErrors(ArrayList<Notification> productNotifications) {
-        //Todo
+        if(productNotifications.contains(Notification.EMPTY_PRODUCT_PRICE)) {
+            price.setStyle(errorTextFieldStyle);
+        }
     }
 
     private FXMLLoader loadThePane(String paneName) {

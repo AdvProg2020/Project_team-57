@@ -166,7 +166,17 @@ public enum Notification {
     NOT_SELECTED_CATEGORY("You haven't selected Any Category", Alert.AlertType.ERROR, "Jesus", "Hey You"),
     CANT_DELETE_CATEGORY("You Can't Delete All Products Category. That's The Main Node Of All Categories Sire!", Alert.AlertType.ERROR, "Category Delete Failed", "Cant Delete All Products"),
     INVALID_DISCOUNT_CODE_LENGTH("Discount Code's Length Must Be Less Than 16.", Alert.AlertType.ERROR,
-            "Add Discount Error", "Invalid Discount Code");
+            "Add Discount Error", "Invalid Discount Code"),
+    //Todo Setting Alerts
+    EMPTY_PRODUCT_PRICE("Please Enter The Price"),
+    EMPTY_PRODUCT_NAME("Please Enter The Name"),
+    EMPTY_PRODUCT_CATEGORY("Please Enter The Category"),
+    INVALID_PRODUCT_CATEGORY("You Have Entered An Invalid Category Name"),
+    EMPTY_PRODUCT_COUNT("Please Enter The Count"),
+    EMPTY_PRODUCT_AMOUNT("Please Enter The Amount"),
+    EMPTY_PRODUCT_BRAND("Please Enter The Brand"),
+    EMPTY_PRODUCT_DESCRIPTION("Please Enter The Description"),
+    EDIT_PRODUCT("Product Edited Successfully");
 
 
     private String message;
