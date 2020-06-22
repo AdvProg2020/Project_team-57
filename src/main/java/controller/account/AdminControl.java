@@ -501,6 +501,17 @@ public class AdminControl extends AccountControl{
         return null;
     }
 
+    public ArrayList<Off> getAllUnApprovedOffs() {
+        try {
+            return OffTable.getAllUnApprovedOffs();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
     public ArrayList<String> getAllUnApprovedOffNames(){
         try {
             return OffTable.getAllUnApprovedOffNames();

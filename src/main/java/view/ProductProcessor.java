@@ -151,6 +151,10 @@ public class ProductProcessor extends Processor {
     }
 
     private void initImagePanel() {
+
+    }
+
+    private void initAddProductImage() {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuImages.fxml"));
             Parent root = loader.load();
@@ -178,7 +182,7 @@ public class ProductProcessor extends Processor {
             }
             upBorderPane.setLeft(root);
         } catch (IOException e) {
-        e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -342,7 +346,6 @@ public class ProductProcessor extends Processor {
         return pictureChooser;
     }
 
-
     //Sepehr's Section
 
     //TheMainPane
@@ -382,6 +385,7 @@ public class ProductProcessor extends Processor {
         Optional<ButtonType> optionalButtonType = alert.showAndWait();
         if(optionalButtonType.get() == ButtonType.OK) {
             closeSubStage(myStage, parentProcessor);
+            ((ProductsProcessor)parentProcessor).initProductsPage();
         }
     }
 

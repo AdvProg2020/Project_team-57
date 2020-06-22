@@ -4,6 +4,7 @@ import com.jfoenix.controls.*;
 import controller.account.AccountControl;
 import controller.account.AdminControl;
 import controller.account.CustomerControl;
+import controller.product.ProductControl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,10 +23,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import model.existence.Account;
 import model.existence.Comment;
 import model.existence.Discount;
+import model.existence.Off;
+
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -54,10 +58,21 @@ public class TableViewProcessor<T> extends Processor {
     public JFXTextArea commentContentArea;
     public JFXCheckBox commenterBoughtCheckBox;
     public ImageView showCommentBackButton;
+    public Label offNameLabel;
+    public JFXButton showEditedOffButton;
+    public JFXButton approveEditButton;
+    public JFXButton unApproveEditButton;
+    public Label offVendorUsernameLabel;
+    public Rectangle offImageRectangle;
+    public JFXButton showPreviousOffButton;
+    public JFXButton showOffButton;
+    public JFXButton approveOffButton;
+    public JFXButton deleteOffButton;
 
 
     public static enum TableViewType {
-        CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN), DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS;
+        CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN),
+        DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS, ADMIN_OFFS;
 
         Account.AccountType accountType;
 
@@ -110,7 +125,18 @@ public class TableViewProcessor<T> extends Processor {
             case ADMIN_COMMENTS:
                 initAdminCommentsColumns();
                 break;
+            case ADMIN_OFFS:
+                initAdminOffsColumns();
+                break;
         }
+    }
+
+    private void initAdminOffsColumns() {
+        TableColumn<T, String> offName = makeColumn("Off Name", "offName", 0.23);
+        TableColumn<T, String> vendorUsername = makeColumn("Vendor Username", "vendorUsername", 0.23);
+        TableColumn<T, Double> offPercent = makeColumn("Off Percentage", "offPercent", 0.34);
+        TableColumn<T, String> status = makeColumn("Approval", "statStr", 0.15);
+        tableView.getColumns().addAll(offName, vendorUsername, offPercent, status);
     }
 
     private void initAdminCommentsColumns() {
@@ -176,6 +202,8 @@ public class TableViewProcessor<T> extends Processor {
             case ADMIN_COMMENTS:
                 tableList.addAll((ArrayList<T>)AdminControl.getController().getAllUnApprovedComments());
                 break;
+            case ADMIN_OFFS:
+                tableList.addAll((ArrayList<T>)AdminControl.getController().getAllUnApprovedOffs());
         }
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
@@ -232,7 +260,40 @@ public class TableViewProcessor<T> extends Processor {
             case ADMIN_COMMENTS:
                 mainBorderPane.setLeft(initAdminCommentsOptions());
                 break;
+            case ADMIN_OFFS:
+                mainBorderPane.setLeft(initAdminOffsOptions());
+                break;
         }
+    }
+
+    private Pane initAdminOffsOptions() {
+        FXMLLoader loader;
+        try {
+            if(selectedItem != null) {
+                Off off = (Off) selectedItem;
+                loader = new FXMLLoader(
+                        (off.getStatus() == 2) ?
+                                Main.class.getResource("TableViewAdminOffsOptions.fxml")
+                                :
+                                Main.class.getResource("TableViewAdminEditingOffsOptions.fxml")
+                );
+                Pane root = loader.load();
+                TableViewProcessor processor = loader.getController();
+                processor.offNameLabel.setText(off.getOffName());
+                processor.offVendorUsernameLabel.setText(off.getVendorUsername());
+                if(!ProductControl.getController().doesOffHaveImage(off.getOffID()))
+                    processor.offImageRectangle.setStrokeWidth(0);
+                processor.offImageRectangle.setFill(new ImagePattern(ProductControl.getController().getOffImageByID(off.getOffID())));
+                return root;
+            } else {
+                loader = new FXMLLoader(Main.class.getResource("TableViewAdminOffsOptions.fxml"));
+                Pane root = loader.load();
+                return root;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new Pane();
     }
 
     private Node initAdminCommentsOptions() {

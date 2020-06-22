@@ -10,14 +10,22 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.stage.Stage;
 import model.existence.Category;
 import model.existence.Product;
 
@@ -89,14 +97,24 @@ public class ProductsProcessor extends Processor{
             case MAIN_PRODUCTS:
                 initMainProductsMenu();
                 break;
-            case CUSTOMER_CART:
             case VENDOR_PRODUCTS:
+                initVendorProductsMenu();
+                break;
+            case CUSTOMER_CART:
                 initProductsPage();
                 break;
         }
     }
 
     private void initVendorProductsMenu() {
+        Stop[] stops = new Stop[] {
+                new Stop(0, Color.valueOf("#360033")),
+                new Stop(1, Color.valueOf("#127183"))
+        };
+        LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+        BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
+        vendorProductsOptionPane.setBackground(new Background(backgroundFill));
+        initProductsPage();
     }
 
     private void initMainProductsMenu() {
@@ -163,15 +181,6 @@ public class ProductsProcessor extends Processor{
     private void addCategoryToFilters(Category category) {
         if(!controller.Control.getController().isThereFilteringCategoryWithName(category.getName())) {
             try {
-                /*FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("FilterCategoryPane.fxml"));
-                Node node = fxmlLoader.load();
-                ProductsProcessor productsProcessor = fxmlLoader.getController();
-                productsProcessor.parentProcessor = this;
-                productsProcessor.filterCategory = category;
-                productsProcessor.filterNameLabel.setText(category.getName());
-                controller.Control.getController().addToFilterCategoryList(category.getName());
-                initProductsPage();
-                filteredCategoriesVBox.getChildren().add(node);*/
                 loadFilterPane(category, null);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -211,7 +220,7 @@ public class ProductsProcessor extends Processor{
     }
 
     //initProductsScrollPane
-    private void initProductsPage() {
+    public void initProductsPage() {
         switch (menuType) {
             case MAIN_PRODUCTS:
                 allProducts = productControl.getAllShowingProducts();
@@ -292,42 +301,6 @@ public class ProductsProcessor extends Processor{
     }
 
     private Pane getProductPane(int productNumberInPage) throws IOException {
-        switch (menuType) {
-            case MAIN_PRODUCTS:
-                return getMainProductPane(productNumberInPage);
-            case CUSTOMER_CART:
-            case VENDOR_PRODUCTS:
-                return getUserProductPane(productNumberInPage);
-            default:
-                return new Pane();
-        }
-    }
-
-    private Pane getUserProductPane(int productNumberInPage) throws IOException {
-        Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("UserProductPane.fxml"));
-        Pane root = loader.load();
-        ProductsProcessor productsProcessor = loader.getController();
-        productsProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
-        productsProcessor.productNameLabel.setText(product.getName());
-        if(productControl.isThereProductInOff(product.getID())) {
-            //TODO
-            System.out.println("Product In Off");
-        } else {
-            root.getChildren().remove(productsProcessor.newPriceLabel);
-            productsProcessor.oldPriceLabel.setText(product.getPrice() +"$");
-        }
-        if(!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
-            productsProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
-            if(product.getStatus() == 2)
-                productsProcessor.availableLabel.setText("UnApproved");
-            else
-                productsProcessor.availableLabel.setText((product.getStatus() != 1 ? "Editing" : "Out Of Stock"));
-        }
-        return root;
-    }
-
-    private Pane getMainProductPane(int productNumberInPage) throws IOException {
         Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPane.fxml"));
         Pane root = loader.load();
@@ -434,7 +407,22 @@ public class ProductsProcessor extends Processor{
 
 
     public void addNewProduct(MouseEvent mouseEvent) {
-        //TODO
+        if(canOpenSubStage("Add New Product", this)) {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));
+            try {
+                Parent root = loader.load();
+                ProductProcessor processor = loader.getController();
+                processor.initProcessor(new Product(), ProductProcessor.ProductMenuType.VENDOR_ADD);
+                processor.setParentProcessor(this);
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.setTitle("Add New Product");
+                this.subStages.add(stage);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void addNewOff(MouseEvent mouseEvent) {

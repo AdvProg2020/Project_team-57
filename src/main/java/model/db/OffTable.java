@@ -104,6 +104,18 @@ public class OffTable extends Database{
         return preparedStatement.executeQuery().next();
     }
 
+    public static ArrayList<Off> getAllUnApprovedOffs() throws SQLException, ClassNotFoundException {
+        String command = "SELECT DISTINCT OffID FROM Offs WHERE Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, 2);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<Off> unApprovedOffs = new ArrayList<>();
+        while (resultSet.next()) {
+            unApprovedOffs.add(getSpecificOff(resultSet.getString(resultSet.getString("OffID"))));
+        }
+        return unApprovedOffs;
+    }
+
     public static ArrayList<String> getAllUnApprovedOffNames() throws SQLException, ClassNotFoundException {
         String command = "SELECT DISTINCT OffName FROM Offs WHERE Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);

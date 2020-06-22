@@ -47,7 +47,7 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
         if(canOpenSubStage(Control.getUsername() + " Products", this)) {
             Stage stage = new Stage();
             stage.setTitle(Control.getUsername() + " Products");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerCartProducts.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("VendorAddProducts.fxml"));
             Parent parent = null;
             try {
                 parent = loader.load();

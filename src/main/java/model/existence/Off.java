@@ -13,6 +13,7 @@ public class Off {
     private Date startDate;
     private Date finishDate;
     private double offPercent;
+    private String statStr;
 
     private ArrayList<String> productIDs = new ArrayList<>();
 
@@ -31,6 +32,16 @@ public class Off {
             productIDs.add(resultSet.getString("ProductID"));
         }
         off.setProductIDs(productIDs);
+        switch (off.status) {
+            case 1:
+                off.statStr = "Approved";
+                break;
+            case 2:
+                off.statStr = "UnApproved";
+                break;
+            case 3:
+                off.statStr = "Editing";
+        }
         return off;
     }
 
@@ -111,5 +122,9 @@ public class Off {
 
     public boolean isThereProductInOff(String productID) {
         return this.productIDs.contains(productID);
+    }
+
+    public String getStatStr() {
+        return statStr;
     }
 }

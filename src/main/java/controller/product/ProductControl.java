@@ -736,7 +736,7 @@ public class ProductControl extends Control {
         return null;
     }
 
-    private boolean doesOffHaveImage(String offID) {
+    public boolean doesOffHaveImage(String offID) {
         return ProductTable.getOffImageFilePath(offID) != null;
     }
 

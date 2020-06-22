@@ -190,7 +190,7 @@ public class SaleProcessor extends Processor implements Initializable {
         Image image = (off != null && off.getOffID() != null && off.getOffID().length() != 0 ?
                 productControl.getOffImageByID(off.getOffID()) : productControl.getOffImageByID("1"));
         offImageRectangle.setFill(new ImagePattern(image));
-        if(off == null || off.getOffID() != null || off.getOffID().length() == 0)
+        if(off == null || off.getOffID() != null || off.getOffID().length() == 0 || productControl.doesOffHaveImage(off.getOffID()))
             offImageRectangle.setStrokeWidth(0);
     }
 

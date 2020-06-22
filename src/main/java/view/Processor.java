@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public abstract class Processor {
     protected Stage myStage;
     protected Processor parentProcessor;
-    private ArrayList<Stage> subStages = new ArrayList<>();
+    protected ArrayList<Stage> subStages = new ArrayList<>();
 
     protected static final String errorTextFieldStyle = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
 
