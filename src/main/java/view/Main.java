@@ -47,7 +47,7 @@ public class Main extends Application {
         Control.setType("Customer");
         Control.setUsername("hossein1");
         Product product = ProductTable.getProductByID("p2345678");
-        processor.initProcessor(product, ProductProcessor.ProductMenuType.CUSTOMER);
+        processor.initProcessor(product, ProductProcessor.ProductMenuType.VENDOR_EDIT);
 //        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
 //        Parent root = fxmlLoader.load();
         primaryStage.setScene(new Scene(root));

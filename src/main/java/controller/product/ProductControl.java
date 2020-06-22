@@ -80,16 +80,19 @@ public class ProductControl extends Control {
         this.listicOffID = listicOffID;
     }
 
+    public void setProductOffPrice(Product product) throws SQLException, ClassNotFoundException {
+        if(OffTable.isThereProductInOff(product.getID())) {
+            product.setOnSale(true);
+            double offPercent = OffTable.getOffPercentByProductID(product.getID());
+            product.setOffPercent(offPercent);
+            product.setOffPrice( (1.0 - offPercent / 100) * product.getPrice());
+        }
+    }
+
     public Product getProductById(String productId) {
         try {
             Product product = ProductTable.getProductByID(productId);
-
-            if(OffTable.isThereProductInOff(productId)) {
-                product.setOnSale(true);
-                double offPercent = OffTable.getOffPercentByProductID(productId);
-                product.setOffPrice( (1.0 - offPercent / 100) * product.getPrice());
-            }
-
+            setProductOffPrice(product);
             return product;
         } catch (Exception e) {
             e.printStackTrace();
@@ -222,11 +225,15 @@ public class ProductControl extends Control {
 
     public Product getEditedProductByID(String ID) {
         try {
-            if (EditingProductTable.isIDFree(ID)) {
-                return ProductTable.getProductByID(ID);
-            } else {
-                return EditingProductTable.getEditingProductWithID(ID);
-            }
+            Product product = null;
+
+            if (EditingProductTable.isIDFree(ID))
+                product = ProductTable.getProductByID(ID);
+            else
+                product = EditingProductTable.getEditingProductWithID(ID);
+
+            setProductOffPrice(product);
+            return product;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

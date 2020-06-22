@@ -39,6 +39,10 @@ import java.io.IOException;
 
 public class ProductProcessor extends Processor {
 
+    public Pane sellerPane;
+    public Pane statusPane;
+    public Pane pricePane;
+
     public void setMenuType(ProductMenuType menuType) {
         this.menuType = menuType;
     }
@@ -597,25 +601,53 @@ public class ProductProcessor extends Processor {
                 System.out.println("Error In Init Special Pane");
         }
 
-        FXMLLoader loader = loadThePane("ProductMenuSpecialInfoCustomer");
+        FXMLLoader loader = loadThePane(paneName);
         ProductProcessor processor = loader.getController();
         processor.initSpecialFields();
+        upBorderPane.setRight(loader.getRoot());
     }
 
     private void initSpecialFields() {
         //Getting Off Price From parentProduct (Setting It From Control)
-
+        Product product = ((ProductProcessor) parentProcessor).product;
+        product.setOnSale(true);
+        product.setOffPrice(3000);
+        product.setOffPercent(2500.0 / 55);
+        System.out.println(product.isOnSale());
         switch (menuType) {
             //Except Customer Section
             case VENDOR_ADD:
+                tickImage.setOnMouseClicked(event -> addCreatedProduct());
                 specialImages.getChildren().removeAll(buyersImage, removeImage);
                 specialImages.setLayoutX(specialImages.getLayoutX() + 80);
+                pricePane.getChildren().removeAll(offArrow, offPrice);
+                specialPane.getChildren().removeAll(sellerPane, statusPane);
+                pricePane.setLayoutX(78);
+                setDoubleFields(price, Double.MAX_VALUE);
+                break;
             case VENDOR_EDIT:
-                //Todo Checking Removing Seller Part From Pane
+                tickImage.setOnMouseClicked(event -> editCreatedProduct());
+                setPrices();
+                /*price.setText(Double.toString(product.getPrice()));
+                setDoubleFields(price, Double.MAX_VALUE);
+                if(product.isOnSale()) {
+                    //Todo Set Price StrikeThrough
+                    offPrice.setText(Double.toString(product.getOffPrice()));
+                    offPrice.setEditable(false);
+                    setTheCommunicationOfPrices();
+                } else {
+                    pricePane.getChildren().removeAll(offArrow, offPrice);
+                }*/
+                status.setText(product.getTheStatus());
+                status.setDisable(true);
+                specialPane.getChildren().remove(sellerPane);
+                pricePane.setLayoutY(123);
+                statusPane.setLayoutY(224);
                 break;
             case ADMIN:
                 specialImages.getChildren().removeAll(tickImage, buyersImage);
                 specialImages.setLayoutX(specialImages.getLayoutX() + 80);
+                initSpecialFieldsInGeneral();
                 break;
 
             //Customer Section
@@ -623,7 +655,7 @@ public class ProductProcessor extends Processor {
                 addToCart.setText("Remove From Cart");
                 addToCart.setLayoutX(122);
                 specialPane.getChildren().removeAll(cartCount, minusButton, plusButton);
-
+                //Todo Checkpoint
             case PRODUCTS:
             case CUSTOMER:
                 break;
@@ -633,10 +665,66 @@ public class ProductProcessor extends Processor {
                 break;
         }
 
+        if(product.isOnSale()) {
+            offPrice.setText(Double.toString(product.getOffPrice()));
+            offPrice.setEditable(false);
+        }
+
 
     }
 
-    public void tickImageMouseClicked(MouseEvent mouseEvent) {
+    private void setPrices() {
+        Product product = ((ProductProcessor) parentProcessor).product;
+
+        price.setText(Double.toString(product.getPrice()));
+        setDoubleFields(price, Double.MAX_VALUE);
+
+        if(product.isOnSale()) {
+            //Todo Set Price StrikeThrough
+            offPrice.setText(Double.toString(product.getOffPrice()));
+            offPrice.setEditable(false);
+            setTheCommunicationOfPrices();
+        } else {
+            pricePane.getChildren().removeAll(offArrow, offPrice);
+        }
+
+        if(menuType != ProductMenuType.VENDOR_EDIT)
+            price.setDisable(true);
+    }
+
+    private void setTheCommunicationOfPrices() {
+        price.textProperty().addListener((observable, oldValue, newValue) -> {
+            Product product = ((ProductProcessor) parentProcessor).product;
+            offPrice.setEditable(true);
+
+            if(newValue == null || newValue.isEmpty()) {
+                offPrice.setText("");
+            } else {
+                double newOffPrice = (1.0 - product.getOffPercent() / 100) * Double.parseDouble(newValue);
+                offPrice.setText(Double.toString(newOffPrice));
+            }
+
+            offPrice.setEditable(false);
+        });
+    }
+
+    private void initSpecialFieldsInGeneral() {
+        Product product = ((ProductProcessor) parentProcessor).product;
+
+        setPrices();
+        seller.setText(product.getSellerUserName());
+        seller.setDisable(true);
+
+        status.setText(product.getTheStatus());
+        status.setDisable(true);
+    }
+
+
+    public void addCreatedProduct() {
+        //Todo
+    }
+
+    public void editCreatedProduct() {
         //Todo
     }
 

@@ -23,6 +23,7 @@ public class Product {
 
     private boolean isOnSale;
     private double offPrice;
+    private double offPercent;
 
     public Product(ResultSet resultSet) throws SQLException {
         this.ID = resultSet.getString("ID");
@@ -54,6 +55,26 @@ public class Product {
     }
 
     public int getStatus() {
+        return status;
+    }
+
+    public String getTheStatus() {
+        String status = null;
+
+        switch (this.status) {
+            case 1 :
+                status = "Approved";
+                break;
+            case 2 :
+                status = "Waiting For Approve";
+                break;
+            case 3 :
+                status = "Waiting For Editing Approve";
+                break;
+            default:
+                status = "What The Shit?!";
+        }
+
         return status;
     }
 
@@ -179,5 +200,13 @@ public class Product {
 
     public void setOffPrice(double offPrice) {
         this.offPrice = offPrice;
+    }
+
+    public double getOffPercent() {
+        return offPercent;
+    }
+
+    public void setOffPercent(double offPercent) {
+        this.offPercent = offPercent;
     }
 }
