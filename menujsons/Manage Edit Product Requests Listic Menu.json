@@ -1,6 +1,0 @@
-{
-  "name" : "Manage Edit Product Requests",
-  "parentName" : "Manage Product Requests",
-  "isThereParentMenu" : true,
-  "processorName" : "ListicProcessor"
-}

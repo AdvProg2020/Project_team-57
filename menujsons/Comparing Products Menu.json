@@ -1,8 +1,0 @@
-{
-  "options" : [
-  ],
-  "name" : "Comparing Menu",
-  "parentName" : "Products Menu",
-  "isThereParentMenu" : "true",
-  "processorName" : "ProductProcessor"
-}

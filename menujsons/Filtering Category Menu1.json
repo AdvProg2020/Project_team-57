@@ -1,9 +1,0 @@
-{
-  "options" : [
-    "Add Filter"
-  ],
-  "name" : "Filtering Category Menu",
-  "parentName" : "Filter Category Menu",
-  "isThereParentMenu" : "true",
-  "processorName" : "FilteringProcessor"
-}

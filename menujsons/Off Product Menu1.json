@@ -1,9 +1,0 @@
-{
-  "options" : [
-    "Add To Off"
-  ],
-  "name" : "Product Menu",
-  "parentName" : "Add Off Menu",
-  "isThereParentMenu" : "true",
-  "processorName" : "OffProcessor"
-}

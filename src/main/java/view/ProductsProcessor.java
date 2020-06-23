@@ -356,6 +356,7 @@ public class ProductsProcessor extends Processor{
                 Stage stage = new Stage();
                 stage.setScene(new Scene(root));
                 stage.setTitle(product.getName());
+                processor.setMyStage(stage);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();

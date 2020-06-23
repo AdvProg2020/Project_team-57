@@ -1,6 +1,0 @@
-{
-  "name" : "Categories",
-  "parentName" : "Filter Menu",
-  "isThereParentMenu" : true,
-  "processorName" : "ListicProcessor"
-}

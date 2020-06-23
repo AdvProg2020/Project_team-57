@@ -1,9 +1,0 @@
-{
-  "options" : [
-    "Remove Filter"
-  ],
-  "name" : "Filtering Name Menu",
-  "parentName" : "Filter Name Menu",
-  "isThereParentMenu" : "true",
-  "processorName" : "FilteringProcessor"
-}

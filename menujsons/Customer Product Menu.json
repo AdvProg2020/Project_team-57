@@ -1,9 +1,0 @@
-{
-  "options" : [
-
-  ],
-  "name" : "Product Menu",
-  "parentName" : "Cart Menu",
-  "isThereParentMenu" : "true",
-  "processorName" : "ProductProcessor"
-}

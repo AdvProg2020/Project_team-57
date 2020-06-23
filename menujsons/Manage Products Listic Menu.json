@@ -1,9 +1,0 @@
-{
-  "name" : "Manage Products",
-  "parentName" : "Vendor Menu",
-  "isThereParentMenu" : true,
-  "processorName" : "ListicProcessor",
-  "options" : [
-    "Add Product"
-  ]
-}

@@ -1,8 +1,0 @@
-{
-  "options" : [
-  ],
-  "name" : "Comment Menu",
-  "parentName" : "View Comments Listic Menu",
-  "isThereParentMenu" : "true",
-  "processorName" : "ProductProcessor"
-}

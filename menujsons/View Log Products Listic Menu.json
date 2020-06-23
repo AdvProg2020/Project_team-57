@@ -1,9 +1,0 @@
-{
-  "name" : "View Log Products",
-  "parentName" : "View Buy Logs Listic Menu",
-  "isThereParentMenu" : true,
-  "processorName" : "ListicProcessor",
-  "options" : [
-    "Show Log Status"
-  ]
-}

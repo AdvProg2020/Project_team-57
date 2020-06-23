@@ -1,6 +1,0 @@
-{
-  "name" : "Add Customers To Discount Code",
-  "parentName" : "Create Discount Code Menu",
-  "isThereParentMenu" : true,
-  "processorName" : "ListicProcessor"
-}

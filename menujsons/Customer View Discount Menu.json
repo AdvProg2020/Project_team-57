@@ -1,8 +1,0 @@
-{
-  "options" : [
-  ],
-  "name" : "Discount Menu",
-  "parentName" : "View Discount Codes Listic Menu",
-  "isThereParentMenu" : "true",
-  "processorName" : "DiscountProcessor"
-}

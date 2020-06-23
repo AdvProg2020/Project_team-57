@@ -1,9 +1,0 @@
-{
-  "name" : "Select Discount",
-  "parentName" : "Receiving Information Menu",
-  "isThereParentMenu" : true,
-  "processorName" : "ListicProcessor",
-  "options" : [
-    "Purchase Without Discount"
-  ]
-}

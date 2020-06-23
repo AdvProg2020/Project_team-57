@@ -117,6 +117,9 @@ public class VendorControl extends AccountControl{
             editProductNotification = checkEditingProduct(currentProduct, editingProduct);
 
             if (editProductNotification == null) {
+                editingProduct.setStatus(3);
+                editingProduct.setSellerUserName(Control.getUsername());
+                ProductTable.setProductStatus(editingProduct.getID(), 3);
                 if (EditingProductTable.isIDFree(editingProduct.getID())) {
                     EditingProductTable.addProduct(editingProduct);
                 } else {

@@ -1,8 +1,0 @@
-{
-  "name" : "View Sell Logs",
-  "parentName" : "Vendor Menu",
-  "isThereParentMenu" : true,
-  "processorName" : "ListicProcessor",
-  "options" : [
-  ]
-}

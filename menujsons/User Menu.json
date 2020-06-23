@@ -1,9 +1,0 @@
-{
-  "options" : [
-    "Delete User"
-  ],
-  "name" : "User Menu",
-  "parentName" : "Manage All Users Listic Menu",
-  "isThereParentMenu" : "true",
-  "processorName" : "RegisterRequestProcessor"
-}

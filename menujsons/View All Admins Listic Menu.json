@@ -1,8 +1,0 @@
-{
-  "name" : "View All Admins",
-  "parentName" : "Admin Menu",
-  "isThereParentMenu" : true,
-  "processorName" : "ListicProcessor",
-  "options" : [
-  ]
-}

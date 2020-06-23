@@ -1,9 +1,0 @@
-{
-  "name" : "Manage Categories",
-  "parentName" : "Admin Menu",
-  "isThereParentMenu" : true,
-  "processorName" : "ListicProcessor",
-  "options" : [
-    "Add Category"
-  ]
-}

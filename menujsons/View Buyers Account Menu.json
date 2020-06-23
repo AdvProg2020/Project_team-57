@@ -1,8 +1,0 @@
-{
-  "options" : [
-  ],
-  "name" : "View Buyers Account",
-  "parentName" : "View Buyers Listic Menu",
-  "isThereParentMenu" : "true",
-  "processorName" : "RegisterRequestProcessor"
-}
