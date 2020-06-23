@@ -837,13 +837,13 @@ public class ProductControl extends Control {
 
     public Image getEditingProductImage(String ID, int number) {
         try {
-            if(doesProductHaveImage(ID)) {
-                FileInputStream fileInputStream = ProductTable.getProductImageInputStream(ID, number);
+            if(doesEditingProductHaveImage(ID)) {
+                FileInputStream fileInputStream = EditingProductTable.getEditingProductImageInputStream(ID, number);
                 Image image = new Image(fileInputStream);
                 fileInputStream.close();
                 return image;
             }
-            FileInputStream fileInputStream = ProductTable.getProductImageInputStream("1", 1);
+            FileInputStream fileInputStream = EditingProductTable.getEditingProductImageInputStream("1", 1);
             Image image = new Image(fileInputStream);
             fileInputStream.close();
             return image;

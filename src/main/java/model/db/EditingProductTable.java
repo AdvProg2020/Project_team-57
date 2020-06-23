@@ -157,7 +157,7 @@ public class EditingProductTable extends Database{
         return null;
     }
 
-    public static FileInputStream getProductImageInputStream(String ID, int number) throws FileNotFoundException {
+    public static FileInputStream getEditingProductImageInputStream(String ID, int number) throws FileNotFoundException {
         return new FileInputStream(getEditingProductImageFilePath(ID, number));
     }
 
@@ -167,7 +167,7 @@ public class EditingProductTable extends Database{
             productFolder.mkdir();
         String[] splitPath = pictureFile.getPath().split("\\.");
         String fileExtension = splitPath[splitPath.length - 1];
-        File saveImage = new File("database\\Images\\Products\\" + productID + "\\" + productNumber + "." + fileExtension);
+        File saveImage = new File("database\\Images\\EditingProducts\\" + productID + "\\" + productNumber + "." + fileExtension);
         Files.copy(pictureFile.toPath(), saveImage.toPath());
     }
 
