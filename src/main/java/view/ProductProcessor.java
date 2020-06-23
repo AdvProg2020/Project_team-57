@@ -364,9 +364,6 @@ public class ProductProcessor extends Processor {
         ProductProcessor generalFieldProcessor = subProcessors.get(1);
         ProductProcessor specialFieldProcessor = subProcessors.get(3);
 
-        specialFieldProcessor.setProductSpecialFields();
-        generalFieldProcessor.setProductGeneralFields();
-
         ArrayList<Notification> productNotifications = new ArrayList<>();
 
         switch (menuType) {
