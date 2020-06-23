@@ -32,7 +32,7 @@
                   <Image url="@../Images/Icons/ProductMenu/Price.png" />
                </image>
             </ImageView>
-            <JFXTextField fx:id="price" layoutX="32.0" prefHeight="32.0" prefWidth="90.0" promptText=" Price">
+            <JFXTextField fx:id="price" layoutX="32.0" onMouseEntered="#textFieldMouseClicked" prefHeight="32.0" prefWidth="90.0" promptText=" Price">
                <font>
                   <Font name="System Bold Italic" size="15.0" />
                </font>

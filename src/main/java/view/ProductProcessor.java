@@ -54,7 +54,7 @@ public class ProductProcessor extends Processor {
     }
 
     public static enum ProductMenuType {
-        CART, VENDOR_ADD, VENDOR_EDIT, ADMIN, CUSTOMER, PRODUCTS;
+        CART, VENDOR_ADD, VENDOR_EDIT, ADMIN, CUSTOMER, PRODUCTS, PRODUCTS_VENDOR;
     }
 
     public static enum CommentType {
@@ -357,22 +357,29 @@ public class ProductProcessor extends Processor {
     //TheMainPane
 
     private void sendProduct() {
+        Product product = null;
+
         ProductProcessor imageProcessor = subProcessors.get(0);
         //sep
         ProductProcessor generalFieldProcessor = subProcessors.get(1);
         ProductProcessor specialFieldProcessor = subProcessors.get(3);
 
-        specialFieldProcessor.setProductSpecialFields();
-        generalFieldProcessor.setProductGeneralFields();
-
-        ArrayList<Notification> productNotifications = null;
+        ArrayList<Notification> productNotifications = new ArrayList<>();
 
         switch (menuType) {
             case VENDOR_ADD:
+                product = this.product;
+                specialFieldProcessor.setProductSpecialFields(product);
+                generalFieldProcessor.setProductGeneralFields(product);
                 productNotifications = vendorControl.addProduct(product, imageProcessor.productImageFiles);
                 break;
             case VENDOR_EDIT:
-                productNotifications.add(vendorControl.editProduct(product, null));
+                product = new Product();
+                product.setID(this.product.getID());
+                product.setSellerUserName(product.getSellerUserName());
+                specialFieldProcessor.setProductSpecialFields(product);
+                generalFieldProcessor.setProductGeneralFields(product);
+                productNotifications.add(vendorControl.editProduct(this.product, product));
                 break;
             default:
                 System.out.println("Serious Error In Sending Product");
@@ -382,8 +389,18 @@ public class ProductProcessor extends Processor {
                 || productNotifications.get(0).equals(Notification.EDIT_PRODUCT)) {
             successSending(productNotifications.get(0));
         } else {
-            specialFieldProcessor.showProductSpecialErrors(productNotifications);
-            generalFieldProcessor.showProductGeneralErrors(productNotifications);
+            switch (menuType) {
+                case VENDOR_ADD:
+                    specialFieldProcessor.showProductSpecialErrors(productNotifications);
+                    generalFieldProcessor.showProductGeneralErrors(productNotifications);
+                    break;
+                case VENDOR_EDIT:
+                    generalFieldProcessor.showProductGeneralErrors(productNotifications);
+                    generalFieldProcessor.setGeneralTextFields(product);
+                    specialFieldProcessor.setPrices(product);
+                    break;
+            }
+
         }
 
     }
@@ -408,13 +425,12 @@ public class ProductProcessor extends Processor {
         subProcessors.add(processor);
         //Todo Check The Use Of MenuType
 
-        processor.setGeneralTextFields();
+        processor.setGeneralTextFields(product);
         mainPane.setLeft(loader.getRoot());
     }
 
-    private void setGeneralTextFields() {
+    private void setGeneralTextFields(Product product) {
         //Todo Condition Checking With Enum With Unknown Space Of Saving
-        Product product = ((ProductProcessor) parentProcessor).product;
         ProductMenuType menuType = ((ProductProcessor) parentProcessor).menuType;
         setGeneralStringTextFields();
 
@@ -460,8 +476,8 @@ public class ProductProcessor extends Processor {
         descriptionTextArea.setDisable(true);
     }
 
-    private void setProductGeneralFields() {
-        Product product = ((ProductProcessor) parentProcessor).product;
+    private void setProductGeneralFields(Product product) {
+
         product.setName(nameTextField.getText());
         product.setCategory(categoryTextField.getText());
 
@@ -481,8 +497,6 @@ public class ProductProcessor extends Processor {
         product.setBrand(brandTextField.getText());
         product.setDescription(descriptionTextArea.getText());
 
-        //Todo Koodoomaro Taraf Mitoone Khali Bezare?
-        System.out.println("Yeah, Baby");
     }
 
     private void showProductGeneralErrors(ArrayList<Notification> productNotifications) {
@@ -504,28 +518,28 @@ public class ProductProcessor extends Processor {
             descriptionTextArea.setStyle(errorTextFieldStyle);
     }
 
-    private void editProduct() {
-        String productID = ((ProductProcessor) parentProcessor).product.getID();
-
-        Alert alert = null;
-        alert = editField("ProductName", nameTextField, productID, alert);
-        alert = editField("Category", categoryTextField, productID, alert);
-
-        String countFieldName = countLabel.getText().equals(" Count ") ? "Count" : "Amount";
-        alert = editField(countFieldName, countTextField, productID, alert);
-
-        alert = editField("Brand", brandTextField, productID, alert);
-        alert = editField("Description", descriptionTextArea, productID, alert);
-
-        if(alert.getTitle().equals("Edit Successful") ) {
-            ((ProductProcessor) parentProcessor).product = productControl.getEditedProductByID(productID);
-            setGeneralTextFields();
-        }
-
-        //Todo Koodoomaro Taraf Mitoone Khali Bezare?
-        //Todo Setting Alerts
-        alert.show();
-    }
+//    private void editProduct() {
+//        String productID = ((ProductProcessor) parentProcessor).product.getID();
+//
+//        Alert alert = null;
+//        alert = editField("ProductName", nameTextField, productID, alert);
+//        alert = editField("Category", categoryTextField, productID, alert);
+//
+//        String countFieldName = countLabel.getText().equals(" Count ") ? "Count" : "Amount";
+//        alert = editField(countFieldName, countTextField, productID, alert);
+//
+//        alert = editField("Brand", brandTextField, productID, alert);
+//        alert = editField("Description", descriptionTextArea, productID, alert);
+//
+//        if(alert.getTitle().equals("Edit Successful") ) {
+//            ((ProductProcessor) parentProcessor).product = productControl.getEditedProductByID(productID);
+//            setGeneralTextFields();
+//        }
+//
+//        //Todo Koodoomaro Taraf Mitoone Khali Bezare?
+//        //Todo Setting Alerts
+//        alert.show();
+//    }
 
     private Alert editField(String fieldName, TextInputControl textInputControl, String productID, Alert previousAlert) {
         Alert alert = productControl.editField(fieldName, textInputControl.getText(), productID).getAlert();
@@ -694,7 +708,7 @@ public class ProductProcessor extends Processor {
                 setDoubleFields(price, Double.MAX_VALUE);
                 break;
             case VENDOR_EDIT:
-                setPrices();
+                setPrices(product);
                 /*price.setText(Double.toString(product.getPrice()));
                 setDoubleFields(price, Double.MAX_VALUE);
                 if(product.isOnSale()) {
@@ -746,7 +760,7 @@ public class ProductProcessor extends Processor {
     private void initSpecialFieldsInGeneral() {
         Product product = ((ProductProcessor) parentProcessor).product;
 
-        setPrices();
+        setPrices(product);
         seller.setText(product.getSellerUserName());
         seller.setDisable(true);
 
@@ -754,8 +768,7 @@ public class ProductProcessor extends Processor {
         status.setDisable(true);
     }
 
-    private void setPrices() {
-        Product product = ((ProductProcessor) parentProcessor).product;
+    private void setPrices(Product product) {
         price.setText(Double.toString(product.getPrice()));
         setDoubleFields(price, Double.MAX_VALUE);
 
@@ -877,8 +890,7 @@ public class ProductProcessor extends Processor {
         //Todo
     }
 
-    private void setProductSpecialFields() {
-        Product product = ((ProductProcessor) parentProcessor).product;
+    private void setProductSpecialFields(Product product) {
         product.setPrice(Double.parseDouble(price.getText()));
     }
 
