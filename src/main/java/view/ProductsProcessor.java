@@ -460,6 +460,7 @@ public class ProductsProcessor extends Processor{
                 stage.setScene(new Scene(root));
                 stage.setTitle("Add New Product");
                 addSubStage(stage);
+                processor.setMyStage(stage);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();

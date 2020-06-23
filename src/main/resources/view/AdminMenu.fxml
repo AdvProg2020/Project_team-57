@@ -22,7 +22,7 @@
                         <Font name="Calibri Bold" size="16.0" />
                      </font>
                   </JFXButton>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView disable="true" fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/Dashboard%20Icon.png" />
                      </image>
@@ -36,7 +36,7 @@
                         <Font name="Calibri Bold" size="16.0" />
                      </font>
                   </JFXButton>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView disable="true" fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/Accounts%20Icon.png" />
                      </image>
@@ -50,7 +50,7 @@
                         <Font name="Calibri Bold" size="16.0" />
                      </font>
                   </JFXButton>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView disable="true" fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/Products%20Icon.png" />
                      </image>
@@ -64,7 +64,7 @@
                         <Font name="Calibri Bold" size="16.0" />
                      </font>
                   </JFXButton>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView disable="true" fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/Offs%20Icon.png" />
                      </image>
@@ -79,7 +79,7 @@
                         <Font name="Calibri" size="16.0" />
                      </font>
                   </JFXButton>
-                  <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView disable="true" fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/blue%20back%20icon.png" />
                      </image>

@@ -34,7 +34,8 @@ public enum Notification {
     ACCEPT_ADD_VENDOR_REQUEST("The seller was added to the store", Alert.AlertType.INFORMATION, "Successful", "Congratulations"),
     USER_NOT_APPROVED("Wait for The Lord to Prove your Account, may the 4th be with you.\uD83D\uDE08", Alert.AlertType.ERROR, "Login Error", "User Not Approved"),
     PRODUCT_NOT_AVAILABLE("This Product is Unavailable. You can't Edit its Specs."),
-    ADD_PRODUCT("Successfully Added. Hope You Will Have A Good Sale If The Lord Accepts your Product"),
+    ADD_PRODUCT("Successfully Added. Hope You Will Have A Good Sale If The Lord Accepts your Product",
+            Alert.AlertType.INFORMATION, "Adding Product Successful", "Product Request"),
     ACCEPT_ADDING_PRODUCT("Product added to store successfully \uD83D\uDC8B"),
     ACCEPT_EDITING_PRODUCT("Product Editing Accepted. \uD83E\uDD11"),
     DELETE_USER("User was deleted successfully", Alert.AlertType.INFORMATION, "Successful", "Congratulations"),
@@ -168,15 +169,25 @@ public enum Notification {
     INVALID_DISCOUNT_CODE_LENGTH("Discount Code's Length Must Be Less Than 16.", Alert.AlertType.ERROR,
             "Add Discount Error", "Invalid Discount Code"),
     //Todo Setting Alerts
-    EMPTY_PRODUCT_PRICE("Please Enter The Price"),
-    EMPTY_PRODUCT_NAME("Please Enter The Name"),
-    EMPTY_PRODUCT_CATEGORY("Please Enter The Category"),
-    INVALID_PRODUCT_CATEGORY("You Have Entered An Invalid Category Name"),
-    EMPTY_PRODUCT_COUNT("Please Enter The Count"),
-    EMPTY_PRODUCT_AMOUNT("Please Enter The Amount"),
-    EMPTY_PRODUCT_BRAND("Please Enter The Brand"),
-    EMPTY_PRODUCT_DESCRIPTION("Please Enter The Description"),
-    EDIT_PRODUCT("Product Edited Successfully");
+    //("You Have Entered An Invalid Category Name")
+    EMPTY_PRODUCT_PRICE("Please Enter The Price",
+            Alert.AlertType.ERROR, "Product Request Error", "Product Request"),
+    EMPTY_PRODUCT_NAME("Please Enter The Name",
+            Alert.AlertType.ERROR, "Product Request Error", "Product Request"),
+    EMPTY_PRODUCT_CATEGORY("Please Enter The Category",
+            Alert.AlertType.ERROR, "Product Request Error", "Product Request"),
+    INVALID_PRODUCT_CATEGORY("You Have Entered An Invalid Category Name",
+            Alert.AlertType.ERROR, "Product Request Error", "Product Request"),
+    EMPTY_PRODUCT_COUNT("Please Enter The Count",
+            Alert.AlertType.ERROR, "Product Request Error", "Product Request"),
+    EMPTY_PRODUCT_AMOUNT("Please Enter The Amount",
+            Alert.AlertType.ERROR, "Product Request Error", "Product Request"),
+    EMPTY_PRODUCT_BRAND("Please Enter The Brand",
+            Alert.AlertType.ERROR, "Product Request Error", "Product Request"),
+    EMPTY_PRODUCT_DESCRIPTION("Please Enter The Discription",
+            Alert.AlertType.ERROR, "Product Request Error", "Product Request"),
+    EDIT_PRODUCT("You Edited Your Product Successfully. Wait For The Lord's Approval",
+            Alert.AlertType.INFORMATION, "Editing Product Successful", "Product Request");
 
 
     private String message;

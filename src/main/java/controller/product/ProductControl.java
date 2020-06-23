@@ -826,4 +826,18 @@ public class ProductControl extends Control {
             e.printStackTrace();
         }
     }
+
+    public ArrayList<File> getProductImageFiles(String productID) {
+        ArrayList<File> imageFiles = new ArrayList<>();
+        for(int i = 0; i < getProductImagesNumberByID(productID); ++i) {
+            imageFiles.add(
+                    new File(ProductTable.getProductImageFilePath(productID, (i+1)))
+            );
+        }
+        return imageFiles;
+    }
+
+    public Image getProductDefaultImage() {
+        return getProductImageByID("1", 2);
+    }
 }

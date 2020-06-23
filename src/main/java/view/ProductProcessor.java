@@ -27,6 +27,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
@@ -160,6 +161,7 @@ public class ProductProcessor extends Processor {
             processor.setParentProcessor(this);
             subProcessors.add(processor);
             processor.imageNumberLabel.setText("1");
+            changePictureTimer = -1;
             mainTimer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
@@ -172,12 +174,8 @@ public class ProductProcessor extends Processor {
                     }
                 }
             };
-            switch (menuType) {
-                case ADMIN:
-                case PRODUCTS:
-                case CUSTOMER:
-                case CART:
-                    processor.imagePane.getChildren().removeAll(processor.addImageButton, processor.editImageButton, processor.removeImageButton);
+            if(menuType != ProductMenuType.VENDOR_EDIT && menuType != ProductMenuType.VENDOR_ADD) {
+                processor.imagePane.getChildren().removeAll(processor.addImageButton, processor.editImageButton, processor.removeImageButton);
             }
             processor.productImageFiles = new ArrayList<>();
             processor.getImages();
@@ -188,8 +186,9 @@ public class ProductProcessor extends Processor {
     }
 
     private void getImages() {
-        switch (((ProductProcessor)parentProcessor).menuType) {
-            //TODO
+        if(menuType != ProductMenuType.VENDOR_ADD) {
+            productImageFiles = productControl.
+                    getProductImageFiles(((ProductProcessor)parentProcessor).product.getID());
         }
         updateImages();
     }
@@ -205,8 +204,10 @@ public class ProductProcessor extends Processor {
                 modifyVendorButtons(true);
             }
             productImageRectangle.setFill(new ImagePattern
-                    (getImageFromFileArray((Integer.parseInt(imageNumberLabel.getText()) - 1))));
+                (getImageFromFileArray((Integer.parseInt(imageNumberLabel.getText()) - 1))));
         } else {
+            productImageRectangle.setFill(
+                    new ImagePattern(productControl.getProductDefaultImage()));
             modifyVendorButtons(false);
             modifyChangeButtons(false);
         }
@@ -306,14 +307,17 @@ public class ProductProcessor extends Processor {
             ((ProductProcessor)parentProcessor).mainTimer.start();
             else {
             ((ProductProcessor)parentProcessor).mainTimer.stop();
-            changePictureTimer = -1;
+            ((ProductProcessor)parentProcessor).changePictureTimer = -1;
         }
     }
 
     public void deleteImage(MouseEvent mouseEvent) {
-        productImageFiles.remove(Integer.parseInt(imageNumberLabel.getText()) - 1);
-        imageNumberLabel.setText("1");
-        updateImages();
+        Optional<ButtonType> buttonType = new Alert(Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Delete This Photo?", ButtonType.NO, ButtonType.YES).showAndWait();
+        if(buttonType.get() == ButtonType.YES) {
+            productImageFiles.remove(Integer.parseInt(imageNumberLabel.getText()) - 1);
+            imageNumberLabel.setText("1");
+            updateImages();
+        }
     }
 
     public void addNewImage(MouseEvent mouseEvent) {
@@ -406,10 +410,9 @@ public class ProductProcessor extends Processor {
     }
 
     private void successSending(Notification notification) {
-        //TODO(Sangin)
-        //Alert alert = notification.getAlert();
-        //Optional<ButtonType> optionalButtonType = alert.showAndWait();
-        if(/*optionalButtonType.get() == ButtonType.OK*/ true) {
+        Alert alert = notification.getAlert();
+        Optional<ButtonType> optionalButtonType = alert.showAndWait();
+        if(optionalButtonType.get() == ButtonType.OK) {
             closeSubStage(myStage, parentProcessor);
             ((ProductsProcessor)parentProcessor).initProductsPage();
         }
@@ -500,6 +503,11 @@ public class ProductProcessor extends Processor {
     }
 
     private void showProductGeneralErrors(ArrayList<Notification> productNotifications) {
+
+        for (Notification productNotification : productNotifications) {
+            productNotification.getAlert().show();
+        }
+
         if(productNotifications.contains(Notification.EMPTY_PRODUCT_NAME))
             nameTextField.setStyle(errorTextFieldStyle);
 
