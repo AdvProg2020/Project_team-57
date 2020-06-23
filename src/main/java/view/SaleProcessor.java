@@ -376,4 +376,8 @@ public class SaleProcessor extends Processor implements Initializable {
             off.setOffPercent(Double.parseDouble(offPercentField.getText()));
         ((SaleProcessor) parentProcessor).offProductsPaneMouseClicked(null);
     }
+
+    public void setOff(Off off) {
+        this.off = off;
+    }
 }

@@ -670,4 +670,35 @@ public class TableViewProcessor<T> extends Processor {
         }
     }
 
+    //OffsRequests
+
+    public void showOff(ActionEvent actionEvent) {
+        Off off = (Off) ((TableViewProcessor)parentProcessor).tableView.getSelectionModel().getSelectedItem();
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
+        try {
+            Parent root = loader.load();
+            SaleProcessor processor = loader.getController();
+            processor.setOff(off);
+            processor.offInfoPaneMouseClick(null);
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.setTitle("Show Discount " + off.getOffName());
+            newStage.setResizable(false);
+            processor.parentProcessor = this.parentProcessor;
+            processor.setMyStage(newStage);
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void approveOff(ActionEvent actionEvent) {
+        
+    }
+
+    public void deleteOff(ActionEvent actionEvent) {
+
+    }
+
+
 }
