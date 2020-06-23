@@ -110,7 +110,7 @@ public class VendorControl extends AccountControl{
     }
 
 
-    public Notification editProduct(Product currentProduct, Product editingProduct) {
+    public Notification editProduct(Product currentProduct, Product editingProduct, ArrayList<File> productImageFiles) {
         Notification editProductNotification = null;
 
         try {
@@ -128,7 +128,7 @@ public class VendorControl extends AccountControl{
                     else
                         EditingProductTable.updateUnCountableProduct(editingProduct);
                 }
-
+                ProductControl.getController().addEditingProductPictures(editingProduct.getID(), productImageFiles);
                 editProductNotification = Notification.EDIT_PRODUCT;
             }
         } catch (SQLException | ClassNotFoundException e) {

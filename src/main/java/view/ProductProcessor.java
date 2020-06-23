@@ -186,7 +186,7 @@ public class ProductProcessor extends Processor {
     private void getImages() {
         if(menuType != ProductMenuType.VENDOR_ADD) {
             productImageFiles = productControl.
-                    getProductImageFiles(((ProductProcessor)parentProcessor).product.getID());
+                    getProductImageFiles(((ProductProcessor)parentProcessor).product);
         }
         updateImages();
     }
@@ -382,7 +382,7 @@ public class ProductProcessor extends Processor {
                 product.setSellerUserName(product.getSellerUserName());
                 specialFieldProcessor.setProductSpecialFields(product);
                 generalFieldProcessor.setProductGeneralFields(product);
-                productNotifications.add(vendorControl.editProduct(this.product, product));
+                productNotifications.add(vendorControl.editProduct(this.product, product, imageProcessor.productImageFiles));
                 break;
             default:
                 System.out.println("Serious Error In Sending Product");

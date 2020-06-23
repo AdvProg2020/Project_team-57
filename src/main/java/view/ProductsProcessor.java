@@ -45,7 +45,10 @@ public class ProductsProcessor extends Processor{
     public Pane userProductsOptionPane;
     public JFXButton previousProductButton;
     public CheckBox approveProductCheckBox;
+    public ImageView previousPageImageView;
     private HashMap<String, CheckBox> productsApprovalMap;
+
+
 
     public static enum ProductsMenuType {
         MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART, ADMIN_PRODUCT_REQUESTS;
@@ -349,6 +352,7 @@ public class ProductsProcessor extends Processor{
             });
         } else {
             productPane.getChildren().remove(paneProcessor.previousProductButton);
+            productPane.getChildren().remove(paneProcessor.previousPageImageView);
         }
         paneProcessor.approveProductCheckBox.setOnMouseClicked(event -> {
             if(productsApprovalMap.containsKey(product.getID())) {
@@ -361,7 +365,11 @@ public class ProductsProcessor extends Processor{
         });
         paneProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
         paneProcessor.availableLabel.setText(product.getTheStatus());
-        paneProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
+        if(product.getStatus() != 3) {
+            paneProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
+        } else {
+            paneProcessor.productImage.setImage(productControl.getEditingProductImage(product.getID(), 1));
+        }
         paneProcessor.productNameLabel.setText(product.getName());
         if (productControl.isThereProductInOff(product.getID())) {
             //TODO
@@ -379,7 +387,11 @@ public class ProductsProcessor extends Processor{
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPane.fxml"));
         Pane productPane = loader.load();
         ProductsProcessor productsProcessor = loader.getController();
-        productsProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
+        if(product.getStatus() != 3) {
+            productsProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
+        } else {
+            productsProcessor.productImage.setImage(productControl.getEditingProductImage(product.getID(), 1));
+        }
         productsProcessor.productNameLabel.setText(product.getName());
         if (productControl.isThereProductInOff(product.getID())) {
             //TODO
@@ -609,4 +621,15 @@ public class ProductsProcessor extends Processor{
                 "").show();
     }
 
+    public void backToMainMenu(ActionEvent actionEvent) {
+        Parent root = null;
+        try {
+            root = FXMLLoader.load(Main.class.getResource("WelcomeMenu.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Main.getStage().getIcons().remove(0);
+        Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Main Icon.png")));
+        Main.setScene("Boos Market", root);
+    }
 }

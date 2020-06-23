@@ -35,7 +35,7 @@
             <Font size="10.0" />
          </font>
       </JFXButton>
-      <ImageView disable="true" fitHeight="28.0" fitWidth="28.0" layoutX="157.0" layoutY="264.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="previousPageImageView" disable="true" fitHeight="28.0" fitWidth="28.0" layoutX="157.0" layoutY="264.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/Icons/ProductsMenu/rollback.png" />
          </image>
