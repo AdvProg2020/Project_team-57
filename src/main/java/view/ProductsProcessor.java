@@ -43,7 +43,7 @@ public class ProductsProcessor extends Processor{
     public BorderPane vendorProductsMainBorderPane;
     public ScrollPane userProductsScrollPane;
     public Pane userProductsOptionPane;
-    public ImageView previousProductButton;
+    public JFXButton previousProductButton;
     public CheckBox approveProductCheckBox;
     private HashMap<String, CheckBox> productsApprovalMap;
 
@@ -299,6 +299,7 @@ public class ProductsProcessor extends Processor{
     }
 
     private ArrayList<HBox> getProductsPanes() throws IOException {
+        //System.out.println("Start");
         ArrayList<HBox> hBoxes = new ArrayList<>();
         for(int y = 0; y < productFieldsNumber/4; ++y) {
             for(int x = 0; x < 4; ++ x) {
@@ -330,13 +331,13 @@ public class ProductsProcessor extends Processor{
         ProductsProcessor paneProcessor = loader.getController();
         paneProcessor.setParentProcessor(this);
         if(product.getStatus() == 3) {
-            paneProcessor.previousProductButton.setOnMouseClicked(event -> {
+            paneProcessor.previousProductButton.setOnAction(event -> {
                 FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));
                 try {
                     Parent root = fxmlLoader.load();
                     ProductProcessor processor = fxmlLoader.getController();
                     processor.setParentProcessor(parentProcessor);
-                    processor.initProcessor(product, ProductProcessor.ProductMenuType.ADMIN);
+                    processor.initProcessor(productControl.getProductById(product.getID()), ProductProcessor.ProductMenuType.ADMIN);
                     Stage stage = new Stage();
                     stage.setScene(new Scene(root));
                     stage.setTitle(product.getName());
@@ -410,8 +411,10 @@ public class ProductsProcessor extends Processor{
                     if(controller.Control.getType() != null && controller.Control.getType().equals("Admin")){
                         productMenuType = ProductProcessor.ProductMenuType.ADMIN;
                     } else if(controller.Control.getType() != null && controller.Control.getType().equals("Customer")) {
-                        productMenuType = ProductProcessor.ProductMenuType.CUSTOMER;
-                    } else
+                        productMenuType = ProductProcessor.ProductMenuType.PRODUCTS_CUSTOMER;
+                    } else if(controller.Control.getType() != null && controller.Control.getType().equals("Vendor"))
+                        productMenuType = ProductProcessor.ProductMenuType.PRODUCTS_VENDOR;
+                    else
                         productMenuType = ProductProcessor.ProductMenuType.PRODUCTS;
                     break;
                 case CUSTOMER_CART:
@@ -557,13 +560,18 @@ public class ProductsProcessor extends Processor{
         ArrayList<Notification> results = new ArrayList<>();
         AdminControl adminControl = AdminControl.getController();
         for (String productID : productsApprovalMap.keySet()) {
+            //System.out.println(productID);
+            //System.out.println(productControl.getProductById(productID));
             if(productControl.getProductById(productID).getStatus() == 3) {
+                System.out.println("Hello");
                 results.add(adminControl.modifyEditingProductApprove(productID, productsApprovalMap.get(productID).isSelected()));
             } else {
+                System.out.println("Hi");
                 results.add(adminControl.modifyProductApprove(productID, productsApprovalMap.get(productID).isSelected()));
             }
         }
         showManageProductRequestsResult(results);
+        //System.out.println("Hello");
         initProductsPage();
     }
 

@@ -27,7 +27,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
@@ -39,7 +38,6 @@ import org.controlsfx.control.Rating;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -55,7 +53,7 @@ public class ProductProcessor extends Processor {
     }
 
     public static enum ProductMenuType {
-        CART, VENDOR_ADD, VENDOR_EDIT, ADMIN, CUSTOMER, PRODUCTS, PRODUCTS_VENDOR;
+        CART, VENDOR_ADD, VENDOR_EDIT, ADMIN, PRODUCTS_CUSTOMER, PRODUCTS, PRODUCTS_VENDOR;
     }
 
     public static enum CommentType {
@@ -380,6 +378,7 @@ public class ProductProcessor extends Processor {
             case VENDOR_EDIT:
                 product = new Product();
                 product.setID(this.product.getID());
+                product.setSeen(this.product.getSeen());
                 product.setSellerUserName(product.getSellerUserName());
                 specialFieldProcessor.setProductSpecialFields(product);
                 generalFieldProcessor.setProductGeneralFields(product);
@@ -609,7 +608,7 @@ public class ProductProcessor extends Processor {
         for (Comment productComment : productControl.getAllProductComments(productID))
             commentsVBox.getChildren().add(getCommentPane("ProductMenuShowCommentPane", productComment, CommentType.SHOW));
 
-        if(menuType == ProductMenuType.CUSTOMER || menuType == ProductMenuType.CART) {
+        if(menuType == ProductMenuType.PRODUCTS_CUSTOMER || menuType == ProductMenuType.CART) {
             Comment comment = new Comment();
             comment.setProductID(productID);
             commentsVBox.getChildren().add(getCommentPane("ProductMenuAddCommentPane", comment, CommentType.ADD));
@@ -686,7 +685,7 @@ public class ProductProcessor extends Processor {
                 paneName = "ProductMenuSpecialInfoExceptCustomer";
                 break;
             case CART:
-            case CUSTOMER:
+            case PRODUCTS_CUSTOMER:
             case PRODUCTS:
                 paneName = "ProductMenuSpecialInfoCustomer";
                 break;
@@ -747,7 +746,7 @@ public class ProductProcessor extends Processor {
                 initSpecialFieldsInGeneral();
                 break;
             case PRODUCTS:
-            case CUSTOMER:
+            case PRODUCTS_CUSTOMER:
                 initSpecialFieldsInGeneral();
                 setCartFields();
                 break;

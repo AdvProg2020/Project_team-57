@@ -51,3 +51,9 @@
     -fx-opacity: 1;
     -fx-effect: dropshadow(gaussian, #607d8b, 10, 0.5, 0.0, 0.0);
 }
+
+.inside_product_pane_button:hover {
+    -fx-opacity: 1;
+    -fx-cursor: hand;
+    -fx-background-color: #607d8b;
+}

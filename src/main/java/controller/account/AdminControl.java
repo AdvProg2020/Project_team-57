@@ -703,6 +703,7 @@ public class AdminControl extends AccountControl{
             editingProduct.setSeen(ProductTable.getProductByID(editingProductID).getSeen());
             EditingProductTable.removeProductById(editingProductID);
             ProductTable.removeProductByID(editingProduct.getID());
+            System.out.println(editingProduct.getName() + " " + editingProduct.getSeen());
             if(editingProduct.isCountable())
                 VendorTable.addCountableProduct(editingProduct, editingProduct.getSellerUserName());
             else

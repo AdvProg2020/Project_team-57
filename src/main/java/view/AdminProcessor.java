@@ -257,7 +257,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             }
             stage.setScene(new Scene(parent));
             stage.setResizable(false);
-            addSubStage(stage);
+            parentProcessor.addSubStage(stage);
             stage.show();
         }
 
