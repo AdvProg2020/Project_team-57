@@ -1,6 +1,7 @@
 package controller.account;
 
 
+import controller.product.ProductControl;
 import model.db.*;
 import model.existence.*;
 import notification.Notification;
@@ -62,40 +63,6 @@ public class AdminControl extends AccountControl{
         else
             System.out.println("Shit Error In Controller");
         return false;
-    }
-
-    public Notification approveProductByID(String id){
-        try {
-            ProductTable.setProductStatus(id, 1);
-            ProductTable.setProductApprovalDate(id);
-            return Notification.ACCEPT_ADDING_PRODUCT;
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        } catch (ClassNotFoundException throwable) {
-            throwable.printStackTrace();
-        }
-
-        return Notification.UNKNOWN_ERROR;
-    }
-
-    public Notification acceptEditingProductByID(String editingProductID) {
-        try {
-            Product editingProduct = EditingProductTable.getEditingProductWithID(editingProductID);
-            editingProduct.setSeen(ProductTable.getProductByID(editingProductID).getSeen());
-            EditingProductTable.removeProductById(editingProductID);
-            ProductTable.removeProductByID(editingProduct.getID());
-            if(editingProduct.isCountable())
-                VendorTable.addCountableProduct(editingProduct, editingProduct.getSellerUserName());
-            else
-                VendorTable.addUnCountableProduct(editingProduct, editingProduct.getSellerUserName());
-            ProductTable.setProductStatus(editingProduct.getID(), 1);
-            return Notification.ACCEPT_EDITING_PRODUCT;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return Notification.UNKNOWN_ERROR;
     }
 
     public ArrayList<String> getAllCategoryNames() {
@@ -688,5 +655,65 @@ public class AdminControl extends AccountControl{
         }
 
         return addDiscount(discount);
+    }
+
+    public ArrayList<Product> getAllNotApprovedProducts() {
+        try {
+            return ProductTable.getAllNotApprovedProducts();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public Notification modifyEditingProductApprove(String productID, boolean approved) {
+        if(approved)
+            return acceptEditingProductByID(productID);
+        else
+          return ProductControl.getController().removeEditingProductById(productID);
+    }
+
+    public Notification modifyProductApprove(String productID, boolean approved) {
+        if(approved)
+            return approveProductByID(productID);
+        else
+            return ProductControl.getController().removeProductById(productID);
+    }
+
+
+    private Notification approveProductByID(String id){
+        try {
+            ProductTable.setProductStatus(id, 1);
+            ProductTable.setProductApprovalDate(id);
+            return Notification.ACCEPT_ADDING_PRODUCT;
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        } catch (ClassNotFoundException throwable) {
+            throwable.printStackTrace();
+        }
+
+        return Notification.UNKNOWN_ERROR;
+    }
+
+    private Notification acceptEditingProductByID(String editingProductID) {
+        try {
+            Product editingProduct = EditingProductTable.getEditingProductWithID(editingProductID);
+            editingProduct.setSeen(ProductTable.getProductByID(editingProductID).getSeen());
+            EditingProductTable.removeProductById(editingProductID);
+            ProductTable.removeProductByID(editingProduct.getID());
+            if(editingProduct.isCountable())
+                VendorTable.addCountableProduct(editingProduct, editingProduct.getSellerUserName());
+            else
+                VendorTable.addUnCountableProduct(editingProduct, editingProduct.getSellerUserName());
+            ProductTable.setProductStatus(editingProduct.getID(), 1);
+            return Notification.ACCEPT_EDITING_PRODUCT;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
     }
 }

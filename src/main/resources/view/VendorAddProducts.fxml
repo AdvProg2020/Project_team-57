@@ -11,14 +11,14 @@
 
 <BorderPane fx:id="vendorProductsMainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1250.0" stylesheets="@../CSS%20files/VendorMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductsProcessor">
    <center>
-      <ScrollPane fx:id="vendorProductsScrollPane" prefHeight="720.0" prefWidth="1050.0" BorderPane.alignment="CENTER">
+      <ScrollPane fx:id="userProductsScrollPane" prefHeight="720.0" prefWidth="1050.0" BorderPane.alignment="CENTER">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
         </content>
       </ScrollPane>
    </center>
    <left>
-      <Pane fx:id="vendorProductsOptionPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <Pane fx:id="userProductsOptionPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
             <Pane layoutX="13.0" layoutY="36.0" onMouseClicked="#addNewProduct" opacity="0.7" prefHeight="200.0" prefWidth="175.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" styleClass="vendor_products_button">
                <children>

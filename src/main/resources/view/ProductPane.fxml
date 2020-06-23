@@ -28,7 +28,7 @@
             <Image url="@../Images/Icons/ProductsMenu/available.png" />
          </image>
       </ImageView>
-      <Label fx:id="availableLabel" layoutX="42.0" layoutY="266.0" text="available" />
+      <Label fx:id="availableLabel" layoutX="42.0" layoutY="266.0" text="Available" />
       <Label fx:id="oldPriceLabel" layoutX="22.0" layoutY="231.0" text="599$" />
       <Label fx:id="newPriceLabel" layoutX="65.0" layoutY="231.0" text="499$" />
       <StackPane layoutX="23.0" layoutY="14.0" prefHeight="185.0" prefWidth="185.0" style="-fx-background-radius: 10 10 10 10;">

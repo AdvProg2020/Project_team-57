@@ -3,6 +3,7 @@ package view;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
+import controller.account.AdminControl;
 import controller.account.CustomerControl;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
@@ -28,9 +29,11 @@ import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import model.existence.Category;
 import model.existence.Product;
+import notification.Notification;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ProductsProcessor extends Processor{
     private static final int PRODUCT_SCROLL_PANE_WIDTH = 1050;
@@ -38,12 +41,14 @@ public class ProductsProcessor extends Processor{
     private static final int PRODUCT_PAGES_BAR_HEIGHT = 50;
     //UserProducts
     public BorderPane vendorProductsMainBorderPane;
-    public ScrollPane vendorProductsScrollPane;
-    public Pane vendorProductsOptionPane;
-    public ScrollPane cartProductsScrollPane;
+    public ScrollPane userProductsScrollPane;
+    public Pane userProductsOptionPane;
+    public ImageView previousProductButton;
+    public CheckBox approveProductCheckBox;
+    private HashMap<String, CheckBox> productsApprovalMap;
 
     public static enum ProductsMenuType {
-        MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART;
+        MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART, ADMIN_PRODUCT_REQUESTS;
     }
     private ProductsMenuType menuType;
 
@@ -103,7 +108,14 @@ public class ProductsProcessor extends Processor{
             case CUSTOMER_CART:
                 initProductsPage();
                 break;
+            case ADMIN_PRODUCT_REQUESTS:
+                initAdminProductRequestsMenu();
         }
+    }
+
+    private void initAdminProductRequestsMenu() {
+        productsApprovalMap = new HashMap<>();
+        initProductsPage();
     }
 
     private void initVendorProductsMenu() {
@@ -113,7 +125,7 @@ public class ProductsProcessor extends Processor{
         };
         LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
         BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
-        vendorProductsOptionPane.setBackground(new Background(backgroundFill));
+        userProductsOptionPane.setBackground(new Background(backgroundFill));
         initProductsPage();
     }
 
@@ -228,11 +240,15 @@ public class ProductsProcessor extends Processor{
                 break;
             case VENDOR_PRODUCTS:
                 allProducts = VendorControl.getController().getAllProducts();
-                initCertainProductsPage(vendorProductsScrollPane);
+                initCertainProductsPage(userProductsScrollPane);
                 break;
             case CUSTOMER_CART:
                 allProducts = CustomerControl.getController().getAllCartProducts();
-                initCertainProductsPage(cartProductsScrollPane);
+                initCertainProductsPage(userProductsScrollPane);
+                break;
+            case ADMIN_PRODUCT_REQUESTS:
+                allProducts = AdminControl.getController().getAllNotApprovedProducts();
+                initCertainProductsPage(userProductsScrollPane);
                 break;
         }
     }
@@ -294,38 +310,97 @@ public class ProductsProcessor extends Processor{
                 hBoxes.add(hBox);
             }
         }
-        for(int i = 0; i < pageLim; ++i) {
-            hBoxes.get(i).getChildren().add(getProductPane(i));
+        if(menuType != ProductsMenuType.ADMIN_PRODUCT_REQUESTS) {
+            for(int i = 0; i < pageLim; ++i) {
+                hBoxes.get(i).getChildren().add(getCommonProductPane(i));
+            }
+        } else {
+            for(int i = 0; i < pageLim; ++i) {
+                hBoxes.get(i).getChildren().add(getAdminProductRequestsProductPane(i));
+            }
         }
+
         return hBoxes;
     }
 
-    private Pane getProductPane(int productNumberInPage) throws IOException {
+    private Pane getAdminProductRequestsProductPane(int productNumberInPage) throws IOException {
+        Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPaneAdmin.fxml"));
+        Pane productPane = loader.load();
+        ProductsProcessor paneProcessor = loader.getController();
+        paneProcessor.setParentProcessor(this);
+        if(product.getStatus() == 3) {
+            paneProcessor.previousProductButton.setOnMouseClicked(event -> {
+                FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));
+                try {
+                    Parent root = fxmlLoader.load();
+                    ProductProcessor processor = fxmlLoader.getController();
+                    processor.setParentProcessor(parentProcessor);
+                    processor.initProcessor(product, ProductProcessor.ProductMenuType.ADMIN);
+                    Stage stage = new Stage();
+                    stage.setScene(new Scene(root));
+                    stage.setTitle(product.getName());
+                    processor.setMyStage(stage);
+                    stage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        } else {
+            productPane.getChildren().remove(paneProcessor.previousProductButton);
+        }
+        paneProcessor.approveProductCheckBox.setOnMouseClicked(event -> {
+            if(productsApprovalMap.containsKey(product.getID())) {
+                if(!paneProcessor.approveProductCheckBox.isSelected())
+                    productsApprovalMap.remove(product.getID());
+                else
+                    productsApprovalMap.replace(product.getID(), paneProcessor.approveProductCheckBox);
+            } else
+                productsApprovalMap.put(product.getID(), paneProcessor.approveProductCheckBox);
+        });
+        paneProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
+        paneProcessor.availableLabel.setText(product.getTheStatus());
+        paneProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
+        paneProcessor.productNameLabel.setText(product.getName());
+        if (productControl.isThereProductInOff(product.getID())) {
+            //TODO
+            System.out.println("Product In Off");
+        } else {
+            productPane.getChildren().remove(paneProcessor.newPriceLabel);
+            paneProcessor.oldPriceLabel.setText(product.getPrice() + "$");
+        }
+        setProductPaneOnMouseClick(productPane, product, this);
+        return productPane;
+    }
+
+    private Pane getCommonProductPane(int productNumberInPage) throws IOException {
         Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPane.fxml"));
         Pane productPane = loader.load();
         ProductsProcessor productsProcessor = loader.getController();
         productsProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
         productsProcessor.productNameLabel.setText(product.getName());
-        if(productControl.isThereProductInOff(product.getID())) {
+        if (productControl.isThereProductInOff(product.getID())) {
             //TODO
             System.out.println("Product In Off");
         } else {
             productPane.getChildren().remove(productsProcessor.newPriceLabel);
-            productsProcessor.oldPriceLabel.setText(product.getPrice() +"$");
+            productsProcessor.oldPriceLabel.setText(product.getPrice() + "$");
         }
         productsProcessor.viewLabel.setText("" + product.getSeen());
-        if(!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
+        if (!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
             productsProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
-            productsProcessor.availableLabel.setText(product.getTheStatus());
+            if(product.getStatus() != 1)
+                productsProcessor.availableLabel.setText(product.getTheStatus());
+            else
+                productsProcessor.availableLabel.setText("Out Of Stock");
         }
-        setProductPaneOnMouseClick(productPane, productNumberInPage, this);
+        setProductPaneOnMouseClick(productPane, product, this);
         return productPane;
     }
 
-    private void setProductPaneOnMouseClick(Pane productPane, int productNumberInPage, ProductsProcessor parentProcessor) {
+    private void setProductPaneOnMouseClick(Pane productPane, Product product, ProductsProcessor parentProcessor) {
         productPane.setOnMouseClicked(event -> {
-            Product product = allProducts.get(productNumberInPage);
             ProductProcessor.ProductMenuType productMenuType = null;
             switch (menuType) {
                 case VENDOR_PRODUCTS:
@@ -342,6 +417,8 @@ public class ProductsProcessor extends Processor{
                 case CUSTOMER_CART:
                     productMenuType = ProductProcessor.ProductMenuType.CART;
                     break;
+                case ADMIN_PRODUCT_REQUESTS:
+                    productMenuType = ProductProcessor.ProductMenuType.ADMIN;
                 //TODO(MORE)
             }
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));
@@ -475,4 +552,53 @@ public class ProductsProcessor extends Processor{
     public void purchaseProducts(MouseEvent mouseEvent) {
         //TODO
     }
+
+    public void saveChangesForAdminProductRequests(MouseEvent mouseEvent) {
+        ArrayList<Notification> results = new ArrayList<>();
+        AdminControl adminControl = AdminControl.getController();
+        for (String productID : productsApprovalMap.keySet()) {
+            if(productControl.getProductById(productID).getStatus() == 3) {
+                results.add(adminControl.modifyEditingProductApprove(productID, productsApprovalMap.get(productID).isSelected()));
+            } else {
+                results.add(adminControl.modifyProductApprove(productID, productsApprovalMap.get(productID).isSelected()));
+            }
+        }
+        showManageProductRequestsResult(results);
+        initProductsPage();
+    }
+
+    private void showManageProductRequestsResult(ArrayList<Notification> results) {
+        int errorCount = 0;
+        int addProductAcceptCount = 0;
+        int editProductAcceptCount = 0;
+        int addProductDeclineCount = 0;
+        int editProductDeclineCount = 0;
+        for (Notification result : results) {
+            switch (result) {
+                case UNKNOWN_ERROR:
+                    errorCount++;
+                    break;
+                case ACCEPT_EDITING_PRODUCT:
+                    editProductAcceptCount++;
+                    break;
+                case ACCEPT_ADDING_PRODUCT:
+                    addProductAcceptCount++;
+                    break;
+                case DECLINE_EDITING_PRODUCT:
+                    editProductDeclineCount++;
+                    break;
+                case REMOVE_PRODUCT_SUCCESSFULLY:
+                    addProductDeclineCount++;
+                    break;
+            }
+        }
+        new Alert(Alert.AlertType.INFORMATION, "Process Executed. Results:\n" +
+                "Errors: " + errorCount + "\n" +
+                "Accepted New Products: " + addProductAcceptCount +"\n" +
+                "Accepted Edited Products: " + editProductAcceptCount +"\n" +
+                "Declined New Products: " + addProductDeclineCount +"\n" +
+                "Declined Edited Products: " + editProductDeclineCount +"\n" +
+                "").show();
+    }
+
 }

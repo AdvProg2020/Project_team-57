@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -7,7 +8,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="230.0" style="-fx-background-radius: 10 10 10 10; -fx-background-color: #ffffff;" stylesheets="@../CSS%20files/VendorMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductsProcessor">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="230.0" style="-fx-background-radius: 10 10 10 10; -fx-background-color: #ffffff;" styleClass="product_pane" stylesheets="@../CSS%20files/AdminMenuButtons.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductsProcessor">
    <children>
       <Label fx:id="productNameLabel" layoutX="23.0" layoutY="199.0" text="Samsung Galaxy A30">
          <font>
@@ -19,7 +20,7 @@
             <Image url="@../Images/Icons/ProductsMenu/available.png" />
          </image>
       </ImageView>
-      <Label fx:id="availableLabel" layoutX="42.0" layoutY="266.0" text="available" />
+      <Label fx:id="availableLabel" layoutX="42.0" layoutY="266.0" text="Available" />
       <Label fx:id="oldPriceLabel" layoutX="22.0" layoutY="231.0" text="599$" />
       <Label fx:id="newPriceLabel" layoutX="65.0" layoutY="231.0" text="499$" />
       <StackPane layoutX="23.0" layoutY="14.0" prefHeight="185.0" prefWidth="185.0" style="-fx-background-radius: 10 10 10 10;">
@@ -27,10 +28,11 @@
             <ImageView fx:id="productImage" fitHeight="185.0" fitWidth="185.0" pickOnBounds="true" />
          </children>
       </StackPane>
-      <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="184.0" layoutY="260.0" pickOnBounds="true" preserveRatio="true" styleClass="vendor_delete_product_button">
+      <ImageView fx:id="previousProductButton" fitHeight="28.0" fitWidth="28.0" layoutX="157.0" layoutY="263.0" pickOnBounds="true" preserveRatio="true" styleClass="inside_product_pane">
          <image>
-            <Image url="@../Images/Icons/VendorProduts/delete.png" />
+            <Image url="@../Images/Icons/ProductsMenu/rollback.png" />
          </image>
       </ImageView>
+      <CheckBox fx:id="approveProductCheckBox" allowIndeterminate="true" layoutX="196.0" layoutY="267.0" mnemonicParsing="false" styleClass="inside_product_pane" text=" " />
    </children>
 </Pane>

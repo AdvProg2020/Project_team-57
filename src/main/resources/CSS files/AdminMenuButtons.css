@@ -21,3 +21,33 @@
     -fx-opacity: 1;
     -fx-cursor: hand;
 }
+
+
+.check-box:selected > .box {
+    /* background color for selected checkbox */
+    -fx-background-color: #eceff1;
+}
+
+.check-box > .box {
+    /* background color of unselected checkbox */
+    -fx-background-color: #eceff1;
+}
+
+.check-box:selected > .box > .mark {
+    -fx-background-color: #0f9d58;
+}
+.check-box:indeterminate  > .box > .mark {
+    /* modify mark color */
+    -fx-background-color: #c62828;
+}
+
+.product_pane:hover {
+    -fx-cursor: hand;
+    -fx-opacity: 0.8;
+}
+
+.inside_product_pane:hover {
+    -fx-cursor: hand;
+    -fx-opacity: 1;
+    -fx-effect: dropshadow(gaussian, #607d8b, 10, 0.5, 0.0, 0.0);
+}

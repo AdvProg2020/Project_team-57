@@ -299,16 +299,17 @@ public class ProductControl extends Control {
         return editingProducts;
     }
 
-    public void removeEditingProductById(String editingProductID) {
+    public Notification removeEditingProductById(String editingProductID) {
         try {
             EditingProductTable.removeProductById(editingProductID);
             ProductTable.setProductStatus(editingProductID, 1);
+            return Notification.DECLINE_EDITING_PRODUCT;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
+        return Notification.UNKNOWN_ERROR;
     }
 
     public ArrayList<Product> getAllShowingProducts() {
@@ -840,4 +841,5 @@ public class ProductControl extends Control {
     public Image getProductDefaultImage() {
         return getProductImageByID("1", 2);
     }
+
 }

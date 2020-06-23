@@ -222,7 +222,6 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     public void manageComments(MouseEvent mouseEvent) {
         if (canOpenSubStage("Manage Comment Requests", parentProcessor)) {
             try {
-                //System.out.println(parentProcessor);
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
                 Parent root = loader.load();
                 TableViewProcessor<Comment> tableViewProcessor = loader.getController();
@@ -240,5 +239,27 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void manageProductRequests(MouseEvent mouseEvent) {
+        //AdminManageProductRequests
+        if(canOpenSubStage("Manage Product Requests", parentProcessor)) {
+            Stage stage = new Stage();
+            stage.setTitle("Manage Product Requests");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AdminManageProductRequests.fxml"));
+            Parent parent = null;
+            try {
+                parent = loader.load();
+                ProductsProcessor processor = loader.getController();
+                processor.initProcessor(ProductsProcessor.ProductsMenuType.ADMIN_PRODUCT_REQUESTS);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stage.setScene(new Scene(parent));
+            stage.setResizable(false);
+            addSubStage(stage);
+            stage.show();
+        }
+
     }
 }

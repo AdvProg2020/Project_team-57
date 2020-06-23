@@ -359,5 +359,21 @@ public class ProductTable extends Database {
         File file = new File(getOffImageFilePath(offID));
         file.delete();
     }
+
+    public static ArrayList<Product> getAllNotApprovedProducts() throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Products WHERE Status = ? OR Status = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, 2);
+        preparedStatement.setInt(2, 3);
+        ArrayList<Product> products = new ArrayList<>();
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()){
+            if(resultSet.getInt("Status") == 2)
+                products.add(new Product(resultSet));
+            else
+                products.add(EditingProductTable.getEditingProductWithID(resultSet.getString("ID")));
+        }
+        return products;
+    }
 }
 

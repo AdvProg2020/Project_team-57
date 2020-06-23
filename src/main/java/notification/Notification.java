@@ -187,7 +187,9 @@ public enum Notification {
     EMPTY_PRODUCT_DESCRIPTION("Please Enter The Discription",
             Alert.AlertType.ERROR, "Product Request Error", "Product Request"),
     EDIT_PRODUCT("You Edited Your Product Successfully. Wait For The Lord's Approval",
-            Alert.AlertType.INFORMATION, "Editing Product Successful", "Product Request");
+            Alert.AlertType.INFORMATION, "Editing Product Successful", "Product Request"),
+    DECLINE_EDITING_PRODUCT("Editing Off Requests Denied Successfully Great King.",
+            Alert.AlertType.INFORMATION, "Editing Product Accepted", "Product Request");
 
 
     private String message;
