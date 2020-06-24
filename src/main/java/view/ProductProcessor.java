@@ -88,6 +88,7 @@ public class ProductProcessor extends Processor {
     public JFXToggleButton slideShowToggleButton;
     public ImageView editImageButton;
     private ArrayList<File> productImageFiles;
+    private boolean isNonEdited = false;
 
     //ProductMediaPane
     public ImageView deleteMediaButton;
@@ -186,12 +187,16 @@ public class ProductProcessor extends Processor {
     }
 
     private void getImages() {
-        if(menuType != ProductMenuType.VENDOR_ADD) {
+//        System.out.println(((ProductProcessor)parentProcessor).menuType + " " + ((ProductProcessor)parentProcessor).isNonEdited);
+        if(!(((ProductProcessor)parentProcessor).menuType == ProductMenuType.ADMIN && ((ProductProcessor)parentProcessor).isNonEdited)) {
             productImageFiles = productControl.
                     getProductImageFiles(((ProductProcessor)parentProcessor).product);
+        } else {
+            productImageFiles = productControl.
+                    getProductNonEditedImageFiles(((ProductProcessor)parentProcessor).product);
         }
         updateImages();
-    }
+        }
 
     private void updateImages() {
         if(productImageFiles.size() != 0) {
@@ -321,11 +326,15 @@ public class ProductProcessor extends Processor {
     }
 
     public void addNewImage(MouseEvent mouseEvent) {
-        File pictureFile = getImageChooser().showOpenDialog(null);
-        if(pictureFile != null) {
-            productImageFiles.add(pictureFile);
-            imageNumberLabel.setText("1");
-            updateImages();
+        if(productImageFiles.size() < 6) {
+            File pictureFile = getImageChooser().showOpenDialog(null);
+            if (pictureFile != null) {
+                productImageFiles.add(pictureFile);
+                imageNumberLabel.setText("1");
+                updateImages();
+            }
+        } else {
+            new Alert(Alert.AlertType.ERROR, "You Can Add 6 Images At Most!").show();
         }
     }
 
@@ -354,6 +363,10 @@ public class ProductProcessor extends Processor {
         pictureChooser.getExtensionFilters().add(bmpExtensionFilter);
 
         return pictureChooser;
+    }
+
+    public void setNonEdited(boolean nonEdited) {
+        isNonEdited = nonEdited;
     }
 
     //Sepehr's Section

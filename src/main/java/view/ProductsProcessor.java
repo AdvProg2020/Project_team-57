@@ -399,6 +399,7 @@ public class ProductsProcessor extends Processor{
                     Parent root = fxmlLoader.load();
                     ProductProcessor processor = fxmlLoader.getController();
                     processor.setParentProcessor(paneProcessor.parentProcessor);
+                    processor.setNonEdited(true);
                     processor.initProcessor(productControl.getProductById(product.getID()), ProductProcessor.ProductMenuType.ADMIN);
                     Stage stage = new Stage();
                     stage.setScene(new Scene(root));
@@ -625,13 +626,9 @@ public class ProductsProcessor extends Processor{
         ArrayList<Notification> results = new ArrayList<>();
         AdminControl adminControl = AdminControl.getController();
         for (String productID : productsApprovalMap.keySet()) {
-            //System.out.println(productID);
-            //System.out.println(productControl.getProductById(productID));
             if(productControl.getProductById(productID).getStatus() == 3) {
-//                System.out.println("Hello");
                 results.add(adminControl.modifyEditingProductApprove(productID, productsApprovalMap.get(productID).isSelected()));
             } else {
-//                System.out.println("Hi");
                 results.add(adminControl.modifyProductApprove(productID, productsApprovalMap.get(productID).isSelected()));
             }
         }

@@ -110,6 +110,8 @@ public class ProductControl extends Control {
             CartTable.deleteProductFromCarts(productId);
             ProductTable.removeAllProductComments(productId);
             ProductTable.deleteProductFromScores(productId);
+            ProductTable.removeAllProductImages(productId);
+            EditingProductTable.removeAllEditingProductImages(productId);
             return Notification.REMOVE_PRODUCT_SUCCESSFULLY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
@@ -728,12 +730,15 @@ public class ProductControl extends Control {
     public Image getOffImageByID(String offID) {
         try {
         if(doesOffHaveImage(offID)) {
-            FileInputStream fileInputStream = ProductTable.getOffImageInputStream(offID);
+            FileInputStream fileInputStream = OffTable.getOffImageInputStream(offID);
             Image image = new Image(fileInputStream);
             fileInputStream.close();
             return image;
         }
-        return new Image(ProductTable.getOffImageInputStream("1"));
+        FileInputStream fileInputStream = OffTable.getOffImageInputStream("1");
+        Image image = new Image(fileInputStream);
+        fileInputStream.close();
+        return image;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -742,8 +747,16 @@ public class ProductControl extends Control {
         return null;
     }
 
+    public File getOffImageFileByID(String offID) {
+        if(doesOffHaveImage(offID)) {
+            return new File(OffTable.getOffImageFilePath(offID));
+        } else
+            return new File(OffTable.getOffImageFilePath("1"));
+
+    }
+
     public boolean doesOffHaveImage(String offID) {
-        return ProductTable.getOffImageFilePath(offID) != null;
+        return OffTable.getOffImageFilePath(offID) != null;
     }
 
     public boolean doesProductHaveImage(String ID) {
@@ -757,10 +770,10 @@ public class ProductControl extends Control {
     public void setOffPicture(String offID, File pictureFile) {
         if(pictureFile != null) {
             if(doesOffHaveImage(offID)) {
-                ProductTable.removeOffImage(offID);
+                OffTable.removeOffImage(offID);
             }
             try {
-                ProductTable.setOffImage(offID, pictureFile);
+                OffTable.setOffImage(offID, pictureFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -829,12 +842,17 @@ public class ProductControl extends Control {
 
     public void addEditingProductPictures(String productId, ArrayList<File> productImageFiles) {
         try {
+            ArrayList<File> productNewImageFiles = EditingProductTable.copyEditingProductNewImagesInTemp(productId,productImageFiles);
             if(doesEditingProductHaveImage(productId)) {
-                EditingProductTable.deleteEditingProductImageFolder(productId);
+                int board = getEditingProductImagesNumberByID(productId);
+                for(int i = 0; i < board; ++i) {
+                    EditingProductTable.deleteImage(productId, (i + 1));
+                }
             }
-            for (int i = 0; i < productImageFiles.size(); i++) {
-                EditingProductTable.addImage(productId, (i + 1), productImageFiles.get(i));
+            for (int i = 0; i < productNewImageFiles.size(); i++) {
+                EditingProductTable.addImage(productId, (i + 1), productNewImageFiles.get(i));
             }
+            EditingProductTable.removeEditingProductTempImages(productId);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -863,11 +881,7 @@ public class ProductControl extends Control {
     public ArrayList<File> getProductImageFiles(Product product) {
         ArrayList<File> imageFiles = new ArrayList<>();
         if(product.getStatus() != 3) {
-            for(int i = 0; i < getProductImagesNumberByID(product.getID()); ++i) {
-                imageFiles.add(
-                        new File(ProductTable.getProductImageFilePath(product.getID(), (i+1)))
-                );
-            }
+            imageFiles.addAll(getProductNonEditedImageFiles(product));
         } else {
             for(int i = 0; i < getEditingProductImagesNumberByID(product.getID()); ++i) {
                 imageFiles.add(
@@ -882,4 +896,14 @@ public class ProductControl extends Control {
         return getProductImageByID("1", 2);
     }
 
+    public ArrayList<File> getProductNonEditedImageFiles(Product product) {
+        System.out.println("HEllo");
+        ArrayList<File> imageFiles = new ArrayList<>();
+        for(int i = 0; i < getProductImagesNumberByID(product.getID()); ++i) {
+            imageFiles.add(
+                    new File(ProductTable.getProductImageFilePath(product.getID(), (i+1)))
+            );
+        }
+        return imageFiles;
+    }
 }

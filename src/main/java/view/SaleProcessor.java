@@ -16,14 +16,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.existence.Discount;
 import model.existence.Off;
-import model.existence.Product;
 import notification.Notification;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
@@ -71,6 +73,9 @@ public class SaleProcessor extends Processor implements Initializable {
     public ImageView saveOffChangeButton;
     public Pane offInfoMainPane;
     public Rectangle offImageRectangle;
+    public ImageView deleteImageButton;
+    private File offImageFile;
+    private boolean isDefaultPicture;
 
 
     @Override
@@ -155,7 +160,8 @@ public class SaleProcessor extends Processor implements Initializable {
         Off mainOff = ((SaleProcessor)parentProcessor).off;
         if(mainOff == null) {
             ((SaleProcessor)parentProcessor).off = new Off();
-            addOffPicture();
+            ((SaleProcessor)parentProcessor).off.setOffID("");
+            ((SaleProcessor)parentProcessor).getOffImageFile();
         } else {
             if(mainOff.getOffName() != null && off.getOffName().length() != 0)
                 offNameField.setText(off.getOffName());
@@ -165,7 +171,7 @@ public class SaleProcessor extends Processor implements Initializable {
                 setDateFieldsFromDate(offStartDatePicker, offStartTimePicker, off.getStartDate());
             if(mainOff.getFinishDate() != null)
                 setDateFieldsFromDate(offFinishDatePicker, offFinishTimePicker, off.getFinishDate());
-            addOffPicture();
+            ((SaleProcessor)parentProcessor).getOffImageFile();
             if(Control.getType().equals("Admin")) {
                 offNameField.setEditable(false);
                 offPercentField.setEditable(false);
@@ -184,14 +190,34 @@ public class SaleProcessor extends Processor implements Initializable {
             }
 
         }
+        updateImageRectangle();
     }
 
-    private void addOffPicture() {
-        Image image = (off != null && off.getOffID() != null && off.getOffID().length() != 0 ?
+    private void updateImageRectangle() {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(((SaleProcessor)parentProcessor).offImageFile);
+            Image image = new Image(fileInputStream);
+            offImageRectangle.setFill(new ImagePattern(image));
+            if(((SaleProcessor)parentProcessor).isDefaultPicture) {
+                offImageRectangle.setStrokeWidth(0);
+                deleteImageButton.setDisable(true);
+            } else {
+                offImageRectangle.setStrokeWidth(2);
+                deleteImageButton.setDisable(false);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getOffImageFile() {
+        offImageFile = productControl.getOffImageFileByID(off.getOffID());
+        isDefaultPicture = !productControl.doesOffHaveImage(off.getOffID());
+        /*Image image = (off != null && off.getOffID() != null && off.getOffID().length() != 0 ?
                 productControl.getOffImageByID(off.getOffID()) : productControl.getOffImageByID("1"));
         offImageRectangle.setFill(new ImagePattern(image));
         if(off == null || off.getOffID() != null || off.getOffID().length() == 0 || productControl.doesOffHaveImage(off.getOffID()))
-            offImageRectangle.setStrokeWidth(0);
+            offImageRectangle.setStrokeWidth(0);*/
     }
 
     private void setDateFieldsFromDate(JFXDatePicker datePicker, JFXTimePicker timePicker, Date date) {
@@ -411,5 +437,36 @@ public class SaleProcessor extends Processor implements Initializable {
 
     public boolean isProductInOff(String id) {
         return this.off.getProductIDs().contains(id);
+    }
+
+    public void getImageFromVendor(MouseEvent mouseEvent) {
+        File pictureFile = getImageChooser().showOpenDialog(null);
+        if(pictureFile != null) {
+            ((SaleProcessor)parentProcessor).offImageFile = pictureFile;
+            ((SaleProcessor)parentProcessor).isDefaultPicture = false;
+            updateImageRectangle();
+        }
+    }
+
+    private FileChooser getImageChooser() {
+        FileChooser pictureChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter jpgExtensionFilter = new FileChooser.ExtensionFilter("JPG Files", "*.JPG");
+        FileChooser.ExtensionFilter jpegExtensionFilter = new FileChooser.ExtensionFilter("JPEG Files", "*.JPEG");
+        FileChooser.ExtensionFilter pngExtensionFilter = new FileChooser.ExtensionFilter("PNG Files", "*.PNG");
+        FileChooser.ExtensionFilter bmpExtensionFilter = new FileChooser.ExtensionFilter("BMP Files", "*.BMP");
+
+        pictureChooser.getExtensionFilters().add(jpgExtensionFilter);
+        pictureChooser.getExtensionFilters().add(jpegExtensionFilter);
+        pictureChooser.getExtensionFilters().add(pngExtensionFilter);
+        pictureChooser.getExtensionFilters().add(bmpExtensionFilter);
+
+        return pictureChooser;
+    }
+
+    public void deleteImage(MouseEvent mouseEvent) {
+        ((SaleProcessor)parentProcessor).offImageFile = productControl.getOffImageFileByID("1");
+        ((SaleProcessor)parentProcessor).isDefaultPicture = true;
+        updateImageRectangle();
     }
 }

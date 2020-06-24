@@ -340,33 +340,6 @@ public class ProductTable extends Database {
         imageFile.renameTo(newImageFile);
     }
 
-    public static String getOffImageFilePath(String offID) {
-        String fileName = "database\\Images\\Offs\\" + offID;
-        String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
-        for (String validImageExtension : validImageExtensions) {
-            String filePath = fileName + "." + validImageExtension;
-            if(new File(filePath).exists())
-                return filePath;
-        }
-        return null;
-    }
-
-    public static FileInputStream getOffImageInputStream(String offID) throws FileNotFoundException {
-        return new FileInputStream(getOffImageFilePath(offID));
-    }
-
-    public static void setOffImage(String offID, File pictureFile) throws IOException {
-        String[] splitPath = pictureFile.getPath().split("\\.");
-        String fileExtension = splitPath[splitPath.length - 1];
-        File saveImage = new File("database\\Images\\Users\\" + offID + "." + fileExtension);
-        Files.copy(pictureFile.toPath(), saveImage.toPath());
-    }
-
-    public static void removeOffImage(String offID) {
-        File file = new File(getOffImageFilePath(offID));
-        file.delete();
-    }
-
     public static ArrayList<Product> getAllNotApprovedProducts() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Products WHERE Status = ? OR Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -388,6 +361,15 @@ public class ProductTable extends Database {
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productId);
         preparedStatement.execute();
+    }
+
+    public static void removeAllProductImages(String productID) {
+        File tempFolder = new File("database\\Images\\Products\\" + productID);
+        String[] entries = tempFolder.list();
+        for(String s: entries){
+            File currentFile = new File(tempFolder.getPath(),s);
+            currentFile.delete();
+        }
     }
 }
 
