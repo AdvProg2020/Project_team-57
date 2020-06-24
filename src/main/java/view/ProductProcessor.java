@@ -57,7 +57,7 @@ public class ProductProcessor extends Processor {
     }
 
     public static enum ProductMenuType {
-        CART, VENDOR_ADD, VENDOR_EDIT, ADMIN, PRODUCTS_CUSTOMER, PRODUCTS, PRODUCTS_VENDOR;
+        CART, VENDOR_ADD, VENDOR_EDIT, VENDOR_EDIT_UNAPPROVED, ADMIN, PRODUCTS_CUSTOMER, PRODUCTS, PRODUCTS_VENDOR;
     }
 
     public static enum CommentType {
@@ -544,15 +544,17 @@ public class ProductProcessor extends Processor {
 
         product.setCountable(countableToggleButton.isSelected());
 
-        switch (countLabel.getText()) {
-            case " Count " :
-                product.setCount(Integer.parseInt(countTextField.getText()));
-                break;
-            case " Amount " :
-                product.setAmount(Double.parseDouble(countTextField.getText()));
-                break;
-            default:
-                System.out.println("Fuck!!!! \nError In Save Changes Count Amount Part");
+        if(countTextField.getText() != null && !countTextField.getText().isEmpty()) {
+            switch (countLabel.getText()) {
+                case " Count ":
+                    product.setCount(Integer.parseInt(countTextField.getText()));
+                    break;
+                case " Amount ":
+                    product.setAmount(Double.parseDouble(countTextField.getText()));
+                    break;
+                default:
+                    System.out.println("Fuck!!!! \nError In Save Changes Count Amount Part");
+            }
         }
 
         product.setBrand(brandTextField.getText());
@@ -562,9 +564,13 @@ public class ProductProcessor extends Processor {
 
     private void showProductGeneralErrors(ArrayList<Notification> productNotifications) {
 
-        for (Notification productNotification : productNotifications) {
-            productNotification.getAlert().show();
-        }
+//        for (Notification productNotification : productNotifications) {
+//            productNotification.getAlert().show();
+//        }
+        //Todo Check
+
+        if(!productNotifications.get(0).equals(Notification.EMPTY_PRODUCT_PRICE))
+            productNotifications.get(0).getAlert().show();
 
         if(productNotifications.contains(Notification.EMPTY_PRODUCT_NAME))
             nameTextField.setStyle(errorTextFieldStyle);
@@ -778,6 +784,7 @@ public class ProductProcessor extends Processor {
         switch (menuType) {
             case VENDOR_ADD:
             case VENDOR_EDIT:
+            case VENDOR_EDIT_UNAPPROVED:
             case ADMIN:
                 paneName = "ProductMenuSpecialInfoExceptCustomer";
                 break;
@@ -804,6 +811,9 @@ public class ProductProcessor extends Processor {
 //        System.out.println(product.isOnSale());
         switch (menuType) {
             //Except Customer Section
+            case VENDOR_EDIT_UNAPPROVED:
+                specialImages.getChildren().remove(tickImage);
+                price.setDisable(true);
             case VENDOR_ADD:
                 specialImages.getChildren().removeAll(buyersImage, removeImage);
                 specialImages.setLayoutX(specialImages.getLayoutX() + 80);
@@ -991,7 +1001,7 @@ public class ProductProcessor extends Processor {
 
         if(previousCartAmount < product.getAmount()) {
             double nextProductAmount = product.getAmount() - previousCartAmount > 0.2 ? previousCartAmount + 0.2 : product.getAmount();
-            DecimalFormat doubleFormatter = new DecimalFormat("#.##");
+            DecimalFormat doubleFormatter = new DecimalFormat("#.#");
             doubleFormatter.setRoundingMode(RoundingMode.CEILING);
             cartCount.setText(doubleFormatter.format(nextProductAmount));
         }
@@ -1024,7 +1034,8 @@ public class ProductProcessor extends Processor {
     }
 
     private void setProductSpecialFields(Product product) {
-        product.setPrice(Double.parseDouble(price.getText()));
+        if(price.getText() != null && !price.getText().isEmpty())
+            product.setPrice(Double.parseDouble(price.getText()));
     }
 
     private void showProductSpecialErrors(ArrayList<Notification> productNotifications) {
