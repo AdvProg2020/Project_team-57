@@ -31,6 +31,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+import model.db.CartTable;
 import model.existence.Comment;
 import model.existence.Product;
 import notification.Notification;
@@ -459,6 +460,14 @@ public class ProductProcessor extends Processor {
         ProductMenuType menuType = ((ProductProcessor) parentProcessor).menuType;
         setGeneralStringTextFields();
 
+        //Todo getQuantityOfCart
+        if(menuType == ProductMenuType.CART) {
+            if(product.isCountable()) {
+                product.setCount(productControl.getProductById(product.getID()).getCount());
+            } else {
+                product.setAmount(productControl.getProductById(product.getID()).getAmount());
+            }
+        }
         if(menuType != ProductMenuType.VENDOR_ADD) {
             nameTextField.setText(product.getName());
 
@@ -772,6 +781,15 @@ public class ProductProcessor extends Processor {
                 addToCart.setText("Change Quantity");
                 addToCart.setLayoutX(122);
 //                specialPane.getChildren().removeAll(cartCount, minusButton, plusButton);
+                Product cartProduct = customerControl.getCartProductByID(product.getID());
+
+                if(product.isCountable()) {
+                    cartCount.setText(Integer.toString(cartProduct.getCount()));
+                } else {
+                    cartCount.setText(Double.toString(cartProduct.getAmount()));
+                }
+
+                setCartFields();
                 initSpecialFieldsInGeneral();
                 break;
             case PRODUCTS:

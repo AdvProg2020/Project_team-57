@@ -398,7 +398,7 @@ public class ProductsProcessor extends Processor{
                 try {
                     Parent root = fxmlLoader.load();
                     ProductProcessor processor = fxmlLoader.getController();
-                    processor.setParentProcessor(parentProcessor);
+                    processor.setParentProcessor(paneProcessor.parentProcessor);
                     processor.initProcessor(productControl.getProductById(product.getID()), ProductProcessor.ProductMenuType.ADMIN);
                     Stage stage = new Stage();
                     stage.setScene(new Scene(root));
