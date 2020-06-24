@@ -105,6 +105,11 @@ public class ProductControl extends Control {
             ProductTable.removeProductByID(productId);
             if (!EditingProductTable.isIDFree(productId))
                 EditingProductTable.removeProductById(productId);
+            OffTable.removeProductFromOffs(productId);
+            OffTable.removeProductFromEditingOffs(productId);
+            CartTable.deleteProductFromCarts(productId);
+            ProductTable.removeAllProductComments(productId);
+            ProductTable.deleteProductFromScores(productId);
             return Notification.REMOVE_PRODUCT_SUCCESSFULLY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;

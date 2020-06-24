@@ -1,6 +1,7 @@
 package view;
 
 import com.jfoenix.controls.*;
+import controller.Control;
 import controller.account.AccountControl;
 import controller.account.AdminControl;
 import controller.account.CustomerControl;
@@ -623,8 +624,22 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void showCommentedProductMenu(MouseEvent mouseEvent) {
-        System.out.println("TODO");
-        //TODO
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));
+            Parent root = loader.load();
+            ProductProcessor productProcessor = loader.getController();
+            productProcessor.setParentProcessor(parentProcessor);
+            Product product = ProductControl.getController().getProductById(((Comment)(((TableViewProcessor)parentProcessor).selectedItem)).getProductID());
+            productProcessor.initProcessor(product, ProductProcessor.ProductMenuType.ADMIN);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle(product.getName() + " Menu");
+            productProcessor.setMyStage(stage);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void modifyCommentApproval(ActionEvent actionEvent) {

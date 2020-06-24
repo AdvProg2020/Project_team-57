@@ -35,7 +35,7 @@ public class Database {
         initEditingOffTable(initConnection.createStatement());
         initLogTable(initConnection.createStatement());
         initScoreTable(initConnection.createStatement());
-        initCommentTable(initConnection.createStatement());
+        initCommentsTable(initConnection.createStatement());
         initTimeLapseTable(initConnection.createStatement());
         removeTempAccountsFromCarts(initConnection);
 
@@ -66,7 +66,7 @@ public class Database {
         resultSet.close();
     }
 
-    private static void initCommentTable(Statement statement) throws SQLException {
+    private static void initCommentsTable(Statement statement) throws SQLException {
         String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'Comments'";
         ResultSet resultSet = statement.executeQuery(command);
         if (!resultSet.next()){

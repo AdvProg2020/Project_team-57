@@ -204,6 +204,13 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
+    public static void deleteProductFromScores(String productID) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Scores WHERE ProductID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productID);
+        preparedStatement.execute();
+    }
+
     public static void updateProductsAvgScore(String productID) throws SQLException, ClassNotFoundException {
         double avgSc = 0;
         int size = 0;
@@ -374,6 +381,13 @@ public class ProductTable extends Database {
                 products.add(EditingProductTable.getEditingProductWithID(resultSet.getString("ID")));
         }
         return products;
+    }
+
+    public static void removeAllProductComments(String productId) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Carts WHERE ID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productId);
+        preparedStatement.execute();
     }
 }
 

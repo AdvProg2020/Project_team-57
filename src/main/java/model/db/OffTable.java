@@ -294,4 +294,18 @@ public class OffTable extends Database{
         }
         return allOffs;
     }
+
+    public static void removeProductFromOffs(String productID) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Offs WHERE ProductID = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productID);
+        preparedStatement.execute();
+    }
+
+    public static void removeProductFromEditingOffs(String productID) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM EditingOffs WHERE ProductID = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productID);
+        preparedStatement.execute();
+    }
 }

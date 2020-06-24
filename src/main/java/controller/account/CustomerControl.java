@@ -25,6 +25,7 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Product> getAllCartProducts(){
         try {
+            System.out.println(IOControl.getUsername());
             return CartTable.getAllCartWithUsername(IOControl.getUsername());
         } catch (SQLException e) {
             e.printStackTrace();

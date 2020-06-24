@@ -424,7 +424,19 @@ public class ProductProcessor extends Processor {
         Optional<ButtonType> optionalButtonType = alert.showAndWait();
         if(optionalButtonType.get() == ButtonType.OK) {
             closeSubStage(myStage, parentProcessor);
-            ((ProductsProcessor)parentProcessor).initProductsPage();
+            updateParentProcessor();
+        }
+    }
+
+    private void updateParentProcessor() {
+        System.out.println(parentProcessor);
+        if(parentProcessor instanceof ProductsProcessor) {
+            System.out.println("Products Processor");
+            ((ProductsProcessor) parentProcessor).initProductsPage();
+        } else if(parentProcessor instanceof TableViewProcessor) {
+            System.out.println("Table View Processor");
+            ((TableViewProcessor) parentProcessor).updateTable();
+            ((TableViewProcessor) parentProcessor).updateSelectedItem();
         }
     }
 
