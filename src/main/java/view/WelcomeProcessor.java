@@ -126,7 +126,7 @@ public class WelcomeProcessor implements Initializable {
 
     public void openProductsMenu(ActionEvent actionEvent) {
         try {
-            Parent root = null;
+            Parent root;
             Main.getStage().getIcons().remove(0);
             Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Market Logo.png")));
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductsMenu.fxml"));
@@ -134,6 +134,17 @@ public class WelcomeProcessor implements Initializable {
             ProductsProcessor productsProcessor = loader.getController();
             productsProcessor.initProcessor(ProductsProcessor.ProductsMenuType.MAIN_PRODUCTS);
             Main.setScene( "Products Menu", root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showOffsMenu(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("OffList.fxml"));
+            Main.getStage().getIcons().remove(0);
+            Main.getStage().getIcons().add(new Image("Images/Icons/discount.png"));
+            Main.setScene("Off Menu", root);
         } catch (IOException e) {
             e.printStackTrace();
         }

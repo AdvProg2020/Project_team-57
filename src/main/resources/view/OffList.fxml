@@ -17,9 +17,9 @@
          <children>
             <Pane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <JFXButton fx:id="backButton" buttonType="RAISED" layoutX="14.0" layoutY="23.0" text="Main Menu">
+                  <JFXButton fx:id="backButton" buttonType="RAISED" layoutX="14.0" layoutY="23.0" onAction="#backToMainMenu" style="-fx-background-radius: 10 10 10 10;" styleClass="Up_Button" stylesheets="@ProductMenu.css" text="Main Menu">
                      <graphic>
-                        <ImageView fitHeight="67.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="67.0" fitWidth="55.0" opacity="0.7" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../Images/Icons/back.png" />
                            </image>
@@ -42,7 +42,7 @@
             </Pane>
             <Pane prefHeight="110.0" prefWidth="219.0">
                <children>
-                  <JFXButton fx:id="accountMenuButton" alignment="CENTER_RIGHT" buttonType="RAISED" layoutX="14.0" layoutY="27.0" onAction="#openAccountMenu" prefHeight="57.0" prefWidth="188.0" style="-fx-background-radius: 10 10 10 10;" styleClass="Up_Button" text="Account Menu">
+                  <JFXButton fx:id="accountMenuButton" alignment="CENTER_RIGHT" buttonType="RAISED" layoutX="14.0" layoutY="27.0" onAction="#openAccountMenu" prefHeight="57.0" prefWidth="188.0" style="-fx-background-radius: 10 10 10 10;" styleClass="Up_Button" stylesheets="@ProductMenu.css" text="Account Menu">
                      <font>
                         <Font name="Calibri" size="17.0" />
                      </font>
@@ -71,7 +71,7 @@
       </GridPane>
       <Pane layoutY="751.0" prefHeight="49.0" prefWidth="800.0">
          <children>
-            <ImageView fx:id="previousPage" fitHeight="37.0" fitWidth="31.0" layoutX="323.0" layoutY="9.0" onMouseClicked="#showPreviousPage" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="previousPage" fitHeight="37.0" fitWidth="31.0" layoutX="323.0" layoutY="9.0" onMouseClicked="#showPreviousPage" opacity="0.7" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/Icons/ProductsMenu/previous%20page%20icon.png" />
                </image>
@@ -81,7 +81,7 @@
                   <Font name="Calibri" size="17.0" />
                </font>
             </Label>
-            <ImageView fx:id="nextPage" fitHeight="37.0" fitWidth="31.0" layoutX="459.0" layoutY="9.0" onMouseClicked="#showNextPage" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="nextPage" fitHeight="37.0" fitWidth="31.0" layoutX="459.0" layoutY="9.0" onMouseClicked="#showNextPage" opacity="0.7" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/Icons/ProductsMenu/next%20page%20icon.png" />
                </image>

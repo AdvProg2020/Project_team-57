@@ -3,8 +3,12 @@ package view;
 import com.jfoenix.controls.JFXButton;
 import controller.account.CustomerControl;
 import controller.product.ProductControl;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -14,9 +18,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import model.existence.Off;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 public class OffListProcessor implements Initializable {
@@ -47,6 +51,7 @@ public class OffListProcessor implements Initializable {
     }
 
     private void initGridPaneGraphic() {
+        gridPane.getChildren().clear();
         int number = 0;
         int offIterator = (currentPage - 1) * 8;
         while (number < PRODUCTS_NUMBER_PER_PAGE && offIterator < productsNumber) {
@@ -93,22 +98,25 @@ public class OffListProcessor implements Initializable {
 
     private void initPageNumberGraphic() {
         pageNumberLabel.setText("Page " + currentPage + " of " + numberOfPages);
-        if (productsNumber == 1) {
-            nextPage.setOpacity(0.7);
-            previousPage.setOpacity(0.7);
+        if (numberOfPages == 1) {
             previousPage.setDisable(true);
             nextPage.setDisable(true);
         } else if (numberOfPages == currentPage && numberOfPages > 1) {
             nextPage.setDisable(true);
-            nextPage.setOpacity(0.7);
+            previousPage.setDisable(false);
+            previousPage.setOnMouseEntered(event -> previousPage.setOpacity(1));
+            previousPage.setOnMouseExited(event -> previousPage.setOpacity(0.7));
         } else if (currentPage == 1 && numberOfPages > 1) {
-            previousPage.setOpacity(0.7);
             previousPage.setDisable(true);
+            nextPage.setOnMouseEntered(event -> nextPage.setOpacity(1));
+            nextPage.setOnMouseExited(event -> nextPage.setOpacity(0.7));
         } else if (numberOfPages > 1 && currentPage > 1 && currentPage < numberOfPages) {
             previousPage.setDisable(false);
             nextPage.setDisable(false);
-            previousPage.setOpacity(1);
-            nextPage.setOpacity(1);
+            previousPage.setOnMouseEntered(event -> previousPage.setOpacity(1));
+            previousPage.setOnMouseExited(event -> previousPage.setOpacity(0.7));
+            nextPage.setOnMouseEntered(event -> nextPage.setOpacity(1));
+            nextPage.setOnMouseExited(event -> nextPage.setOpacity(0.7));
         }
     }
 
@@ -122,5 +130,21 @@ public class OffListProcessor implements Initializable {
         currentPage++;
         initGridPaneGraphic();
         initPageNumberGraphic();
+    }
+
+    public void openAccountMenu(ActionEvent actionEvent) {
+        new WelcomeProcessor().openAccountMenu();
+    }
+
+    public void backToMainMenu() {
+        Parent root = null;
+        try {
+            root = FXMLLoader.load(Main.class.getResource("WelcomeMenu.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Main.getStage().getIcons().remove(0);
+        Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Main Icon.png")));
+        Main.setScene("Boos Market", root);
     }
 }
