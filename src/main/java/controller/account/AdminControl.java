@@ -6,6 +6,7 @@ import model.db.*;
 import model.existence.*;
 import notification.Notification;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -669,10 +670,19 @@ public class AdminControl extends AccountControl{
     }
 
     public Notification modifyEditingProductApprove(String productID, boolean approved) {
-        if(approved)
-            return acceptEditingProductByID(productID);
-        else
-          return ProductControl.getController().removeEditingProductById(productID);
+        try {
+            if(approved) {
+                EditingProductTable.transferEditingImages(productID);
+                return acceptEditingProductByID(productID);
+            }
+            else {
+                EditingProductTable.removeAllEditingProductImages(productID);
+                return ProductControl.getController().removeEditingProductById(productID);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
     }
 
     public Notification modifyProductApprove(String productID, boolean approved) {

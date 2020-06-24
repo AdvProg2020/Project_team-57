@@ -32,10 +32,13 @@ public abstract class Processor {
         this.subStages = new ArrayList<>();
         this.myStage = myStage;
         this.myStage.setOnCloseRequest(event -> {
+//            System.out.println("SHE");
             for (Stage subStage : this.subStages) {
                 subStage.close();
             }
+//            System.out.println(parentProcessor);
             if(parentProcessor != null) {
+//                System.out.println("HI");
                 parentProcessor.removeSubStage(myStage);
             }
         });
@@ -45,6 +48,7 @@ public abstract class Processor {
         this.subStages.add(subStage);
         if(parentProcessor == null){
             subStage.setOnCloseRequest(event -> {
+//                System.out.println("HE");
                 this.removeSubStage(subStage);
             });
         }

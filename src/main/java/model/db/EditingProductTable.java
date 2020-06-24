@@ -168,11 +168,72 @@ public class EditingProductTable extends Database{
         String[] splitPath = pictureFile.getPath().split("\\.");
         String fileExtension = splitPath[splitPath.length - 1];
         File saveImage = new File("database\\Images\\EditingProducts\\" + productID + "\\" + productNumber + "." + fileExtension);
+        //System.out.println( saveImage.getAbsolutePath());
         Files.copy(pictureFile.toPath(), saveImage.toPath());
     }
 
-    public static void deleteEditingProductImageFolder(String productID) {
+    public static boolean deleteEditingProductImageFolder(String productID) {
         File folder = new File("database\\Images\\EditingProducts\\" + productID );
-        folder.delete();
+        return folder.delete();
+    }
+
+    public static void deleteImage(String productID, int imageNumber) throws IOException {
+        File deletingImage = new File(String.valueOf(getEditingProductImageFilePath(productID, imageNumber)));
+        deletingImage.delete();
+    }
+
+    public static void renameImage(String productID, int number, File file) {
+        String[] splitPath = file.getPath().split("\\.");
+        String fileExtension = splitPath[splitPath.length - 1];
+        File renamedFile = new File("database\\Images\\EditingProducts\\" + productID + "\\" + number + "." + fileExtension);
+        file.renameTo(renamedFile);
+    }
+
+    public static ArrayList<File> copyEditingProductNewImagesInTemp(String productID, ArrayList<File> productImageFiles) throws IOException {
+        ArrayList<File> pictureFiles = new ArrayList<>();
+        File productFolder = new File("database\\Images\\EditingProducts\\" + productID + "\\Jesus");
+        if(!productFolder.exists())
+            productFolder.mkdir();
+        int i = 1;
+        for (File pictureFile : productImageFiles) {
+            String[] splitPath = pictureFile.getPath().split("\\.");
+            String fileExtension = splitPath[splitPath.length - 1];
+            File saveImage = new File("database\\Images\\EditingProducts\\" + productID + "\\Jesus\\" + (i++) + "." + fileExtension);
+            //System.out.println(saveImage);
+            pictureFiles.add(new File(String.valueOf(Files.copy(pictureFile.toPath(), saveImage.toPath()))));
+        }
+        return pictureFiles;
+    }
+
+    public static void removeEditingProductTempImages(String productID) {
+        File tempFolder = new File("database\\Images\\EditingProducts\\" + productID + "\\Jesus");
+        String[] entries = tempFolder.list();
+        for(String s: entries){
+            File currentFile = new File(tempFolder.getPath(),s);
+            currentFile.delete();
+        }
+    }
+
+    public static void transferEditingImages(String productID) throws IOException {
+        ProductTable.removeAllProductImages(productID);
+        File tempFolder = new File("database\\Images\\EditingProducts\\" + productID);
+        String[] entries = tempFolder.list();
+        int i = 0;
+        for(String s: entries){
+            File currentFile = new File(tempFolder.getPath(),s);
+            if(!currentFile.getName().equals("Jesus")) {
+                ProductTable.addImage(productID, (++i), currentFile);
+            }
+        }
+        EditingProductTable.removeAllEditingProductImages(productID);
+    }
+
+    public static void removeAllEditingProductImages(String productID) {
+        File tempFolder = new File("database\\Images\\EditingProducts\\" + productID);
+        String[] entries = tempFolder.list();
+        for(String s: entries){
+            File currentFile = new File(tempFolder.getPath(),s);
+            currentFile.delete();
+        }
     }
 }

@@ -2,6 +2,11 @@ package model.db;
 
 import model.existence.Off;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -101,6 +106,13 @@ public class OffTable extends Database{
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
         preparedStatement.setInt(2, 1);
+        return preparedStatement.executeQuery().next();
+    }
+
+    public static boolean isThereProductInOffIgnoreStatus(String productID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Offs WHERE ProductID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productID);
         return preparedStatement.executeQuery().next();
     }
 
@@ -307,5 +319,32 @@ public class OffTable extends Database{
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
         preparedStatement.execute();
+    }
+
+    public static String getOffImageFilePath(String offID) {
+        String fileName = "database\\Images\\Offs\\" + offID;
+        String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
+        for (String validImageExtension : validImageExtensions) {
+            String filePath = fileName + "." + validImageExtension;
+            if(new File(filePath).exists())
+                return filePath;
+        }
+        return null;
+    }
+
+    public static FileInputStream getOffImageInputStream(String offID) throws FileNotFoundException {
+        return new FileInputStream(getOffImageFilePath(offID));
+    }
+
+    public static void setOffImage(String offID, File pictureFile) throws IOException {
+        String[] splitPath = pictureFile.getPath().split("\\.");
+        String fileExtension = splitPath[splitPath.length - 1];
+        File saveImage = new File("database\\Images\\Users\\" + offID + "." + fileExtension);
+        Files.copy(pictureFile.toPath(), saveImage.toPath());
+    }
+
+    public static void removeOffImage(String offID) {
+        File file = new File(getOffImageFilePath(offID));
+        file.delete();
     }
 }

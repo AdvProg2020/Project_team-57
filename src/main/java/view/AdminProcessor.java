@@ -184,6 +184,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
 
                 //Sepehr's Section
                     CategoryProcessor categoryProcessor = loader.getController();
+                    categoryProcessor.setParentProcessor(parentProcessor);
                     categoryProcessor.setMyStage(newStage);
                 //Sepehr's Section
 
