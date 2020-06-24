@@ -99,12 +99,21 @@ public enum Notification {
     INVALID_DISCOUNT_PERCENT("Discount Percentage Must Be Between 0 And 100 Obviously \uD83D\uDE15"),
     INVALID_MAX_DISCOUNT("Max Discount Must Be A Positive Amount"),
     INVALID_MAX_REPETITION("Max Repetition Must Be A Positive Amount"),
-    UNCOMPLETED_OFF_NAME("Name of Off is empty!"),
-    NOT_SET_FINISH_DATE("Off Finish time must be set"),
-    OUT_BOUND_OF_PERCENT("Percent must be between 0 to 100"),
-    ADD_OFF("Off added successfully"),
+    UNCOMPLETED_OFF_NAME("Off Name Must Be Set!",
+        Alert.AlertType.ERROR, "Add Off Error", "Invalid Name"),
+    NOT_SET_FINISH_DATE("Off Finish time must be set",
+            Alert.AlertType.ERROR, "Add Off Error", "Invalid Finish"),
+    START_DATE_BEFORE_NOW("Off Start Date must be After Current Time",
+            Alert.AlertType.ERROR, "Add Off Error", "Invalid Start"),
+    START_DATE_AFTER_FINISH_DATE("Off Finish Date must be After Start Date",
+            Alert.AlertType.ERROR, "Add Off Error", "Invalid Finish"),
+    OUT_BOUND_OF_PERCENT("Percent must be between 0 to 100",
+            Alert.AlertType.ERROR, "Add Off Error", "Invalid Percent"),
+    ADD_OFF("Off Added Successfully. Wai For The A King Or Queen To Accept It.",
+            Alert.AlertType.INFORMATION, "Add Off Successful", "Successfully added"),
     ACCEPT_OFF_REQUEST("Offs were applied successfully"),
-    EMPTY_OFF_PRODUCTS("You haven't Entered Off Products"),
+    EMPTY_OFF_PRODUCTS("You haven't Entered Off Products",
+            Alert.AlertType.ERROR, "Add Off Error", "No Off Product Found"),
     DUPLICATE_OFF_VALUE("This Value Is Duplicate To The Last One. Choose Another One \uD83E\uDD10"),
     OFF_EDITED("You Successfully Modified Your Off Bro.\n" +
             "Isn't This The Best Store Management Program You've Ever Seen? \uD83D\uDE07"),
@@ -190,6 +199,7 @@ public enum Notification {
             Alert.AlertType.INFORMATION, "Editing Product Successful", "Product Request"),
     DECLINE_EDITING_PRODUCT("Editing Off Requests Denied Successfully Great King.",
             Alert.AlertType.INFORMATION, "Editing Product Accepted", "Product Request");
+
 
 
     private String message;

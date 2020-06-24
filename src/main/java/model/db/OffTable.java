@@ -109,6 +109,13 @@ public class OffTable extends Database{
         return preparedStatement.executeQuery().next();
     }
 
+    public static boolean isThereProductInOffIgnoreStatus(String productID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Offs WHERE ProductID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, productID);
+        return preparedStatement.executeQuery().next();
+    }
+
     public static ArrayList<Off> getAllUnApprovedOffs() throws SQLException, ClassNotFoundException {
         String command = "SELECT DISTINCT OffID FROM Offs WHERE Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);

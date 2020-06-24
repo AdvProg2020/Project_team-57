@@ -53,7 +53,7 @@ public class ProductsProcessor extends Processor{
 
 
     public static enum ProductsMenuType {
-        MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART, ADMIN_PRODUCT_REQUESTS, VENDOR_OFF_PRODUCTS;
+        MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART, ADMIN_PRODUCT_REQUESTS, VENDOR_ADD_OFF_PRODUCTS;
     }
     private ProductsMenuType menuType;
 
@@ -118,7 +118,7 @@ public class ProductsProcessor extends Processor{
             case ADMIN_PRODUCT_REQUESTS:
                 initAdminProductRequestsMenu();
                 break;
-            case VENDOR_OFF_PRODUCTS:
+            case VENDOR_ADD_OFF_PRODUCTS:
                 initOffProductsMenu();
                 break;
         }
@@ -258,7 +258,6 @@ public class ProductsProcessor extends Processor{
                 allProducts = productControl.getAllShowingProducts();
                 initCertainProductsPage(productsScrollPane);
                 break;
-            case VENDOR_OFF_PRODUCTS:
             case VENDOR_PRODUCTS:
                 allProducts = VendorControl.getController().getAllProducts();
                 initCertainProductsPage(userProductsScrollPane);
@@ -269,6 +268,10 @@ public class ProductsProcessor extends Processor{
                 break;
             case ADMIN_PRODUCT_REQUESTS:
                 allProducts = AdminControl.getController().getAllNotApprovedProducts();
+                initCertainProductsPage(userProductsScrollPane);
+                break;
+            case VENDOR_ADD_OFF_PRODUCTS:
+                allProducts = VendorControl.getController().getNonOffProducts();
                 initCertainProductsPage(userProductsScrollPane);
                 break;
         }
@@ -344,7 +347,7 @@ public class ProductsProcessor extends Processor{
                 hBoxes.get(i).getChildren().add(getAdminProductRequestsProductPane(i));
             }
 
-        } else if(menuType == ProductsMenuType.VENDOR_OFF_PRODUCTS) {
+        } else if(menuType == ProductsMenuType.VENDOR_ADD_OFF_PRODUCTS) {
             for(int i = 0; i < pageLim; ++i) {
                 hBoxes.get(i).getChildren().add(getVendorOffProductPane(i));
             }
@@ -474,6 +477,7 @@ public class ProductsProcessor extends Processor{
         productPane.setOnMouseClicked(event -> {
             ProductProcessor.ProductMenuType productMenuType = null;
             switch (menuType) {
+                case VENDOR_ADD_OFF_PRODUCTS:
                 case VENDOR_PRODUCTS:
                     productMenuType = ProductProcessor.ProductMenuType.VENDOR_EDIT;
                     break;
@@ -492,6 +496,7 @@ public class ProductsProcessor extends Processor{
                     break;
                 case ADMIN_PRODUCT_REQUESTS:
                     productMenuType = ProductProcessor.ProductMenuType.ADMIN;
+                    break;
                 //TODO(MORE)
             }
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));
@@ -571,9 +576,7 @@ public class ProductsProcessor extends Processor{
     }
 
     public void filterByNameKeyTyped(KeyEvent keyEvent) {
-        //System.out.println("here : " + keyEvent.getCharacter() + "\nhere : ");
         if((int) keyEvent.getCharacter().charAt(0) == 13) {
-            //System.out.println((int) keyEvent.getCharacter().charAt(0));
             filterByNameMouseClicked();
         }
     }

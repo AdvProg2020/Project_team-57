@@ -70,6 +70,7 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
                 FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
                 Parent root = loader.load();
                 SaleProcessor processor = loader.getController();
+                processor.setParentProcessor(this);
                 processor.offInfoPaneMouseClick(null);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));

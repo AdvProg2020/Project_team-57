@@ -7,7 +7,6 @@ import model.existence.Log;
 import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
-import view.Processor;
 
 import java.io.File;
 import java.sql.Date;
@@ -216,7 +215,7 @@ public class VendorControl extends AccountControl{
         return offs;
     }
 
-    public Notification addOff(Off off){
+    public Notification addOff(Off off, File offImageFile){
        if (off.getOffName() == null)
            return Notification.UNCOMPLETED_OFF_NAME;
        if (off.getFinishDate() == null)
@@ -225,12 +224,18 @@ public class VendorControl extends AccountControl{
            return Notification.OUT_BOUND_OF_PERCENT;
        if(off.getProductIDs() == null || off.getProductIDs().size() == 0)
            return Notification.EMPTY_OFF_PRODUCTS;
+       if(off.getStartDate().compareTo(new Date(System.currentTimeMillis())) < 0)
+           return Notification.START_DATE_BEFORE_NOW;
+       if(off.getStartDate().compareTo(off.getFinishDate()) > -1)
+           return Notification.START_DATE_AFTER_FINISH_DATE;
        off.setVendorUsername(Control.getUsername());
        try {
            do {
                off.setOffID(setOffID());
            } while (OffTable.isThereOffWithID(off.getOffID()));
            off.setStatus(2);
+           if(offImageFile != null)
+               ProductControl.getController().setOffPicture(off.getOffID(), offImageFile);
            OffTable.addOff(off);
            return Notification.ADD_OFF;
        } catch (SQLException e) {
@@ -254,6 +259,7 @@ public class VendorControl extends AccountControl{
         ArrayList<Product> nonOffProducts = new ArrayList<>();
         try {
             if(exceptions != null && exceptions.length > 0) {
+                System.out.println(":|");
                 for (String exception : exceptions) {
                     for (String productID : OffTable.getSpecificOff(exception).getProductIDs()) {
                         nonOffProducts.add(ProductTable.getProductByID(productID));
@@ -261,7 +267,7 @@ public class VendorControl extends AccountControl{
                 }
             }
             for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
-                if(!OffTable.isThereProductInOff(product.getID()))
+                if(!OffTable.isThereProductInOffIgnoreStatus(product.getID()) && product.getStatus() != 2)
                     nonOffProducts.add(product);
             }
         } catch (SQLException e) {

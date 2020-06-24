@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTimePicker;
 import controller.Control;
 import controller.account.AdminControl;
+import controller.account.VendorControl;
 import controller.product.ProductControl;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -163,15 +164,15 @@ public class SaleProcessor extends Processor implements Initializable {
             ((SaleProcessor)parentProcessor).off.setOffID("");
             ((SaleProcessor)parentProcessor).getOffImageFile();
         } else {
-            if(mainOff.getOffName() != null && off.getOffName().length() != 0)
-                offNameField.setText(off.getOffName());
+            if(mainOff.getOffName() != null && mainOff.getOffName().length() != 0)
+                offNameField.setText(mainOff.getOffName());
             if(mainOff.getOffPercent() != 0)
-                offPercentField.setText("" + off.getOffPercent());
+                offPercentField.setText("" + mainOff.getOffPercent());
             if(mainOff.getStartDate() != null)
-                setDateFieldsFromDate(offStartDatePicker, offStartTimePicker, off.getStartDate());
+                setDateFieldsFromDate(offStartDatePicker, offStartTimePicker, mainOff.getStartDate());
             if(mainOff.getFinishDate() != null)
-                setDateFieldsFromDate(offFinishDatePicker, offFinishTimePicker, off.getFinishDate());
-            ((SaleProcessor)parentProcessor).getOffImageFile();
+                setDateFieldsFromDate(offFinishDatePicker, offFinishTimePicker, mainOff.getFinishDate());
+            //((SaleProcessor)parentProcessor).getOffImageFile();
             if(Control.getType().equals("Admin")) {
                 offNameField.setEditable(false);
                 offPercentField.setEditable(false);
@@ -188,7 +189,6 @@ public class SaleProcessor extends Processor implements Initializable {
                 offFinishDatePicker.setEditable(true);
                 offFinishTimePicker.setEditable(true);
             }
-
         }
         updateImageRectangle();
     }
@@ -385,7 +385,7 @@ public class SaleProcessor extends Processor implements Initializable {
                 offProductsPane.setStyle("-fx-background-color: #3498DB;   -fx-background-radius: 0 10 10 0;");
                 ProductsProcessor processor = loader.getController();
                 processor.setParentProcessor(this);
-                processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_OFF_PRODUCTS);
+                processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_ADD_OFF_PRODUCTS);
                 offMainPane.setCenter(root);
 
                 //TODO
@@ -396,7 +396,16 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     public void AddOffMouseClicked(MouseEvent mouseEvent) {
-        //TODO
+        if(off.getStartDate() == null) {
+            off.setStartDate(new Date(System.currentTimeMillis()));
+        }
+        File imageFile = (isDefaultPicture ? null : offImageFile);
+        Notification resultNotification = VendorControl.getController().addOff(off, offImageFile);
+        if(resultNotification == Notification.ADD_OFF) {
+            System.out.println(myStage);
+            closeSubStage(myStage, parentProcessor);
+        }
+        resultNotification.getAlert().show();
     }
 
     public void saveOffChange(MouseEvent mouseEvent) {
