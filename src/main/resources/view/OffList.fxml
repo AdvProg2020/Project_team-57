@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.OffListProcessor">
+   <children>
+      <HBox prefHeight="110.0" prefWidth="800.0" style="-fx-background-color: #b0bec5;">
+         <children>
+            <Pane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <JFXButton fx:id="backButton" buttonType="RAISED" layoutX="14.0" layoutY="23.0" onAction="#backToMainMenu" style="-fx-background-radius: 10 10 10 10;" styleClass="Up_Button" stylesheets="@ProductMenu.css" text="Main Menu">
+                     <graphic>
+                        <ImageView fitHeight="67.0" fitWidth="55.0" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../Images/Icons/back.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <font>
+                        <Font name="Calibri" size="18.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </Pane>
+            <Pane prefHeight="110.0" prefWidth="432.0">
+               <children>
+                  <ImageView fitHeight="134.0" fitWidth="157.0" layoutX="155.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/Icons/ProductsMenu/products%20icon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+            <Pane prefHeight="110.0" prefWidth="219.0">
+               <children>
+                  <JFXButton fx:id="accountMenuButton" alignment="CENTER_RIGHT" buttonType="RAISED" layoutX="14.0" layoutY="27.0" onAction="#openAccountMenu" prefHeight="57.0" prefWidth="188.0" style="-fx-background-radius: 10 10 10 10;" styleClass="Up_Button" stylesheets="@ProductMenu.css" text="Account Menu">
+                     <font>
+                        <Font name="Calibri" size="17.0" />
+                     </font>
+                     <graphic>
+                        <ImageView disable="true" fitHeight="45.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../Images/Icons/ProductsMenu/user%20icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </Pane>
+         </children>
+      </HBox>
+      <GridPane fx:id="gridPane" layoutY="110.0" prefHeight="640.0" prefWidth="800.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="182.0" minHeight="10.0" prefHeight="182.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="455.0" minHeight="10.0" prefHeight="224.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="273.0" minHeight="3.0" prefHeight="234.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+      </GridPane>
+      <Pane layoutY="751.0" prefHeight="49.0" prefWidth="800.0">
+         <children>
+            <ImageView fx:id="previousPage" fitHeight="37.0" fitWidth="31.0" layoutX="323.0" layoutY="9.0" onMouseClicked="#showPreviousPage" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductsMenu/previous%20page%20icon.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="pageNumberLabel" layoutX="369.0" layoutY="14.0" text="Page 0 of 0">
+               <font>
+                  <Font name="Calibri" size="17.0" />
+               </font>
+            </Label>
+            <ImageView fx:id="nextPage" fitHeight="37.0" fitWidth="31.0" layoutX="459.0" layoutY="9.0" onMouseClicked="#showNextPage" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductsMenu/next%20page%20icon.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+   </children>
+</Pane>
