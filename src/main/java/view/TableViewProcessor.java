@@ -25,10 +25,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import model.existence.Account;
-import model.existence.Comment;
-import model.existence.Discount;
-import model.existence.Off;
+import model.existence.*;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -104,6 +101,12 @@ public class TableViewProcessor<T> extends Processor {
 
     public void initProcessor(TableViewType tableViewType) {
         this.tableViewType = tableViewType;
+        this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                 selectedItem = newSelection;
+                updateSelectedItem();
+            }
+        });
         initColumns();
         updateTable();
         initOptions();
