@@ -250,6 +250,28 @@ public class VendorControl extends AccountControl{
         return offID.toString();
     }
 
+    public ArrayList<Product> getNonOffProducts(String... exceptions) {
+        ArrayList<Product> nonOffProducts = new ArrayList<>();
+        try {
+            if(exceptions != null && exceptions.length > 0) {
+                for (String exception : exceptions) {
+                    for (String productID : OffTable.getSpecificOff(exception).getProductIDs()) {
+                        nonOffProducts.add(ProductTable.getProductByID(productID));
+                    }
+                }
+            }
+            for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
+                if(!OffTable.isThereProductInOff(product.getID()))
+                    nonOffProducts.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return nonOffProducts;
+    }
+
     public ArrayList<String> getNonOffProductsNames() {
         ArrayList<String> nonOffProducts = new ArrayList<>();
         try {
@@ -381,7 +403,7 @@ public class VendorControl extends AccountControl{
         return Notification.UNKNOWN_ERROR;
     }
 
-    public ArrayList<String> getALlVendorLogsName() {
+    public ArrayList<String> getAllVendorLogsName() {
         try {
             ArrayList<String> allLogsName = new ArrayList<>();
             for (Log log : LogTable.getAllVendorLogs(Control.getUsername())) {
@@ -397,7 +419,7 @@ public class VendorControl extends AccountControl{
         return null;
     }
 
-    public ArrayList<String> getALlVendorLogsID() {
+    public ArrayList<String> getAllVendorLogsID() {
         try {
             ArrayList<String> allLogsID = new ArrayList<>();
             for (Log log : LogTable.getAllVendorLogs(Control.getUsername())) {
