@@ -19,7 +19,7 @@
                <image>
                   <Image url="@../Images/Icons/ProductMenu/Buyers.png" />
                </image></ImageView>
-            <ImageView fx:id="removeImage" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#removeProduct" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+            <ImageView fx:id="removeImage" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#removeProductMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="Button">
                <image>
                   <Image url="@../Images/Icons/ProductMenu/Special%20Remove%202.png" />
                </image></ImageView>

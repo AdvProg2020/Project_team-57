@@ -62,6 +62,7 @@ public class ProductProcessor extends Processor {
 
     ProductControl productControl = ProductControl.getController();
     private static VendorControl vendorControl = VendorControl.getController();
+    private static CustomerControl customerControl = CustomerControl.getController();
 
     private ArrayList<ProductProcessor> subProcessors;
 
@@ -357,7 +358,6 @@ public class ProductProcessor extends Processor {
     //Sepehr's Section
 
     //TheMainPane
-
     private void sendProduct() {
         Product product = null;
 
@@ -417,6 +417,29 @@ public class ProductProcessor extends Processor {
         }
     }
 
+
+    public void removeProduct() {
+        Alert alert = productControl.removeProductById(product.getID()).getAlert();
+        Optional<ButtonType> optionalButtonType = alert.showAndWait();
+        if(optionalButtonType.get() == ButtonType.OK) {
+            closeSubStage(myStage, parentProcessor);
+            ((ProductsProcessor)parentProcessor).initProductsPage();
+        }
+    }
+
+    private void addToCart(String count) {
+        if(product.isCountable()) {
+            customerControl.addToCartCountable(product.getID(), Integer.parseInt(count));
+        } else {
+            customerControl.addToCartUnCountable(product.getID(), Double.parseDouble(count));
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "The Product Added To Cart Successfully");
+        alert.setTitle("Congratulations, Buyer!!!");
+        alert.setHeaderText("Yeah");
+        alert.show();
+    }
+
     //GeneralInfoPane
     private void initGeneralInfoPane() {
         if(menuType == ProductMenuType.VENDOR_EDIT)
@@ -436,16 +459,14 @@ public class ProductProcessor extends Processor {
         ProductMenuType menuType = ((ProductProcessor) parentProcessor).menuType;
         setGeneralStringTextFields();
 
-        if(menuType == ProductMenuType.VENDOR_ADD) {
-            //Todo Changing The Name Of Save Changes Button
-        } else {
+        if(menuType != ProductMenuType.VENDOR_ADD) {
             nameTextField.setText(product.getName());
 
             categoryTextField.setText(product.getCategory());
 
             countableToggleButton.setSelected(product.isCountable());
             changeCountableField(null);
-            
+
             if (product.isCountable())
                 countTextField.setText(Integer.toString(product.getCount()));
             else
@@ -455,11 +476,10 @@ public class ProductProcessor extends Processor {
 
             descriptionTextArea.setText(product.getDescription());
 
-            if(menuType != ProductMenuType.VENDOR_EDIT)
+            if (menuType != ProductMenuType.VENDOR_EDIT)
                 disableEditingGeneralFields();
-
-            //Todo
         }
+            //Todo
     }
 
     private void setGeneralStringTextFields() {
@@ -608,11 +628,16 @@ public class ProductProcessor extends Processor {
         for (Comment productComment : productControl.getAllProductComments(productID))
             commentsVBox.getChildren().add(getCommentPane("ProductMenuShowCommentPane", productComment, CommentType.SHOW));
 
-        if(menuType == ProductMenuType.PRODUCTS_CUSTOMER || menuType == ProductMenuType.CART) {
-            Comment comment = new Comment();
-            comment.setProductID(productID);
-            commentsVBox.getChildren().add(getCommentPane("ProductMenuAddCommentPane", comment, CommentType.ADD));
+        //HaHa 🤣🤣🤣🤣
+        switch (menuType) {
+//            case PRODUCTS:
+            case PRODUCTS_CUSTOMER:
+            case CART:
+                Comment comment = new Comment();
+                comment.setProductID(productID);
+                commentsVBox.getChildren().add(getCommentPane("ProductMenuAddCommentPane", comment, CommentType.ADD));
         }
+
     }
 
     //CommentPane
@@ -637,12 +662,15 @@ public class ProductProcessor extends Processor {
                 commentContent.setDisable(true);
                 commentScore.setDisable(true);
 //                commentPane.getChildren().remove(addComment);
+                if(productComment.getScore() == 0)
+                    commentPane.getChildren().remove(commentScore);
+
                 break;
             case ADD:
                 comment = productComment;
                 setStringFields(commentTitle, 16);
                 setStringFields(commentContent, 100);
-                if(CustomerControl.getController().isProductPurchasedByCustomer(product.getID(), Control.getUsername())) {
+                if(!customerControl.isProductPurchasedByCustomer(product.getID(), Control.getUsername())) {
                     commentPane.getChildren().remove(commentScore);
                 }
                     break;
@@ -687,6 +715,7 @@ public class ProductProcessor extends Processor {
             case CART:
             case PRODUCTS_CUSTOMER:
             case PRODUCTS:
+            case PRODUCTS_VENDOR:
                 paneName = "ProductMenuSpecialInfoCustomer";
                 break;
             default:
@@ -740,9 +769,9 @@ public class ProductProcessor extends Processor {
 
             //Customer Section
             case CART:
-                addToCart.setText("Remove From Cart");
+                addToCart.setText("Change Quantity");
                 addToCart.setLayoutX(122);
-                specialPane.getChildren().removeAll(cartCount, minusButton, plusButton);
+//                specialPane.getChildren().removeAll(cartCount, minusButton, plusButton);
                 initSpecialFieldsInGeneral();
                 break;
             case PRODUCTS:
@@ -750,7 +779,15 @@ public class ProductProcessor extends Processor {
                 initSpecialFieldsInGeneral();
                 setCartFields();
                 break;
+            case PRODUCTS_VENDOR:
+                specialPane.getChildren().removeAll(minusButton, plusButton);
+                specialPane.getChildren().remove(cartCount);
+                specialPane.getChildren().remove(addToCart);
 
+                final int layoutYSetter = 5;
+                pricePane.setLayoutY(pricePane.getLayoutY() + layoutYSetter);
+                sellerPane.setLayoutY(sellerPane.getLayoutY() + layoutYSetter);
+                statusPane.setLayoutY(statusPane.getLayoutY() + layoutYSetter);
             default:
                 System.out.println("Error In #initSpecialFields");
                 break;
@@ -885,6 +922,10 @@ public class ProductProcessor extends Processor {
             cartCount.setText(Double.toString(Math.ceil(previousCartAmount * 5) / 5 - 0.2));
     }
 
+    public void addToCartMouseClicked() {
+        ((ProductProcessor) parentProcessor).addToCart(cartCount.getText());
+    }
+
     public void tickMouseClicked(MouseEvent mouseEvent) {
         ((ProductProcessor) parentProcessor).sendProduct();
     }
@@ -893,8 +934,8 @@ public class ProductProcessor extends Processor {
         //Todo
     }
 
-    public void removeProduct(MouseEvent mouseEvent) {
-        //Todo
+    public void removeProductMouseClicked(MouseEvent mouseEvent) {
+        ((ProductProcessor) parentProcessor).removeProduct();
     }
 
     private void setProductSpecialFields(Product product) {
@@ -906,6 +947,7 @@ public class ProductProcessor extends Processor {
             price.setStyle(errorTextFieldStyle);
         }
     }
+
 
     private FXMLLoader loadThePane(String paneName) {
         try {

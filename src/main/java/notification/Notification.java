@@ -29,7 +29,7 @@ public enum Notification {
             Alert.AlertType.INFORMATION, "Subtracting Money Successful", "Hey Rude"),
     WRONG_OLD_PASSWORD("You have Some Alzheimer Issue ?! \nYou have Entered Wrong Old Password",
             Alert.AlertType.ERROR, "Change Password Error", "Old Password Incorrect"),
-    REMOVE_PRODUCT_SUCCESSFULLY("Product removed successfully"),
+    REMOVE_PRODUCT_SUCCESSFULLY("Product removed successfully", Alert.AlertType.INFORMATION, "Well Done 🙄", "Reached Your Desire? 😒"),
     DECLINE_REQUEST("Request declined"),
     ACCEPT_ADD_VENDOR_REQUEST("The seller was added to the store", Alert.AlertType.INFORMATION, "Successful", "Congratulations"),
     USER_NOT_APPROVED("Wait for The Lord to Prove your Account, may the 4th be with you.\uD83D\uDE08", Alert.AlertType.ERROR, "Login Error", "User Not Approved"),
