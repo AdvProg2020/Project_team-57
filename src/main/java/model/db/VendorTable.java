@@ -100,8 +100,8 @@ public class VendorTable extends Database {
         preparedStatement.setDouble(9, product.getPrice());
         preparedStatement.setDouble(10, product.getAverageScore());
         preparedStatement.setInt(11, 2);
-        preparedStatement.setInt(12, 0);
-        preparedStatement.setInt(13, 0);
+        preparedStatement.setInt(12, product.getSeen());
+        preparedStatement.setInt(13, product.getScoreNum());
         preparedStatement.setDate(14, product.getApprovalDate());
         preparedStatement.execute();
     }
@@ -122,8 +122,8 @@ public class VendorTable extends Database {
         preparedStatement.setDouble(9, product.getPrice());
         preparedStatement.setDouble(10, product.getAverageScore());
         preparedStatement.setInt(11, 2);
-        preparedStatement.setInt(12, 0);
-        preparedStatement.setInt(13, 0);
+        preparedStatement.setInt(12, product.getSeen());
+        preparedStatement.setInt(13, product.getScoreNum());
         preparedStatement.setDate(14, product.getApprovalDate());
         preparedStatement.execute();
     }

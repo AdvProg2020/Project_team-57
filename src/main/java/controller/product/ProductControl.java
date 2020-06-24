@@ -105,6 +105,11 @@ public class ProductControl extends Control {
             ProductTable.removeProductByID(productId);
             if (!EditingProductTable.isIDFree(productId))
                 EditingProductTable.removeProductById(productId);
+            OffTable.removeProductFromOffs(productId);
+            OffTable.removeProductFromEditingOffs(productId);
+            CartTable.deleteProductFromCarts(productId);
+            ProductTable.removeAllProductComments(productId);
+            ProductTable.deleteProductFromScores(productId);
             return Notification.REMOVE_PRODUCT_SUCCESSFULLY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
@@ -747,7 +752,6 @@ public class ProductControl extends Control {
 
     public boolean doesProductHaveImageWithNumber(String ID, int number) {
         return ProductTable.getProductImageFilePath(ID, number) != null;
-
     }
 
     public void setOffPicture(String offID, File pictureFile) {
@@ -771,6 +775,19 @@ public class ProductControl extends Control {
                 counter++;
         }
         return counter;
+    }
+
+    public int getEditingProductImagesNumberByID(String productID) {
+        int counter = 0;
+        for(int i = 1; i < 6; ++i) {
+            if(doesEditingProductHaveImageWithNumber(productID, i))
+                counter++;
+        }
+        return counter;
+    }
+
+    private boolean doesEditingProductHaveImageWithNumber(String productID, int number) {
+        return EditingProductTable.getEditingProductImageFilePath(productID, number) != null;
     }
 
     public TreeItem<Category> getCategoryTableRoot() {
@@ -806,34 +823,57 @@ public class ProductControl extends Control {
         }
     }
 
-    public void editProductPicture(String productID, File pictureFile, int imageNumber) {
-        if(pictureFile != null) {
-            try {
-                ProductTable.deleteImage(productID, imageNumber);
-                ProductTable.addImage(productID, imageNumber, pictureFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    public boolean doesEditingProductHaveImage(String ID) {
+        return EditingProductTable.getEditingProductImageFilePath(ID, 1) != null;
     }
 
-    public void deleteProductImage(String productID, int imageNumber) {
+    public void addEditingProductPictures(String productId, ArrayList<File> productImageFiles) {
         try {
-            ProductTable.deleteImage(productID, imageNumber);
-            for(int i = imageNumber + 1; doesProductHaveImageWithNumber(productID, i); ++i) {
-                ProductTable.reNumProductImage(productID, i, i-1);
+            if(doesEditingProductHaveImage(productId)) {
+                EditingProductTable.deleteEditingProductImageFolder(productId);
+            }
+            for (int i = 0; i < productImageFiles.size(); i++) {
+                EditingProductTable.addImage(productId, (i + 1), productImageFiles.get(i));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public ArrayList<File> getProductImageFiles(String productID) {
+    public Image getEditingProductImage(String ID, int number) {
+        try {
+            if(doesEditingProductHaveImage(ID)) {
+                FileInputStream fileInputStream = EditingProductTable.getEditingProductImageInputStream(ID, number);
+                Image image = new Image(fileInputStream);
+                fileInputStream.close();
+                return image;
+            }
+            FileInputStream fileInputStream = EditingProductTable.getEditingProductImageInputStream("1", 1);
+            Image image = new Image(fileInputStream);
+            fileInputStream.close();
+            return image;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ArrayList<File> getProductImageFiles(Product product) {
         ArrayList<File> imageFiles = new ArrayList<>();
-        for(int i = 0; i < getProductImagesNumberByID(productID); ++i) {
-            imageFiles.add(
-                    new File(ProductTable.getProductImageFilePath(productID, (i+1)))
-            );
+        if(product.getStatus() != 3) {
+            for(int i = 0; i < getProductImagesNumberByID(product.getID()); ++i) {
+                imageFiles.add(
+                        new File(ProductTable.getProductImageFilePath(product.getID(), (i+1)))
+                );
+            }
+        } else {
+            for(int i = 0; i < getEditingProductImagesNumberByID(product.getID()); ++i) {
+                imageFiles.add(
+                        new File(EditingProductTable.getEditingProductImageFilePath(product.getID(), (i+1)))
+                );
+            }
         }
         return imageFiles;
     }

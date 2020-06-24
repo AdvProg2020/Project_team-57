@@ -157,13 +157,13 @@ public class SaleProcessor extends Processor implements Initializable {
             ((SaleProcessor)parentProcessor).off = new Off();
             addOffPicture();
         } else {
-            if(off.getOffName() != null && off.getOffName().length() != 0)
+            if(mainOff.getOffName() != null && off.getOffName().length() != 0)
                 offNameField.setText(off.getOffName());
-            if(off.getOffPercent() != 0)
+            if(mainOff.getOffPercent() != 0)
                 offPercentField.setText("" + off.getOffPercent());
-            if(off.getStartDate() != null)
+            if(mainOff.getStartDate() != null)
                 setDateFieldsFromDate(offStartDatePicker, offStartTimePicker, off.getStartDate());
-            if(off.getFinishDate() != null)
+            if(mainOff.getFinishDate() != null)
                 setDateFieldsFromDate(offFinishDatePicker, offFinishTimePicker, off.getFinishDate());
             addOffPicture();
             if(Control.getType().equals("Admin")) {
@@ -336,7 +336,7 @@ public class SaleProcessor extends Processor implements Initializable {
     //OffMethods
     public void offInfoPaneMouseClick(MouseEvent mouseEvent) {
         try {
-            if(offMainPane.getCenter() == null || offMainPane.getCenter().getId().equals("mainBorderPane")){
+            if(offMainPane.getCenter() == null || !offMainPane.getCenter().getId().equals("offInfoMainPane")){
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("OffMenuInfo.fxml"));
                 offMainPane.setCenter(loader.load());
                 offProductsPane.setStyle("");
@@ -351,7 +351,22 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     public void offProductsPaneMouseClicked(MouseEvent mouseEvent) {
-        //TODO
+        try {
+            if(offMainPane.getCenter() == null || !offMainPane.getCenter().getId().equals("userProductsScrollPane")){
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("ProductsMenuOff.fxml"));
+                Parent root = loader.load();
+                offInfoPane.setStyle("");
+                offProductsPane.setStyle("-fx-background-color: #3498DB;   -fx-background-radius: 0 10 10 0;");
+                ProductsProcessor processor = loader.getController();
+                processor.setParentProcessor(this);
+                processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_OFF_PRODUCTS);
+                offMainPane.setCenter(root);
+
+                //TODO
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void AddOffMouseClicked(MouseEvent mouseEvent) {
@@ -379,5 +394,22 @@ public class SaleProcessor extends Processor implements Initializable {
 
     public void setOff(Off off) {
         this.off = off;
+    }
+
+    public void addProductToOff(String id) {
+        if(!isProductInOff(id)) {
+            this.off.addProductToOff(id);
+        }
+    }
+
+    public void deleteProductFromOff(String id) {
+        if(isProductInOff(id)) {
+            this.off.removeProductFromOff(id);
+        }
+    }
+
+
+    public boolean isProductInOff(String id) {
+        return this.off.getProductIDs().contains(id);
     }
 }

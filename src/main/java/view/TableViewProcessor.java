@@ -1,6 +1,7 @@
 package view;
 
 import com.jfoenix.controls.*;
+import controller.Control;
 import controller.account.AccountControl;
 import controller.account.AdminControl;
 import controller.account.CustomerControl;
@@ -25,10 +26,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import model.existence.Account;
-import model.existence.Comment;
-import model.existence.Discount;
-import model.existence.Off;
+import model.existence.*;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -104,6 +102,12 @@ public class TableViewProcessor<T> extends Processor {
 
     public void initProcessor(TableViewType tableViewType) {
         this.tableViewType = tableViewType;
+        this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                 selectedItem = newSelection;
+                updateSelectedItem();
+            }
+        });
         initColumns();
         updateTable();
         initOptions();
@@ -620,8 +624,22 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void showCommentedProductMenu(MouseEvent mouseEvent) {
-        System.out.println("TODO");
-        //TODO
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));
+            Parent root = loader.load();
+            ProductProcessor productProcessor = loader.getController();
+            productProcessor.setParentProcessor(parentProcessor);
+            Product product = ProductControl.getController().getProductById(((Comment)(((TableViewProcessor)parentProcessor).selectedItem)).getProductID());
+            productProcessor.initProcessor(product, ProductProcessor.ProductMenuType.ADMIN);
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle(product.getName() + " Menu");
+            productProcessor.setMyStage(stage);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void modifyCommentApproval(ActionEvent actionEvent) {

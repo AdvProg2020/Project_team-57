@@ -54,7 +54,7 @@
             <Pane prefHeight="100.0" prefWidth="272.0">
                <children>
                   <JFXTextField fx:id="searchTextField" layoutX="21.0" layoutY="35.0" onKeyTyped="#filterByNameKeyTyped" prefHeight="30.0" prefWidth="168.0" promptText="Search" />
-                  <JFXButton layoutX="195.0" layoutY="31.0" onMouseClicked="#filterByNameMouseClicked" prefHeight="40.0" prefWidth="40.0" styleClass="Up_Button" text=" " />
+                  <JFXButton buttonType="RAISED" layoutX="195.0" layoutY="31.0" onMouseClicked="#filterByNameMouseClicked" prefHeight="40.0" prefWidth="40.0" styleClass="Up_Button" text=" " />
                   <ImageView disable="true" fitHeight="30.0" fitWidth="30.0" layoutX="200.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/ProductsMenu/search%20icon.png" />
@@ -64,7 +64,8 @@
             </Pane>
             <Pane prefHeight="100.0" prefWidth="806.0">
                <children>
-                  <ImageView fitHeight="134.0" fitWidth="157.0" layoutX="359.0" layoutY="-17.0" pickOnBounds="true" preserveRatio="true">
+                  <JFXButton buttonType="RAISED" layoutX="358.0" layoutY="9.0" onAction="#backToMainMenu" prefHeight="84.0" prefWidth="156.0" styleClass="Up_Button" text=" " />
+                  <ImageView disable="true" fitHeight="150.0" fitWidth="200.0" layoutX="358.0" layoutY="-24.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/ProductsMenu/products%20icon.png" />
                      </image>
@@ -72,7 +73,7 @@
                </children></Pane>
             <Pane prefHeight="100.0" prefWidth="287.0">
                <children>
-                  <JFXButton layoutX="194.0" layoutY="26.0" prefHeight="50.0" prefWidth="50.0" styleClass="Up_Button" text=" " />
+                  <JFXButton buttonType="RAISED" layoutX="194.0" layoutY="26.0" prefHeight="50.0" prefWidth="50.0" styleClass="Up_Button" text=" " />
                   <JFXButton alignment="CENTER_RIGHT" buttonType="RAISED" layoutX="26.0" layoutY="24.0" onAction="#openAccountMenu" prefHeight="55.0" prefWidth="160.0" style="-fx-background-radius: 10 10 10 10;" styleClass="Up_Button" text="Account Menu">
                      <font>
                         <Font name="Calibri" size="17.0" />

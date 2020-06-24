@@ -1,9 +1,12 @@
 package model.db;
 
 import model.existence.Product;
-import view.Processor;
 
-import java.sql.Date;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -141,5 +144,35 @@ public class EditingProductTable extends Database{
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, id);
         preparedStatement.execute();
+    }
+
+    public static String getEditingProductImageFilePath(String productID, int number) {
+        String fileName = "database\\Images\\EditingProducts\\" + productID + "\\" + number;
+        String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
+        for (String validImageExtension : validImageExtensions) {
+            String filePath = fileName + "." + validImageExtension;
+            if(new File(filePath).exists())
+                return filePath;
+        }
+        return null;
+    }
+
+    public static FileInputStream getEditingProductImageInputStream(String ID, int number) throws FileNotFoundException {
+        return new FileInputStream(getEditingProductImageFilePath(ID, number));
+    }
+
+    public static void addImage(String productID, int productNumber, File pictureFile) throws IOException {
+        File productFolder = new File("database\\Images\\EditingProducts\\" + productID );
+        if(!productFolder.exists())
+            productFolder.mkdir();
+        String[] splitPath = pictureFile.getPath().split("\\.");
+        String fileExtension = splitPath[splitPath.length - 1];
+        File saveImage = new File("database\\Images\\EditingProducts\\" + productID + "\\" + productNumber + "." + fileExtension);
+        Files.copy(pictureFile.toPath(), saveImage.toPath());
+    }
+
+    public static void deleteEditingProductImageFolder(String productID) {
+        File folder = new File("database\\Images\\EditingProducts\\" + productID );
+        folder.delete();
     }
 }
