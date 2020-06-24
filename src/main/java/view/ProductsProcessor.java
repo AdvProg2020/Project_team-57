@@ -37,6 +37,7 @@ import java.util.HashMap;
 
 public class ProductsProcessor extends Processor{
     private static final int PRODUCT_SCROLL_PANE_WIDTH = 1050;
+    private static final double PRODUCT_FIELD_WIDTH = 262.5;
     private static final int PRODUCT_FIELD_HEIGHT = 335;
     private static final int PRODUCT_PAGES_BAR_HEIGHT = 50;
     //UserProducts
@@ -46,12 +47,13 @@ public class ProductsProcessor extends Processor{
     public JFXButton previousProductButton;
     public CheckBox approveProductCheckBox;
     public ImageView previousPageImageView;
+    public JFXToggleButton offProductToggleButton;
     private HashMap<String, CheckBox> productsApprovalMap;
 
 
 
     public static enum ProductsMenuType {
-        MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART, ADMIN_PRODUCT_REQUESTS;
+        MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART, ADMIN_PRODUCT_REQUESTS, VENDOR_OFF_PRODUCTS;
     }
     private ProductsMenuType menuType;
 
@@ -91,11 +93,13 @@ public class ProductsProcessor extends Processor{
     public JFXTextField toPriceTextField, fromPriceTextField;
 
     private ArrayList<Product> allProducts;
-    private int pageSize = 12;
+    private int rowSize = 4;
+    private int columnMinSize = 2;
+    private int columnMaxSize = 3;
+    private int pageSize = columnMaxSize * rowSize;
     private int pageNumber = 0;
     private int productFieldsNumber;
     private int pageLim;
-    private ProductsProcessor parentProcessor;
     private ProductControl productControl = ProductControl.getController();
 
 
@@ -113,8 +117,21 @@ public class ProductsProcessor extends Processor{
                 break;
             case ADMIN_PRODUCT_REQUESTS:
                 initAdminProductRequestsMenu();
+                break;
+            case VENDOR_OFF_PRODUCTS:
+                initOffProductsMenu();
+                break;
         }
     }
+
+    private void initOffProductsMenu() {
+        rowSize = 3;
+        columnMinSize = 2;
+        columnMaxSize = 3;
+        pageSize = columnMaxSize * rowSize;
+        initProductsPage();
+    }
+
 
     private void initAdminProductRequestsMenu() {
         productsApprovalMap = new HashMap<>();
@@ -230,8 +247,8 @@ public class ProductsProcessor extends Processor{
         else if(filterName == null)
             controller.Control.getController().removeFromFilterCategoryList(filterCategory.getName());
 
-        parentProcessor.initProductsPage();
-        parentProcessor.filteredCategoriesVBox.getChildren().remove(mainFilterPane);
+        ((ProductsProcessor)parentProcessor).initProductsPage();
+        ((ProductsProcessor)parentProcessor).filteredCategoriesVBox.getChildren().remove(mainFilterPane);
     }
 
     //initProductsScrollPane
@@ -241,6 +258,7 @@ public class ProductsProcessor extends Processor{
                 allProducts = productControl.getAllShowingProducts();
                 initCertainProductsPage(productsScrollPane);
                 break;
+            case VENDOR_OFF_PRODUCTS:
             case VENDOR_PRODUCTS:
                 allProducts = VendorControl.getController().getAllProducts();
                 initCertainProductsPage(userProductsScrollPane);
@@ -259,10 +277,11 @@ public class ProductsProcessor extends Processor{
     private void initCertainProductsPage(ScrollPane scrollPane) {
         try {
             BorderPane borderPane = new BorderPane();
-            pageLim = (allProducts.size() -(pageNumber * pageSize) < 12 ? (allProducts.size() -(pageNumber * pageSize)) : 12);
-            productFieldsNumber = (pageLim < 9 ? 8 : 12);
-            double borderPaneHeight = ((productFieldsNumber/4) * PRODUCT_FIELD_HEIGHT) + PRODUCT_PAGES_BAR_HEIGHT;
-            borderPane.setPrefSize(PRODUCT_SCROLL_PANE_WIDTH - 50, borderPaneHeight);
+            pageLim = (allProducts.size() -(pageNumber * pageSize) < pageSize ? (allProducts.size() -(pageNumber * pageSize)) : pageSize);
+            productFieldsNumber = (pageLim <= (columnMinSize * rowSize) ? (columnMinSize * rowSize) : (columnMaxSize * rowSize));
+            double borderPaneHeight = ((productFieldsNumber/rowSize) * PRODUCT_FIELD_HEIGHT) + PRODUCT_PAGES_BAR_HEIGHT;
+            double borderPaneWidth = PRODUCT_FIELD_WIDTH * rowSize;
+            borderPane.setPrefSize(borderPaneWidth - 50, borderPaneHeight);
             scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
             Pane root = setPageNumberBar();
             borderPane.setBottom(root);
@@ -277,12 +296,18 @@ public class ProductsProcessor extends Processor{
     }
 
     private Pane setPageNumberBar() throws IOException {
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductsPagesBar.fxml"));
+        FXMLLoader loader;
+        //System.out.println(rowSize + ", " + columnMinSize + ", " + columnMaxSize + ", " + pageSize);
+        if(rowSize == 4) {
+            loader = new FXMLLoader(Main.class.getResource("ProductsPagesBar.fxml"));
+        }  else {
+            loader = new FXMLLoader(Main.class.getResource("ProductsPagesBarEnhancedEdition.fxml"));
+        }
         Pane root = loader.load();
         ProductsProcessor pagesBarProcessor = loader.getController();
         pagesBarProcessor.setParentProcessor(this);
-        if((int)Math.ceil(allProducts.size()/12.0) != 0)
-            pagesBarProcessor.pageNumberLabel.setText("Page " + (pageNumber + 1) + " of " + (int)Math.ceil(allProducts.size()/12.0));
+        if((int)Math.ceil(((double)allProducts.size())/pageSize) != 0)
+            pagesBarProcessor.pageNumberLabel.setText("Page " + (pageNumber + 1) + " of " + (int)Math.ceil(((double)allProducts.size())/pageSize));
         else {
             pagesBarProcessor.pageNumberLabel.setText("Page " + (pageNumber + 1) + " of " + 1);
             pagesBarProcessor.nextPageButton.setDisable(true);
@@ -304,27 +329,61 @@ public class ProductsProcessor extends Processor{
     private ArrayList<HBox> getProductsPanes() throws IOException {
         //System.out.println("Start");
         ArrayList<HBox> hBoxes = new ArrayList<>();
-        for(int y = 0; y < productFieldsNumber/4; ++y) {
-            for(int x = 0; x < 4; ++ x) {
+        for(int y = 0; y < productFieldsNumber/rowSize; ++y) {
+            for(int x = 0; x < rowSize; ++ x) {
                 HBox hBox = new HBox();
                 hBox.setAlignment(Pos.CENTER);
                 GridPane.setConstraints(hBox, x, y);
-                hBox.setMinWidth(257); hBox.setMaxWidth(257); hBox.setPrefWidth(257);
+                hBox.setMinWidth(255); hBox.setMaxWidth(255); hBox.setPrefWidth(255);
                 hBox.setMinHeight(PRODUCT_FIELD_HEIGHT); hBox.setMaxHeight(PRODUCT_FIELD_HEIGHT); hBox.setPrefHeight(PRODUCT_FIELD_HEIGHT);
                 hBoxes.add(hBox);
             }
         }
-        if(menuType != ProductsMenuType.ADMIN_PRODUCT_REQUESTS) {
+        if(menuType == ProductsMenuType.ADMIN_PRODUCT_REQUESTS) {
             for(int i = 0; i < pageLim; ++i) {
-                hBoxes.get(i).getChildren().add(getCommonProductPane(i));
+                hBoxes.get(i).getChildren().add(getAdminProductRequestsProductPane(i));
+            }
+
+        } else if(menuType == ProductsMenuType.VENDOR_OFF_PRODUCTS) {
+            for(int i = 0; i < pageLim; ++i) {
+                hBoxes.get(i).getChildren().add(getVendorOffProductPane(i));
             }
         } else {
             for(int i = 0; i < pageLim; ++i) {
-                hBoxes.get(i).getChildren().add(getAdminProductRequestsProductPane(i));
+                hBoxes.get(i).getChildren().add(getCommonProductPane(i));
             }
         }
 
         return hBoxes;
+    }
+
+    private Pane getVendorOffProductPane(int productNumberInPage) throws IOException {
+        Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPaneOff.fxml"));
+        Pane productPane = loader.load();
+        ProductsProcessor paneProcessor = loader.getController();
+        paneProcessor.setParentProcessor(this);
+        paneProcessor.offProductToggleButton.setOnAction(event -> {
+            if(((JFXToggleButton)event.getSource()).isSelected()) {
+                ((SaleProcessor)parentProcessor).addProductToOff(product.getID());
+            } else {
+                ((SaleProcessor)parentProcessor).deleteProductFromOff(product.getID());
+            }
+        });
+//        System.out.println(parentProcessor);
+        paneProcessor.offProductToggleButton.setSelected(((SaleProcessor)parentProcessor).isProductInOff(product.getID()));
+        if (!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
+            paneProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
+            if(product.getStatus() != 1)
+                paneProcessor.availableLabel.setText(product.getTheStatus());
+            else
+                paneProcessor.availableLabel.setText("Out Of Stock");
+        }
+        setProductPaneImage(paneProcessor, product);
+        paneProcessor.productNameLabel.setText(product.getName());
+        setProductPanePrice(productPane, paneProcessor, product);
+        setProductPaneOnMouseClick(productPane, product, this);
+        return productPane;
     }
 
     private Pane getAdminProductRequestsProductPane(int productNumberInPage) throws IOException {
@@ -365,19 +424,9 @@ public class ProductsProcessor extends Processor{
         });
         paneProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
         paneProcessor.availableLabel.setText(product.getTheStatus());
-        if(product.getStatus() != 3) {
-            paneProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
-        } else {
-            paneProcessor.productImage.setImage(productControl.getEditingProductImage(product.getID(), 1));
-        }
+        setProductPaneImage(paneProcessor, product);
+        setProductPanePrice(productPane, paneProcessor, product);
         paneProcessor.productNameLabel.setText(product.getName());
-        if (productControl.isThereProductInOff(product.getID())) {
-            //TODO
-            System.out.println("Product In Off");
-        } else {
-            productPane.getChildren().remove(paneProcessor.newPriceLabel);
-            paneProcessor.oldPriceLabel.setText(product.getPrice() + "$");
-        }
         setProductPaneOnMouseClick(productPane, product, this);
         return productPane;
     }
@@ -387,19 +436,9 @@ public class ProductsProcessor extends Processor{
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPane.fxml"));
         Pane productPane = loader.load();
         ProductsProcessor productsProcessor = loader.getController();
-        if(product.getStatus() != 3) {
-            productsProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
-        } else {
-            productsProcessor.productImage.setImage(productControl.getEditingProductImage(product.getID(), 1));
-        }
+        setProductPaneImage(productsProcessor, product);
         productsProcessor.productNameLabel.setText(product.getName());
-        if (productControl.isThereProductInOff(product.getID())) {
-            //TODO
-            System.out.println("Product In Off");
-        } else {
-            productPane.getChildren().remove(productsProcessor.newPriceLabel);
-            productsProcessor.oldPriceLabel.setText(product.getPrice() + "$");
-        }
+        setProductPanePrice(productPane, productsProcessor, product);
         productsProcessor.viewLabel.setText("" + product.getSeen());
         if (!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
             productsProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
@@ -410,6 +449,24 @@ public class ProductsProcessor extends Processor{
         }
         setProductPaneOnMouseClick(productPane, product, this);
         return productPane;
+    }
+
+    private void setProductPanePrice(Pane productPane, ProductsProcessor paneProcessor, Product product) {
+        if (productControl.isThereProductInOff(product.getID())) {
+            //TODO
+            System.out.println("Product In Off");
+        } else {
+            productPane.getChildren().remove(paneProcessor.newPriceLabel);
+            paneProcessor.oldPriceLabel.setText(product.getPrice() + "$");
+        }
+    }
+
+    private void setProductPaneImage(ProductsProcessor paneProcessor, Product product) {
+        if(product.getStatus() != 3) {
+            paneProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
+        } else {
+            paneProcessor.productImage.setImage(productControl.getEditingProductImage(product.getID(), 1));
+        }
     }
 
     private void setProductPaneOnMouseClick(Pane productPane, Product product, ProductsProcessor parentProcessor) {
@@ -456,18 +513,14 @@ public class ProductsProcessor extends Processor{
         });
     }
 
-    public void setParentProcessor(ProductsProcessor parentProcessor) {
-        this.parentProcessor = parentProcessor;
-    }
-
     public void changePage(MouseEvent mouseEvent) {
         ImageView button = (ImageView) mouseEvent.getSource();
         if(button == nextPageButton) {
-            parentProcessor.pageNumber += 1;
+            ((ProductsProcessor)parentProcessor).pageNumber += 1;
         } else {
-            parentProcessor.pageNumber -= 1;
+            ((ProductsProcessor)parentProcessor).pageNumber -= 1;
         }
-        parentProcessor.initProductsPage();
+        ((ProductsProcessor)parentProcessor).initProductsPage();
     }
 
     public void changePageOnMouse(MouseEvent mouseEvent) {
@@ -575,10 +628,10 @@ public class ProductsProcessor extends Processor{
             //System.out.println(productID);
             //System.out.println(productControl.getProductById(productID));
             if(productControl.getProductById(productID).getStatus() == 3) {
-                System.out.println("Hello");
+//                System.out.println("Hello");
                 results.add(adminControl.modifyEditingProductApprove(productID, productsApprovalMap.get(productID).isSelected()));
             } else {
-                System.out.println("Hi");
+//                System.out.println("Hi");
                 results.add(adminControl.modifyProductApprove(productID, productsApprovalMap.get(productID).isSelected()));
             }
         }
