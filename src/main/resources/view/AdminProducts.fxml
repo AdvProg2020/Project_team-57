@@ -27,7 +27,7 @@
             </Pane>
          </children>
       </HBox>
-      <HBox alignment="CENTER" layoutY="315.0" prefHeight="315.0" prefWidth="260.0">
+      <HBox alignment="CENTER" prefHeight="315.0" prefWidth="260.0">
          <children>
             <Pane maxHeight="-Infinity" onMouseClicked="#manageCategories" opacity="0.7" prefHeight="275.0" prefWidth="220.0" style="-fx-background-color: #ffffff; -fx-background-radius: 5 5 5 5;" styleClass="hover_option">
                <children>
@@ -47,24 +47,6 @@
       </HBox>
       <HBox alignment="CENTER" layoutX="260.0" prefHeight="315.0" prefWidth="260.0">
          <children>
-            <Pane maxHeight="-Infinity" opacity="0.7" prefHeight="275.0" prefWidth="220.0" style="-fx-background-color: #ffffff; -fx-background-radius: 5 5 5 5;" styleClass="hover_option">
-               <children>
-                  <ImageView fitHeight="96.0" fitWidth="96.0" layoutX="62.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../Images/Icons/Product%20Requests%20Icon.png" />
-                     </image>
-                  </ImageView>
-                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="35.0" layoutY="200.0" prefWidth="150.0" text="Product Requests">
-                     <font>
-                        <Font size="17.0" />
-                     </font>
-                  </Label>
-               </children>
-            </Pane>
-         </children>
-      </HBox>
-      <HBox alignment="CENTER" prefHeight="315.0" prefWidth="260.0">
-         <children>
             <Pane maxHeight="-Infinity" onMouseClicked="#manageProductRequests" opacity="0.7" prefHeight="275.0" prefWidth="220.0" style="-fx-background-color: #ffffff; -fx-background-radius: 5 5 5 5;" styleClass="hover_option">
                <children>
                   <ImageView fitHeight="96.0" fitWidth="96.0" layoutX="62.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true">
@@ -72,7 +54,7 @@
                         <Image url="@../Images/Icons/Manage%20ProductsIcon.png" />
                      </image>
                   </ImageView>
-                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="35.0" layoutY="200.0" prefWidth="150.0" text="Manage Products">
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="35.0" layoutY="200.0" prefWidth="150.0" text="Product Requests">
                      <font>
                         <Font size="17.0" />
                      </font>

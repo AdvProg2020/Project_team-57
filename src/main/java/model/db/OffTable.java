@@ -117,13 +117,14 @@ public class OffTable extends Database{
     }
 
     public static ArrayList<Off> getAllUnApprovedOffs() throws SQLException, ClassNotFoundException {
-        String command = "SELECT DISTINCT OffID FROM Offs WHERE Status = ?";
+        String command = "SELECT DISTINCT OffID FROM Offs WHERE Status = ? OR Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, 2);
+        preparedStatement.setInt(2, 3);
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Off> unApprovedOffs = new ArrayList<>();
         while (resultSet.next()) {
-            unApprovedOffs.add(getSpecificOff(resultSet.getString(resultSet.getString("OffID"))));
+            unApprovedOffs.add(getSpecificOff(resultSet.getString("OffID")));
         }
         return unApprovedOffs;
     }
@@ -339,7 +340,7 @@ public class OffTable extends Database{
     public static void setOffImage(String offID, File pictureFile) throws IOException {
         String[] splitPath = pictureFile.getPath().split("\\.");
         String fileExtension = splitPath[splitPath.length - 1];
-        File saveImage = new File("database\\Images\\Users\\" + offID + "." + fileExtension);
+        File saveImage = new File("database\\Images\\Offs\\" + offID + "." + fileExtension);
         Files.copy(pictureFile.toPath(), saveImage.toPath());
     }
 

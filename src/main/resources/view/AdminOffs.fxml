@@ -11,7 +11,7 @@
    <children>
       <HBox alignment="CENTER" layoutX="260.0" prefHeight="315.0" prefWidth="260.0">
          <children>
-            <Pane maxHeight="-Infinity" opacity="0.7" prefHeight="275.0" prefWidth="220.0" style="-fx-background-color: #ffffff; -fx-background-radius: 5 5 5 5;" styleClass="hover_option">
+            <Pane maxHeight="-Infinity" onMouseClicked="#manageOffRequests" opacity="0.7" prefHeight="275.0" prefWidth="220.0" style="-fx-background-color: #ffffff; -fx-background-radius: 5 5 5 5;" styleClass="hover_option">
                <children>
                   <ImageView fitHeight="96.0" fitWidth="96.0" layoutX="62.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true">
                      <image>

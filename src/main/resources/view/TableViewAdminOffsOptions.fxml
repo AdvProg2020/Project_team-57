@@ -15,17 +15,17 @@
             <Font name="Calibri" size="17.0" />
          </font>
       </Label>
-      <JFXButton fx:id="showOffButton" buttonType="RAISED" disable="true" layoutX="63.0" layoutY="337.0" onAction="#showOff" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Profile">
+      <JFXButton fx:id="showOffButton" buttonType="RAISED" layoutX="77.0" layoutY="337.0" onAction="#showOff" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Off">
          <font>
             <Font size="14.0" />
          </font>
       </JFXButton>
-      <JFXButton fx:id="approveOffButton" buttonType="RAISED" disable="true" layoutX="12.0" layoutY="376.0" onAction="#approveOff" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Approve Off">
+      <JFXButton fx:id="approveOffButton" buttonType="RAISED" layoutX="20.0" layoutY="376.0" onAction="#approveOff" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Approve Off">
          <font>
             <Font size="14.0" />
          </font>
       </JFXButton>
-      <JFXButton fx:id="deleteOffButton" buttonType="RAISED" disable="true" layoutX="118.0" layoutY="376.0" onAction="#deleteOff" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Delete Off">
+      <JFXButton fx:id="deleteOffButton" buttonType="RAISED" layoutX="131.0" layoutY="376.0" onAction="#deleteOff" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Delete Off">
          <font>
             <Font size="14.0" />
          </font>

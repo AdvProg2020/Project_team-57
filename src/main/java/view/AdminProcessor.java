@@ -263,4 +263,26 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
         }
 
     }
+
+    public void manageOffRequests(MouseEvent mouseEvent) {
+        if (canOpenSubStage("Manage Off Requests", parentProcessor)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
+                Parent root = loader.load();
+                TableViewProcessor<Comment> tableViewProcessor = loader.getController();
+                tableViewProcessor.setParentProcessor(parentProcessor);
+                tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.ADMIN_OFFS);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
+                newStage.setResizable(false);
+                newStage.setTitle("Manage Off Requests");
+                parentProcessor.addSubStage(newStage);
+                tableViewProcessor.setMyStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

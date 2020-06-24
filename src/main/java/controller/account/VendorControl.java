@@ -234,6 +234,7 @@ public class VendorControl extends AccountControl{
                off.setOffID(setOffID());
            } while (OffTable.isThereOffWithID(off.getOffID()));
            off.setStatus(2);
+           System.out.println(offImageFile);
            if(offImageFile != null)
                ProductControl.getController().setOffPicture(off.getOffID(), offImageFile);
            OffTable.addOff(off);

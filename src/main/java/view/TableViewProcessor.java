@@ -283,6 +283,7 @@ public class TableViewProcessor<T> extends Processor {
                 );
                 Pane root = loader.load();
                 TableViewProcessor processor = loader.getController();
+                processor.setParentProcessor(this);
                 processor.offNameLabel.setText(off.getOffName());
                 processor.offVendorUsernameLabel.setText(off.getVendorUsername());
                 if(!ProductControl.getController().doesOffHaveImage(off.getOffID()))
@@ -292,6 +293,11 @@ public class TableViewProcessor<T> extends Processor {
             } else {
                 loader = new FXMLLoader(Main.class.getResource("TableViewAdminOffsOptions.fxml"));
                 Pane root = loader.load();
+                TableViewProcessor processor = loader.getController();
+                processor.setParentProcessor(this);
+                processor.offImageRectangle.setStrokeWidth(0);
+                processor.offImageRectangle.setFill(new ImagePattern(ProductControl.getController().getOffImageByID("")));
+                processor.terminateOptions();
                 return root;
             }
         } catch (IOException e) {
@@ -414,7 +420,16 @@ public class TableViewProcessor<T> extends Processor {
             case ADMIN_COMMENTS:
                 terminateAdminCommentsOptions();
                 break;
+            case ADMIN_OFFS:
+                terminateOffOptions();
+                break;
         }
+    }
+
+    private void terminateOffOptions() {
+        showOffButton.setDisable(true);
+        approveOffButton.setDisable(true);
+        deleteOffButton.setDisable(true);
     }
 
     private void terminateAdminCommentsOptions() {
@@ -444,13 +459,13 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void updateSelectedItem() {
+//        System.out.println(selectedItem);
         if(tableView.getSelectionModel().getSelectedItem() != null)
             selectedItem = tableView.getSelectionModel().getSelectedItem();
         else
             tableView.getSelectionModel().selectFirst();
         initOptions();
     }
-
 
     //Graphics
 
@@ -696,7 +711,9 @@ public class TableViewProcessor<T> extends Processor {
         try {
             Parent root = loader.load();
             SaleProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
             processor.setOff(off);
+            processor.getOffImageFile();
             processor.offInfoPaneMouseClick(null);
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
@@ -711,11 +728,26 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void approveOff(ActionEvent actionEvent) {
-        
+        Off selectedOff = (Off) ((TableViewProcessor)parentProcessor).selectedItem;
+        Optional<ButtonType> buttonType = new Alert
+                (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Approve " + selectedOff.getOffName() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if(buttonType.get() == ButtonType.YES) {
+            AdminControl.getController().modifyOffApprove(selectedOff.getOffID(), true);
+        }
+        ((TableViewProcessor)parentProcessor).updateTable();
+        ((TableViewProcessor)parentProcessor).updateSelectedItem();
     }
 
     public void deleteOff(ActionEvent actionEvent) {
-
+//        System.out.println(selectedItem);
+        Off selectedOff = (Off) ((TableViewProcessor)parentProcessor).selectedItem;
+        Optional<ButtonType> buttonType = new Alert
+                (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Delete " + selectedOff.getOffName() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if(buttonType.get() == ButtonType.YES) {
+            AdminControl.getController().modifyOffApprove(selectedOff.getOffID(), false);
+        }
+        ((TableViewProcessor)parentProcessor).updateTable();
+        ((TableViewProcessor)parentProcessor).updateSelectedItem();
     }
 
 

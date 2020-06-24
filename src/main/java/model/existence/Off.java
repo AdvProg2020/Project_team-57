@@ -37,7 +37,7 @@ public class Off {
                 off.statStr = "Approved";
                 break;
             case 2:
-                off.statStr = "UnApproved";
+                off.statStr = "Unapproved";
                 break;
             case 3:
                 off.statStr = "Editing";

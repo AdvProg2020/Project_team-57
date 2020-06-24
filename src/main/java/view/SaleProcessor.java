@@ -16,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
@@ -58,6 +59,8 @@ public class SaleProcessor extends Processor implements Initializable {
     public ImageView saveChangeButton;
     public BorderPane discountMainPane;
     public Pane discountInfoPane, discountCustomersPane;
+    public Pane addOffButton;
+    public VBox optionsVbox;
 
     private Discount discount;
     //OffProcess
@@ -164,6 +167,7 @@ public class SaleProcessor extends Processor implements Initializable {
             ((SaleProcessor)parentProcessor).off.setOffID("");
             ((SaleProcessor)parentProcessor).getOffImageFile();
         } else {
+//            System.out.println(":|");
             if(mainOff.getOffName() != null && mainOff.getOffName().length() != 0)
                 offNameField.setText(mainOff.getOffName());
             if(mainOff.getOffPercent() != 0)
@@ -174,20 +178,30 @@ public class SaleProcessor extends Processor implements Initializable {
                 setDateFieldsFromDate(offFinishDatePicker, offFinishTimePicker, mainOff.getFinishDate());
             //((SaleProcessor)parentProcessor).getOffImageFile();
             if(Control.getType().equals("Admin")) {
+//                System.out.println("What the Fuck Is Happening");
                 offNameField.setEditable(false);
                 offPercentField.setEditable(false);
-                offStartDatePicker.setEditable(false);
-                offStartTimePicker.setEditable(false);
-                offFinishDatePicker.setEditable(false);
-                offFinishTimePicker.setEditable(false);
+                offStartDatePicker.setDisable(true);
+                offStartDatePicker.setOpacity(0.99);
+                offStartTimePicker.setDisable(true);
+                offStartTimePicker.setOpacity(0.99);
+                offFinishDatePicker.setDisable(true);
+                offFinishDatePicker.setOpacity(0.99);
+                offFinishTimePicker.setDisable(true);
+                offFinishTimePicker.setOpacity(0.99);
                 offInfoMainPane.getChildren().remove(saveOffChangeButton);
+                ((SaleProcessor)parentProcessor).optionsVbox.getChildren().remove(((SaleProcessor)parentProcessor).addOffButton);
             } else {
                 offNameField.setEditable(true);
                 offPercentField.setEditable(true);
-                offStartDatePicker.setEditable(true);
-                offStartTimePicker.setEditable(true);
-                offFinishDatePicker.setEditable(true);
-                offFinishTimePicker.setEditable(true);
+                offStartDatePicker.setDisable(false);
+                offStartTimePicker.setDisable(false);
+                offFinishDatePicker.setDisable(false);
+                offFinishTimePicker.setDisable(false);
+                offStartDatePicker.setOpacity(1);
+                offStartTimePicker.setOpacity(1);
+                offFinishDatePicker.setOpacity(1);
+                offFinishTimePicker.setOpacity(1);
             }
         }
         updateImageRectangle();
@@ -210,7 +224,7 @@ public class SaleProcessor extends Processor implements Initializable {
         }
     }
 
-    private void getOffImageFile() {
+    public void getOffImageFile() {
         offImageFile = productControl.getOffImageFileByID(off.getOffID());
         isDefaultPicture = !productControl.doesOffHaveImage(off.getOffID());
         /*Image image = (off != null && off.getOffID() != null && off.getOffID().length() != 0 ?
@@ -400,7 +414,7 @@ public class SaleProcessor extends Processor implements Initializable {
             off.setStartDate(new Date(System.currentTimeMillis()));
         }
         File imageFile = (isDefaultPicture ? null : offImageFile);
-        Notification resultNotification = VendorControl.getController().addOff(off, offImageFile);
+        Notification resultNotification = VendorControl.getController().addOff(off, imageFile);
         if(resultNotification == Notification.ADD_OFF) {
             System.out.println(myStage);
             closeSubStage(myStage, parentProcessor);
@@ -442,7 +456,6 @@ public class SaleProcessor extends Processor implements Initializable {
             this.off.removeProductFromOff(id);
         }
     }
-
 
     public boolean isProductInOff(String id) {
         return this.off.getProductIDs().contains(id);
