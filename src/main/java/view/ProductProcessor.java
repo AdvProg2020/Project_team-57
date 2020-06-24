@@ -497,7 +497,7 @@ public class ProductProcessor extends Processor {
             }
         }
 
-        if(menuType == ProductMenuType.VENDOR_ADD || menuType == ProductMenuType.VENDOR_ADD) {
+        if(menuType == ProductMenuType.VENDOR_ADD || menuType == ProductMenuType.VENDOR_EDIT) {
             changeCountableField(null);
         } else {
             nameTextField.setText(product.getName());

@@ -7,6 +7,8 @@ import controller.account.AdminControl;
 import controller.account.CustomerControl;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
+import javafx.animation.AnimationTimer;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -49,7 +51,6 @@ public class ProductsProcessor extends Processor{
     public ImageView previousPageImageView;
     public JFXToggleButton offProductToggleButton;
     private HashMap<String, CheckBox> productsApprovalMap;
-
 
 
     public static enum ProductsMenuType {
@@ -459,6 +460,7 @@ public class ProductsProcessor extends Processor{
         if (productControl.isThereProductInOff(product.getID())) {
             //TODO
             System.out.println("Product In Off");
+            paneProcessor.oldPriceLabel.setText(product.getPrice() + "$");
         } else {
             productPane.getChildren().remove(paneProcessor.newPriceLabel);
             paneProcessor.oldPriceLabel.setText(product.getPrice() + "$");
@@ -479,7 +481,10 @@ public class ProductsProcessor extends Processor{
             switch (menuType) {
                 case VENDOR_ADD_OFF_PRODUCTS:
                 case VENDOR_PRODUCTS:
-                    productMenuType = ProductProcessor.ProductMenuType.VENDOR_EDIT;
+                    if(product.getStatus() != 2)
+                        productMenuType = ProductProcessor.ProductMenuType.VENDOR_EDIT;
+                    else
+                        productMenuType = ProductProcessor.ProductMenuType.VENDOR_EDIT_UNAPPROVED;
                     break;
                 case MAIN_PRODUCTS:
                     if(controller.Control.getType() != null && controller.Control.getType().equals("Admin")){
@@ -618,7 +623,24 @@ public class ProductsProcessor extends Processor{
     }
 
     public void addNewOff(MouseEvent mouseEvent) {
-        //TODO
+        if(canOpenSubStage("Add New Off", parentProcessor)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
+                Parent root = loader.load();
+                SaleProcessor processor = loader.getController();
+                processor.setParentProcessor(this);
+                processor.offInfoPaneMouseClick(null);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.setTitle("Add New Off");
+                newStage.setResizable(false);
+                parentProcessor.addSubStage(newStage);
+                processor.setMyStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();;
+            }
+        }
     }
 
     public void purchaseProducts(MouseEvent mouseEvent) {

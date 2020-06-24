@@ -18,6 +18,8 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
+import model.existence.Comment;
+import model.existence.Off;
 import model.existence.Product;
 
 import java.io.IOException;
@@ -52,6 +54,7 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
             try {
                 parent = loader.load();
                 ProductsProcessor processor = loader.getController();
+                processor.setParentProcessor(this);
                 processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_PRODUCTS);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -65,24 +68,25 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
     }
 
     public void addOff(MouseEvent mouseEvent) {
-        if(canOpenSubStage("Add New Off", this)) {
+        if (canOpenSubStage("Manage Offs", this)) {
             try {
-                FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
                 Parent root = loader.load();
-                SaleProcessor processor = loader.getController();
-                processor.setParentProcessor(this);
-                processor.offInfoPaneMouseClick(null);
+                TableViewProcessor<Off> tableViewProcessor = loader.getController();
+                tableViewProcessor.setParentProcessor(this);
+                tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.VENDOR_OFFS);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
-                newStage.setTitle("Add New Off");
+                //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
                 newStage.setResizable(false);
+                newStage.setTitle("Manage Offs");
                 this.addSubStage(newStage);
-                processor.setMyStage(newStage);
+                tableViewProcessor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();;
+                e.printStackTrace();
             }
         }
-        }
+    }
 
 }

@@ -57,8 +57,10 @@ public class VendorControl extends AccountControl{
         ArrayList<Notification> addingProductNotifications = new ArrayList<>();
 
         try {
+            System.out.println(product.isCountable());
+            System.out.println(product.getCount());
+            System.out.println(product.getAmount());
             addingProductNotifications.addAll(checkProductFields(product));
-
             if (addingProductNotifications.isEmpty()) {
                 while (true) {
                     String productId = generateProductID();
@@ -89,19 +91,20 @@ public class VendorControl extends AccountControl{
 
         if(product.getPrice() == 0) {
             checkNotifications.add(Notification.EMPTY_PRODUCT_PRICE);
-        } else if(product.getName() == null || product.getName().isEmpty()) {
+        } if(product.getName() == null || product.getName().isEmpty()) {
             checkNotifications.add(Notification.EMPTY_PRODUCT_NAME);
-        } else if(product.getCategory() == null || product.getCategory().isEmpty()) {
+        } if(product.getCategory() == null || product.getCategory().isEmpty()) {
             product.setCategory("All Products");
-        } else if(product.getCategory() != null && !CategoryTable.isThereCategoryWithName(product.getCategory())) {
+        } if(product.getCategory() != null && !CategoryTable.isThereCategoryWithName(product.getCategory())) {
             checkNotifications.add(Notification.INVALID_PRODUCT_CATEGORY);
-        } else if(product.isCountable() && product.getCount() == 0) {
+        } if(product.isCountable() && product.getCount() == 0) {
+            System.out.println("Fuck You Sepehr");
             checkNotifications.add(Notification.EMPTY_PRODUCT_COUNT);
-        } else if(!product.isCountable() && product.getAmount() == 0) {
+        } if(!product.isCountable() && product.getAmount() == 0) {
             checkNotifications.add(Notification.EMPTY_PRODUCT_AMOUNT);
-        } else if(product.getBrand() == null || product.getBrand().isEmpty()) {
+        } if(product.getBrand() == null || product.getBrand().isEmpty()) {
             checkNotifications.add(Notification.EMPTY_PRODUCT_BRAND);
-        } else if(product.getDescription() == null || product.getDescription().isEmpty()) {
+        } if(product.getDescription() == null || product.getDescription().isEmpty()) {
             checkNotifications.add(Notification.EMPTY_PRODUCT_DESCRIPTION);
         }
 
@@ -185,6 +188,17 @@ public class VendorControl extends AccountControl{
             e.printStackTrace();
         }
         return false;
+    }
+
+    public ArrayList<Off> getAllOffs() {
+        try {
+            return  OffTable.getVendorOffs(Control.getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
     public ArrayList<String> getAllOffNames(){
@@ -563,5 +577,4 @@ public class VendorControl extends AccountControl{
         }
         return new ArrayList<>();
     }
-
 }

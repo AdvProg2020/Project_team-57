@@ -5,6 +5,7 @@ import controller.Control;
 import controller.account.AccountControl;
 import controller.account.AdminControl;
 import controller.account.CustomerControl;
+import controller.account.VendorControl;
 import controller.product.ProductControl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -70,7 +71,7 @@ public class TableViewProcessor<T> extends Processor {
 
     public static enum TableViewType {
         CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN),
-        DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS, ADMIN_OFFS;
+        DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS, ADMIN_OFFS, VENDOR_OFFS;
 
         Account.AccountType accountType;
 
@@ -132,7 +133,18 @@ public class TableViewProcessor<T> extends Processor {
             case ADMIN_OFFS:
                 initAdminOffsColumns();
                 break;
+            case VENDOR_OFFS:
+                initVendorOffsColumns();
+                break;
         }
+    }
+
+    private void initVendorOffsColumns() {
+        TableColumn<T, String> offName = makeColumn("Off Name", "offName", 0.23);
+        TableColumn<T, Date> offFinishDate = makeColumn("Finish Date", "finishDate", 0.23);
+        TableColumn<T, Double> offPercent = makeColumn("Off Percentage", "offPercent", 0.34);
+        TableColumn<T, String> status = makeColumn("Approval", "statStr", 0.15);
+        tableView.getColumns().addAll(offName, offFinishDate, offPercent, status);
     }
 
     private void initAdminOffsColumns() {
@@ -208,6 +220,10 @@ public class TableViewProcessor<T> extends Processor {
                 break;
             case ADMIN_OFFS:
                 tableList.addAll((ArrayList<T>)AdminControl.getController().getAllUnApprovedOffs());
+                break;
+            case VENDOR_OFFS:
+                tableList.addAll((ArrayList<T>) VendorControl.getController().getAllOffs());
+                break;
         }
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();

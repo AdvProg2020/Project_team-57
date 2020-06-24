@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import model.existence.Account;
 import model.existence.Comment;
 import model.existence.Discount;
+import model.existence.Off;
 
 import java.io.IOException;
 import java.net.URL;
@@ -269,7 +270,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
                 Parent root = loader.load();
-                TableViewProcessor<Comment> tableViewProcessor = loader.getController();
+                TableViewProcessor<Off> tableViewProcessor = loader.getController();
                 tableViewProcessor.setParentProcessor(parentProcessor);
                 tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.ADMIN_OFFS);
                 Stage newStage = new Stage();
