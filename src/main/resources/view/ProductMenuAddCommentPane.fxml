@@ -9,7 +9,7 @@
 
 <Pane fx:id="commentPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="218.0" prefWidth="415.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
    <children>
-      <JFXTextField fx:id="commentTitle" layoutX="27.0" layoutY="29.0" onAction="#textFieldMouseClicked" prefHeight="33.0" prefWidth="140.0" promptText=" Title" style="-fx-border-width: 1 1 1 1; -fx-border-color: black; -fx-border-radius: 5; -fx-background-color: #ECEFF1;">
+      <JFXTextField fx:id="commentTitle" layoutX="27.0" layoutY="29.0" onAction="#textFieldMouseClicked" onMouseClicked="#textFieldMouseClicked" prefHeight="33.0" prefWidth="140.0" promptText=" Title" style="-fx-border-width: 1 1 1 1; -fx-border-color: black; -fx-border-radius: 5; -fx-background-color: #ECEFF1;">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font></JFXTextField>

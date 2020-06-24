@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
+import com.sun.javaws.util.JfxHelper;
 import controller.Control;
 import controller.account.CustomerControl;
 import controller.account.VendorControl;
@@ -40,6 +41,8 @@ import org.controlsfx.control.Rating;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -493,13 +496,15 @@ public class ProductProcessor extends Processor {
                 product.setAmount(productControl.getProductById(product.getID()).getAmount());
             }
         }
-        if(menuType != ProductMenuType.VENDOR_ADD) {
+
+        if(menuType == ProductMenuType.VENDOR_ADD || menuType == ProductMenuType.VENDOR_ADD) {
+            changeCountableField(null);
+        } else {
             nameTextField.setText(product.getName());
 
             categoryTextField.setText(product.getCategory());
 
             countableToggleButton.setSelected(product.isCountable());
-            changeCountableField(null);
 
             if (product.isCountable())
                 countTextField.setText(Integer.toString(product.getCount()));
@@ -618,20 +623,50 @@ public class ProductProcessor extends Processor {
         //Todo Checking Setting Change Listener Multiple Times !!!! Exactly
         Product product = ((ProductProcessor) parentProcessor).product;
 
-        if(countableToggleButton.isSelected() && countLabel.getText().equals(" Amount ")) {
-            countLabel.setText(" Count ");
-            //Todo Check Layout Function
-            countLabel.setLayoutX(countLabel.getLayoutX() + 15);
-            countTextField.setText(Integer.toString(product.getCount()));
-            setIntegerFields(countTextField, Integer.MAX_VALUE);
-        } else if(!countableToggleButton.isSelected() && countLabel.getText().equals(" Count ")) {
-            countLabel.setText(" Amount ");
-            //Todo Check Layout Function
-            countTextField.setText(Double.toString(product.getAmount()));
-            countLabel.setLayoutX(countLabel.getLayoutX() - 15);
-            setDoubleFields(countTextField, Double.MAX_VALUE);
+        JFXTextField countTextFieldClone = getCloneOfCountTextField(countTextField);
+        generalPane.getChildren().remove(countTextField);
+        generalPane.getChildren().add(countTextFieldClone);
+        countTextField = countTextFieldClone;
+
+        if(countableToggleButton.isSelected()) {
+            if(!countLabel.getText().equals(" Count ")) {
+                countLabel.setText(" Count ");
+                countLabel.setLayoutX(countLabel.getLayoutX() + 15);
+            }
+
+            countTextFieldClone.setText(Integer.toString(product.getCount()));
+            setIntegerFields(countTextFieldClone, Integer.MAX_VALUE);
+        } else {
+            if(!countLabel.getText().equals(" Amount ")) {
+                countLabel.setText(" Amount ");
+                countLabel.setLayoutX(countLabel.getLayoutX() - 15);
+            }
+
+            countTextFieldClone.setText(Double.toString(product.getAmount()));
+            setDoubleFields(countTextFieldClone, Double.MAX_VALUE);
         }
     }
+
+    public JFXTextField getCloneOfCountTextField(JFXTextField countTextField) {
+        JFXTextField jfxTextField = new JFXTextField();
+
+        //Properties
+        jfxTextField.setEditable(countTextField.isEditable());
+
+        //Layout
+        jfxTextField.setPrefWidth(countTextField.getPrefWidth());
+        jfxTextField.setPrefHeight(countTextField.getPrefHeight());
+        jfxTextField.setLayoutX(countTextField.getLayoutX());
+        jfxTextField.setLayoutY(countTextField.getLayoutY());
+
+        //Code
+        jfxTextField.setId(countTextField.getId());
+        jfxTextField.setOnAction(this::textFieldMouseClicked);
+        jfxTextField.setOnMouseClicked(this::textFieldMouseClicked);
+
+        return jfxTextField;
+    }
+
 
     public void textFieldMouseClicked(Event actionEvent) {
         TextInputControl textInputControl = (TextInputControl) actionEvent.getSource();
@@ -934,6 +969,7 @@ public class ProductProcessor extends Processor {
     private void setCartUnCountable() {
         Product product = ((ProductProcessor) parentProcessor).product;
 
+        System.out.println("Product Amount : " + product.getAmount());
         setDoubleFields(cartCount, product.getAmount() + 0.000001);
         cartCount.textProperty().addListener((observable, oldValue, newValue) -> {
             //Todo Check
@@ -941,7 +977,7 @@ public class ProductProcessor extends Processor {
                 if (product.getAmount() > 0.2)
                     cartCount.setText("0.2");
                 else
-                    cartCount.setText("0.000002");
+                    cartCount.setText("0.002");
             }
         });
         plusButton.setOnMouseClicked(event -> addCartAmount());
@@ -953,16 +989,22 @@ public class ProductProcessor extends Processor {
 
         double previousCartAmount = Double.parseDouble(cartCount.getText());
 
-        if(previousCartAmount < product.getAmount())
-            cartCount.setText(Double.toString(product.getAmount() - previousCartAmount > 0.2 ? previousCartAmount + 0.2 : product.getAmount()));
+        if(previousCartAmount < product.getAmount()) {
+            double nextProductAmount = product.getAmount() - previousCartAmount > 0.2 ? previousCartAmount + 0.2 : product.getAmount();
+            DecimalFormat doubleFormatter = new DecimalFormat("#.##");
+            doubleFormatter.setRoundingMode(RoundingMode.CEILING);
+            cartCount.setText(doubleFormatter.format(nextProductAmount));
+        }
     }
 
     public void subtractCartAmount() {
         double previousCartAmount = Double.parseDouble(cartCount.getText());
 
         //Todo Check
-        if(previousCartAmount > 0.2)
-            cartCount.setText(Double.toString(Math.ceil(previousCartAmount * 5) / 5 - 0.2));
+        if(previousCartAmount > 0.2) {
+            System.out.println(previousCartAmount);
+            cartCount.setText(Double.toString((Math.ceil(previousCartAmount * 5) - 1) / 5));
+        }
     }
 
     public void addToCartMouseClicked() {
