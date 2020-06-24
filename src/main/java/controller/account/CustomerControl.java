@@ -276,6 +276,18 @@ public class CustomerControl extends AccountControl{
         return discountIDs;
     }
 
+
+    public ArrayList<Off> getAllShowingOffs() {
+        try {
+            return OffTable.getAllShowingOffs();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
     public ArrayList<String> getAllShowingOffNames(){
         ArrayList<String> allOffNames = new ArrayList<>();
         try {
