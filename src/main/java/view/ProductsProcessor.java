@@ -36,6 +36,8 @@ import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,9 +112,13 @@ public class ProductsProcessor extends Processor{
     //Discount Part
     public JFXToggleButton useDiscountCodeToggleButton;
     public JFXListView<Discount> discountCodesListView;
+    private ListCell<Discount> selectedListCell;
 
     //Total Price Part
     public Label totalPriceLabel;
+    public Label discountPriceLabel;
+    public ImageView priceArrow;
+    public Pane pricePane;
 
     public void initProcessor (ProductsMenuType menuType) {
         this.menuType = menuType;
@@ -126,6 +132,7 @@ public class ProductsProcessor extends Processor{
             case CUSTOMER_CART:
                 initProductsPage();
                 initDiscountPart();
+                initTotalPricePart();
                 break;
             case ADMIN_PRODUCT_REQUESTS:
                 initAdminProductRequestsMenu();
@@ -773,12 +780,17 @@ public class ProductsProcessor extends Processor{
                     super.updateItem(discount, empty);
 
                     if(!empty)
-                        setText(discount.getCode() + " : " + discount.getDiscountPercent());
+                        setText(discount.getCode() + " : " + discount.getDiscountPercent() + "%");
                 }
             };
             listCell.setOnMouseClicked(event -> {
-                if(event.getClickCount() == 2 && event.getButton().equals(MouseButton.PRIMARY))
+                if(event.getClickCount() == 2 && event.getButton().equals(MouseButton.PRIMARY) && listCell.getItem() != null) {
+                    if(selectedListCell != null)
+                        selectedListCell.setStyle("");
+                    listCell.setStyle("-fx-background-color: #10A0DC;");
+                    selectedListCell = listCell;
                     showDiscountEffect(listCell.getItem());
+                }
             });
             listCell.getStyleClass().add("Discounts_ListView_Cell");
             return listCell;
@@ -791,6 +803,7 @@ public class ProductsProcessor extends Processor{
         } else {
             discountCodesListView.getItems().removeAll(discountCodesListView.getItems());
             discountCodesListView.setDisable(true);
+            removeDiscountEffect();
         }
     }
 
@@ -802,13 +815,60 @@ public class ProductsProcessor extends Processor{
     }
 
     private void showDiscountEffect(Discount discount) {
-        if(discount != null) {
-            System.out.println("What ?");
-            //Todo
+        if(totalPriceLabel.getPrefWidth() == 157) {
+            setPriceWithDiscountLabel(calculatePriceWithDiscount(discount.getDiscountPercent()));
+            setDiscountPriceArrow();
+        } else {
+            discountPriceLabel.setText(calculatePriceWithDiscount(discount.getDiscountPercent()) + " $");
         }
     }
 
     private void removeDiscountEffect() {
-
+        if(totalPriceLabel.getPrefWidth() != 157) {
+            pricePane.getChildren().removeAll(discountPriceLabel, priceArrow);
+            totalPriceLabel.setPrefWidth(157.0);
+        }
     }
+
+    private void setDiscountPriceArrow() {
+        try {
+            FileInputStream imageFileInputStream = new FileInputStream("src\\main\\resources\\Images\\Icons\\ProductsMenu\\Arrow Cart.png");
+            ImageView priceArrow = new ImageView(new Image(imageFileInputStream));
+            priceArrow.setFitWidth(20.0);
+            priceArrow.setFitHeight(20.0);
+
+            priceArrow.setLayoutX(totalPriceLabel.getLayoutX() + totalPriceLabel.getPrefWidth() + 5.0);
+            priceArrow.setLayoutY(totalPriceLabel.getLayoutY());
+
+            pricePane.getChildren().add(priceArrow);
+            this.priceArrow = priceArrow;
+            imageFileInputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setPriceWithDiscountLabel(double discountPrice) {
+        Label discountPriceLabel = new Label(discountPrice + " $");
+        discountPriceLabel.setPrefHeight(totalPriceLabel.getPrefHeight());
+        discountPriceLabel.setPrefWidth((totalPriceLabel.getPrefHeight() - 30.0) / 2);
+        totalPriceLabel.setPrefWidth(discountPriceLabel.getPrefWidth());
+
+        discountPriceLabel.setLayoutY(totalPriceLabel.getLayoutY());
+        discountPriceLabel.setLayoutX(totalPriceLabel.getLayoutX() + totalPriceLabel.getPrefWidth() + 30.0);
+        pricePane.getChildren().add(discountPriceLabel);
+        this.discountPriceLabel = discountPriceLabel;
+    }
+
+    private double calculatePriceWithDiscount(double discountPercent) {
+        return (1 - discountPercent / 100) * Double.parseDouble(totalPriceLabel.getText().replace(" $", ""));
+    }
+
+
+    //Price Part
+    private void initTotalPricePart() {
+//        totalPriceLabel.setText(Double.toString(CustomerControl.getController().getTotalPrice()));
+    }
+
+
 }
