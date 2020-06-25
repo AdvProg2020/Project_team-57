@@ -660,5 +660,26 @@ public class CustomerControl extends AccountControl{
         return false;
     }
 
-
+    public double getTotalPriceWithoutDiscount() {
+        double offPrice = 0;
+        try {
+            for (Product product : CartTable.getAllCartWithUsername(Control.getUsername())) {
+                if (OffTable.isThereProductInOff(product.getID())) {
+                    offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent() / 100))
+                            * product.getPrice() * product.getCount();
+                    offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent() / 100))
+                            * product.getPrice() * product.getAmount();
+                } else {
+                    offPrice += product.getPrice() * product.getAmount();
+                    offPrice += product.getPrice() * product.getCount();
+                }
+            }
+            return offPrice;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
