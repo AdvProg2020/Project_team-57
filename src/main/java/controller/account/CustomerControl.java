@@ -246,6 +246,18 @@ public class CustomerControl extends AccountControl{
         return Notification.UNKNOWN_ERROR;
     }
 
+    public ArrayList<Discount> getDiscounts() {
+        try {
+            DiscountTable.updateDiscountCodesTime();
+            return DiscountTable.getCustomerDiscountCodes(Control.getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
     public ArrayList<String> getDiscountCodes() {
         ArrayList<String> discountCodes = new ArrayList<>();
         try {
@@ -659,6 +671,5 @@ public class CustomerControl extends AccountControl{
         }
         return false;
     }
-
 
 }

@@ -108,7 +108,7 @@ public class SaleProcessor extends Processor implements Initializable {
         finishTimePicker.set24HourView(true);
     }
 
-    private void setFields() {
+    private void setDiscountFields() {
         Discount mainDiscount = ((SaleProcessor) parentProcessor).discount;
 
         if(mainDiscount == null) {
@@ -290,7 +290,7 @@ public class SaleProcessor extends Processor implements Initializable {
 
                 SaleProcessor saleProcessor = loader.getController();
                 saleProcessor.parentProcessor = this;
-                saleProcessor.setFields();
+                saleProcessor.setDiscountFields();
             }
         } catch (IOException e) {
             e.printStackTrace();

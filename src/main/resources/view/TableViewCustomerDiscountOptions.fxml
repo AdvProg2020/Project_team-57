@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="230.0" style="-fx-background-color: #9ce7f0;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.TableViewProcessor">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutX="170.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
+      <Label fx:id="codeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="228.0" prefWidth="210.0" text="Discount Code">
+         <font>
+            <Font name="Calibri" size="17.0" />
+         </font>
+      </Label>
+      <JFXButton fx:id="showDiscountCustomerButton" buttonType="RAISED" disable="true" layoutX="18.0" layoutY="569.0" onAction="#showDiscountCustomer" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="30.0" prefWidth="194.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Discount">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="65.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/TableViewMenu/discount%20menu%20customer.png" />
+         </image>
+      </ImageView>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
+      <Pane layoutX="15.0" layoutY="465.0" prefHeight="81.0" prefWidth="200.0" style="-fx-background-color: WHITE; -fx-background-radius: 10 10 10 10;">
+         <children>
+            <Label layoutX="14.0" layoutY="14.0" text="Used: " />
+            <Label layoutX="14.0" layoutY="44.0" text="Repetition Left:" />
+            <Label fx:id="repetitionLeftLabel" alignment="TOP_CENTER" layoutX="151.0" layoutY="44.0" prefHeight="21.0" prefWidth="41.0" text="0" />
+            <Label fx:id="usedDiscountLabel" alignment="TOP_CENTER" layoutX="151.0" layoutY="14.0" prefHeight="21.0" prefWidth="41.0" text="0" />
+         </children></Pane>
+   </children>
+</Pane>

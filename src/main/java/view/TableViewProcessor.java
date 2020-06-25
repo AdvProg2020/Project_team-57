@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -96,6 +97,9 @@ public class TableViewProcessor<T> extends Processor {
     public Label vendorUsernameLabel;
     public JFXTextField vendorUsernameField;
     public JFXTextField productQuantityField;
+    public JFXButton showDiscountCustomerButton;
+    public Label repetitionLeftLabel;
+    public Label usedDiscountLabel;
     private TableViewType tableViewType;
     private T selectedItem;
     private String searchedUsername;
@@ -104,7 +108,8 @@ public class TableViewProcessor<T> extends Processor {
 
     public static enum TableViewType {
         CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN),
-        DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS, ADMIN_OFFS, VENDOR_OFFS, LOGS, PRODUCTS_OF_LOG;
+        DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS, ADMIN_OFFS,
+        VENDOR_OFFS, LOGS, PRODUCTS_OF_LOG, CUSTOMER_DISCOUNTS;
 
         Account.AccountType accountType;
 
@@ -159,6 +164,7 @@ public class TableViewProcessor<T> extends Processor {
             case CUSTOMERS:
                 initAccountColumns();
                 break;
+            case CUSTOMER_DISCOUNTS:
             case DISCOUNTS:
                 initDiscountColumns();
                 break;
@@ -295,6 +301,9 @@ public class TableViewProcessor<T> extends Processor {
             case PRODUCTS_OF_LOG:
                 tableList.addAll((ArrayList<T>) selectedLog.getAllProducts());
                 break;
+            case CUSTOMER_DISCOUNTS:
+                tableList.addAll((ArrayList<T>) CustomerControl.getController().getDiscounts());
+                break;
         }
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
@@ -363,7 +372,29 @@ public class TableViewProcessor<T> extends Processor {
             case PRODUCTS_OF_LOG:
                 mainBorderPane.setLeft(initProductOfLogsOptions());
                 break;
+            case CUSTOMER_DISCOUNTS:
+                mainBorderPane.setLeft(initCustomerDiscounts());
+                break;
         }
+    }
+
+    private Pane initCustomerDiscounts() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewCustomerDiscountOptions.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            if(selectedItem != null) {
+                Discount discount = (Discount)selectedItem;
+                processor.showDiscountCustomerButton.setDisable(false);
+                processor.usedDiscountLabel.setText("" + discount.getCustomersWithRepetition().get(Control.getUsername()));
+                processor.repetitionLeftLabel.setText("" + (discount.getMaxRepetition() - discount.getCustomersWithRepetition().get(Control.getUsername())));
+            }
+            return root;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private Pane initProductOfLogsOptions() {
@@ -1095,5 +1126,7 @@ public class TableViewProcessor<T> extends Processor {
         this.selectedLog = log;
     }
 
+    public void showDiscountCustomer(ActionEvent actionEvent) {
+    }
 
 }
