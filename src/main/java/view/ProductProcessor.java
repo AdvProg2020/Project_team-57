@@ -497,7 +497,7 @@ public class ProductProcessor extends Processor {
             }
         }
 
-        if(menuType == ProductMenuType.VENDOR_ADD || menuType == ProductMenuType.VENDOR_EDIT) {
+        if(menuType == ProductMenuType.VENDOR_ADD) {
             changeCountableField(null);
         } else {
             nameTextField.setText(product.getName());
@@ -517,6 +517,11 @@ public class ProductProcessor extends Processor {
 
             if (menuType != ProductMenuType.VENDOR_EDIT)
                 disableEditingGeneralFields();
+        }
+
+        if(menuType == ProductMenuType.VENDOR_EDIT) {
+            countableToggleButton.setDisable(true);
+            changeCountableField(null);
         }
             //Todo
     }
@@ -813,6 +818,7 @@ public class ProductProcessor extends Processor {
             //Except Customer Section
             case VENDOR_EDIT_UNAPPROVED:
                 specialImages.getChildren().remove(tickImage);
+                price.setText(Double.toString(product.getPrice()));
                 price.setDisable(true);
             case VENDOR_ADD:
                 specialImages.getChildren().removeAll(buyersImage, removeImage);
@@ -1011,10 +1017,9 @@ public class ProductProcessor extends Processor {
         double previousCartAmount = Double.parseDouble(cartCount.getText());
 
         //Todo Check
-        if(previousCartAmount > 0.2) {
-            System.out.println(previousCartAmount);
+        if(previousCartAmount > 0.2)
             cartCount.setText(Double.toString((Math.ceil(previousCartAmount * 5) - 1) / 5));
-        }
+
     }
 
     public void addToCartMouseClicked() {

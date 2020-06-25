@@ -191,6 +191,8 @@ public class EditingProductTable extends Database{
 
     public static ArrayList<File> copyEditingProductNewImagesInTemp(String productID, ArrayList<File> productImageFiles) throws IOException {
         ArrayList<File> pictureFiles = new ArrayList<>();
+        File productOriginFolder = new File("database\\Images\\EditingProducts\\" + productID);
+        productOriginFolder.mkdir();
         File productFolder = new File("database\\Images\\EditingProducts\\" + productID + "\\Jesus");
         if(!productFolder.exists())
             productFolder.mkdir();
@@ -208,7 +210,9 @@ public class EditingProductTable extends Database{
     public static void removeEditingProductTempImages(String productID) {
         File tempFolder = new File("database\\Images\\EditingProducts\\" + productID + "\\Jesus");
         String[] entries = tempFolder.list();
+        System.out.println(entries);
         for(String s: entries){
+            System.out.println(s);
             File currentFile = new File(tempFolder.getPath(),s);
             currentFile.delete();
         }
