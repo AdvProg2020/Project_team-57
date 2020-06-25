@@ -770,10 +770,10 @@ public class ProductsProcessor extends Processor{
             ListCell<Discount> listCell = new ListCell<Discount>() {
                 @Override
                 protected void updateItem(Discount discount, boolean empty) {
-                    if(!empty) {
-                        super.updateItem(discount, false);
+                    super.updateItem(discount, empty);
+
+                    if(!empty)
                         setText(discount.getCode() + " : " + discount.getDiscountPercent());
-                    }
                 }
             };
             listCell.setOnMouseClicked(event -> {
