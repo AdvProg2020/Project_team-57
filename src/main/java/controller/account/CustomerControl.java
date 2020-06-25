@@ -672,22 +672,27 @@ public class CustomerControl extends AccountControl{
         return false;
     }
 
-    public ArrayList<Discount> getAllAvailableCustomerDisCounts() {
+    public double getTotalPriceWithoutDiscount() {
+        double offPrice = 0;
         try {
-            ArrayList<Discount> availableDiscounts = new ArrayList<>();
-
-            for (Discount customerDiscountCode : DiscountTable.getCustomerDiscountCodes(getUsername())) {
-                if(customerDiscountCode.canCustomerUseThisDiscount(getUsername())) {
-                    availableDiscounts.add(customerDiscountCode);
+            for (Product product : CartTable.getAllCartWithUsername(Control.getUsername())) {
+                if (OffTable.isThereProductInOff(product.getID())) {
+                    offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent() / 100))
+                            * product.getPrice() * product.getCount();
+                    offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent() / 100))
+                            * product.getPrice() * product.getAmount();
+                } else {
+                    offPrice += product.getPrice() * product.getAmount();
+                    offPrice += product.getPrice() * product.getCount();
                 }
             }
-
-            return availableDiscounts;
-        } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Shit. Error In Getting Available Discounts");
+            return offPrice;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-        return null;
+        return 0;
     }
+
 }

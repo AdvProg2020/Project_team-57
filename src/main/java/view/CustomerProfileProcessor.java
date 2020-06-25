@@ -1,7 +1,10 @@
 package view;
 
+import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.JFXTextField;
 import controller.Control;
-import controller.IOControl;
+import controller.account.AccountControl;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -29,6 +32,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class CustomerProfileProcessor extends AccountProcessor implements Initializable {
+    AccountControl accountControl = AccountControl.getController();
 
     public ImageView infoImage;
     public Label infoLabel;
@@ -46,6 +50,16 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     public Label profileLabel;
     private Stage myStage;
     public Pane pain;
+
+    /**
+     * Purchase.fxml
+     */
+    public ImageView backToCart;
+    public JFXTextField postalCode;
+    public JFXTextArea address;
+    public JFXTextField phoneNumber;
+    public JFXTextField name;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -120,6 +134,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         cartImage.setOpacity(1);
         cartLabel.setOpacity(1);
         cartPane.setStyle("-fx-background-color:#79dbf0; -fx-background-radius: 10");
+
     }
 
     public void exitCart(MouseEvent event) {
@@ -191,5 +206,9 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
                 e.printStackTrace();
             }
         }
+    }
+
+    public void purchase(ActionEvent event) {
+
     }
 }
