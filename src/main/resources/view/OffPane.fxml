@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="279.0" prefWidth="250.0" style="-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.OffListProcessor">
+   <children>
+      <StackPane layoutX="27.0" layoutY="26.0" prefHeight="93.0" prefWidth="116.0" style="-fx-background-radius: 10 10 10 10;">
+         <children>
+            <ImageView fx:id="offImage" fitHeight="184.0" fitWidth="197.0" pickOnBounds="true" />
+         </children>
+      </StackPane>
+      <Label fx:id="offName" layoutX="27.0" layoutY="210.0" prefHeight="21.0" prefWidth="149.0" text="Digital design">
+         <font>
+            <Font name="Calibri" size="17.0" />
+         </font>
+      </Label>
+      <Label fx:id="offPercent" layoutX="27.0" layoutY="231.0" prefHeight="21.0" prefWidth="149.0" text="30%">
+         <font>
+            <Font name="Calibri" size="17.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>

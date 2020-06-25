@@ -3,19 +3,15 @@ package view;
 import com.jfoenix.controls.JFXButton;
 import controller.account.CustomerControl;
 import controller.product.ProductControl;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import model.existence.Off;
 
 import java.io.IOException;
@@ -24,53 +20,51 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class OffListProcessor implements Initializable {
-    private static final int PRODUCT_PANE_HEIGHT = 250;
-    private static final int PRODUCT_PANE_WIDTH = 200;
-    private static final int PRODUCTS_NUMBER_PER_PAGE = 8;
+    private static final int PRODUCTS_NUMBER_PER_PAGE = 6;
 
     private final CustomerControl customerControl = CustomerControl.getController();
     private final ProductControl productControl = ProductControl.getController();
     private final ArrayList<Off> offs = new ArrayList<>(customerControl.getAllShowingOffs());
-    private ArrayList<Long> timeSeconds = new ArrayList<>();
+    private final ArrayList<Long> timeSeconds = new ArrayList<>();
     private int currentPage = 1;
     private final int productsNumber = offs.size();
     private final int numberOfPages = (int) Math.floor(productsNumber / PRODUCTS_NUMBER_PER_PAGE) + 1;
-
-    public JFXButton backButton;
+    /**
+     * OffPane.fxml
+     */
+    public ImageView offImage;
+    public Label offName;
+    public Label offPercent;
+    /**
+     * OffList.fxml
+     */
     public JFXButton accountMenuButton;
     public GridPane gridPane;
     public ImageView previousPage;
     public Label pageNumberLabel;
     public ImageView nextPage;
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initPageNumberGraphic();
-        initGridPaneGraphic();
+        if (location.toString().contains("OffList.fxml")) {
+            initPageNumberGraphic();
+            initGridPaneGraphic();
+        }
     }
 
     private void initGridPaneGraphic() {
         gridPane.getChildren().clear();
         int number = 0;
-        int offIterator = (currentPage - 1) * 8;
+        int offIterator = (currentPage - 1) * PRODUCTS_NUMBER_PER_PAGE;
+        gridPane.setAlignment(Pos.CENTER);
         while (number < PRODUCTS_NUMBER_PER_PAGE && offIterator < productsNumber) {
-            gridPane.add(getOffPane(offs.get(offIterator)), number % 4, number / 4);
+            gridPane.add(getOffPane(offs.get(offIterator)), number % (PRODUCTS_NUMBER_PER_PAGE / 2), number / (PRODUCTS_NUMBER_PER_PAGE / 2));
             number++;
             offIterator++;
         }
     }
 
     private Pane getOffPane(final Off off/*,/* Long timeSecond */) {
-        Pane pane = new Pane();
-        pane.setPrefHeight(PRODUCT_PANE_HEIGHT);
-        pane.setPrefWidth(PRODUCT_PANE_WIDTH);
-        ImageView imageView = new ImageView(productControl.getOffImageByID(off.getOffID()));
-        Text name = new Text(off.getOffName());
-        name.setStyle("-fx-font-family: Calibri; -fx-font-size: 18;-fx-fill: #2F999F;");
-        HBox hBox = new HBox(imageView, name);
-        Text percent = new Text(off.getOffPercent() + "%");
-        percent.setStyle("-fx-font-family: Calibri; -fx-font-size: 18;-fx-fill: firebrick;");
        /* Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         Label time = new Label(setTime(timeSecond));
@@ -83,11 +77,31 @@ public class OffListProcessor implements Initializable {
                                 timeline.stop();
                             }
                         }));
-        timeline.playFromStart();
-        VBox vBox = new VBox(hBox, percent, time);*/
-        VBox vBox = new VBox(hBox, percent);
-        pane.getChildren().add(vBox);
-        return pane;
+        timeline.playFromStart();*/
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffPane.fxml"));
+            Pane offPane = loader.load();
+            OffListProcessor processor = loader.getController();
+            processor.offImage.setImage(productControl.getOffImageByID(off.getOffID()));
+            processor.offPercent.setText(off.getOffPercent() + "%");
+            processor.offName.setStyle("-fx-font-family: Calibri; -fx-text-fill: #330939; -fx-font-size: 18px;");
+            processor.offPercent.setStyle("-fx-font-family: Calibri; -fx-text-fill: #330939; -fx-font-size: 18px;");
+            processor.offName.setText(off.getOffName());
+            offPane.setStyle("-fx-background-color: white; -fx-background-radius: 10px;");
+            offPane.setOnMouseEntered(event -> {
+                processor.offImage.setOpacity(0.8);
+                offPane.setStyle("-fx-cursor: hand; -fx-background-color: white; -fx-background-radius: 10px");
+            });
+            offPane.setOnMouseExited(event -> {
+                processor.offImage.setOpacity(1);
+                offPane.setStyle("-fx-cursor: inherit; -fx-background-color: white; -fx-background-radius: 10px");
+            });
+            offPane.setOnMouseClicked(event -> {});
+            return offPane;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new Pane();
     }
 
     private String setTime(final long liftedTime) {
@@ -120,19 +134,19 @@ public class OffListProcessor implements Initializable {
         }
     }
 
-    public void showPreviousPage(MouseEvent event) {
+    public void showPreviousPage() {
         currentPage--;
         initPageNumberGraphic();
         initGridPaneGraphic();
     }
 
-    public void showNextPage(MouseEvent event) {
+    public void showNextPage() {
         currentPage++;
         initGridPaneGraphic();
         initPageNumberGraphic();
     }
 
-    public void openAccountMenu(ActionEvent actionEvent) {
+    public void openAccountMenu() {
         new WelcomeProcessor().openAccountMenu();
     }
 

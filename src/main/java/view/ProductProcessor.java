@@ -4,7 +4,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
-import com.sun.javaws.util.JfxHelper;
 import controller.Control;
 import controller.account.CustomerControl;
 import controller.account.VendorControl;
