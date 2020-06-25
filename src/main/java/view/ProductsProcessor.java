@@ -21,6 +21,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DataFormat;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -37,8 +38,9 @@ import model.existence.Product;
 import notification.Notification;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -799,19 +801,26 @@ public class ProductsProcessor extends Processor{
 
     private void discountToggleButtonChanged() {
         if(useDiscountCodeToggleButton.isSelected()) {
-            loadDiscountListView();
+            setDiscountListViewCells();
         } else {
-            discountCodesListView.getItems().removeAll(discountCodesListView.getItems());
-            discountCodesListView.setDisable(true);
+            removeDiscountListViewCells();
             removeDiscountEffect();
         }
     }
 
-    private void loadDiscountListView() {
+    private void setDiscountListViewCells() {
         //Todo Check
         discountCodesListView.setDisable(false);
         ObservableList<Discount> customerDiscounts = discountCodesListView.getItems();
         customerDiscounts.addAll(CustomerControl.getController().getAllAvailableCustomerDisCounts());
+    }
+
+    private void removeDiscountListViewCells() {
+        discountCodesListView.getItems().removeAll(discountCodesListView.getItems());
+        discountCodesListView.setDisable(true);
+
+        if(selectedListCell != null)
+            selectedListCell.setStyle("");
     }
 
     private void showDiscountEffect(Discount discount) {
@@ -849,9 +858,10 @@ public class ProductsProcessor extends Processor{
     }
 
     private void setPriceWithDiscountLabel(double discountPrice) {
-        Label discountPriceLabel = new Label(discountPrice + " $");
+        Label discountPriceLabel = new Label(getSmoothDoubleFormat(discountPrice) + " $");
+
         discountPriceLabel.setPrefHeight(totalPriceLabel.getPrefHeight());
-        discountPriceLabel.setPrefWidth((totalPriceLabel.getPrefHeight() - 30.0) / 2);
+        discountPriceLabel.setPrefWidth((totalPriceLabel.getPrefWidth() - 30.0) / 2);
         totalPriceLabel.setPrefWidth(discountPriceLabel.getPrefWidth());
 
         discountPriceLabel.setLayoutY(totalPriceLabel.getLayoutY());
@@ -867,7 +877,14 @@ public class ProductsProcessor extends Processor{
 
     //Price Part
     private void initTotalPricePart() {
-//        totalPriceLabel.setText(Double.toString(CustomerControl.getController().getTotalPrice()));
+        double totalPrice = CustomerControl.getController().getTotalPriceWithoutDiscount();
+        totalPriceLabel.setText(getSmoothDoubleFormat(totalPrice));
+    }
+
+    private String getSmoothDoubleFormat(double number) {
+        DecimalFormat doubleFormatter = new DecimalFormat("#.####");
+        doubleFormatter.setRoundingMode(RoundingMode.HALF_UP);
+        return doubleFormatter.format(number);
     }
 
 

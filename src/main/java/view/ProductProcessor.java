@@ -1007,7 +1007,7 @@ public class ProductProcessor extends Processor {
         if(previousCartAmount < product.getAmount()) {
             double nextProductAmount = product.getAmount() - previousCartAmount > 0.2 ? previousCartAmount + 0.2 : product.getAmount();
             DecimalFormat doubleFormatter = new DecimalFormat("#.#");
-            doubleFormatter.setRoundingMode(RoundingMode.CEILING);
+            doubleFormatter.setRoundingMode(RoundingMode.HALF_UP);
             cartCount.setText(doubleFormatter.format(nextProductAmount));
         }
     }
