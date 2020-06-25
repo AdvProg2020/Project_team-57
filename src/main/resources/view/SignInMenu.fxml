@@ -10,6 +10,11 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="383.0" stylesheets="@../CSS%20files/SignInMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.WelcomeProcessor">
     <children>
+        <JFXTextField fx:id="userNameField" labelFloat="true" layoutX="69.0" layoutY="127.0" onMouseClicked="#signInTextFieldMouseClicked" prefHeight="43.0" prefWidth="261.0" promptText="  Username" unFocusColor="#b0bec5" />
+        <JFXPasswordField fx:id="passwordField" labelFloat="true" layoutX="69.0" layoutY="225.0" onMouseClicked="#signInTextFieldMouseClicked" prefHeight="43.0" prefWidth="261.0" promptText="  Password" unFocusColor="#b0bec5" />
+      <JFXButton fx:id="loginButton" defaultButton="true" layoutX="273.0" layoutY="310.0" onAction="#login" style="-fx-background-color: #B0BEC5; -fx-cursor: hand;" styleClass="Login_Button" text="Login" textFill="WHITE" />
+        <Label layoutX="62.0" layoutY="310.0" prefHeight="31.0" prefWidth="108.0" text="Not A Member?" />
+        <JFXButton layoutX="163.0" layoutY="310.0" onMouseClicked="#enterSignUpMenu" prefHeight="31.0" prefWidth="73.0" style="-fx-cursor: hand;" styleClass="SignUP_Button" text="Sign Up" underline="true" />
       <ImageView fitHeight="86.0" fitWidth="100.0" layoutX="154.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/Icons/Login%20Icon.png" />
@@ -25,10 +30,5 @@
             <Image url="@../Images/Icons/Password%20Icon.png" />
          </image>
       </ImageView>
-        <JFXTextField fx:id="userNameField" labelFloat="true" layoutX="69.0" layoutY="127.0" onAction="#signInTextFieldMouseClicked" onMouseClicked="#signInTextFieldMouseClicked" prefHeight="43.0" prefWidth="261.0" promptText="  Username" unFocusColor="#b0bec5" />
-        <JFXPasswordField fx:id="passwordField" labelFloat="true" layoutX="69.0" layoutY="225.0" onAction="#signInTextFieldMouseClicked" onMouseClicked="#signInTextFieldMouseClicked" prefHeight="43.0" prefWidth="261.0" promptText="  Password" unFocusColor="#b0bec5" />
-      <JFXButton defaultButton="true" layoutX="273.0" layoutY="310.0" onAction="#login" style="-fx-background-color: #B0BEC5; -fx-cursor: hand;" styleClass="Login_Button" text="Login" textFill="WHITE" />
-        <Label layoutX="62.0" layoutY="310.0" prefHeight="31.0" prefWidth="108.0" text="Not A Member?" />
-        <JFXButton layoutX="163.0" layoutY="310.0" onMouseClicked="#enterSignUpMenu" prefHeight="31.0" prefWidth="73.0" style="-fx-cursor: hand;" styleClass="SignUP_Button" text="Sign Up" underline="true" />
     </children>
 </AnchorPane>

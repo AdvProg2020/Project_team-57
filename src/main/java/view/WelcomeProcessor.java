@@ -18,6 +18,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -39,6 +41,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
     //SignInMenu
     public JFXTextField userNameField;
     public JFXPasswordField passwordField;
+    public JFXButton loginButton;
 
     //SignUpMenu
     private static boolean isNormal = true;
@@ -59,6 +62,8 @@ public class WelcomeProcessor extends Processor implements Initializable {
 
         if(locationFile.contains("WelcomeMenu"))
             setBG();
+        else if(locationFile.contains("SignInMenu"))
+            System.out.println(loginButton.isDefaultButton());
         else if(locationFile.contains("SignUpMenu"))
             initAccTypeComboBox();
 
@@ -161,7 +166,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
     }
 
     //SignInMenu
-    public void login(Event event) {
+    public void login() {
         if(userNameField.getText().equals("") || passwordField.getText().equals("")) {
             if(userNameField.getText().equals(""))
                 userNameField.setStyle(errorTextFieldStyle);
