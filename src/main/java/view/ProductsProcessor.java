@@ -698,10 +698,6 @@ public class ProductsProcessor extends Processor{
         }
     }
 
-    public void purchaseProducts(MouseEvent mouseEvent) {
-        //TODO
-    }
-
     public void saveChangesForAdminProductRequests(MouseEvent mouseEvent) {
         ArrayList<Notification> results = new ArrayList<>();
         AdminControl adminControl = AdminControl.getController();
@@ -765,6 +761,11 @@ public class ProductsProcessor extends Processor{
 
     public void setSelectedOff(Off selectedOff) {
         this.selectedOff = selectedOff;
+    }
+
+    //Purchase Part
+    public void purchaseProducts(MouseEvent mouseEvent) {
+        //TODO
     }
 
     //Discount Part
