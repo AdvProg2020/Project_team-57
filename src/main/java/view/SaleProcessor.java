@@ -80,6 +80,7 @@ public class SaleProcessor extends Processor implements Initializable {
     public ImageView deleteImageButton;
     private File offImageFile;
     private boolean isDefaultPicture;
+    private boolean isEditing = false;
 
 
     @Override
@@ -202,6 +203,13 @@ public class SaleProcessor extends Processor implements Initializable {
                 offStartTimePicker.setOpacity(1);
                 offFinishDatePicker.setOpacity(1);
                 offFinishTimePicker.setOpacity(1);
+                if(((SaleProcessor)parentProcessor).isEditing) {
+                    System.out.println(":|");
+                    offStartDatePicker.setDisable(true);
+                    offStartDatePicker.setOpacity(0.99);
+                    offStartTimePicker.setDisable(true);
+                    offStartTimePicker.setOpacity(0.99);
+                }
             }
         }
         updateImageRectangle();
@@ -212,6 +220,7 @@ public class SaleProcessor extends Processor implements Initializable {
             FileInputStream fileInputStream = new FileInputStream(((SaleProcessor)parentProcessor).offImageFile);
             Image image = new Image(fileInputStream);
             offImageRectangle.setFill(new ImagePattern(image));
+            System.out.println(((SaleProcessor)parentProcessor).isDefaultPicture);
             if(((SaleProcessor)parentProcessor).isDefaultPicture) {
                 offImageRectangle.setStrokeWidth(0);
                 deleteImageButton.setDisable(true);
@@ -219,14 +228,21 @@ public class SaleProcessor extends Processor implements Initializable {
                 offImageRectangle.setStrokeWidth(2);
                 deleteImageButton.setDisable(false);
             }
-        } catch (FileNotFoundException e) {
+            fileInputStream.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void getOffImageFile() {
-        offImageFile = productControl.getOffImageFileByID(off.getOffID());
-        isDefaultPicture = !productControl.doesOffHaveImage(off.getOffID());
+        if(!productControl.isOffEditing(off.getOffID())) {
+            offImageFile = productControl.getOffImageFileByID(off.getOffID());
+            isDefaultPicture = !productControl.doesOffHaveImage(off.getOffID());
+        } else {
+            offImageFile = productControl.getEditingOffImageFileByID(off.getOffID());
+            isDefaultPicture = !productControl.doesEditingOffHaveImage(off.getOffID());
+            System.out.println(isDefaultPicture);
+        }
         /*Image image = (off != null && off.getOffID() != null && off.getOffID().length() != 0 ?
                 productControl.getOffImageByID(off.getOffID()) : productControl.getOffImageByID("1"));
         offImageRectangle.setFill(new ImagePattern(image));
@@ -399,8 +415,12 @@ public class SaleProcessor extends Processor implements Initializable {
                 offProductsPane.setStyle("-fx-background-color: #3498DB;   -fx-background-radius: 0 10 10 0;");
                 ProductsProcessor processor = loader.getController();
                 processor.setParentProcessor(this);
-                if (Control.getType() != null && (Control.getType().equals("Vendor")))
+                if (Control.getType() != null && (Control.getType().equals("Vendor")) && !isEditing)
                     processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_ADD_OFF_PRODUCTS);
+                else if(Control.getType() != null && (Control.getType().equals("Vendor")) && isEditing) {
+                    processor.setSelectedOff(off);
+                    processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_OFF_PRODUCTS);
+                }
                 else if (Control.getType() != null && (Control.getType().equals("Admin"))) {
                     processor.setSelectedOff(off);
                     processor.initProcessor(ProductsProcessor.ProductsMenuType.ADMIN_OFF_PRODUCTS);
@@ -419,12 +439,25 @@ public class SaleProcessor extends Processor implements Initializable {
             off.setStartDate(new Date(System.currentTimeMillis()));
         }
         File imageFile = (isDefaultPicture ? null : offImageFile);
-        Notification resultNotification = VendorControl.getController().addOff(off, imageFile);
-        if(resultNotification == Notification.ADD_OFF) {
-            System.out.println(myStage);
-            closeSubStage(myStage, parentProcessor);
+        if(!isEditing) {
+            Notification resultNotification = VendorControl.getController().addOff(off, imageFile);
+            if (resultNotification == Notification.ADD_OFF) {
+                //System.out.println(myStage);
+                ((TableViewProcessor) parentProcessor).updateTable();
+                ((TableViewProcessor) parentProcessor).updateSelectedItem();
+                closeSubStage(myStage, parentProcessor);
+            }
+            resultNotification.getAlert().show();
+        } else {
+            System.out.println("Yeah You're Editing");
+            Notification resultNotification = VendorControl.getController().editOff(off, imageFile);
+            if (resultNotification == Notification.EDIT_OFF) {
+                ((TableViewProcessor) parentProcessor).updateTable();
+                ((TableViewProcessor) parentProcessor).updateSelectedItem();
+                closeSubStage(myStage, parentProcessor);
+            }
+            resultNotification.getAlert().show();
         }
-        resultNotification.getAlert().show();
     }
 
     public void saveOffChange(MouseEvent mouseEvent) {
@@ -495,5 +528,13 @@ public class SaleProcessor extends Processor implements Initializable {
         ((SaleProcessor)parentProcessor).offImageFile = productControl.getOffImageFileByID("1");
         ((SaleProcessor)parentProcessor).isDefaultPicture = true;
         updateImageRectangle();
+    }
+
+    public void setDefaultPicture(boolean defaultPicture) {
+        isDefaultPicture = defaultPicture;
+    }
+
+    public void setEditing(boolean editing) {
+        isEditing = editing;
     }
 }

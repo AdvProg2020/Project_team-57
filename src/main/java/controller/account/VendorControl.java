@@ -192,7 +192,7 @@ public class VendorControl extends AccountControl{
 
     public ArrayList<Off> getAllOffs() {
         try {
-            return  OffTable.getVendorOffs(Control.getUsername());
+            return OffTable.getVendorOffs(Control.getUsername());
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -282,6 +282,7 @@ public class VendorControl extends AccountControl{
                 }
             }
             for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
+                //System.out.println(product.getName());
                 if(!OffTable.isThereProductInOffIgnoreStatus(product.getID()) && product.getStatus() != 2)
                     nonOffProducts.add(product);
             }
@@ -290,6 +291,10 @@ public class VendorControl extends AccountControl{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+/*        for (Product nonOffProduct : nonOffProducts) {
+            System.out.println(nonOffProduct.getName());
+        }*/
         return nonOffProducts;
     }
 
@@ -327,7 +332,7 @@ public class VendorControl extends AccountControl{
     {
         try {
             if(OffTable.isThereEditingOffWithID(offID)) {
-                Off off = OffTable.getSpecificEditingOffByID(offID);
+                Off off = OffTable.getSpecificEditingOff(offID);
                 if(off.getOffName().equals(offName))
                     return Notification.DUPLICATE_OFF_VALUE;
                 OffTable.editEditingOffName(off.getOffID() ,offName);
@@ -353,7 +358,7 @@ public class VendorControl extends AccountControl{
     {
         try {
             if(OffTable.isThereEditingOffWithID(offID)) {
-                Off off = OffTable.getSpecificEditingOffByID(offID);
+                Off off = OffTable.getSpecificEditingOff(offID);
                 if(off.getFinishDate().compareTo(date) == 0)
                     return Notification.DUPLICATE_OFF_VALUE;
                 if(date.compareTo(new Date(System.currentTimeMillis())) != 1 || date.compareTo(off.getStartDate()) != 1)
@@ -383,7 +388,7 @@ public class VendorControl extends AccountControl{
     {
         try {
             if(OffTable.isThereEditingOffWithID(offID)) {
-                Off off = OffTable.getSpecificEditingOffByID(offID);
+                Off off = OffTable.getSpecificEditingOff(offID);
                 if(off.getOffPercent() == percent)
                     return Notification.DUPLICATE_OFF_VALUE;
                 if(!(percent > 0 && percent <= 100))
@@ -576,5 +581,41 @@ public class VendorControl extends AccountControl{
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    public Notification editOff(Off off, File offImageFile) {
+        if (off.getOffName() == null)
+            return Notification.UNCOMPLETED_OFF_NAME;
+        if (off.getFinishDate() == null)
+            return Notification.NOT_SET_FINISH_DATE;
+        if (off.getOffPercent() <= 0 || off.getOffPercent() >= 100)
+            return Notification.OUT_BOUND_OF_PERCENT;
+        if(off.getProductIDs() == null || off.getProductIDs().size() == 0)
+            return Notification.EMPTY_OFF_PRODUCTS;
+        if(off.getStartDate().compareTo(new Date(System.currentTimeMillis())) < 0)
+            return Notification.START_DATE_BEFORE_NOW;
+        if(off.getStartDate().compareTo(off.getFinishDate()) > -1)
+            return Notification.START_DATE_AFTER_FINISH_DATE;
+        try {
+            off.setStatus(3);
+            //System.out.println(offImageFile);
+            System.out.println(offImageFile);
+            if(offImageFile != null) {
+                ProductControl.getController().setEditingOffPicture(off.getOffID(), offImageFile);
+            } else {
+                System.out.println("What the Fuck is this");
+                ProductControl.getController().deleteEditingOffPicture(off.getOffID());
+            }
+            OffTable.changeOffStatus(off.getOffID(), 3);
+            if(ProductControl.getController().isOffEditing(off.getOffID())) {
+                OffTable.removeEditingOff(off.getOffID());
+            }
+            OffTable.addEditingOff(off);
+            return Notification.EDIT_OFF;
+        } catch (SQLException e) {
+            return Notification.UNKNOWN_ERROR;
+        } catch (ClassNotFoundException e) {
+            return Notification.UNKNOWN_ERROR;
+        }
     }
 }

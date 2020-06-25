@@ -51,7 +51,8 @@ public class ProductsProcessor extends Processor{
     private HashMap<String, CheckBox> productsApprovalMap;
 
     public static enum ProductsMenuType {
-        MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART, ADMIN_PRODUCT_REQUESTS, VENDOR_ADD_OFF_PRODUCTS, ADMIN_OFF_PRODUCTS;
+        MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART, ADMIN_PRODUCT_REQUESTS,
+        VENDOR_ADD_OFF_PRODUCTS, ADMIN_OFF_PRODUCTS, VENDOR_OFF_PRODUCTS;
     }
     private ProductsMenuType menuType;
 
@@ -117,6 +118,7 @@ public class ProductsProcessor extends Processor{
             case ADMIN_PRODUCT_REQUESTS:
                 initAdminProductRequestsMenu();
                 break;
+            case VENDOR_OFF_PRODUCTS:
             case ADMIN_OFF_PRODUCTS:
             case VENDOR_ADD_OFF_PRODUCTS:
                 initOffProductsMenu();
@@ -270,18 +272,31 @@ public class ProductsProcessor extends Processor{
                 allProducts = VendorControl.getController().getNonOffProducts();
                 break;
             case ADMIN_OFF_PRODUCTS:
-                if(productControl.isThereOffWithID(selectedOff.getOffID()))
-                    selectedOff = productControl.getOffByID(selectedOff.getOffID());
-                else {
-                    ((TableViewProcessor)((SaleProcessor)parentProcessor).parentProcessor).updateTable();
-                    ((TableViewProcessor)((SaleProcessor)parentProcessor).parentProcessor).updateSelectedItem();
-                    ((SaleProcessor)parentProcessor).myStage.close();
+                if(!isThereOff(selectedOff))
                     return;
-                }
                 allProducts = ProductControl.getController().getAllOffProductsByOffID(selectedOff);
                 break;
+            case VENDOR_OFF_PRODUCTS:
+                if(!isThereOff(selectedOff))
+                    return;
+                allProducts = VendorControl.getController().getNonOffProducts(selectedOff.getOffID());
+                break;
+
         }
         initCertainProductsPage(productsScrollPane);
+    }
+
+    private boolean isThereOff(Off selectedOff) {
+        if(productControl.isThereOffWithID(selectedOff.getOffID())) {
+            selectedOff = productControl.getOffByID(selectedOff.getOffID());
+            return true;
+        }
+        else {
+            ((TableViewProcessor)((SaleProcessor)parentProcessor).parentProcessor).updateTable();
+            ((TableViewProcessor)((SaleProcessor)parentProcessor).parentProcessor).updateSelectedItem();
+            ((SaleProcessor)parentProcessor).myStage.close();
+            return false;
+        }
     }
 
     private void initCertainProductsPage(ScrollPane scrollPane) {
@@ -319,6 +334,7 @@ public class ProductsProcessor extends Processor{
         if((int)Math.ceil(((double)allProducts.size())/pageSize) != 0)
             pagesBarProcessor.pageNumberLabel.setText("Page " + (pageNumber + 1) + " of " + (int)Math.ceil(((double)allProducts.size())/pageSize));
         else {
+            System.out.println("Here");
             pagesBarProcessor.pageNumberLabel.setText("Page " + (pageNumber + 1) + " of " + 1);
             pagesBarProcessor.nextPageButton.setDisable(true);
             pagesBarProcessor.nextPageButton.setOpacity(0.3);
@@ -326,10 +342,15 @@ public class ProductsProcessor extends Processor{
             pagesBarProcessor.previousPageButton.setOpacity(0.3);
         }
         if(pageNumber == 0) {
+            System.out.println("There");
             pagesBarProcessor.previousPageButton.setDisable(true);
             pagesBarProcessor.previousPageButton.setOpacity(0.3);
         }
-        if(pageNumber == Math.ceil(allProducts.size()/12.0) - 1) {
+        System.out.println(allProducts.size());
+        System.out.println((((int)Math.ceil(((double)allProducts.size())/pageSize) - 1)));
+        System.out.println(pageNumber);
+        if(pageNumber == (((int)Math.ceil(((double)allProducts.size())/pageSize) - 1))) {
+            System.out.println("Fuck");
             pagesBarProcessor.nextPageButton.setDisable(true);
             pagesBarProcessor.nextPageButton.setOpacity(0.3);
         }
@@ -354,7 +375,7 @@ public class ProductsProcessor extends Processor{
                 hBoxes.get(i).getChildren().add(getAdminProductRequestsProductPane(i));
             }
 
-        } else if(menuType == ProductsMenuType.VENDOR_ADD_OFF_PRODUCTS) {
+        } else if(menuType == ProductsMenuType.VENDOR_ADD_OFF_PRODUCTS || menuType == ProductsMenuType.VENDOR_OFF_PRODUCTS) {
             for(int i = 0; i < pageLim; ++i) {
                 hBoxes.get(i).getChildren().add(getVendorOffProductPane(i));
             }

@@ -1,12 +1,15 @@
 package view;
 
 import com.jfoenix.controls.*;
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import controller.Control;
 import controller.account.AccountControl;
 import controller.account.AdminControl;
 import controller.account.CustomerControl;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -105,15 +108,34 @@ public class TableViewProcessor<T> extends Processor {
 
     public void initProcessor(TableViewType tableViewType) {
         this.tableViewType = tableViewType;
-        this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                 selectedItem = newSelection;
-                updateSelectedItem();
-            }
-        });
+        setTableViewModifiedFeatures();
+
         initColumns();
         updateTable();
         initOptions();
+    }
+
+    private void setTableViewModifiedFeatures() {
+        this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                selectedItem = newSelection;
+                updateSelectedItem();
+            }
+        });
+        this.tableView.widthProperty().addListener(new ChangeListener<Number>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth)
+            {
+                TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
+                header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                        header.setReordering(false);
+                    }
+                });
+            }
+        });
     }
 
     private void initColumns() {
@@ -302,9 +324,8 @@ public class TableViewProcessor<T> extends Processor {
                 processor.editOffButton.setDisable(false);
                 processor.deleteOffButton.setDisable(false);
                 processor.offNameLabel.setText(off.getOffName());
-                if(!ProductControl.getController().doesOffHaveImage(off.getOffID()))
-                    processor.offImageRectangle.setStrokeWidth(0);
-                processor.offImageRectangle.setFill(new ImagePattern(ProductControl.getController().getOffImageByID(off.getOffID())));
+                setOffPicture(processor.offImageRectangle, off);
+                return root;
             } else {
                 processor.offImageRectangle.setStrokeWidth(0);
                 processor.offImageRectangle.setFill(new ImagePattern(ProductControl.getController().getOffImageByID("")));
@@ -333,10 +354,8 @@ public class TableViewProcessor<T> extends Processor {
                 processor.setParentProcessor(this);
                 processor.offNameLabel.setText(off.getOffName());
                 processor.offVendorUsernameLabel.setText(off.getVendorUsername());
-                if(!ProductControl.getController().doesOffHaveImage(off.getOffID()))
-                    processor.offImageRectangle.setStrokeWidth(0);
-                processor.offImageRectangle.setFill(new ImagePattern(ProductControl.getController().getOffImageByID(off.getOffID())));
-                return root;
+                setOffPicture(processor.offImageRectangle, off);
+                    return root;
             } else {
                 loader = new FXMLLoader(Main.class.getResource("TableViewAdminOffsOptions.fxml"));
                 Pane root = loader.load();
@@ -512,6 +531,19 @@ public class TableViewProcessor<T> extends Processor {
         else
             tableView.getSelectionModel().selectFirst();
         initOptions();
+    }
+
+    private void setOffPicture(Rectangle offImageRectangle, Off off) {
+        if(!ProductControl.getController().isOffEditing(off.getOffID())) {
+            if(!ProductControl.getController().doesOffHaveImage(off.getOffID()))
+                offImageRectangle.setStrokeWidth(0);
+            offImageRectangle.setFill(new ImagePattern(ProductControl.getController().getOffImageByID(off.getOffID())));
+        }
+        else {
+            if(!ProductControl.getController().doesEditingOffHaveImage(off.getOffID()))
+                offImageRectangle.setStrokeWidth(0);
+            offImageRectangle.setFill(new ImagePattern(ProductControl.getController().getEditingOffImageByID(off.getOffID())));
+        }
     }
 
     //Graphics
@@ -758,15 +790,14 @@ public class TableViewProcessor<T> extends Processor {
         try {
             Parent root = loader.load();
             SaleProcessor processor = loader.getController();
-            processor.setParentProcessor(this);
+            processor.setParentProcessor(this.parentProcessor);
             processor.setOff(off);
             processor.getOffImageFile();
             processor.offInfoPaneMouseClick(null);
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
-            newStage.setTitle("Show Discount " + off.getOffName());
+            newStage.setTitle("Show Off " + off.getOffName());
             newStage.setResizable(false);
-            processor.parentProcessor = this.parentProcessor;
             processor.setMyStage(newStage);
             newStage.show();
         } catch (IOException e) {
@@ -798,6 +829,27 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void editOff(ActionEvent actionEvent) {
+        Off off = (Off) ((TableViewProcessor)parentProcessor).tableView.getSelectionModel().getSelectedItem();
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
+        try {
+            if(ProductControl.getController().isOffEditing(off.getOffID()))
+                off = ProductControl.getController().getEditingOffByID(off.getOffID());
+            Parent root = loader.load();
+            SaleProcessor processor = loader.getController();
+            processor.setParentProcessor(this.parentProcessor);
+            processor.setOff(off);
+            processor.setEditing(true);
+            processor.getOffImageFile();
+            processor.offInfoPaneMouseClick(null);
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.setTitle("Show Off " + off.getOffName());
+            newStage.setResizable(false);
+            processor.setMyStage(newStage);
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addNewOff(ActionEvent actionEvent) {
@@ -821,5 +873,6 @@ public class TableViewProcessor<T> extends Processor {
             }
         }
     }
+
 
 }
