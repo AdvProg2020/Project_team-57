@@ -364,6 +364,8 @@ public class ProductTable extends Database {
     }
 
     public static void removeAllProductImages(String productID) {
+        File productFolder = new File("database\\Images\\Products\\" + productID);
+        productFolder.mkdir();
         File tempFolder = new File("database\\Images\\Products\\" + productID);
         String[] entries = tempFolder.list();
         for(String s: entries){

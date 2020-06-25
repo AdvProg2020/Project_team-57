@@ -114,6 +114,7 @@ public class ProductControl extends Control {
             EditingProductTable.removeAllEditingProductImages(productId);
             return Notification.REMOVE_PRODUCT_SUCCESSFULLY;
         } catch (Exception e) {
+            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         }
     }
@@ -905,5 +906,38 @@ public class ProductControl extends Control {
             );
         }
         return imageFiles;
+    }
+
+    public ArrayList<Product> getAllOffProductsByOffID(Off off) {
+        try {
+            return convertIDsToProducts(off.getProductIDs());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public Off getOffByID(String offID) {
+        try {
+            return OffTable.getSpecificOff(offID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new Off();
+    }
+
+    public boolean isThereOffWithID(String offID) {
+        try {
+            return OffTable.isThereOffWithID(offID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

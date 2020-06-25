@@ -233,6 +233,8 @@ public class EditingProductTable extends Database{
     }
 
     public static void removeAllEditingProductImages(String productID) {
+        File file = new File("database\\Images\\EditingProducts\\" + productID);
+        file.mkdir();
         File tempFolder = new File("database\\Images\\EditingProducts\\" + productID);
         String[] entries = tempFolder.list();
         for(String s: entries){

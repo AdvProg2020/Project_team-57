@@ -129,7 +129,7 @@ public class CartTable extends Database{
     }
 
     public static void deleteProductFromCarts(String productId) throws SQLException, ClassNotFoundException {
-        String command = "DELETE FROM Carts WHERE ProductID = ?";
+        String command = "DELETE FROM Carts WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productId);
         preparedStatement.execute();

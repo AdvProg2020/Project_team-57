@@ -244,6 +244,7 @@ public class AccountControl extends Control implements IOValidity {
     public Notification deleteUserWithUsername(String username){
         try {
             AccountTable.deleteUserWithUsername(username);
+            AccountTable.deleteProfileImage(username);
             return Notification.DELETE_USER;
         } catch (SQLException e) {
            return Notification.UNKNOWN_ERROR;

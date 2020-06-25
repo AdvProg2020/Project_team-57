@@ -7,8 +7,6 @@ import controller.account.AdminControl;
 import controller.account.CustomerControl;
 import controller.account.VendorControl;
 import controller.product.ProductControl;
-import javafx.animation.AnimationTimer;
-import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -30,6 +28,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import model.existence.Category;
+import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
 
@@ -44,7 +43,6 @@ public class ProductsProcessor extends Processor{
     private static final int PRODUCT_PAGES_BAR_HEIGHT = 50;
     //UserProducts
     public BorderPane vendorProductsMainBorderPane;
-    public ScrollPane userProductsScrollPane;
     public Pane userProductsOptionPane;
     public JFXButton previousProductButton;
     public CheckBox approveProductCheckBox;
@@ -52,9 +50,8 @@ public class ProductsProcessor extends Processor{
     public JFXToggleButton offProductToggleButton;
     private HashMap<String, CheckBox> productsApprovalMap;
 
-
     public static enum ProductsMenuType {
-        MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART, ADMIN_PRODUCT_REQUESTS, VENDOR_ADD_OFF_PRODUCTS;
+        MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART, ADMIN_PRODUCT_REQUESTS, VENDOR_ADD_OFF_PRODUCTS, ADMIN_OFF_PRODUCTS;
     }
     private ProductsMenuType menuType;
 
@@ -102,6 +99,7 @@ public class ProductsProcessor extends Processor{
     private int productFieldsNumber;
     private int pageLim;
     private ProductControl productControl = ProductControl.getController();
+    private Off selectedOff;
 
 
     public void initProcessor (ProductsMenuType menuType) {
@@ -119,6 +117,7 @@ public class ProductsProcessor extends Processor{
             case ADMIN_PRODUCT_REQUESTS:
                 initAdminProductRequestsMenu();
                 break;
+            case ADMIN_OFF_PRODUCTS:
             case VENDOR_ADD_OFF_PRODUCTS:
                 initOffProductsMenu();
                 break;
@@ -257,25 +256,32 @@ public class ProductsProcessor extends Processor{
         switch (menuType) {
             case MAIN_PRODUCTS:
                 allProducts = productControl.getAllShowingProducts();
-                initCertainProductsPage(productsScrollPane);
                 break;
             case VENDOR_PRODUCTS:
                 allProducts = VendorControl.getController().getAllProducts();
-                initCertainProductsPage(userProductsScrollPane);
                 break;
             case CUSTOMER_CART:
                 allProducts = CustomerControl.getController().getAllCartProducts();
-                initCertainProductsPage(userProductsScrollPane);
                 break;
             case ADMIN_PRODUCT_REQUESTS:
                 allProducts = AdminControl.getController().getAllNotApprovedProducts();
-                initCertainProductsPage(userProductsScrollPane);
                 break;
             case VENDOR_ADD_OFF_PRODUCTS:
                 allProducts = VendorControl.getController().getNonOffProducts();
-                initCertainProductsPage(userProductsScrollPane);
+                break;
+            case ADMIN_OFF_PRODUCTS:
+                if(productControl.isThereOffWithID(selectedOff.getOffID()))
+                    selectedOff = productControl.getOffByID(selectedOff.getOffID());
+                else {
+                    ((TableViewProcessor)((SaleProcessor)parentProcessor).parentProcessor).updateTable();
+                    ((TableViewProcessor)((SaleProcessor)parentProcessor).parentProcessor).updateSelectedItem();
+                    ((SaleProcessor)parentProcessor).myStage.close();
+                    return;
+                }
+                allProducts = ProductControl.getController().getAllOffProductsByOffID(selectedOff);
                 break;
         }
+        initCertainProductsPage(productsScrollPane);
     }
 
     private void initCertainProductsPage(ScrollPane scrollPane) {
@@ -486,6 +492,7 @@ public class ProductsProcessor extends Processor{
                     else
                         productMenuType = ProductProcessor.ProductMenuType.VENDOR_EDIT_UNAPPROVED;
                     break;
+                case ADMIN_OFF_PRODUCTS:
                 case MAIN_PRODUCTS:
                     if(controller.Control.getType() != null && controller.Control.getType().equals("Admin")){
                         productMenuType = ProductProcessor.ProductMenuType.ADMIN;
@@ -628,7 +635,7 @@ public class ProductsProcessor extends Processor{
                 FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
                 Parent root = loader.load();
                 SaleProcessor processor = loader.getController();
-                processor.setParentProcessor(this);
+                processor.setParentProcessor(this.parentProcessor);
                 processor.offInfoPaneMouseClick(null);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
@@ -706,5 +713,9 @@ public class ProductsProcessor extends Processor{
         Main.getStage().getIcons().remove(0);
         Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Main Icon.png")));
         Main.setScene("Boos Market", root);
+    }
+
+    public void setSelectedOff(Off selectedOff) {
+        this.selectedOff = selectedOff;
     }
 }

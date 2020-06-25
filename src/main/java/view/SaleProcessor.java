@@ -399,7 +399,12 @@ public class SaleProcessor extends Processor implements Initializable {
                 offProductsPane.setStyle("-fx-background-color: #3498DB;   -fx-background-radius: 0 10 10 0;");
                 ProductsProcessor processor = loader.getController();
                 processor.setParentProcessor(this);
-                processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_ADD_OFF_PRODUCTS);
+                if (Control.getType() != null && (Control.getType().equals("Vendor")))
+                    processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_ADD_OFF_PRODUCTS);
+                else if (Control.getType() != null && (Control.getType().equals("Admin"))) {
+                    processor.setSelectedOff(off);
+                    processor.initProcessor(ProductsProcessor.ProductsMenuType.ADMIN_OFF_PRODUCTS);
+                }
                 offMainPane.setCenter(root);
 
                 //TODO
