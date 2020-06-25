@@ -3,8 +3,6 @@ package view;
 import com.jfoenix.controls.JFXButton;
 import controller.account.CustomerControl;
 import controller.product.ProductControl;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -12,7 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import model.existence.Off;
@@ -23,8 +20,6 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class OffListProcessor implements Initializable {
-    private static final int PRODUCT_PANE_HEIGHT = 250;
-    private static final int PRODUCT_PANE_WIDTH = 200;
     private static final int PRODUCTS_NUMBER_PER_PAGE = 6;
 
     private final CustomerControl customerControl = CustomerControl.getController();
@@ -55,15 +50,6 @@ public class OffListProcessor implements Initializable {
             initPageNumberGraphic();
             initGridPaneGraphic();
         }
-        /*Stop[] stops = new Stop[]{
-                new Stop(0, Color.valueOf("#b0bec5")),
-                new Stop(0.3, Color.valueOf("#cfd8dc")),
-                new Stop(0.6, Color.valueOf("#b0bec5")),
-                new Stop(1, Color.valueOf("#90a4ae"))
-        };
-        LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
-        BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
-        gridPane.setBackground(new Background(backgroundFill));*/
     }
 
     private void initGridPaneGraphic() {
@@ -79,18 +65,6 @@ public class OffListProcessor implements Initializable {
     }
 
     private Pane getOffPane(final Off off/*,/* Long timeSecond */) {
-        /*Pane pane = new Pane();
-        pane.setStyle("-fx-background-color: white");
-        pane.setPrefHeight(PRODUCT_PANE_HEIGHT);
-        pane.setPrefWidth(PRODUCT_PANE_WIDTH);
-        pane.setPrefWidth(Region.USE_PREF_SIZE);
-        ImageView imageView = new ImageView(productControl.getOffImageByID(off.getOffID()));
-        imageView.setFitWidth(PRODUCT_PANE_WIDTH - 50);
-        imageView.setFitHeight(PRODUCT_PANE_HEIGHT - 100);
-        Text name = new Text(off.getOffName());
-        name.setStyle("-fx-font-family: Calibri; -fx-font-size: 18;-fx-fill: #2F999F;");
-        Text percent = new Text(off.getOffPercent() + "%");
-        percent.setStyle("-fx-font-family: Calibri; -fx-font-size: 18;-fx-fill: firebrick;");
        /* Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         Label time = new Label(setTime(timeSecond));
@@ -103,32 +77,31 @@ public class OffListProcessor implements Initializable {
                                 timeline.stop();
                             }
                         }));
-        timeline.playFromStart();
-        VBox vBox = new VBox(hBox, percent, time);*/
-        /*VBox vBox = new VBox(name, percent);
-        HBox hBox = new HBox(imageView, vBox);
-        pane.getChildren().add(hBox);
-        return pane;*/
+        timeline.playFromStart();*/
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffPane.fxml"));
             Pane offPane = loader.load();
             OffListProcessor processor = loader.getController();
             processor.offImage.setImage(productControl.getOffImageByID(off.getOffID()));
-            processor.offImage.setOnMouseEntered(event -> processor.offImage.setStyle("-fx-cursor: hand"));
-            processor.offImage.setOnMouseExited(event -> processor.offImage.setStyle("-fx-cursor: inherit"));
             processor.offPercent.setText(off.getOffPercent() + "%");
+            processor.offName.setStyle("-fx-font-family: Calibri; -fx-text-fill: #330939; -fx-font-size: 18px;");
+            processor.offPercent.setStyle("-fx-font-family: Calibri; -fx-text-fill: #330939; -fx-font-size: 18px;");
             processor.offName.setText(off.getOffName());
             offPane.setStyle("-fx-background-color: white; -fx-background-radius: 10px;");
-            offPane.setOnMouseEntered(event -> processor.offImage.setOpacity(0.8));
-            offPane.setOnMouseExited(event -> processor.offImage.setOpacity(1));
-            processor.offImage.setOnMouseClicked(event -> {
-
+            offPane.setOnMouseEntered(event -> {
+                processor.offImage.setOpacity(0.8);
+                offPane.setStyle("-fx-cursor: hand; -fx-background-color: white; -fx-background-radius: 10px");
             });
+            offPane.setOnMouseExited(event -> {
+                processor.offImage.setOpacity(1);
+                offPane.setStyle("-fx-cursor: inherit; -fx-background-color: white; -fx-background-radius: 10px");
+            });
+            offPane.setOnMouseClicked(event -> {});
             return offPane;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return new Pane();
     }
 
     private String setTime(final long liftedTime) {
@@ -161,19 +134,19 @@ public class OffListProcessor implements Initializable {
         }
     }
 
-    public void showPreviousPage(MouseEvent event) {
+    public void showPreviousPage() {
         currentPage--;
         initPageNumberGraphic();
         initGridPaneGraphic();
     }
 
-    public void showNextPage(MouseEvent event) {
+    public void showNextPage() {
         currentPage++;
         initGridPaneGraphic();
         initPageNumberGraphic();
     }
 
-    public void openAccountMenu(ActionEvent actionEvent) {
+    public void openAccountMenu() {
         new WelcomeProcessor().openAccountMenu();
     }
 
