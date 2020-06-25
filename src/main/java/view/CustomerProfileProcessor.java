@@ -69,19 +69,6 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         profileLabel.setText(Control.getUsername());
     }
 
-    public void returnSignInMenu(MouseEvent event) {
-        Parent root1 = null;
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInMenu.fxml"));
-            root1 = loader.load();
-            WelcomeProcessor signInProcessor = loader.getController();
-            signInProcessor.setMyStage(myStage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        myStage.setTitle("Sign In Menu");
-        myStage.setScene(new Scene(root1));
-    }
 
     public Stage getMyStage() {
         return myStage;
@@ -169,4 +156,6 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             e.printStackTrace();
         }
     }
+
+
 }
