@@ -60,6 +60,7 @@ public class SaleProcessor extends Processor implements Initializable {
     public Pane discountInfoPane, discountCustomersPane;
     public Pane addOffButton;
     public VBox optionsVbox;
+    public Pane addDiscountButton;
 
     private Discount discount;
     //OffProcess
@@ -108,7 +109,7 @@ public class SaleProcessor extends Processor implements Initializable {
         finishTimePicker.set24HourView(true);
     }
 
-    private void setFields() {
+    private void setDiscountFields() {
         Discount mainDiscount = ((SaleProcessor) parentProcessor).discount;
 
         if(mainDiscount == null) {
@@ -156,6 +157,8 @@ public class SaleProcessor extends Processor implements Initializable {
 
                 Pane pane = (Pane)discountMainPane.getCenter();
                 pane.getChildren().remove(saveChangeButton);
+                ((SaleProcessor) parentProcessor).optionsVbox.getChildren().
+                        removeAll(((SaleProcessor) parentProcessor).discountCustomersPane, ((SaleProcessor) parentProcessor).addDiscountButton);
             }
         }
     }
@@ -290,7 +293,7 @@ public class SaleProcessor extends Processor implements Initializable {
 
                 SaleProcessor saleProcessor = loader.getController();
                 saleProcessor.parentProcessor = this;
-                saleProcessor.setFields();
+                saleProcessor.setDiscountFields();
             }
         } catch (IOException e) {
             e.printStackTrace();
