@@ -32,7 +32,7 @@ public class SignInProcessor{
 
     public Stage myStage;
 
-    public void signUpButtonOnMouse(MouseEvent mouseEvent) {
+    /*public void signUpButtonOnMouse(MouseEvent mouseEvent) {
         JFXButton button = (JFXButton) mouseEvent.getSource();
         button.setTextFill(Color.valueOf("#b0bec5"));
     }
@@ -50,7 +50,7 @@ public class SignInProcessor{
     public void loginButtonOutMouse(MouseEvent mouseEvent) {
         JFXButton button = (JFXButton) mouseEvent.getSource();
         button.setTextFill(Color.WHITE);
-    }
+    }*/
 
     public void login(ActionEvent actionEvent) {
         String style = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";

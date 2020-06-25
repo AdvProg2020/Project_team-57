@@ -1,0 +1,9 @@
+.Login_Button:hover {
+    -fx-opacity: 0.7;
+    -fx-text-fill: black;
+}
+
+.SignUP_Button:hover {
+    -fx-opacity: 0.7;
+    -fx-text-fill: #b0bec5;
+}

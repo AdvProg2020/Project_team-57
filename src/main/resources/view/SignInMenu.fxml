@@ -8,7 +8,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="383.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.SignInProcessor">
+<AnchorPane prefHeight="400.0" prefWidth="383.0" stylesheets="@../CSS%20files/SignInMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.SignInProcessor">
     <children>
         <JFXTextField fx:id="userNameField" labelFloat="true" layoutX="69.0" layoutY="127.0" onMouseClicked="#textFieldMouseClicked" prefHeight="43.0" prefWidth="261.0" promptText="  Username" unFocusColor="#b0bec5" />
         <JFXPasswordField fx:id="passwordField" labelFloat="true" layoutX="69.0" layoutY="225.0" onMouseClicked="#passwordFieldMouseClicked" prefHeight="43.0" prefWidth="261.0" promptText="  Password" unFocusColor="#b0bec5" />
