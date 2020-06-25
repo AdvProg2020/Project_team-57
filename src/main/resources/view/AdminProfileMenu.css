@@ -65,3 +65,12 @@
 .Profile_Image {
     -fx-stroke: #E0F2F1;
 }
+
+.Delete_Image {
+    -fx-image: url("Admin_Delete_Picture.png");
+}
+
+.Delete_Image:hover {
+    -fx-opacity: 0.7;
+    -fx-cursor: hand;
+}
