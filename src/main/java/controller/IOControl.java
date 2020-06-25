@@ -50,7 +50,7 @@ public class IOControl extends Control implements IOValidity {
                             CartTable.addTempToUsername(account.getUsername());
                         }
                         CartTable.removeTemp();
-                        if (AccountTable.didPeriodPass("Ya Zahra"))
+                        if (Control.getType().equals("Customer") && AccountTable.didPeriodPass("Ya Zahra"))
                             AdminControl.getController().getGiftDiscount();
                         return Notification.LOGIN_SUCCESSFUL;
                         /*Alert alert = new Alert(Alert.AlertType.INFORMATION, "You have Logged In Successfully", new ButtonType("Ok"));
