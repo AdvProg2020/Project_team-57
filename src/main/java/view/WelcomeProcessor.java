@@ -183,7 +183,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
     }
 
     public void enterSignUpMenu(MouseEvent mouseEvent) {
-        SignUpProcessor.setIsNormal(true);
+        WelcomeProcessor.setIsNormal(true);
         Parent root1 = null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignUpMenu.fxml"));
@@ -311,7 +311,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInMenu.fxml"));
             root1 = loader.load();
-            SignInProcessor signInProcessor = loader.getController();
+            WelcomeProcessor signInProcessor = loader.getController();
             signInProcessor.setMyStage(myStage);
         } catch (IOException e) {
             e.printStackTrace();

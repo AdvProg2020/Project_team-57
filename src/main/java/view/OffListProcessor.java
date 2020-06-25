@@ -6,15 +6,18 @@ import controller.product.ProductControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Text;
 import model.existence.Off;
 
@@ -48,12 +51,24 @@ public class OffListProcessor implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initPageNumberGraphic();
         initGridPaneGraphic();
+        /*Stop[] stops = new Stop[]{
+                new Stop(0, Color.valueOf("#b0bec5")),
+                new Stop(0.3, Color.valueOf("#cfd8dc")),
+                new Stop(0.6, Color.valueOf("#b0bec5")),
+                new Stop(1, Color.valueOf("#90a4ae"))
+        };
+        LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+        BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
+        gridPane.setBackground(new Background(backgroundFill));*/
     }
 
     private void initGridPaneGraphic() {
         gridPane.getChildren().clear();
         int number = 0;
         int offIterator = (currentPage - 1) * 8;
+        gridPane.setVgap(10);
+        gridPane.setHgap(10);
+        gridPane.setAlignment(Pos.CENTER);
         while (number < PRODUCTS_NUMBER_PER_PAGE && offIterator < productsNumber) {
             gridPane.add(getOffPane(offs.get(offIterator)), number % 4, number / 4);
             number++;
@@ -63,12 +78,15 @@ public class OffListProcessor implements Initializable {
 
     private Pane getOffPane(final Off off/*,/* Long timeSecond */) {
         Pane pane = new Pane();
+        pane.setStyle("-fx-background-color: white");
         pane.setPrefHeight(PRODUCT_PANE_HEIGHT);
         pane.setPrefWidth(PRODUCT_PANE_WIDTH);
+        pane.setPrefWidth(Region.USE_PREF_SIZE);
         ImageView imageView = new ImageView(productControl.getOffImageByID(off.getOffID()));
+        imageView.setFitWidth(PRODUCT_PANE_WIDTH - 50);
+        imageView.setFitHeight(PRODUCT_PANE_HEIGHT - 100);
         Text name = new Text(off.getOffName());
         name.setStyle("-fx-font-family: Calibri; -fx-font-size: 18;-fx-fill: #2F999F;");
-        HBox hBox = new HBox(imageView, name);
         Text percent = new Text(off.getOffPercent() + "%");
         percent.setStyle("-fx-font-family: Calibri; -fx-font-size: 18;-fx-fill: firebrick;");
        /* Timeline timeline = new Timeline();
@@ -85,8 +103,9 @@ public class OffListProcessor implements Initializable {
                         }));
         timeline.playFromStart();
         VBox vBox = new VBox(hBox, percent, time);*/
-        VBox vBox = new VBox(hBox, percent);
-        pane.getChildren().add(vBox);
+        VBox vBox = new VBox(name, percent);
+        HBox hBox = new HBox(imageView, vBox);
+        pane.getChildren().add(hBox);
         return pane;
     }
 
