@@ -43,7 +43,6 @@ public class OffListProcessor implements Initializable {
     /**
      * OffList.fxml
      */
-    public JFXButton backMainMenu;
     public JFXButton accountMenuButton;
     public GridPane gridPane;
     public ImageView previousPage;
@@ -73,7 +72,7 @@ public class OffListProcessor implements Initializable {
         int offIterator = (currentPage - 1) * PRODUCTS_NUMBER_PER_PAGE;
         gridPane.setAlignment(Pos.CENTER);
         while (number < PRODUCTS_NUMBER_PER_PAGE && offIterator < productsNumber) {
-            gridPane.add(getOffPane(offs.get(offIterator)), number % 3, number / 3);
+            gridPane.add(getOffPane(offs.get(offIterator)), number % (PRODUCTS_NUMBER_PER_PAGE / 2), number / (PRODUCTS_NUMBER_PER_PAGE / 2));
             number++;
             offIterator++;
         }

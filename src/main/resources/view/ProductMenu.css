@@ -12,7 +12,7 @@
     -fx-cursor: hand;
 }
 
-#backMainMenu:hover{
+#backToMainMenu:hover{
     -fx-background-color: #78909c;
     -fx-cursor: hand;
 }
