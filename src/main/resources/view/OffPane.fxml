@@ -1,34 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="285.0" prefWidth="264.0" style="-fx-background-radius: 10 10 10 10;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="279.0" prefWidth="250.0" style="-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.OffListProcessor">
    <children>
-      <StackPane layoutX="40.0" layoutY="26.0" prefHeight="185.0" prefWidth="185.0" style="-fx-background-radius: 10 10 10 10;">
+      <StackPane layoutX="27.0" layoutY="26.0" prefHeight="93.0" prefWidth="116.0" style="-fx-background-radius: 10 10 10 10;">
          <children>
-            <ImageView fx:id="productImage" fitHeight="171.0" fitWidth="172.0" pickOnBounds="true" />
+            <ImageView fx:id="offImage" fitHeight="184.0" fitWidth="197.0" pickOnBounds="true" />
          </children>
       </StackPane>
-      <Label layoutX="43.0" layoutY="221.0" prefHeight="21.0" prefWidth="149.0" text="Digital design">
+      <Label fx:id="offName" layoutX="27.0" layoutY="210.0" prefHeight="21.0" prefWidth="149.0" text="Digital design">
          <font>
             <Font name="Calibri" size="17.0" />
          </font>
       </Label>
-      <Label layoutX="43.0" layoutY="242.0" prefHeight="21.0" prefWidth="149.0" text="30%">
+      <Label fx:id="offPercent" layoutX="27.0" layoutY="231.0" prefHeight="21.0" prefWidth="149.0" text="30%">
          <font>
             <Font name="Calibri" size="17.0" />
          </font>
       </Label>
-      <ImageView fitHeight="39.0" fitWidth="34.0" layoutX="209.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../Images/Icons/Offs%20Icon.png" />
-         </image>
-      </ImageView>
    </children>
 </Pane>

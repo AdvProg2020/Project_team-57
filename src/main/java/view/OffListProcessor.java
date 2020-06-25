@@ -4,21 +4,17 @@ import com.jfoenix.controls.JFXButton;
 import controller.account.CustomerControl;
 import controller.product.ProductControl;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.text.Text;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import model.existence.Off;
 
 import java.io.IOException;
@@ -29,28 +25,37 @@ import java.util.ResourceBundle;
 public class OffListProcessor implements Initializable {
     private static final int PRODUCT_PANE_HEIGHT = 250;
     private static final int PRODUCT_PANE_WIDTH = 200;
-    private static final int PRODUCTS_NUMBER_PER_PAGE = 8;
+    private static final int PRODUCTS_NUMBER_PER_PAGE = 6;
 
     private final CustomerControl customerControl = CustomerControl.getController();
     private final ProductControl productControl = ProductControl.getController();
     private final ArrayList<Off> offs = new ArrayList<>(customerControl.getAllShowingOffs());
-    private ArrayList<Long> timeSeconds = new ArrayList<>();
+    private final ArrayList<Long> timeSeconds = new ArrayList<>();
     private int currentPage = 1;
     private final int productsNumber = offs.size();
     private final int numberOfPages = (int) Math.floor(productsNumber / PRODUCTS_NUMBER_PER_PAGE) + 1;
-
-    public JFXButton backButton;
+    /**
+     * OffPane.fxml
+     */
+    public ImageView offImage;
+    public Label offName;
+    public Label offPercent;
+    /**
+     * OffList.fxml
+     */
+    public JFXButton backMainMenu;
     public JFXButton accountMenuButton;
     public GridPane gridPane;
     public ImageView previousPage;
     public Label pageNumberLabel;
     public ImageView nextPage;
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initPageNumberGraphic();
-        initGridPaneGraphic();
+        if (location.toString().contains("OffList.fxml")) {
+            initPageNumberGraphic();
+            initGridPaneGraphic();
+        }
         /*Stop[] stops = new Stop[]{
                 new Stop(0, Color.valueOf("#b0bec5")),
                 new Stop(0.3, Color.valueOf("#cfd8dc")),
@@ -65,19 +70,17 @@ public class OffListProcessor implements Initializable {
     private void initGridPaneGraphic() {
         gridPane.getChildren().clear();
         int number = 0;
-        int offIterator = (currentPage - 1) * 8;
-        gridPane.setVgap(10);
-        gridPane.setHgap(10);
+        int offIterator = (currentPage - 1) * PRODUCTS_NUMBER_PER_PAGE;
         gridPane.setAlignment(Pos.CENTER);
         while (number < PRODUCTS_NUMBER_PER_PAGE && offIterator < productsNumber) {
-            gridPane.add(getOffPane(offs.get(offIterator)), number % 4, number / 4);
+            gridPane.add(getOffPane(offs.get(offIterator)), number % 3, number / 3);
             number++;
             offIterator++;
         }
     }
 
     private Pane getOffPane(final Off off/*,/* Long timeSecond */) {
-        Pane pane = new Pane();
+        /*Pane pane = new Pane();
         pane.setStyle("-fx-background-color: white");
         pane.setPrefHeight(PRODUCT_PANE_HEIGHT);
         pane.setPrefWidth(PRODUCT_PANE_WIDTH);
@@ -103,10 +106,30 @@ public class OffListProcessor implements Initializable {
                         }));
         timeline.playFromStart();
         VBox vBox = new VBox(hBox, percent, time);*/
-        VBox vBox = new VBox(name, percent);
+        /*VBox vBox = new VBox(name, percent);
         HBox hBox = new HBox(imageView, vBox);
         pane.getChildren().add(hBox);
-        return pane;
+        return pane;*/
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffPane.fxml"));
+            Pane offPane = loader.load();
+            OffListProcessor processor = loader.getController();
+            processor.offImage.setImage(productControl.getOffImageByID(off.getOffID()));
+            processor.offImage.setOnMouseEntered(event -> processor.offImage.setStyle("-fx-cursor: hand"));
+            processor.offImage.setOnMouseExited(event -> processor.offImage.setStyle("-fx-cursor: inherit"));
+            processor.offPercent.setText(off.getOffPercent() + "%");
+            processor.offName.setText(off.getOffName());
+            offPane.setStyle("-fx-background-color: white; -fx-background-radius: 10px;");
+            offPane.setOnMouseEntered(event -> processor.offImage.setOpacity(0.8));
+            offPane.setOnMouseExited(event -> processor.offImage.setOpacity(1));
+            processor.offImage.setOnMouseClicked(event -> {
+
+            });
+            return offPane;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private String setTime(final long liftedTime) {
