@@ -801,6 +801,25 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void addNewOff(ActionEvent actionEvent) {
+        if(canOpenSubStage("Add New Off", parentProcessor.parentProcessor)) {
+            System.out.println(parentProcessor);
+            try {
+                FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
+                Parent root = loader.load();
+                SaleProcessor processor = loader.getController();
+                processor.setParentProcessor(parentProcessor.parentProcessor);
+                processor.offInfoPaneMouseClick(null);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.setTitle("Add New Off");
+                newStage.setResizable(false);
+                parentProcessor.parentProcessor.addSubStage(newStage);
+                processor.setMyStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();;
+            }
+        }
     }
 
 }

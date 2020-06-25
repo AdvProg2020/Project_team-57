@@ -630,6 +630,7 @@ public class ProductsProcessor extends Processor{
     }
 
     public void addNewOff(MouseEvent mouseEvent) {
+        System.out.println(parentProcessor);
         if(canOpenSubStage("Add New Off", parentProcessor)) {
             try {
                 FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
