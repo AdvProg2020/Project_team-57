@@ -46,7 +46,11 @@ public class OffTable extends Database{
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next())
         {
-            offs.add(getSpecificOff(resultSet.getString("OffID")));
+            if(!isThereEditingOffWithID(resultSet.getString("OffID"))) {
+                offs.add(getSpecificOff(resultSet.getString("OffID")));
+            } else {
+                offs.add(getSpecificEditingOff(resultSet.getString("OffID")));
+            }
         }
         return offs;
     }
@@ -215,7 +219,7 @@ public class OffTable extends Database{
         }
     }
 
-    public static Off getSpecificEditingOffByID(String offID) throws SQLException, ClassNotFoundException {
+    public static Off getSpecificEditingOff(String offID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM EditingOffs WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, offID);
@@ -323,6 +327,8 @@ public class OffTable extends Database{
     }
 
     public static String getOffImageFilePath(String offID) {
+        File folder = new File("database\\Images\\Offs");
+        folder.mkdir();
         String fileName = "database\\Images\\Offs\\" + offID;
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {
@@ -338,6 +344,8 @@ public class OffTable extends Database{
     }
 
     public static void setOffImage(String offID, File pictureFile) throws IOException {
+        File folder = new File("database\\Images\\Offs");
+        folder.mkdir();
         String[] splitPath = pictureFile.getPath().split("\\.");
         String fileExtension = splitPath[splitPath.length - 1];
         File saveImage = new File("database\\Images\\Offs\\" + offID + "." + fileExtension);
@@ -347,5 +355,36 @@ public class OffTable extends Database{
     public static void removeOffImage(String offID) {
         File file = new File(getOffImageFilePath(offID));
         file.delete();
+    }
+
+    public static String getEditingOffImageFilePath(String offID) {
+        File folder = new File("database\\Images\\EditingOffs");
+        folder.mkdir();
+        String fileName = "database\\Images\\EditingOffs\\" + offID;
+        String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
+        for (String validImageExtension : validImageExtensions) {
+            String filePath = fileName + "." + validImageExtension;
+            if(new File(filePath).exists())
+                return filePath;
+        }
+        return null;
+    }
+
+    public static void removeEditingOffImage(String offID) {
+        File file = new File(getEditingOffImageFilePath(offID));
+        file.delete();
+    }
+
+    public static void setEditingOffImage(String offID, File pictureFile) throws IOException {
+        File folder = new File("database\\Images\\EditingOffs");
+        folder.mkdir();
+        String[] splitPath = pictureFile.getPath().split("\\.");
+        String fileExtension = splitPath[splitPath.length - 1];
+        File saveImage = new File("database\\Images\\EditingOffs\\" + offID + "." + fileExtension);
+        Files.copy(pictureFile.toPath(), saveImage.toPath());
+    }
+
+    public static FileInputStream getEditingOffImageInputStream(String offID) throws FileNotFoundException {
+        return new FileInputStream(getEditingOffImageFilePath(offID));
     }
 }
