@@ -20,15 +20,15 @@
             <Image url="@../Images/Icons/Username%20Icon.png" />
          </image>
       </ImageView>
-        <JFXTextField fx:id="userNameField" labelFloat="true" layoutX="69.0" layoutY="127.0" onAction="#signInTextFieldMouseClicked" onMouseClicked="#signInTextFieldMouseClicked" prefHeight="43.0" prefWidth="261.0" promptText="  Username" unFocusColor="#b0bec5" />
       <ImageView fitHeight="31.0" fitWidth="40.0" layoutX="27.0" layoutY="237.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/Icons/Password%20Icon.png" />
          </image>
       </ImageView>
+        <JFXTextField fx:id="userNameField" labelFloat="true" layoutX="69.0" layoutY="127.0" onAction="#signInTextFieldMouseClicked" onMouseClicked="#signInTextFieldMouseClicked" prefHeight="43.0" prefWidth="261.0" promptText="  Username" unFocusColor="#b0bec5" />
         <JFXPasswordField fx:id="passwordField" labelFloat="true" layoutX="69.0" layoutY="225.0" onAction="#signInTextFieldMouseClicked" onMouseClicked="#signInTextFieldMouseClicked" prefHeight="43.0" prefWidth="261.0" promptText="  Password" unFocusColor="#b0bec5" />
+      <JFXButton defaultButton="true" layoutX="273.0" layoutY="310.0" onAction="#login" style="-fx-background-color: #B0BEC5; -fx-cursor: hand;" styleClass="Login_Button" text="Login" textFill="WHITE" />
         <Label layoutX="62.0" layoutY="310.0" prefHeight="31.0" prefWidth="108.0" text="Not A Member?" />
         <JFXButton layoutX="163.0" layoutY="310.0" onMouseClicked="#enterSignUpMenu" prefHeight="31.0" prefWidth="73.0" style="-fx-cursor: hand;" styleClass="SignUP_Button" text="Sign Up" underline="true" />
-      <JFXButton defaultButton="true" layoutX="273.0" layoutY="310.0" onAction="#login" style="-fx-background-color: #B0BEC5; -fx-cursor: hand;" styleClass="Login_Button" text="Login" textFill="WHITE" />
     </children>
 </AnchorPane>
