@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pane" prefHeight="503.0" prefWidth="722.0" style="-fx-background-color: #eeeeee#eeeeee;" styleClass="root" stylesheets="@../CSS%20files/SignUpMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.WelcomeProcessor">
+   <children>
+      <ImageView fx:id="backImage" fitHeight="33.0" fitWidth="51.0" layoutX="26.0" layoutY="24.0" onMouseClicked="#backToSignInMenu" opacity="0.4" pickOnBounds="true" preserveRatio="true" styleClass="BackImage">
+         <image>
+            <Image url="@../Images/Icons/back.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <ImageView fitHeight="45.0" fitWidth="50.0" layoutX="62.0" layoutY="101.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/user.png" />
+         </image></ImageView>
+      <JFXTextField fx:id="username" focusColor="#5d6e9e" layoutX="118.0" layoutY="107.0" onAction="#signUpTextFieldMouseClicked" onMouseClicked="#signUpTextFieldMouseClicked" prefHeight="31.0" prefWidth="270.0" promptText="Username" stylesheets="@../CSS%20files/signUp.css">
+         <font>
+            <Font name="Arial Bold" size="18.0" />
+         </font>
+      </JFXTextField>
+      <ImageView fitHeight="54.0" fitWidth="45.0" layoutX="62.0" layoutY="173.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/password.png" />
+         </image></ImageView>
+      <JFXPasswordField fx:id="password" layoutX="118.0" layoutY="180.0" onAction="#signUpTextFieldMouseClicked" onMouseClicked="#signUpTextFieldMouseClicked" prefHeight="31.0" prefWidth="270.0" promptText="Password" styleClass="Password">
+         <font>
+            <Font name="Arial Bold" size="18.0" />
+         </font></JFXPasswordField>
+      <ImageView fitHeight="51.0" fitWidth="54.0" layoutX="59.0" layoutY="246.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/name.png" />
+         </image></ImageView>
+      <JFXTextField fx:id="name" layoutX="118.0" layoutY="255.0" onAction="#signUpTextFieldMouseClicked" onMouseClicked="#signUpTextFieldMouseClicked" prefHeight="31.0" prefWidth="270.0" promptText="Name" stylesheets="@../CSS%20files/signUp.css">
+         <font>
+            <Font name="Arial Bold" size="18.0" />
+         </font>
+      </JFXTextField>
+      <ImageView fitHeight="51.0" fitWidth="51.0" layoutX="59.0" layoutY="313.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/name%20(1).png" />
+         </image></ImageView>
+      <JFXTextField fx:id="lastName" layoutX="118.0" layoutY="322.0" onAction="#signUpTextFieldMouseClicked" onMouseClicked="#signUpTextFieldMouseClicked" prefHeight="31.0" prefWidth="270.0" promptText="Last Name" stylesheets="@../CSS%20files/signUp.css">
+         <font>
+            <Font name="Arial Bold" size="18.0" />
+         </font>
+      </JFXTextField>
+      <JFXComboBox fx:id="accountTypeComboBox" layoutX="89.0" layoutY="389.0" prefHeight="31.0" prefWidth="152.0" style="-fx-border-radius: 10 10 10 10; -fx-background-radius: 10 10 10 10;" styleClass="ChoiceBox" />
+      <Button fx:id="signUp" defaultButton="true" layoutX="259.0" layoutY="388.0" mnemonicParsing="false" onAction="#register" prefHeight="33.0" prefWidth="129.0" stylesheets="@../CSS%20files/signUp.css" text="SignUp" />
+      <ImageView fx:id="imageOfSignUp" fitHeight="313.0" fitWidth="244.0" layoutX="470.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Backgrounds/BuyGirl.png" />
+         </image></ImageView>
+   </children>
+</AnchorPane>

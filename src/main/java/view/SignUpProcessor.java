@@ -5,12 +5,14 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import controller.IOControl;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -24,7 +26,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class SignUpProcessor implements Initializable {
+public class SignUpProcessor extends Processor implements Initializable {
+    private final IOControl ioControl = IOControl.getController();
+
     private static boolean isNormal = true;
     public Button signUp;
     public JFXTextField username;
@@ -32,12 +36,11 @@ public class SignUpProcessor implements Initializable {
     public JFXTextField name;
     public JFXTextField lastName;
     public ImageView back;
-    private final IOControl ioControl = IOControl.getController();
     public ImageView backImage;
     public JFXComboBox<String> accountTypeComboBox;
     public ImageView imageOfSignUp;
     public AnchorPane pane;
-    private Stage myStage;
+//    private Stage myStage;
 
     public static void setIsNormal(boolean isNormal) {
         SignUpProcessor.isNormal = isNormal;
@@ -141,16 +144,6 @@ public class SignUpProcessor implements Initializable {
         myStage.setScene(new Scene(root1));
     }
 
-    public void onMouse(MouseEvent event) {
-        backImage.setOpacity(0.7);
-        password.setStyle("-fx-prompt-text-fill: #607d8b");
-    }
-
-    public void outMouse(MouseEvent event) {
-        backImage.setOpacity(0.4);
-        password.setStyle(null);
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initAccTypeComboBox();
@@ -175,14 +168,10 @@ public class SignUpProcessor implements Initializable {
 
     public void setMyStage(Stage myStage) {
         this.myStage = myStage;
-
     }
 
-    public void textFieldMouseClicked(MouseEvent mouseEvent) {
-        ((JFXTextField) mouseEvent.getSource()).setBorder(null);
+    public void signUpTextFieldMouseClicked(Event event) {
+        ((TextField) event.getSource()).setBorder(null);
     }
 
-    public void passwordFieldMouseClicked(MouseEvent mouseEvent) {
-        ((JFXPasswordField) mouseEvent.getSource()).setBorder(null);
-    }
 }

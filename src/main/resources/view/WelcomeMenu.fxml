@@ -6,19 +6,19 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.WelcomeProcessor">
+<Pane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="444.0" prefWidth="800.0" stylesheets="@../CSS%20files/WelcomeMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.WelcomeProcessor">
    <children>
-      <JFXButton fx:id="accountMenuButton" buttonType="RAISED" layoutX="84.0" layoutY="236.0" onAction="#openAccountMenu" onMouseEntered="#buttonOnMouse" onMouseExited="#buttonOutMouse" prefHeight="38.0" prefWidth="135.0" style="-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10; -fx-background-color: #b0bec5; -fx-text-fill: #fafafa; -fx-border-color: #fafafa; -fx-border-width: 1.5;" text="Account Menu">
+      <JFXButton fx:id="accountMenuButton" buttonType="RAISED" layoutX="84.0" layoutY="236.0" onAction="#openAccountMenu" prefHeight="38.0" prefWidth="135.0" style="-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10; -fx-border-color: #fafafa; -fx-border-width: 1.5;" styleClass="Button" text="Account Menu">
          <font>
             <Font name="Calibri Bold" size="17.0" />
          </font>
       </JFXButton>
-      <JFXButton fx:id="productsMenuButton" buttonType="RAISED" layoutX="84.0" layoutY="291.0" onAction="#openProductsMenu" onMouseEntered="#buttonOnMouse" onMouseExited="#buttonOutMouse" prefHeight="38.0" prefWidth="135.0" style="-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10; -fx-background-color: #b0bec5; -fx-text-fill: #fafafa; -fx-border-color: #fafafa; -fx-border-width: 1.5;" text="Products Menu">
+      <JFXButton fx:id="productsMenuButton" buttonType="RAISED" layoutX="84.0" layoutY="291.0" onAction="#openProductsMenu" prefHeight="38.0" prefWidth="135.0" style="-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10; -fx-border-color: #fafafa; -fx-border-width: 1.5;" styleClass="Button" text="Products Menu">
          <font>
             <Font name="Calibri Bold" size="17.0" />
          </font>
       </JFXButton>
-      <JFXButton fx:id="offsMenuButton" buttonType="RAISED" layoutX="84.0" layoutY="346.0" onAction="#showOffsMenu" onMouseEntered="#buttonOnMouse" onMouseExited="#buttonOutMouse" prefHeight="38.0" prefWidth="135.0" style="-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10; -fx-background-color: #b0bec5; -fx-text-fill: #fafafa; -fx-border-color: #fafafa; -fx-border-width: 1.5;" text="Offs Menu">
+      <JFXButton fx:id="offsMenuButton" buttonType="RAISED" layoutX="84.0" layoutY="346.0" onAction="#showOffsMenu" prefHeight="38.0" prefWidth="135.0" style="-fx-background-radius: 10 10 10 10; -fx-border-radius: 10 10 10 10; -fx-border-color: #fafafa; -fx-border-width: 1.5;" styleClass="Button" text="Offs Menu">
          <font>
             <Font name="Calibri Bold" size="17.0" />
          </font>

@@ -1,0 +1,12 @@
+.Password:hover {
+    -fx-prompt-text-fill: #607d8b;
+}
+
+.BackImage:hover {
+    -fx-opacity: 0.7;
+}
+
+.ChoiceBox:hover {
+    -fx-opacity: 0.7;
+    -fx-cursor: hand;
+}
