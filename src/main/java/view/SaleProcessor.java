@@ -27,7 +27,6 @@ import notification.Notification;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
@@ -81,7 +80,7 @@ public class SaleProcessor extends Processor implements Initializable {
     private File offImageFile;
     private boolean isDefaultPicture;
     private boolean isEditing = false;
-
+    private boolean isPreviousOff = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -179,40 +178,49 @@ public class SaleProcessor extends Processor implements Initializable {
                 setDateFieldsFromDate(offFinishDatePicker, offFinishTimePicker, mainOff.getFinishDate());
             //((SaleProcessor)parentProcessor).getOffImageFile();
             if(Control.getType().equals("Admin")) {
-//                System.out.println("What the Fuck Is Happening");
-                offNameField.setEditable(false);
-                offPercentField.setEditable(false);
-                offStartDatePicker.setDisable(true);
-                offStartDatePicker.setOpacity(0.99);
-                offStartTimePicker.setDisable(true);
-                offStartTimePicker.setOpacity(0.99);
-                offFinishDatePicker.setDisable(true);
-                offFinishDatePicker.setOpacity(0.99);
-                offFinishTimePicker.setDisable(true);
-                offFinishTimePicker.setOpacity(0.99);
-                offInfoMainPane.getChildren().remove(saveOffChangeButton);
-                ((SaleProcessor)parentProcessor).optionsVbox.getChildren().remove(((SaleProcessor)parentProcessor).addOffButton);
+                setAdminOffInfoFields(mainOff);
             } else {
-                offNameField.setEditable(true);
-                offPercentField.setEditable(true);
-                offStartDatePicker.setDisable(false);
-                offStartTimePicker.setDisable(false);
-                offFinishDatePicker.setDisable(false);
-                offFinishTimePicker.setDisable(false);
-                offStartDatePicker.setOpacity(1);
-                offStartTimePicker.setOpacity(1);
-                offFinishDatePicker.setOpacity(1);
-                offFinishTimePicker.setOpacity(1);
-                if(((SaleProcessor)parentProcessor).isEditing) {
-                    System.out.println(":|");
-                    offStartDatePicker.setDisable(true);
-                    offStartDatePicker.setOpacity(0.99);
-                    offStartTimePicker.setDisable(true);
-                    offStartTimePicker.setOpacity(0.99);
-                }
+                setVendorOffInfoFields(mainOff);
             }
         }
         updateImageRectangle();
+    }
+
+    private void setAdminOffInfoFields(Off off) {
+        offNameField.setEditable(false);
+        offPercentField.setEditable(false);
+        offStartDatePicker.setDisable(true);
+        offStartDatePicker.setOpacity(0.99);
+        offStartTimePicker.setDisable(true);
+        offStartTimePicker.setOpacity(0.99);
+        offFinishDatePicker.setDisable(true);
+        offFinishDatePicker.setOpacity(0.99);
+        offFinishTimePicker.setDisable(true);
+        offFinishTimePicker.setOpacity(0.99);
+        offInfoMainPane.getChildren().remove(saveOffChangeButton);
+        ((SaleProcessor)parentProcessor).optionsVbox.getChildren().remove(((SaleProcessor)parentProcessor).addOffButton);
+    }
+
+    private void setVendorOffInfoFields(Off off) {
+        if(off.getStatus() != 2 && !isEditing) {
+            offNameField.setEditable(true);
+            offPercentField.setEditable(true);
+            offStartDatePicker.setDisable(false);
+            offStartTimePicker.setDisable(false);
+            offFinishDatePicker.setDisable(false);
+            offFinishTimePicker.setDisable(false);
+            offStartDatePicker.setOpacity(1);
+            offStartTimePicker.setOpacity(1);
+            offFinishDatePicker.setOpacity(1);
+            offFinishTimePicker.setOpacity(1);
+        } else if(off.getStatus() != 2 && isEditing) {
+            offStartDatePicker.setDisable(true);
+            offStartDatePicker.setOpacity(0.99);
+            offStartTimePicker.setDisable(true);
+            offStartTimePicker.setOpacity(0.99);
+        } else if(off.getStatus() == 2) {
+            setAdminOffInfoFields(off);
+        }
     }
 
     private void updateImageRectangle() {
@@ -235,14 +243,14 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     public void getOffImageFile() {
-        if(!productControl.isOffEditing(off.getOffID())) {
-            offImageFile = productControl.getOffImageFileByID(off.getOffID());
-            isDefaultPicture = !productControl.doesOffHaveImage(off.getOffID());
-        } else {
+        if(productControl.isOffEditing(off.getOffID()) && !isPreviousOff) {
             offImageFile = productControl.getEditingOffImageFileByID(off.getOffID());
             isDefaultPicture = !productControl.doesEditingOffHaveImage(off.getOffID());
-            System.out.println(isDefaultPicture);
+        } else {
+            offImageFile = productControl.getOffImageFileByID(off.getOffID());
+            isDefaultPicture = !productControl.doesOffHaveImage(off.getOffID());
         }
+
         /*Image image = (off != null && off.getOffID() != null && off.getOffID().length() != 0 ?
                 productControl.getOffImageByID(off.getOffID()) : productControl.getOffImageByID("1"));
         offImageRectangle.setFill(new ImagePattern(image));
@@ -415,11 +423,14 @@ public class SaleProcessor extends Processor implements Initializable {
                 offProductsPane.setStyle("-fx-background-color: #3498DB;   -fx-background-radius: 0 10 10 0;");
                 ProductsProcessor processor = loader.getController();
                 processor.setParentProcessor(this);
-                if (Control.getType() != null && (Control.getType().equals("Vendor")) && !isEditing)
+                if (Control.getType() != null && (Control.getType().equals("Vendor")) && !isEditing && off.getStatus() != 2)
                     processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_ADD_OFF_PRODUCTS);
-                else if(Control.getType() != null && (Control.getType().equals("Vendor")) && isEditing) {
+                else if(Control.getType() != null && (Control.getType().equals("Vendor")) && isEditing && off.getStatus() != 2) {
                     processor.setSelectedOff(off);
                     processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_OFF_PRODUCTS);
+                } else if(Control.getType() != null && (Control.getType().equals("Vendor")) && isEditing && off.getStatus() == 2) {
+                    processor.setSelectedOff(off);
+                    processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_OFF_PRODUCTS_UNAPPROVED);
                 }
                 else if (Control.getType() != null && (Control.getType().equals("Admin"))) {
                     processor.setSelectedOff(off);
@@ -536,5 +547,9 @@ public class SaleProcessor extends Processor implements Initializable {
 
     public void setEditing(boolean editing) {
         isEditing = editing;
+    }
+
+    public void setPreviousOff(boolean previousOff) {
+        isPreviousOff = previousOff;
     }
 }

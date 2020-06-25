@@ -52,7 +52,7 @@ public class ProductsProcessor extends Processor{
 
     public static enum ProductsMenuType {
         MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART, ADMIN_PRODUCT_REQUESTS,
-        VENDOR_ADD_OFF_PRODUCTS, ADMIN_OFF_PRODUCTS, VENDOR_OFF_PRODUCTS;
+        VENDOR_ADD_OFF_PRODUCTS, ADMIN_OFF_PRODUCTS, VENDOR_OFF_PRODUCTS, VENDOR_OFF_PRODUCTS_UNAPPROVED;
     }
     private ProductsMenuType menuType;
 
@@ -118,6 +118,7 @@ public class ProductsProcessor extends Processor{
             case ADMIN_PRODUCT_REQUESTS:
                 initAdminProductRequestsMenu();
                 break;
+            case VENDOR_OFF_PRODUCTS_UNAPPROVED:
             case VENDOR_OFF_PRODUCTS:
             case ADMIN_OFF_PRODUCTS:
             case VENDOR_ADD_OFF_PRODUCTS:
@@ -271,11 +272,13 @@ public class ProductsProcessor extends Processor{
             case VENDOR_ADD_OFF_PRODUCTS:
                 allProducts = VendorControl.getController().getNonOffProducts();
                 break;
+            case VENDOR_OFF_PRODUCTS_UNAPPROVED:
             case ADMIN_OFF_PRODUCTS:
                 if(!isThereOff(selectedOff))
                     return;
                 allProducts = ProductControl.getController().getAllOffProductsByOffID(selectedOff);
                 break;
+
             case VENDOR_OFF_PRODUCTS:
                 if(!isThereOff(selectedOff))
                     return;
@@ -302,7 +305,7 @@ public class ProductsProcessor extends Processor{
     private void initCertainProductsPage(ScrollPane scrollPane) {
         try {
             BorderPane borderPane = new BorderPane();
-            pageLim = (allProducts.size() -(pageNumber * pageSize) < pageSize ? (allProducts.size() -(pageNumber * pageSize)) : pageSize);
+            pageLim = (allProducts.size() - (pageNumber * pageSize) < pageSize ? (allProducts.size() -(pageNumber * pageSize)) : pageSize);
             productFieldsNumber = (pageLim <= (columnMinSize * rowSize) ? (columnMinSize * rowSize) : (columnMaxSize * rowSize));
             double borderPaneHeight = ((productFieldsNumber/rowSize) * PRODUCT_FIELD_HEIGHT) + PRODUCT_PAGES_BAR_HEIGHT;
             double borderPaneWidth = PRODUCT_FIELD_WIDTH * rowSize;
@@ -358,7 +361,6 @@ public class ProductsProcessor extends Processor{
     }
 
     private ArrayList<HBox> getProductsPanes() throws IOException {
-        //System.out.println("Start");
         ArrayList<HBox> hBoxes = new ArrayList<>();
         for(int y = 0; y < productFieldsNumber/rowSize; ++y) {
             for(int x = 0; x < rowSize; ++ x) {
@@ -506,6 +508,7 @@ public class ProductsProcessor extends Processor{
         productPane.setOnMouseClicked(event -> {
             ProductProcessor.ProductMenuType productMenuType = null;
             switch (menuType) {
+                case VENDOR_OFF_PRODUCTS:
                 case VENDOR_ADD_OFF_PRODUCTS:
                 case VENDOR_PRODUCTS:
                     if(product.getStatus() != 2)
@@ -530,6 +533,8 @@ public class ProductsProcessor extends Processor{
                 case ADMIN_PRODUCT_REQUESTS:
                     productMenuType = ProductProcessor.ProductMenuType.ADMIN;
                     break;
+                case VENDOR_OFF_PRODUCTS_UNAPPROVED:
+                    return;
                 //TODO(MORE)
             }
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));

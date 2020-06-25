@@ -15,7 +15,7 @@
             <Font name="Calibri" size="17.0" />
          </font>
       </Label>
-      <JFXButton fx:id="showEditedOffButton" buttonType="RAISED" layoutX="55.0" layoutY="344.0" onAction="#showEditedOff" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Edited Off">
+      <JFXButton fx:id="showOffButton" buttonType="RAISED" layoutX="55.0" layoutY="344.0" onAction="#showOff" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Edited Off">
          <font>
             <Font size="14.0" />
          </font>

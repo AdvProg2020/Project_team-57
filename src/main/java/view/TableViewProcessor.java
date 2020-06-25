@@ -73,7 +73,6 @@ public class TableViewProcessor<T> extends Processor {
     public JFXButton editOffButton;
     public JFXButton addNewOffButton;
 
-
     public static enum TableViewType {
         CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN),
         DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS, ADMIN_OFFS, VENDOR_OFFS;
@@ -164,18 +163,20 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private void initVendorOffsColumns() {
-        TableColumn<T, String> offName = makeColumn("Off Name", "offName", 0.23);
-        TableColumn<T, Date> offFinishDate = makeColumn("Finish Date", "finishDate", 0.23);
-        TableColumn<T, Double> offPercent = makeColumn("Off Percentage", "offPercent", 0.34);
-        TableColumn<T, String> status = makeColumn("Approval", "statStr", 0.15);
+        System.out.println("HO HO HO");
+        TableColumn<T, String> offName = makeColumn("Off Name", "offName", 0.315);
+        TableColumn<T, Date> offFinishDate = makeColumn("Finish Date", "finishDate", 0.25);
+        TableColumn<T, Double> offPercent = makeColumn("Off Percentage", "offPercent", 0.23);
+        TableColumn<T, String> status = makeColumn("Approval", "statStr", 0.17);
         tableView.getColumns().addAll(offName, offFinishDate, offPercent, status);
     }
 
     private void initAdminOffsColumns() {
-        TableColumn<T, String> offName = makeColumn("Off Name", "offName", 0.23);
-        TableColumn<T, String> vendorUsername = makeColumn("Vendor Username", "vendorUsername", 0.23);
-        TableColumn<T, Double> offPercent = makeColumn("Off Percentage", "offPercent", 0.34);
-        TableColumn<T, String> status = makeColumn("Approval", "statStr", 0.15);
+        System.out.println("HA HA HA");
+        TableColumn<T, String> offName = makeColumn("Off Name", "offName", 0.30);
+        TableColumn<T, String> vendorUsername = makeColumn("Vendor Username", "vendorUsername", 0.265);
+        TableColumn<T, Double> offPercent = makeColumn("Off Percentage", "offPercent", 0.23);
+        TableColumn<T, String> status = makeColumn("Approval", "statStr", 0.17);
         tableView.getColumns().addAll(offName, vendorUsername, offPercent, status);
     }
 
@@ -788,6 +789,8 @@ public class TableViewProcessor<T> extends Processor {
         Off off = (Off) ((TableViewProcessor)parentProcessor).tableView.getSelectionModel().getSelectedItem();
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
         try {
+            if(ProductControl.getController().isOffEditing(off.getOffID()))
+                off = ProductControl.getController().getEditingOffByID(off.getOffID());
             Parent root = loader.load();
             SaleProcessor processor = loader.getController();
             processor.setParentProcessor(this.parentProcessor);
@@ -874,5 +877,48 @@ public class TableViewProcessor<T> extends Processor {
         }
     }
 
+    public void approveEdit(ActionEvent actionEvent) {
+        Off selectedOff = (Off) ((TableViewProcessor)parentProcessor).selectedItem;
+        Optional<ButtonType> buttonType = new Alert
+                (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Approve " + selectedOff.getOffName() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if(buttonType.get() == ButtonType.YES) {
+            AdminControl.getController().modifyOffEditingApprove(selectedOff.getOffID(), true);
+        }
+        ((TableViewProcessor)parentProcessor).updateTable();
+        ((TableViewProcessor)parentProcessor).updateSelectedItem();
+    }
 
+    public void unApproveEdit(ActionEvent actionEvent) {
+        Off selectedOff = (Off) ((TableViewProcessor)parentProcessor).selectedItem;
+        Optional<ButtonType> buttonType = new Alert
+                (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Unapprove " + selectedOff.getOffName() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if(buttonType.get() == ButtonType.YES) {
+            AdminControl.getController().modifyOffEditingApprove(selectedOff.getOffID(), false);
+        }
+        ((TableViewProcessor)parentProcessor).updateTable();
+        ((TableViewProcessor)parentProcessor).updateSelectedItem();
+    }
+
+    public void showPreviousOff(ActionEvent actionEvent) {
+        Off off = (Off) ((TableViewProcessor)parentProcessor).tableView.getSelectionModel().getSelectedItem();
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
+        try {
+            off = ProductControl.getController().getOffByID(off.getOffID());
+            Parent root = loader.load();
+            SaleProcessor processor = loader.getController();
+            processor.setParentProcessor(this.parentProcessor);
+            processor.setOff(off);
+            processor.setPreviousOff(true);
+            processor.getOffImageFile();
+            processor.offInfoPaneMouseClick(null);
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.setTitle("Show Off " + off.getOffName());
+            newStage.setResizable(false);
+            processor.setMyStage(newStage);
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

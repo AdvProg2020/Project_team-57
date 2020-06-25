@@ -128,7 +128,10 @@ public class OffTable extends Database{
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Off> unApprovedOffs = new ArrayList<>();
         while (resultSet.next()) {
-            unApprovedOffs.add(getSpecificOff(resultSet.getString("OffID")));
+            if(!OffTable.isThereEditingOffWithID(resultSet.getString("OffID")))
+                unApprovedOffs.add(getSpecificOff(resultSet.getString("OffID")));
+            else
+                unApprovedOffs.add(getSpecificEditingOff(resultSet.getString("OffID")));
         }
         return unApprovedOffs;
     }

@@ -552,13 +552,15 @@ public class AdminControl extends AccountControl{
             if(isAccepted)
             {
                 OffTable.removeOffByID(editingOff.getOffID());
-                editingOff.setStatus(2);
+                editingOff.setStatus(1);
                 OffTable.addOff(editingOff);
                 OffTable.removeEditingOff(editingOff.getOffID());
+                acceptEditingOffImages(offID);
                 return Notification.OFF_EDITING_ACCEPTED;
             } else {
                 OffTable.removeEditingOff(offID);
                 OffTable.changeOffStatus(offID, 1);
+                declineEditingOffImages(offID);
                 return Notification.OFF_EDITING_DECLINED;
             }
         } catch (SQLException e) {
@@ -567,6 +569,27 @@ public class AdminControl extends AccountControl{
             e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;
+    }
+
+    private void declineEditingOffImages(String offID) {
+        if(ProductControl.getController().doesEditingOffHaveImage(offID)) {
+            OffTable.removeEditingOffImage(offID);
+        }
+    }
+
+    private void acceptEditingOffImages(String offID) {
+        try {
+            if(ProductControl.getController().doesOffHaveImage(offID))
+                OffTable.removeOffImage(offID);
+            if(ProductControl.getController().doesEditingOffHaveImage(offID)) {
+                //System.out.println("LOOK HERE: " + ProductControl.getController().getOffImageFileByID(offID));
+                OffTable.setOffImage(offID, ProductControl.getController().getEditingOffImageFileByID(offID));
+                declineEditingOffImages(offID);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public ArrayList<Comment> getAllUnApprovedComments() {
