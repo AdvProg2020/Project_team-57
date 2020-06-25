@@ -1,7 +1,6 @@
 package view;
 
 import controller.Control;
-import controller.account.AdminControl;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -18,9 +17,8 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
-import model.existence.Comment;
+import model.existence.Log;
 import model.existence.Off;
-import model.existence.Product;
 
 import java.io.IOException;
 import java.net.URL;
@@ -89,4 +87,26 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
         }
     }
 
+
+    public void showSellLogs(MouseEvent mouseEvent) {
+        if (canOpenSubStage("Show Sell Logs", this)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
+                Parent root = loader.load();
+                TableViewProcessor<Log> tableViewProcessor = loader.getController();
+                tableViewProcessor.setParentProcessor(this);
+                tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.LOGS);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
+                newStage.setResizable(false);
+                newStage.setTitle("Show Sell Logs");
+                this.addSubStage(newStage);
+                tableViewProcessor.setMyStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

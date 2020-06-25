@@ -429,6 +429,17 @@ public class VendorControl extends AccountControl{
         return Notification.UNKNOWN_ERROR;
     }
 
+    public ArrayList<Log> getAllVendorLogs() {
+        try {
+            return LogTable.getAllVendorLogs(Control.getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
     public ArrayList<String> getAllVendorLogsName() {
         try {
             ArrayList<String> allLogsName = new ArrayList<>();
@@ -618,4 +629,5 @@ public class VendorControl extends AccountControl{
             return Notification.UNKNOWN_ERROR;
         }
     }
+
 }

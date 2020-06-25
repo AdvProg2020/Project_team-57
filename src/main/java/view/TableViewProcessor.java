@@ -14,7 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -24,9 +24,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.ImagePattern;
+import javafx.scene.layout.*;
+import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -36,6 +35,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Optional;
+import model.existence.Log.ProductOfLog;
 
 import static model.existence.Account.AccountType.*;
 
@@ -61,7 +61,6 @@ public class TableViewProcessor<T> extends Processor {
     public JFXCheckBox commenterBoughtCheckBox;
     public ImageView showCommentBackButton;
     public Label offNameLabel;
-    public JFXButton showEditedOffButton;
     public JFXButton approveEditButton;
     public JFXButton unApproveEditButton;
     public Label offVendorUsernameLabel;
@@ -72,10 +71,40 @@ public class TableViewProcessor<T> extends Processor {
     public JFXButton deleteOffButton;
     public JFXButton editOffButton;
     public JFXButton addNewOffButton;
+    public JFXButton showLogProduct;
+    public Label LogDateLabel;
+    public Pane optionPane;
+    public Circle imageCircle;
+    public Label nameLabel;
+    public JFXButton showProfileButton;
+    public JFXButton deleteUserButton;
+    public JFXButton approveUserButton;
+    public Label typeLabel;
+    public JFXButton addAdminButton;
+    public BorderPane mainBorderPane;
+    public TableView<T> tableView;
+    public JFXTextField logInitialPrice;
+    public JFXTextField logFinalPrice;
+    public JFXTextField logOffPercent;
+    //End
+    public JFXTextField productInitialPriceField;
+    public JFXTextField productFinalPriceField;
+    public JFXTextField productOffPriceField;
+    public Label countLabel;
+    public Label discountPercentLabel;
+    public JFXTextField discountPercentField;
+    public Label vendorUsernameLabel;
+    public JFXTextField vendorUsernameField;
+    public JFXTextField productQuantityField;
+    private TableViewType tableViewType;
+    private T selectedItem;
+    private String searchedUsername;
+    private Pane tableViewPane;
+    private Log selectedLog;
 
     public static enum TableViewType {
         CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN),
-        DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS, ADMIN_OFFS, VENDOR_OFFS;
+        DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS, ADMIN_OFFS, VENDOR_OFFS, LOGS, PRODUCTS_OF_LOG;
 
         Account.AccountType accountType;
 
@@ -90,20 +119,6 @@ public class TableViewProcessor<T> extends Processor {
             return accountType;
         }
     }
-
-    public Circle imageCircle;
-    public Label nameLabel;
-    public JFXButton showProfileButton;
-    public JFXButton deleteUserButton;
-    public JFXButton approveUserButton;
-    public Label typeLabel;
-    public JFXButton addAdminButton;
-    public BorderPane mainBorderPane;
-    public TableView<T> tableView;
-    private TableViewType tableViewType;
-    private T selectedItem;
-    private String searchedUsername;
-    private Pane tableViewPane;
 
     public void initProcessor(TableViewType tableViewType) {
         this.tableViewType = tableViewType;
@@ -159,7 +174,29 @@ public class TableViewProcessor<T> extends Processor {
             case VENDOR_OFFS:
                 initVendorOffsColumns();
                 break;
+            case LOGS:
+                initVendorSellLogsColumns();
+                break;
+            case PRODUCTS_OF_LOG:
+                initProductsOfLogColumns();
+                break;
         }
+    }
+
+    private void initProductsOfLogColumns() {
+        TableColumn<T, String> productName = makeColumn("Product Name", "productName", 0.30);
+        TableColumn<T, String> vendorUsername = makeColumn("Vendor Username", "vendorUsername", 0.26);
+        TableColumn<T, String> quantity = makeColumn("Quantity", "quantityStr", 0.18);
+        TableColumn<T, Double> initPrice = makeColumn("Initial Price", "initPrice", 0.23);
+        tableView.getColumns().addAll(productName, vendorUsername, quantity, initPrice);
+    }
+
+    private void initVendorSellLogsColumns() {
+        TableColumn<T, String> customerUsername = makeColumn("Customer Username", "customerUsername", 0.315);
+        TableColumn<T, Date> logDate = makeColumn("Sell Date", "date", 0.25);
+        TableColumn<T, Integer> productsCount = makeColumn("Products", "productsCount", 0.23);
+        TableColumn<T, String> status = makeColumn("Status", "statStr", 0.17);
+        tableView.getColumns().addAll(customerUsername, logDate, productsCount, status);
     }
 
     private void initVendorOffsColumns() {
@@ -249,6 +286,15 @@ public class TableViewProcessor<T> extends Processor {
             case VENDOR_OFFS:
                 tableList.addAll((ArrayList<T>) VendorControl.getController().getAllOffs());
                 break;
+            case LOGS:
+                if(Control.getType().equals("Vendor"))
+                    tableList.addAll((ArrayList<T>) VendorControl.getController().getAllVendorLogs());
+                else
+                    tableList.addAll((ArrayList<T>) CustomerControl.getController().getAllLogs());
+                break;
+            case PRODUCTS_OF_LOG:
+                tableList.addAll((ArrayList<T>) selectedLog.getAllProducts());
+                break;
         }
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
@@ -311,7 +357,93 @@ public class TableViewProcessor<T> extends Processor {
             case VENDOR_OFFS:
                 mainBorderPane.setLeft(initVendorOffsOptions());
                 break;
+            case LOGS:
+                mainBorderPane.setLeft(initSellLogsOptions());
+                break;
+            case PRODUCTS_OF_LOG:
+                mainBorderPane.setLeft(initProductOfLogsOptions());
+                break;
         }
+    }
+
+    private Pane initProductOfLogsOptions() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewLogProductOptions.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            if(Control.getType() != null && Control.getType().equals("Vendor")) {
+                Stop[] stops = new Stop[] {
+                        new Stop(0, Color.valueOf("#360033")),
+                        new Stop(1, Color.valueOf("#127183"))
+                };
+                LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+                BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
+                processor.optionPane.setBackground(new Background(backgroundFill));
+            } else {
+                processor.optionPane.setStyle("-fx-background-color: #9ce7f0;");
+            }
+            if(selectedItem != null) {
+                ProductOfLog productOfLog = (ProductOfLog) selectedItem;
+                processor.productInitialPriceField.setText("" + productOfLog.getInitPrice() + " $");
+                if(Control.getType() != null) {
+                    logFinalPrice.setText((Control.getType().equals("Vendor")) ?
+                            "" + productOfLog.getOffPrice() + " $" : "" + (productOfLog.getOffPrice() * selectedLog.getDiscountPercent()) + " $");
+                    if(Control.getType().equals("Vendor")) {
+                        root.getChildren().removeAll(processor.discountPercentLabel, processor.vendorUsernameLabel,
+                                processor.vendorUsernameField, processor.discountPercentField);
+                    } else {
+                        processor.vendorUsernameField.setText(productOfLog.getVendorUsername());
+                        processor.discountPercentField.setText("" + selectedLog.getDiscountPercent());
+                    }
+                }
+                processor.logOffPercent.setText("" + ((1.0 - (productOfLog.getOffPrice()/productOfLog.getInitPrice())) * 100) +" %");
+                processor.countLabel.setText("" + (productOfLog.isCountable() ?
+                        productOfLog.getCount() : productOfLog.getAmount()));
+                processor.productQuantityField.setText(productOfLog.getQuantityStr());
+            }
+            return root;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Pane initSellLogsOptions() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewVendorLogsOptions.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            if(Control.getType() != null && Control.getType().equals("Vendor")) {
+                Stop[] stops = new Stop[] {
+                        new Stop(0, Color.valueOf("#360033")),
+                        new Stop(1, Color.valueOf("#127183"))
+                };
+                LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+                BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
+                processor.optionPane.setBackground(new Background(backgroundFill));
+            } else {
+                processor.optionPane.setStyle("-fx-background-color: #9ce7f0;");
+            }
+            if(selectedItem != null) {
+                Log log = (Log)selectedItem;
+                java.util.Date date = new java.util.Date(log.getDate().getTime());
+                processor.offNameLabel.setText(date.toString());
+                processor.logInitialPrice.setText("" + log.getInitialPrice() + " $");
+                if(Control.getType() != null) {
+                    logFinalPrice.setText((Control.getType().equals("Vendor")) ?
+                            "" + log.getVendorFinalPrice() + " $" : "" + log.getCustomerFinalPrice() + " $");
+                }
+                processor.logOffPercent.setText("" + ((1.0 - (log.getVendorFinalPrice()/log.getInitialPrice())) * 100) +" %");
+            } else {
+                processor.terminateOptions();
+            }
+            return root;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private Pane initVendorOffsOptions() {
@@ -490,10 +622,30 @@ public class TableViewProcessor<T> extends Processor {
             case ADMIN_OFFS:
                 terminateOffOptions();
                 break;
+            case VENDOR_OFFS:
+                terminateVendorOffOptions();
+                break;
+            case LOGS:
+                terminateVendorSellLogOptions();
+                break;
         }
     }
 
+    private void terminateVendorOffOptions() {
+        editOffButton.setDisable(true);
+        deleteOffButton.setDisable(true);
+        addNewOffButton.setDisable(true);
+        offNameLabel.setText("Off Name");
+    }
+
+    private void terminateVendorSellLogOptions() {
+        showLogProduct.setDisable(true);
+        LogDateLabel.setText("Log Date");
+    }
+
     private void terminateOffOptions() {
+        offNameLabel.setText("Off Name");
+        offVendorUsernameLabel.setText("Off Vendor");
         showOffButton.setDisable(true);
         approveOffButton.setDisable(true);
         deleteOffButton.setDisable(true);
@@ -832,7 +984,7 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void editOff(ActionEvent actionEvent) {
-        Off off = (Off) ((TableViewProcessor)parentProcessor).tableView.getSelectionModel().getSelectedItem();
+        Off off = (Off) ((TableViewProcessor)parentProcessor).selectedItem;
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
         try {
             if(ProductControl.getController().isOffEditing(off.getOffID()))
@@ -900,7 +1052,7 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void showPreviousOff(ActionEvent actionEvent) {
-        Off off = (Off) ((TableViewProcessor)parentProcessor).tableView.getSelectionModel().getSelectedItem();
+        Off off = (Off) ((TableViewProcessor)parentProcessor).selectedItem;
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
         try {
             off = ProductControl.getController().getOffByID(off.getOffID());
@@ -921,4 +1073,27 @@ public class TableViewProcessor<T> extends Processor {
             e.printStackTrace();
         }
     }
+
+    public void showLogProducts(ActionEvent actionEvent) {
+        Log log = (Log) ((TableViewProcessor)parentProcessor).selectedItem;
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
+        try {
+            Parent root = loader.load();
+            TableViewProcessor<ProductOfLog> processor = loader.getController();
+            processor.initProcessor(TableViewType.PRODUCTS_OF_LOG);
+            processor.setLog(log);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Log Products");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setLog(Log log) {
+        this.selectedLog = log;
+    }
+
+
 }

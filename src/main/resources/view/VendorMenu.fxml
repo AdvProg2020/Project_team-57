@@ -70,7 +70,7 @@
             </Label>
          </children>
       </Pane>
-      <Pane layoutX="771.0" layoutY="307.0" opacity="0.7" prefHeight="313.0" prefWidth="273.0" style="-fx-background-color: #292A51; -fx-background-radius: 10 10 10 10;" styleClass="Vendor_Menu_Center_Pane">
+      <Pane layoutX="771.0" layoutY="307.0" onMouseClicked="#showSellLogs" opacity="0.7" prefHeight="313.0" prefWidth="273.0" style="-fx-background-color: #292A51; -fx-background-radius: 10 10 10 10;" styleClass="Vendor_Menu_Center_Pane">
          <children>
             <Label alignment="CENTER" layoutX="76.0" layoutY="240.0" prefHeight="44.0" prefWidth="125.0" text="Sells" textFill="#2f999f">
                <font>

@@ -478,7 +478,7 @@ public class CustomerControl extends AccountControl{
 
     private int checkGift(Log log) {
         AdminControl adminControl = AdminControl.getController();
-        if(log.getFinalPrice() >= 85000)
+        if(log.getCustomerFinalPrice() >= 85000)
         {
             Discount discount = new Discount();
             discount.setCode("Super Code");
@@ -494,7 +494,7 @@ public class CustomerControl extends AccountControl{
             adminControl.addDiscount(discount);
             return 1;
         }
-        else if(log.getFinalPrice() >= 5000)
+        else if(log.getCustomerFinalPrice() >= 5000)
         {
             Discount discount = new Discount();
             discount.setCode("Good Customer");
@@ -533,6 +533,17 @@ public class CustomerControl extends AccountControl{
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<Log> getAllLogs() {
+        try {
+            return LogTable.getAllCustomerLogs(Control.getUsername());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
     public ArrayList<String> getAllLogesNames() {
@@ -648,4 +659,6 @@ public class CustomerControl extends AccountControl{
         }
         return false;
     }
+
+
 }

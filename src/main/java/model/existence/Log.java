@@ -13,8 +13,10 @@ public class Log {
     private String customerUsername;
     private double discountPercent;
     private int status;
+    private String statStr;
     private Date date;
     private ArrayList<ProductOfLog> allProducts = new ArrayList<>();
+    private int productsCount;
 
     public Log() {
     }
@@ -35,6 +37,8 @@ public class Log {
                     resultSet.getInt("Count"), resultSet.getDouble("Amount"),
                     resultSet.getDouble("InitPrice"), resultSet.getDouble("OffPrice"), resultSet.getString("VendorUsername")));
         }
+        this.statStr = (this.status == 1 ? "Delivering" : "Delivered");
+        this.productsCount = this.allProducts.size();
     }
 
     public Log(ArrayList<Log.ProductOfLog> allProducts, Log log) {
@@ -43,12 +47,24 @@ public class Log {
         this.date = log.getDate();
         this.customerUsername = log.getCustomerUsername();
         this.allProducts.addAll(allProducts);
+        this.statStr = (this.status == 1 ? "Delivering" : "Delivered");
+        this.productsCount = this.allProducts.size();
+    }
+
+    public String getStatStr() {
+        return statStr;
+    }
+
+    public int getProductsCount() {
+        return productsCount;
     }
 
     //Start Inner Class
     public static class ProductOfLog{
         private String productID;
+        private String productName;
         private String vendorUsername;
+        private String quantityStr;
         private int count;
         private double amount;
         private double initPrice;
@@ -63,6 +79,14 @@ public class Log {
             this.initPrice = initPrice;
             this.offPrice = offPrice;
             this.vendorUsername = vendorUsername;
+            try {
+                this.productName = ProductTable.getProductByID(productID).getName();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            this.quantityStr = "" + (isCountable ? this.count : this.amount + " Kg");
         }
 
         public ProductOfLog(Product product) throws SQLException, ClassNotFoundException {
@@ -77,8 +101,15 @@ public class Log {
             } else {
                 this.offPrice = product.getPrice();
             }
+            try {
+                this.productName = ProductTable.getProductByID(productID).getName();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            this.quantityStr = "" + (isCountable ? this.count : this.amount + " Kg");
         }
-
         public ProductOfLog() {
 
         }
@@ -137,6 +168,14 @@ public class Log {
 
         public void setVendorUsername(String vendorUsername) {
             this.vendorUsername = vendorUsername;
+        }
+
+        public String getProductName() {
+            return productName;
+        }
+
+        public String getQuantityStr() {
+            return quantityStr;
         }
     }
     //End Inner Class
@@ -197,7 +236,7 @@ public class Log {
         this.status = status;
     }
 
-    public double getFinalPrice(){
+    public double getCustomerFinalPrice(){
         double finalPrice = 0;
         for (ProductOfLog productOfLog : allProducts) {
             finalPrice += productOfLog.getOffPrice() * productOfLog.getCount();
@@ -213,5 +252,14 @@ public class Log {
             finalPrice += productOfLog.getOffPrice() * productOfLog.getCount();
         }
         return finalPrice;
+    }
+
+    public double getInitialPrice() {
+        double price = 0;
+        for (ProductOfLog productOfLog : allProducts) {
+            price += productOfLog.getOffPrice() * productOfLog.getAmount();
+            price += productOfLog.getOffPrice() * productOfLog.getCount();
+        }
+        return price;
     }
 }
