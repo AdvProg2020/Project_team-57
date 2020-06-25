@@ -579,10 +579,10 @@ public class TableViewProcessor<T> extends Processor {
 
     public void addNewAdmin(ActionEvent actionEvent) {
         try {
-            SignUpProcessor.setIsNormal(false);
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("SignUp.fxml"));
+            WelcomeProcessor.setIsNormal(false);
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("SignUpMenu.fxml"));
             Parent root = loader.load();
-            SignUpProcessor signUpProcessor = loader.getController();
+            WelcomeProcessor signUpProcessor = loader.getController();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             signUpProcessor.setMyStage(newStage);

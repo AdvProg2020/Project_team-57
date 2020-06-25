@@ -74,12 +74,12 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInMenu.fxml"));
             root1 = loader.load();
-            SignInProcessor signInProcessor = loader.getController();
+            WelcomeProcessor signInProcessor = loader.getController();
             signInProcessor.setMyStage(myStage);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        myStage.setTitle("Sign In");
+        myStage.setTitle("Sign In Menu");
         myStage.setScene(new Scene(root1));
     }
 
@@ -162,6 +162,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             stage.getIcons().add(new Image("Images/Icons/cart (2).png"));
             stage.setTitle(Control.getUsername() + " Cart");
             stage.setScene(new Scene(root));
+            stage.setResizable(false);
             addSubStage(stage);
             stage.show();
         } catch (IOException e) {
