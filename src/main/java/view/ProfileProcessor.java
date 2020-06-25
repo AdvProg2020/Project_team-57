@@ -143,6 +143,7 @@ public class ProfileProcessor extends Processor implements Initializable {
             pictureCircle.setOnMouseEntered(null);
             pictureCircle.setOnMouseExited(null);
         }
+
     }
 
     private void setProfileCreditFields() {
@@ -330,7 +331,7 @@ public class ProfileProcessor extends Processor implements Initializable {
         passwordField.setStyle("");
     }
 
-    public void chooseAccountPictureMouseClicked(MouseEvent mouseEvent) throws FileNotFoundException {
+    public void chooseAccountPictureMouseClicked(MouseEvent mouseEvent) {
         FileChooser pictureChooser = new FileChooser();
 
         FileChooser.ExtensionFilter jpgExtensionFilter = new FileChooser.ExtensionFilter("JPG Files", "*.JPG");
@@ -345,27 +346,41 @@ public class ProfileProcessor extends Processor implements Initializable {
 
         File pictureFile = pictureChooser.showOpenDialog(null);
 
-        if(pictureFile != null) {
-            FileInputStream fileInputStream = new FileInputStream(pictureFile);
-            Image image = new Image(fileInputStream);
+        try {
+            if(pictureFile != null) {
+                FileInputStream fileInputStream = new FileInputStream(pictureFile);
+                Image image = new Image(fileInputStream);
 
-            //Todo Sending Image To Controller
-            //Todo Showing Image
+                //Todo Sending Image To Controller
+                //Todo Showing Image
 
-            this.pictureFile = pictureFile;
+                this.pictureFile = pictureFile;
 
-            pictureCircle.setFill(new ImagePattern(image));
+                pictureCircle.setFill(new ImagePattern(image));
+
+                //Todo Check
+                fileInputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
 
-    public void profilePictureMouseEntered(MouseEvent mouseEvent) throws FileNotFoundException {
+    public void profilePictureMouseEntered(MouseEvent mouseEvent) {
         Circle circle = new Circle(45);
 
-        FileInputStream fileInputStream = new FileInputStream("src\\main\\resources\\Images\\ProfileInfoMenu - Camera.png");
-        Image image = new Image(fileInputStream);
-        ImagePattern imagePattern = new ImagePattern(image);
-        circle.setFill(imagePattern);
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream("src\\main\\resources\\Images\\ProfileInfoMenu - Camera.png");
+            Image image = new Image(fileInputStream);
+            ImagePattern imagePattern = new ImagePattern(image);
+            circle.setFill(imagePattern);
+            fileInputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         profilePictureStackPane.getChildren().remove(1, profilePictureStackPane.getChildren().size());
         profilePictureStackPane.getChildren().add(circle);
         profilePictureStackPane.setStyle("-fx-cursor: hand");
