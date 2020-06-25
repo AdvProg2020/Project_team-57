@@ -799,14 +799,19 @@ public class ProductsProcessor extends Processor{
         discountCodesListView.setDisable(false);
         ObservableList<Discount> customerDiscounts = discountCodesListView.getItems();
 
-        for(Discount discount : CustomerControl.getController().getAllAvailableCustomerDisCounts()) {
-            customerDiscounts.add(discount);
-        }
+//        for(Discount discount : CustomerControl.getController().getAllAvailableCustomerDisCounts()) {
+//            customerDiscounts.add(discount);
+//        }
     }
 
     private void showDiscountEffect(Discount discount) {
+        System.out.println("What ?");
         if(discount != null) {
             //Todo
         }
+    }
+
+    private void removeDiscountEffect() {
+
     }
 }
