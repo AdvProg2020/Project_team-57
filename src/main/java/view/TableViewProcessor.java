@@ -816,26 +816,24 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void showDiscount(ActionEvent actionEvent) {
-        Discount discount = (Discount)((TableViewProcessor)parentProcessor).tableView.getSelectionModel().getSelectedItem();
-        if(canOpenSubStage("Show Discount " + discount.getID(), this)) {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("DiscountMenu.fxml"));
-            try {
-                Parent root = loader.load();
-                SaleProcessor processor = loader.getController();
-                processor.setDiscount(discount);
-                processor.discountInfoMouseClicked(null);
-                AdminControl.getController().addDiscountToHashMap(processor.getDiscount());
-                Stage newStage = new Stage();
-                newStage.setScene(new Scene(root));
-                newStage.setTitle("Show Discount " + discount.getID());
-                newStage.setResizable(false);
-                processor.parentProcessor = this.parentProcessor;
-                //System.out.println("Opening : " + processor);
-                processor.setMyStage(newStage);
-                newStage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        Discount discount = (Discount)((TableViewProcessor)parentProcessor).selectedItem;
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("DiscountMenu.fxml"));
+        try {
+            Parent root = loader.load();
+            SaleProcessor processor = loader.getController();
+            processor.setDiscount(discount);
+            processor.discountInfoMouseClicked(null);
+            AdminControl.getController().addDiscountToHashMap(processor.getDiscount());
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.setTitle("Show Discount " + discount.getID());
+            newStage.setResizable(false);
+            processor.parentProcessor = this.parentProcessor;
+            //System.out.println("Opening : " + processor);
+            processor.setMyStage(newStage);
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -1127,6 +1125,23 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void showDiscountCustomer(ActionEvent actionEvent) {
+        Discount discount = (Discount)((TableViewProcessor)parentProcessor).selectedItem;
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("DiscountMenu.fxml"));
+        try {
+            Parent root = loader.load();
+            SaleProcessor processor = loader.getController();
+            processor.setDiscount(discount);
+            processor.discountInfoMouseClicked(null);
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.setTitle("Show Discount " + discount.getCode());
+            newStage.setResizable(false);
+            processor.parentProcessor = this.parentProcessor.parentProcessor;
+            processor.setMyStage(newStage);
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
