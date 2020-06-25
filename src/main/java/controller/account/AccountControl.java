@@ -398,12 +398,15 @@ public class AccountControl extends Control implements IOValidity {
         return null;
     }
 
-    private boolean doesUserHaveImage(String username) {
+    public boolean doesUserHaveImage(String username) {
         return AccountTable.getUserImageFilePath(username) != null;
     }
 
     public void setAccountPicture(String username, File pictureFile) {
-        if(pictureFile != null) {
+        if(pictureFile == null) {
+            if(doesUserHaveImage(username))
+                AccountTable.deleteProfileImage(username);
+        } else {
             if(doesUserHaveImage(username)) {
                 AccountTable.deleteProfileImage(username);
             }

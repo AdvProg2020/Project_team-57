@@ -109,6 +109,11 @@ public class ProfileProcessor extends Processor implements Initializable {
         ImagePattern imagePattern = new ImagePattern(accountControl.getProfileImageByUsername(account.getUsername()));
         pictureCircle.setFill(imagePattern);
 
+        if(!accountControl.doesUserHaveImage(account.getUsername())) {
+            System.out.println("Really?");
+            deleteImage.setDisable(true);
+            deleteImage.setOpacity(0.7);
+        }
         if(account.getType().equals("Vendor"))
             brandField.setText(account.getBrand());
         else {
@@ -124,7 +129,7 @@ public class ProfileProcessor extends Processor implements Initializable {
         }
 
         if(!account.getUsername().equals(Control.getUsername())) {
-//            profileInfoPane.getChildren().remove(deleteImage);
+            profileInfoPane.getChildren().remove(deleteImage);
             profileInfoPane.getChildren().remove(saveChangesButton);
 
             firstNameField.setEditable(false);
@@ -357,14 +362,41 @@ public class ProfileProcessor extends Processor implements Initializable {
                 this.pictureFile = pictureFile;
 
                 pictureCircle.setFill(new ImagePattern(image));
-
-                //Todo Check
+                deleteImage.setDisable(false);
+                deleteImage.setOpacity(1.0);
                 fileInputStream.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    public void deleteImage(MouseEvent mouseEvent) {
+        try {
+            FileInputStream imageFileInputStream = new FileInputStream("src\\main\\resources\\Images\\DefaultProfilePicture.png");
+            pictureCircle.setFill(new ImagePattern(new Image(imageFileInputStream)));
+            pictureFile = null;
+            deleteImage.setDisable(true);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ImageView getDeleteImageButton() {
+        ImageView deleteImage = new ImageView();
+        deleteImage.getStyleClass().add("Delete_Image");
+
+        deleteImage.setFitWidth(32);
+        deleteImage.setFitHeight(32);
+
+        deleteImage.setLayoutX(147);
+        deleteImage.setLayoutY(32);
+
+        deleteImage.setId("deleteImage");
+        //Todo Set On MouseClicked
+
+        return deleteImage;
     }
 
     public void profilePictureMouseEntered(MouseEvent mouseEvent) {
@@ -407,4 +439,5 @@ public class ProfileProcessor extends Processor implements Initializable {
         timeline.play();
 
     }
+
 }
