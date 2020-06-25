@@ -39,7 +39,8 @@ public class AdminControl extends AccountControl{
     }
 
     public void removeDiscountFromHashMap(Discount discount) {
-        discountsAddedUsers.remove(discount);
+        if(discount != null && discountsAddedUsers != null)
+            discountsAddedUsers.remove(discount);
     }
 
     public HashMap<Discount, ArrayList<String>> getDiscountsAddedUsers() {
@@ -547,7 +548,7 @@ public class AdminControl extends AccountControl{
     public Notification modifyOffEditingApprove(String offID, boolean isAccepted)
     {
         try {
-            Off editingOff = OffTable.getSpecificEditingOffByID(offID);
+            Off editingOff = OffTable.getSpecificEditingOff(offID);
             if(isAccepted)
             {
                 OffTable.removeOffByID(editingOff.getOffID());

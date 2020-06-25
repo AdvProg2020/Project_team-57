@@ -748,6 +748,32 @@ public class ProductControl extends Control {
         return null;
     }
 
+    public void deleteEditingOffPicture(String offID) {
+        if(doesEditingOffHaveImage(offID)) {
+            OffTable.removeEditingOffImage(offID);
+        }
+    }
+
+    public Image getEditingOffImageByID(String offID) {
+        try {
+            if(doesEditingOffHaveImage(offID)) {
+                FileInputStream fileInputStream = OffTable.getEditingOffImageInputStream(offID);
+                Image image = new Image(fileInputStream);
+                fileInputStream.close();
+                return image;
+            }
+            FileInputStream fileInputStream = OffTable.getOffImageInputStream("1");
+            Image image = new Image(fileInputStream);
+            fileInputStream.close();
+            return image;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public File getOffImageFileByID(String offID) {
         if(doesOffHaveImage(offID)) {
             return new File(OffTable.getOffImageFilePath(offID));
@@ -779,7 +805,25 @@ public class ProductControl extends Control {
                 e.printStackTrace();
             }
         }
+    }
 
+    public void setEditingOffPicture(String offID, File pictureFile) {
+        if(pictureFile != null) {
+            if(!pictureFile.getPath().contains("database\\Images\\EditingOffs\\" + offID)) {
+                if (doesEditingOffHaveImage(offID)) {
+                    OffTable.removeEditingOffImage(offID);
+                }
+                try {
+                    OffTable.setEditingOffImage(offID, pictureFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public boolean doesEditingOffHaveImage(String offID) {
+        return OffTable.getEditingOffImageFilePath(offID) != null;
     }
 
     public int getProductImagesNumberByID(String productID) {
@@ -898,7 +942,7 @@ public class ProductControl extends Control {
     }
 
     public ArrayList<File> getProductNonEditedImageFiles(Product product) {
-        System.out.println("HEllo");
+//        System.out.println("HEllo");
         ArrayList<File> imageFiles = new ArrayList<>();
         for(int i = 0; i < getProductImagesNumberByID(product.getID()); ++i) {
             imageFiles.add(
@@ -939,5 +983,35 @@ public class ProductControl extends Control {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public boolean isOffEditing(String offID) {
+        try {
+            return OffTable.isThereEditingOffWithID(offID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public File getEditingOffImageFileByID(String offID) {
+        if(doesEditingOffHaveImage(offID)) {
+            return new File(OffTable.getEditingOffImageFilePath(offID));
+        } else
+            return new File(OffTable.getOffImageFilePath("1"));
+    }
+
+
+    public Off getEditingOffByID(String offID) {
+        try {
+            return OffTable.getSpecificEditingOff(offID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new Off();
     }
 }

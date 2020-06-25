@@ -111,6 +111,8 @@ public enum Notification {
             Alert.AlertType.ERROR, "Add Off Error", "Invalid Percent"),
     ADD_OFF("Off Added Successfully. Wai For The A King Or Queen To Accept It.",
             Alert.AlertType.INFORMATION, "Add Off Successful", "Successfully added"),
+    EDIT_OFF("Off Edited Successfully. Wai For The A King Or Queen To Accept It.",
+            Alert.AlertType.INFORMATION, "Edit Off Successful", "Successfully Edited"),
     ACCEPT_OFF_REQUEST("Offs were applied successfully"),
     EMPTY_OFF_PRODUCTS("You haven't Entered Off Products",
             Alert.AlertType.ERROR, "Add Off Error", "No Off Product Found"),
@@ -199,7 +201,6 @@ public enum Notification {
             Alert.AlertType.INFORMATION, "Editing Product Successful", "Product Request"),
     DECLINE_EDITING_PRODUCT("Editing Off Requests Denied Successfully Great King.",
             Alert.AlertType.INFORMATION, "Editing Product Accepted", "Product Request");
-
 
 
     private String message;

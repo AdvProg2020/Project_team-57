@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -309,7 +308,7 @@ public class AccountControl extends Control implements IOValidity {
 
     public Off getOffFromEditingTable(String offID) {
         try {
-            return OffTable.getSpecificEditingOffByID(offID);
+            return OffTable.getSpecificEditingOff(offID);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -321,7 +320,7 @@ public class AccountControl extends Control implements IOValidity {
     public Off getVendorOff(String offID) {
         try {
             if(OffTable.isThereEditingOffWithID(offID))
-                return OffTable.getSpecificEditingOffByID(offID);
+                return OffTable.getSpecificEditingOff(offID);
             return OffTable.getSpecificOff(offID);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -398,12 +397,15 @@ public class AccountControl extends Control implements IOValidity {
         return null;
     }
 
-    private boolean doesUserHaveImage(String username) {
+    public boolean doesUserHaveImage(String username) {
         return AccountTable.getUserImageFilePath(username) != null;
     }
 
     public void setAccountPicture(String username, File pictureFile) {
-        if(pictureFile != null) {
+        if(pictureFile == null) {
+            if(doesUserHaveImage(username))
+                AccountTable.deleteProfileImage(username);
+        } else {
             if(doesUserHaveImage(username)) {
                 AccountTable.deleteProfileImage(username);
             }

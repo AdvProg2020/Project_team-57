@@ -17,6 +17,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -29,7 +30,6 @@ import javafx.util.Duration;
 import model.existence.Account;
 import notification.Notification;
 
-import javax.swing.text.html.ImageView;
 import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -58,6 +58,7 @@ public class ProfileProcessor extends Processor implements Initializable {
 
     public StackPane profilePictureStackPane;
     public Circle pictureCircle;
+    public ImageView deleteImage;
     public Rectangle rightLine, rightLine1;
 
     public JFXTextField currentCreditField, additionCreditField;
@@ -108,6 +109,11 @@ public class ProfileProcessor extends Processor implements Initializable {
         ImagePattern imagePattern = new ImagePattern(accountControl.getProfileImageByUsername(account.getUsername()));
         pictureCircle.setFill(imagePattern);
 
+        if(!accountControl.doesUserHaveImage(account.getUsername())) {
+            System.out.println("Really?");
+            deleteImage.setDisable(true);
+            deleteImage.setOpacity(0.7);
+        }
         if(account.getType().equals("Vendor"))
             brandField.setText(account.getBrand());
         else {
@@ -123,6 +129,7 @@ public class ProfileProcessor extends Processor implements Initializable {
         }
 
         if(!account.getUsername().equals(Control.getUsername())) {
+            profileInfoPane.getChildren().remove(deleteImage);
             profileInfoPane.getChildren().remove(saveChangesButton);
 
             firstNameField.setEditable(false);
@@ -141,6 +148,7 @@ public class ProfileProcessor extends Processor implements Initializable {
             pictureCircle.setOnMouseEntered(null);
             pictureCircle.setOnMouseExited(null);
         }
+
     }
 
     private void setProfileCreditFields() {
@@ -328,7 +336,7 @@ public class ProfileProcessor extends Processor implements Initializable {
         passwordField.setStyle("");
     }
 
-    public void chooseAccountPictureMouseClicked(MouseEvent mouseEvent) throws FileNotFoundException {
+    public void chooseAccountPictureMouseClicked(MouseEvent mouseEvent) {
         FileChooser pictureChooser = new FileChooser();
 
         FileChooser.ExtensionFilter jpgExtensionFilter = new FileChooser.ExtensionFilter("JPG Files", "*.JPG");
@@ -343,27 +351,68 @@ public class ProfileProcessor extends Processor implements Initializable {
 
         File pictureFile = pictureChooser.showOpenDialog(null);
 
-        if(pictureFile != null) {
-            FileInputStream fileInputStream = new FileInputStream(pictureFile);
-            Image image = new Image(fileInputStream);
+        try {
+            if(pictureFile != null) {
+                FileInputStream fileInputStream = new FileInputStream(pictureFile);
+                Image image = new Image(fileInputStream);
 
-            //Todo Sending Image To Controller
-            //Todo Showing Image
+                //Todo Sending Image To Controller
+                //Todo Showing Image
 
-            this.pictureFile = pictureFile;
+                this.pictureFile = pictureFile;
 
-            pictureCircle.setFill(new ImagePattern(image));
+                pictureCircle.setFill(new ImagePattern(image));
+                deleteImage.setDisable(false);
+                deleteImage.setOpacity(1.0);
+                fileInputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
 
-    public void profilePictureMouseEntered(MouseEvent mouseEvent) throws FileNotFoundException {
+    public void deleteImage(MouseEvent mouseEvent) {
+        try {
+            FileInputStream imageFileInputStream = new FileInputStream("src\\main\\resources\\Images\\DefaultProfilePicture.png");
+            pictureCircle.setFill(new ImagePattern(new Image(imageFileInputStream)));
+            pictureFile = null;
+            deleteImage.setDisable(true);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ImageView getDeleteImageButton() {
+        ImageView deleteImage = new ImageView();
+        deleteImage.getStyleClass().add("Delete_Image");
+
+        deleteImage.setFitWidth(32);
+        deleteImage.setFitHeight(32);
+
+        deleteImage.setLayoutX(147);
+        deleteImage.setLayoutY(32);
+
+        deleteImage.setId("deleteImage");
+        //Todo Set On MouseClicked
+
+        return deleteImage;
+    }
+
+    public void profilePictureMouseEntered(MouseEvent mouseEvent) {
         Circle circle = new Circle(45);
 
-        FileInputStream fileInputStream = new FileInputStream("src\\main\\resources\\Images\\ProfileInfoMenu - Camera.png");
-        Image image = new Image(fileInputStream);
-        ImagePattern imagePattern = new ImagePattern(image);
-        circle.setFill(imagePattern);
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream("src\\main\\resources\\Images\\ProfileInfoMenu - Camera.png");
+            Image image = new Image(fileInputStream);
+            ImagePattern imagePattern = new ImagePattern(image);
+            circle.setFill(imagePattern);
+            fileInputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         profilePictureStackPane.getChildren().remove(1, profilePictureStackPane.getChildren().size());
         profilePictureStackPane.getChildren().add(circle);
         profilePictureStackPane.setStyle("-fx-cursor: hand");
@@ -390,4 +439,5 @@ public class ProfileProcessor extends Processor implements Initializable {
         timeline.play();
 
     }
+
 }
