@@ -143,4 +143,8 @@ public class Discount {
 
         return customerRepetition;
     }
+
+    public boolean canCustomerUseThisDiscount(String username) {
+        return customersWithRepetition.containsKey(username) && customersWithRepetition.get(username) < maxRepetition;
+    }
 }

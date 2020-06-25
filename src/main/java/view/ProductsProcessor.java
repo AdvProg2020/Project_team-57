@@ -798,15 +798,12 @@ public class ProductsProcessor extends Processor{
         //Todo Check
         discountCodesListView.setDisable(false);
         ObservableList<Discount> customerDiscounts = discountCodesListView.getItems();
-
-//        for(Discount discount : CustomerControl.getController().getAllAvailableCustomerDisCounts()) {
-//            customerDiscounts.add(discount);
-//        }
+        customerDiscounts.addAll(CustomerControl.getController().getAllAvailableCustomerDisCounts());
     }
 
     private void showDiscountEffect(Discount discount) {
-        System.out.println("What ?");
         if(discount != null) {
+            System.out.println("What ?");
             //Todo
         }
     }

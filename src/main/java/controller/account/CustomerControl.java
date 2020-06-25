@@ -672,4 +672,22 @@ public class CustomerControl extends AccountControl{
         return false;
     }
 
+    public ArrayList<Discount> getAllAvailableCustomerDisCounts() {
+        try {
+            ArrayList<Discount> availableDiscounts = new ArrayList<>();
+
+            for (Discount customerDiscountCode : DiscountTable.getCustomerDiscountCodes(getUsername())) {
+                if(customerDiscountCode.canCustomerUseThisDiscount(getUsername())) {
+                    availableDiscounts.add(customerDiscountCode);
+                }
+            }
+
+            return availableDiscounts;
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println("Shit. Error In Getting Available Discounts");
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
