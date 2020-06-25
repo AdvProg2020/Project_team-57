@@ -1,6 +1,7 @@
 package view;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import controller.account.AdminControl;
@@ -9,6 +10,7 @@ import controller.account.VendorControl;
 import controller.product.ProductControl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -20,6 +22,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -28,6 +31,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import model.existence.Category;
+import model.existence.Discount;
 import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
@@ -103,6 +107,13 @@ public class ProductsProcessor extends Processor{
     private Off selectedOff;
 
 
+    //Discount Part
+    public JFXToggleButton useDiscountCodeToggleButton;
+    public JFXListView<Discount> discountCodesListView;
+
+    //Total Price Part
+    public Label totalPriceLabel;
+
     public void initProcessor (ProductsMenuType menuType) {
         this.menuType = menuType;
         switch (menuType) {
@@ -114,6 +125,7 @@ public class ProductsProcessor extends Processor{
                 break;
             case CUSTOMER_CART:
                 initProductsPage();
+                initDiscountPart();
                 break;
             case ADMIN_PRODUCT_REQUESTS:
                 initAdminProductRequestsMenu();
@@ -744,5 +756,57 @@ public class ProductsProcessor extends Processor{
 
     public void setSelectedOff(Off selectedOff) {
         this.selectedOff = selectedOff;
+    }
+
+    //Discount Part
+    private void initDiscountPart() {
+        setDiscountsListViewSpecifications();
+        useDiscountCodeToggleButton.selectedProperty().addListener((observable, oldValue, newValue) -> discountToggleButtonChanged());
+    }
+
+    //Todo Check
+    private void setDiscountsListViewSpecifications() {
+        discountCodesListView.setCellFactory(param -> {
+            ListCell<Discount> listCell = new ListCell<Discount>() {
+                @Override
+                protected void updateItem(Discount discount, boolean empty) {
+                    if(!empty) {
+                        super.updateItem(discount, false);
+                        setText(discount.getCode() + " : " + discount.getDiscountPercent());
+                    }
+                }
+            };
+            listCell.setOnMouseClicked(event -> {
+                if(event.getClickCount() == 2 && event.getButton().equals(MouseButton.PRIMARY))
+                    showDiscountEffect(listCell.getItem());
+            });
+            listCell.getStyleClass().add("Discounts_ListView_Cell");
+            return listCell;
+        });
+    }
+
+    private void discountToggleButtonChanged() {
+        if(useDiscountCodeToggleButton.isSelected()) {
+            loadDiscountListView();
+        } else {
+            discountCodesListView.getItems().removeAll(discountCodesListView.getItems());
+            discountCodesListView.setDisable(true);
+        }
+    }
+
+    private void loadDiscountListView() {
+        //Todo Check
+        discountCodesListView.setDisable(false);
+        ObservableList<Discount> customerDiscounts = discountCodesListView.getItems();
+
+        for(Discount discount : CustomerControl.getController().getAllAvailableCustomerDisCounts()) {
+            customerDiscounts.add(discount);
+        }
+    }
+
+    private void showDiscountEffect(Discount discount) {
+        if(discount != null) {
+            //Todo
+        }
     }
 }

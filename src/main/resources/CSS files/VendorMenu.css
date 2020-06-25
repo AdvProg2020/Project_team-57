@@ -22,3 +22,8 @@
     -fx-cursor: hand;
     -fx-opacity: 0.8;
 }
+
+.Discounts_ListView_Cell:hover {
+    -fx-background-color: #2F999F;
+    -fx-cursor: hand;
+}

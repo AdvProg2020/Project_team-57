@@ -133,4 +133,14 @@ public class Discount {
     public void removeCustomer(String username) {
         this.customersWithRepetition.remove(username);
     }
+
+    public int getCustomerRepetition(String username) {
+        int customerRepetition = maxRepetition;
+
+        if (customersWithRepetition.containsKey(username)) {
+            customerRepetition = customersWithRepetition.get(username);
+        }
+
+        return customerRepetition;
+    }
 }
