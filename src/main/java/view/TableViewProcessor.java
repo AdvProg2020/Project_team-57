@@ -270,7 +270,8 @@ public class TableViewProcessor<T> extends Processor {
 
     public void updateTable() {
         ObservableList<T> tableList = FXCollections.observableArrayList();
-        tableView.getItems().remove(0, tableView.getItems().size());
+//        tableView.getItems().remove(0, tableView.getItems().size());
+        tableView.getItems().removeAll(tableView.getItems());
         switch (tableViewType) {
             case ADMINS:
             case VENDORS:
@@ -311,7 +312,7 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private ArrayList<T> getAllCustomersForDiscount() {
-        ArrayList<Account> customers;
+        ArrayList<Account> customers = new ArrayList<>();
         if(searchedUsername != null && searchedUsername.length() > 0) {
             customers = AccountControl.getController().getModifiedAccounts(CUSTOMER, searchedUsername);
         } else
@@ -562,7 +563,11 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private Pane initDiscountCustomersOptions() {
-        tableView.getSelectionModel().clearSelection();
+        try {
+            tableView.getSelectionModel().clearSelection();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewDiscountCustomersOption.fxml"));
         try {
             Pane root = loader.load();
@@ -710,10 +715,15 @@ public class TableViewProcessor<T> extends Processor {
 
     public void updateSelectedItem() {
 //        System.out.println(selectedItem);
-        if(tableView.getSelectionModel().getSelectedItem() != null)
-            selectedItem = tableView.getSelectionModel().getSelectedItem();
-        else
-            tableView.getSelectionModel().selectFirst();
+        if(tableViewType != TableViewType.DISCOUNT_CUSTOMERS) {
+            if (tableView.getSelectionModel().getSelectedItem() != null)
+                selectedItem = tableView.getSelectionModel().getSelectedItem();
+            else
+                tableView.getSelectionModel().selectFirst();
+        } else {
+            System.out.println("Lucky");
+        }
+
         initOptions();
     }
 
