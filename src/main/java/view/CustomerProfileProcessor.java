@@ -16,10 +16,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -63,39 +60,30 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Stop[] stops = new Stop[]{
-                new Stop(0.5, Color.valueOf("#42878f")),
-                new Stop(1, Color.valueOf("#345f63"))
-        };
-        LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
-        BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
-        pain.setBackground(new Background(backgroundFill));
-        DropShadow dropShadow = new DropShadow();
-        dropShadow.setBlurType(BlurType.ONE_PASS_BOX);
-        dropShadow.setColor(Color.valueOf("#4787bf"));
-        dropShadow.setHeight(5);
-        dropShadow.setWidth(5);
-        dropShadow.setRadius(5);
-        dropShadow.setOffsetX(0);
-        dropShadow.setOffsetY(1);
-        infoLabel.setEffect(dropShadow);
-        historyLabel.setEffect(dropShadow);
-        cartLabel.setEffect(dropShadow);
-        profileLabel.setText(Control.getUsername());
-    }
-
-    public void returnSignInMenu(MouseEvent event) {
-        Parent root1 = null;
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInMenu.fxml"));
-            root1 = loader.load();
-            WelcomeProcessor signInProcessor = loader.getController();
-            signInProcessor.setMyStage(myStage);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (location.toString().contains("Purchase.fxml")) {
+            if (accountControl.getAccount().getFirstName() != null && accountControl.getAccount().getLastName() != null)
+                name.setText(accountControl.getAccount().getFirstName() + " " + accountControl.getAccount().getLastName());
+        } else {
+            Stop[] stops = new Stop[]{
+                    new Stop(0.5, Color.valueOf("#42878f")),
+                    new Stop(1, Color.valueOf("#345f63"))
+            };
+            LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+            BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
+            pain.setBackground(new Background(backgroundFill));
+            DropShadow dropShadow = new DropShadow();
+            dropShadow.setBlurType(BlurType.ONE_PASS_BOX);
+            dropShadow.setColor(Color.valueOf("#4787bf"));
+            dropShadow.setHeight(5);
+            dropShadow.setWidth(5);
+            dropShadow.setRadius(5);
+            dropShadow.setOffsetX(0);
+            dropShadow.setOffsetY(1);
+            infoLabel.setEffect(dropShadow);
+            historyLabel.setEffect(dropShadow);
+            cartLabel.setEffect(dropShadow);
+            profileLabel.setText(Control.getUsername());
         }
-        myStage.setTitle("Sign In Menu");
-        myStage.setScene(new Scene(root1));
     }
 
     public Stage getMyStage() {
@@ -209,6 +197,63 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     }
 
     public void purchase(ActionEvent event) {
+        name.setBorder(null);
+        phoneNumber.setBorder(null);
+        address.setBorder(null);
+        postalCode.setBorder(null);
+        if (!name.getText().isEmpty() &&
+                !phoneNumber.getText().isEmpty() &&
+                !address.getText().isEmpty() &&
+                !postalCode.getText().isEmpty()) {
+                if (areFieldsOk()) {
+                    //TODO final purchase
+                }
+        } else {
+            if(name.getText().isEmpty()) {
+                name.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
+            }
+            if(phoneNumber.getText().isEmpty()) {
+                phoneNumber.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
+            }
+            if(address.getText().isEmpty()) {
+                address.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
+            }
+            if(postalCode.getText().isEmpty()) {
+                postalCode.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
+            }
+        }
+    }
 
+    private boolean areFieldsOk() {
+        if (!phoneNumber.getText().matches("\\d+")) {
+            phoneNumber.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
+            return false;
+        }
+        if (!postalCode.getText().matches("\\d+")) {
+            postalCode.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
+            return false;
+        }
+        if (phoneNumber.getText().length() != 11) {
+            phoneNumber.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
+            return false;
+        }
+        if (postalCode.getText().length() != 8) {
+            postalCode.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
+            return false;
+        }
+        return true;
+    }
+
+    public void backToCart(MouseEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource(""));
+            myStage.getIcons().remove(0);
+            myStage.getIcons().add(new Image(""));
+            Scene scene = new Scene(root);
+            myStage.setResizable(false);
+            myStage.setTitle("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

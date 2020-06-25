@@ -21,3 +21,7 @@
     -fx-background-color: #78909c;
     -fx-cursor: hand;
 }
+
+#backToCart:hover{
+    -fx-opacity: 1;
+}
