@@ -67,6 +67,8 @@ public class TableViewProcessor<T> extends Processor {
     public JFXButton showOffButton;
     public JFXButton approveOffButton;
     public JFXButton deleteOffButton;
+    public JFXButton editOffButton;
+    public JFXButton addNewOffButton;
 
 
     public static enum TableViewType {
@@ -283,7 +285,36 @@ public class TableViewProcessor<T> extends Processor {
             case ADMIN_OFFS:
                 mainBorderPane.setLeft(initAdminOffsOptions());
                 break;
+            case VENDOR_OFFS:
+                mainBorderPane.setLeft(initVendorOffsOptions());
+                break;
         }
+    }
+
+    private Pane initVendorOffsOptions() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewVendorOffsOptions.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            if(selectedItem != null) {
+                Off off = (Off)selectedItem;
+                processor.editOffButton.setDisable(false);
+                processor.deleteOffButton.setDisable(false);
+                processor.offNameLabel.setText(off.getOffName());
+                if(!ProductControl.getController().doesOffHaveImage(off.getOffID()))
+                    processor.offImageRectangle.setStrokeWidth(0);
+                processor.offImageRectangle.setFill(new ImagePattern(ProductControl.getController().getOffImageByID(off.getOffID())));
+            } else {
+                processor.offImageRectangle.setStrokeWidth(0);
+                processor.offImageRectangle.setFill(new ImagePattern(ProductControl.getController().getOffImageByID("")));
+                processor.terminateOptions();
+            }
+            return root;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private Pane initAdminOffsOptions() {
@@ -322,7 +353,7 @@ public class TableViewProcessor<T> extends Processor {
         return new Pane();
     }
 
-    private Node initAdminCommentsOptions() {
+    private Pane initAdminCommentsOptions() {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewCommentOptions.fxml"));
         try {
             Pane root = loader.load();
@@ -766,5 +797,10 @@ public class TableViewProcessor<T> extends Processor {
         ((TableViewProcessor)parentProcessor).updateSelectedItem();
     }
 
+    public void editOff(ActionEvent actionEvent) {
+    }
+
+    public void addNewOff(ActionEvent actionEvent) {
+    }
 
 }

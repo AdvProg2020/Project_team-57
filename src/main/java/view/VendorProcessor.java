@@ -67,7 +67,7 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
 
     }
 
-    public void addOff(MouseEvent mouseEvent) {
+    public void manageOffs(MouseEvent mouseEvent) {
         if (canOpenSubStage("Manage Offs", this)) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
