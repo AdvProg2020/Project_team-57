@@ -2,4 +2,9 @@
 
 <?import javafx.scene.control.SplitPane?>
 
-<SplitPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1200.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" />
+<SplitPane dividerPositions="0.369" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="960.0" prefWidth="1210.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
+  <items>
+      <SplitPane fx:id="imageSplitPane" prefHeight="350.0" prefWidth="1210.0" />
+      <SplitPane fx:id="generalInfoSplitPane" prefHeight="160.0" prefWidth="200.0" />
+  </items>
+</SplitPane>

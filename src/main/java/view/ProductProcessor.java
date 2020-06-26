@@ -16,10 +16,7 @@ import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextInputControl;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -48,10 +45,6 @@ import java.util.Optional;
 
 public class ProductProcessor extends Processor {
 
-    public Pane sellerPane;
-    public Pane statusPane;
-    public Pane pricePane;
-
     public void setMenuType(ProductMenuType menuType) {
         this.menuType = menuType;
     }
@@ -72,6 +65,8 @@ public class ProductProcessor extends Processor {
 
     private ArrayList<ProductProcessor> subProcessors;
 
+    ///Single Product Menu///
+
     //MainPane
     public BorderPane mainPane;
     private Product product;
@@ -80,6 +75,26 @@ public class ProductProcessor extends Processor {
     private long changePicturePeriod = 8_000_000_000L;
     public BorderPane upBorderPane;
     private ProductMenuType menuType;
+
+    ///Single Product Menu///
+
+    //Comparing Products Menu///
+
+    //MainPart
+    private Product firstProduct;
+    private Product secondProduct;
+
+    public SplitPane imageSplitPane;
+    public SplitPane generalInfoSplitPane;
+
+    private Pane firstInterfacePane;
+    private Pane firstProductGeneralInfoPane;
+    private Pane middleInterfacePane;
+    private Pane secondProductGeneralInfoPane;
+    private Pane secondInterfacePane;
+
+
+    //Comparing Products Menu///
 
     //ProductImagePane
     public Rectangle productImageRectangle;
@@ -137,17 +152,21 @@ public class ProductProcessor extends Processor {
     public ImageView tickImage;
     public ImageView buyersImage;
     public ImageView removeImage;
+    public Pane pricePane;
     public JFXTextField price;
     public ImageView offArrow;
     public JFXTextField offPrice;
+    public Pane sellerPane;
     public ImageView sellerIcon;
     public JFXTextField seller;
+    public Pane statusPane;
     public ImageView statusIcon;
     public JFXTextField status;
     public JFXTextField cartCount;
     public ImageView plusButton;
     public ImageView minusButton;
     public JFXButton addToCart;
+
 
     public void initProcessor(Product product, ProductMenuType productMenuType) {
         this.menuType = productMenuType;
@@ -160,6 +179,32 @@ public class ProductProcessor extends Processor {
         initSpecialPane();
     }
 
+    public void initComparingProcessor(Product firstProduct, Product secondProduct) {
+        menuType = ProductMenuType.COMPARING_PRODUCTS;
+        this.firstProduct = firstProduct;
+        this.secondProduct = secondProduct;
+
+        //Todo Initing Image Panel
+
+        initInterfacePanes();
+        initComparingGeneralInfoPane(firstProductGeneralInfoPane);
+        initComparingGeneralInfoPane(secondProductGeneralInfoPane);
+        initGeneralInfoDividers();
+    }
+
+    private void initGeneralInfoDividers() {
+        //Todo
+    }
+
+    private void initInterfacePanes() {
+        //Todo
+    }
+
+    private void initComparingGeneralInfoPane(Pane productGeneralInfoPane) {
+        //Todo
+    }
+
+    //ImagePane
     private void initImagePanel() {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuImages.fxml"));
