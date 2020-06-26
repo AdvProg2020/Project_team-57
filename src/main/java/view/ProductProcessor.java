@@ -17,6 +17,7 @@ import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,8 +29,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.existence.Account;
 import model.existence.Comment;
+import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
 import org.controlsfx.control.Rating;
@@ -1170,7 +1174,28 @@ public class ProductProcessor extends Processor {
     }
 
     public void viewBuyers(MouseEvent mouseEvent) {
-        //Todo
+        ((ProductProcessor) parentProcessor).showBuyers();
+    }
+
+    public void showBuyers() {
+        try {
+            vendorControl.setCurrentProduct(product.getID());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
+            Parent root = loader.load();
+            TableViewProcessor<Account> tableViewProcessor = loader.getController();
+            tableViewProcessor.setParentProcessor(this.parentProcessor);
+            tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.PRODUCT_BUYERS);
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
+            newStage.setResizable(false);
+            newStage.setTitle("Manage Offs");
+            parentProcessor.parentProcessor.addSubStage(newStage);
+            tableViewProcessor.setMyStage(newStage);
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void removeProductMouseClicked(MouseEvent mouseEvent) {
