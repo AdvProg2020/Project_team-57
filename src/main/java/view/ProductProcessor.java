@@ -1094,28 +1094,22 @@ public class ProductProcessor extends Processor {
         setPrices(product);
         seller.setText(product.getSellerUserName());
         seller.setEditable(false);
-//        seller.setDisable(true);
 
         status.setText(product.getTheStatus());
         status.setEditable(false);
-//        status.setDisable(true);
     }
 
     private void setPrices(Product product) {
-        System.out.println(product);
-        System.out.println(product.isOnSale());
         price.setText(getSmoothDoubleFormat(product.getPrice()));
         setDoubleFields(price, Double.MAX_VALUE);
 
         if(product.isOnSale()) {
             if(!pricePane.getChildren().contains(offPrice)) {
-                System.out.println("Fuck");
                 pricePane.getChildren().addAll(offArrow, offPrice);
             }
             //Todo Set Price StrikeThrough
             offPrice.setText(getSmoothDoubleFormat(product.getOffPrice()));
             offPrice.setEditable(false);
-//            offPrice.setDisable(true);
             setTheCommunicationOfPrices();
         } else {
             pricePane.getChildren().removeAll(offArrow, offPrice);
@@ -1123,7 +1117,6 @@ public class ProductProcessor extends Processor {
 
         if(menuType != ProductMenuType.VENDOR_EDIT)
             price.setEditable(false);
-//            price.setDisable(true);
     }
 
     private void setTheCommunicationOfPrices() {

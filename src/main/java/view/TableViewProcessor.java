@@ -976,7 +976,6 @@ public class TableViewProcessor<T> extends Processor {
                 (Alert.AlertType.CONFIRMATION, alertStr, ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
             AdminControl.getController().modifyCommentApproval(selectedComment.getCommentID(), approve);
-            System.out.println(((TableViewProcessor<T>) parentProcessor).tableViewPane);
             if(((TableViewProcessor<T>) parentProcessor).tableViewPane != null) {
                 ((TableViewProcessor<T>) parentProcessor).mainBorderPane.setCenter(((TableViewProcessor<T>) parentProcessor).tableViewPane);
                 ((TableViewProcessor) parentProcessor).updateTable();

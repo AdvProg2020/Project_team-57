@@ -125,34 +125,6 @@ public class ProductControl extends Control {
         return productControl;
     }
 
-    public ArrayList<String> getAllProductNames() {
-        ArrayList<String> allProductNames = new ArrayList<>();
-        try {
-            for (Product product : ProductTable.getAllProducts()) {
-                allProductNames.add(product.getName());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return allProductNames;
-    }
-
-    public ArrayList<String> getAllProductIDs() {
-        ArrayList<String> allProductIDs = new ArrayList<>();
-        try {
-            for (Product product : ProductTable.getAllProducts()) {
-                allProductIDs.add(product.getID());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return allProductIDs;
-    }
-
     public Notification editField(String fieldName, String newField, String ID) {
         try {
             if (ProductTable.getProductByID(ID).getStatus() == 2)
@@ -250,63 +222,6 @@ public class ProductControl extends Control {
         return null;
     }
 
-    public ArrayList<String> getAllUnApprovedProductNames() {
-        ArrayList<String> unApprovedProducts = new ArrayList<>();
-        try {
-            for (Product product : ProductTable.getAllUnApprovedProducts()) {
-                unApprovedProducts.add(product.getName());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return unApprovedProducts;
-    }
-
-    public ArrayList<String> getAllUnApprovedProductIDs() {
-        ArrayList<String> unApprovedProducts = new ArrayList<>();
-        try {
-            for (Product product : ProductTable.getAllUnApprovedProducts()) {
-                unApprovedProducts.add(product.getID());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return unApprovedProducts;
-    }
-
-    public ArrayList<String> getAllEditingProductNames() {
-        ArrayList<String> editingProducts = new ArrayList<>();
-        try {
-            for (Product editingProduct : EditingProductTable.getAllEditingProducts()) {
-                editingProducts.add(editingProduct.getName());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return editingProducts;
-    }
-
-
-    public ArrayList<String> getAllEditingProductIDs() {
-        ArrayList<String> editingProducts = new ArrayList<>();
-        try {
-            for (Product editingProduct : EditingProductTable.getAllEditingProducts()) {
-                editingProducts.add(editingProduct.getID());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return editingProducts;
-    }
-
     public Notification removeEditingProductById(String editingProductID) {
         try {
             EditingProductTable.removeProductById(editingProductID);
@@ -332,40 +247,6 @@ public class ProductControl extends Control {
             e.printStackTrace();
         }
         return new ArrayList<>();
-    }
-
-    public ArrayList<String> getAllShowingProductNames() {
-        ArrayList<String> showingProductNames = new ArrayList<>();
-        try {
-            ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts());
-            filterProductsWithPrice(showingProducts);
-            sortProducts(showingProducts);
-            for (Product showingProduct : showingProducts) {
-                showingProductNames.add(showingProduct.getName());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return showingProductNames;
-    }
-
-    public ArrayList<String> getAllShowingProductIDs() {
-        ArrayList<String> showingProductIDs = new ArrayList<>();
-        try {
-            ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts());
-            filterProductsWithPrice(showingProducts);
-            sortProducts(showingProducts);
-            for (Product showingProduct : showingProducts) {
-                showingProductIDs.add(showingProduct.getID());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return showingProductIDs;
     }
 
     private ArrayList<String> filterProducts() throws SQLException, ClassNotFoundException {
@@ -539,43 +420,6 @@ public class ProductControl extends Control {
         return new ArrayList<>();
     }
 
-    public ArrayList<String> getAllComparingProductNames() {
-        ArrayList<String> comparingProductNames = new ArrayList<>();
-        try {
-            String firstProductCategory = ProductTable.getProductByID(comparingProducts[0].getID()).getCategory();
-            while (CategoryTable.getParentCategory(firstProductCategory) != null &&
-                    !CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
-                firstProductCategory = CategoryTable.getParentCategory(firstProductCategory);
-            for (Product product : convertIDsToProducts(filterOnCategory(firstProductCategory))) {
-                comparingProductNames.add(product.getName());
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return comparingProductNames;
-    }
-
-    public ArrayList<String> getAllComparingProductIDs() {
-        ArrayList<String> comparingProductIDs = new ArrayList<>();
-        try {
-            String firstProductCategory = ProductTable.getProductByID(comparingProducts[0].getID()).getCategory();
-            while (CategoryTable.getParentCategory(firstProductCategory) != null &&
-                    !CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
-                firstProductCategory = CategoryTable.getParentCategory(firstProductCategory);
-            for (String productID : filterOnCategory(firstProductCategory)) {
-                comparingProductIDs.add(productID);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return comparingProductIDs;
-    }
-
     //Comment Scoring
     public int getScore(Comment comment){
         try {
@@ -681,42 +525,6 @@ public class ProductControl extends Control {
         }
 
         return productComments;
-    }
-
-    public ArrayList<String> getShowingCommentTitles(){
-        ArrayList<String> allShowingCommentTitles = new ArrayList<>();
-        try {
-            for (Comment comment : ProductTable.getAllLoggedInUserComment(Control.getUsername(), getCurrentProduct())) {
-                allShowingCommentTitles.add(comment.getTitle());
-            }
-            for (Comment comment : ProductTable.getAllApprovedCommentsOnThisProduct(getCurrentProduct())) {
-                allShowingCommentTitles.add(comment.getTitle());
-            }
-            return allShowingCommentTitles;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
-    public ArrayList<String> getShowingCommentIDs(){
-        ArrayList<String> allShowingCommentIDs = new ArrayList<>();
-        try {
-            for (Comment comment : ProductTable.getAllLoggedInUserComment(Control.getUsername(), getCurrentProduct())) {
-                allShowingCommentIDs.add(comment.getCommentID());
-            }
-            for (Comment comment : ProductTable.getAllApprovedCommentsOnThisProduct(getCurrentProduct())) {
-                allShowingCommentIDs.add(comment.getCommentID());
-            }
-            return allShowingCommentIDs;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
     }
 
     public Comment getCommentByID(String commentID) {

@@ -168,7 +168,6 @@ public class EditingProductTable extends Database{
         String[] splitPath = pictureFile.getPath().split("\\.");
         String fileExtension = splitPath[splitPath.length - 1];
         File saveImage = new File("database\\Images\\EditingProducts\\" + productID + "\\" + productNumber + "." + fileExtension);
-        //System.out.println( saveImage.getAbsolutePath());
         Files.copy(pictureFile.toPath(), saveImage.toPath());
     }
 
@@ -201,18 +200,19 @@ public class EditingProductTable extends Database{
             String[] splitPath = pictureFile.getPath().split("\\.");
             String fileExtension = splitPath[splitPath.length - 1];
             File saveImage = new File("database\\Images\\EditingProducts\\" + productID + "\\Jesus\\" + (i++) + "." + fileExtension);
-            //System.out.println(saveImage);
             pictureFiles.add(new File(String.valueOf(Files.copy(pictureFile.toPath(), saveImage.toPath()))));
         }
         return pictureFiles;
     }
 
     public static void removeEditingProductTempImages(String productID) {
+        File folder = new File("database\\Images\\EditingProducts\\" + productID);
+        folder.mkdir();
+        folder = new File("database\\Images\\EditingProducts\\" + productID + "\\Jesus");
+        folder.mkdir();
         File tempFolder = new File("database\\Images\\EditingProducts\\" + productID + "\\Jesus");
         String[] entries = tempFolder.list();
-        System.out.println(entries);
         for(String s: entries){
-            System.out.println(s);
             File currentFile = new File(tempFolder.getPath(),s);
             currentFile.delete();
         }

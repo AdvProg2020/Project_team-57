@@ -67,24 +67,6 @@ public class AdminControl extends AccountControl{
         return false;
     }
 
-    public ArrayList<String> getAllCategoryNames() {
-        try {
-            ArrayList<String> categories = new ArrayList<>();
-            for (Category category : CategoryTable.getAllCategories()) {
-                categories.add(category.getName());
-            }
-
-            categories.remove("All Products");
-            return categories;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return new ArrayList<>();
-    }
-
     public Notification addCategory(Category category)
     {
         try {
@@ -258,36 +240,6 @@ public class AdminControl extends AccountControl{
         return new ArrayList<>();
     }
 
-    public ArrayList<String> getAllDiscountCodes() {
-        ArrayList<String> discountCodes = new ArrayList<>();
-        try {
-            DiscountTable.updateDiscountCodesTime();
-            for (Discount discountCode : DiscountTable.getAllDiscountCodes()) {
-                discountCodes.add(discountCode.getCode());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return discountCodes;
-    }
-
-
-    public ArrayList<String> getAllDiscountIDs() {
-        ArrayList<String> discountCodes = new ArrayList<>();
-        try {
-            for (Discount discountCode : DiscountTable.getAllDiscountCodes()) {
-                discountCodes.add(discountCode.getID());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return discountCodes;
-    }
-
     public Discount getDiscountByID(String ID) {
         try {
             return DiscountTable.getDiscountByID(ID);
@@ -371,105 +323,6 @@ public class AdminControl extends AccountControl{
         return ID.toString();
     }
 
-    public Notification editDiscountCode(String ID, String code) {
-        try {
-            if (code.length() > 16 || code.length() < 6)
-                return Notification.INVALID_DISCOUNT_CODE;
-            else if (DiscountTable.getDiscountByID(ID).getCode().equals(code))
-                return Notification.SAME_FIELD_ERROR;
-            else
-                DiscountTable.editCode(ID, code);
-
-                return Notification.EDIT_FIELD_SUCCESSFULLY;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public Notification editFinishDate(String ID, Date finishDate) {
-        try {
-            Date currentDate = new Date(new java.util.Date().getTime());
-
-            if (finishDate.compareTo(DiscountTable.getDiscountByID(ID).getStartDate()) != +1)
-                return Notification.INVALID_FINISH_DATE_EARLIER_THAN_START_DATE;
-            else if (finishDate.compareTo(currentDate) != +1)
-                return Notification.INVALID_FINISH_DATE_EARLIER_THAN_CURRENT_DATE;
-            else if (DiscountTable.getDiscountByID(ID).getFinishDate().equals(finishDate))
-                return Notification.SAME_FIELD_ERROR;
-            else
-                DiscountTable.editFinishDate(ID, finishDate);
-
-                return Notification.EDIT_FIELD_SUCCESSFULLY;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public Notification editDiscountPercent(String ID, double discountPercent) {
-        try {
-            if (discountPercent > 100 || discountPercent <= 0)
-                return Notification.INVALID_DISCOUNT_PERCENT;
-            else if (DiscountTable.getDiscountByID(ID).getDiscountPercent() == discountPercent)
-                return Notification.SAME_FIELD_ERROR;
-            else
-                DiscountTable.editDiscountPercent(ID, discountPercent);
-
-                return Notification.EDIT_FIELD_SUCCESSFULLY;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public Notification editMaxDiscount(String ID, double maxDiscount) {
-        try {
-            if (maxDiscount <= 0)
-                return Notification.INVALID_MAX_DISCOUNT;
-            else if (DiscountTable.getDiscountByID(ID).getMaxDiscount() == maxDiscount)
-                return Notification.SAME_FIELD_ERROR;
-            else
-                DiscountTable.editMaxDiscount(ID, maxDiscount);
-
-                return Notification.EDIT_FIELD_SUCCESSFULLY;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public Notification editMaxRepetition(String ID, int maxRepetition) {
-        try {
-            if (maxRepetition <= 0)
-                return Notification.INVALID_MAX_REPETITION;
-            else if (DiscountTable.getDiscountByID(ID).getMaxRepetition() == maxRepetition)
-                return Notification.SAME_FIELD_ERROR;
-            else
-                DiscountTable.editMaxRepetition(ID, maxRepetition);
-
-                return Notification.EDIT_FIELD_SUCCESSFULLY;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     public ArrayList<Off> getAllUnApprovedOffs() {
         try {
             return OffTable.getAllUnApprovedOffs();
@@ -479,30 +332,6 @@ public class AdminControl extends AccountControl{
             e.printStackTrace();
         }
         return new ArrayList<>();
-    }
-
-    public ArrayList<String> getAllUnApprovedOffNames(){
-        try {
-            return OffTable.getAllUnApprovedOffNames();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public ArrayList<String> getAllUnApprovedOffIDs(){
-        try {
-            return OffTable.getAllUnApprovedOffIDs();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
     }
 
     public Notification modifyOffApprove(String offID, boolean flag){
@@ -518,30 +347,6 @@ public class AdminControl extends AccountControl{
             return Notification.UNKNOWN_ERROR;
         } catch (ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
-        }
-    }
-
-    public ArrayList<String> getAllEditingOffNames() {
-        try {
-            return OffTable.getEditingOffNames();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public ArrayList<String> getAllEditingOffIDs() {
-        try {
-            return OffTable.getEditingOffIDs();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
         }
     }
 
@@ -594,36 +399,6 @@ public class AdminControl extends AccountControl{
     public ArrayList<Comment> getAllUnApprovedComments() {
         try {
             return ProductTable.getAllUnApprovedComments();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
-    public ArrayList<String> getAllUnApprovedCommentTitles(){
-        try {
-            ArrayList<String> allUnApprovedCommentTitles = new ArrayList<>();
-            for (Comment unApprovedComment : ProductTable.getAllUnApprovedComments()) {
-                allUnApprovedCommentTitles.add(unApprovedComment.getTitle());
-            }
-            return allUnApprovedCommentTitles;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
-    public ArrayList<String> getAllUnApprovedCommentIDs(){
-        try {
-            ArrayList<String> allUnApprovedCommentIDs = new ArrayList<>();
-            for (Comment unApprovedComment : ProductTable.getAllUnApprovedComments()) {
-                allUnApprovedCommentIDs.add(unApprovedComment.getCommentID());
-            }
-            return allUnApprovedCommentIDs;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -714,7 +489,6 @@ public class AdminControl extends AccountControl{
         else
             return ProductControl.getController().removeProductById(productID);
     }
-
 
     private Notification approveProductByID(String id){
         try {

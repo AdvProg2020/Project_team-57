@@ -183,23 +183,6 @@ public class AccountControl extends Control implements IOValidity {
         }
     }
 
-    public ArrayList<String> getUnapprovedUsernames() {
-        ArrayList<String> allUsernames = new ArrayList<>();
-        try {
-
-            for (Account account : VendorTable.getUnApprovedVendors()) {
-                allUsernames.add(account.getUsername());
-            }
-            return allUsernames;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            return null;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static AccountControl getController() {
         if (customerControl == null)
             customerControl = new AccountControl();
@@ -209,22 +192,6 @@ public class AccountControl extends Control implements IOValidity {
     public ArrayList<Account> getAllAccounts() {
         try {
             return AccountTable.getAllAccounts();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public ArrayList<String> getAllUsernames() {
-        ArrayList<String> allUsernames = new ArrayList<>();
-        try {
-            for (Account account : AccountTable.getAllUsers()) {
-                allUsernames.add(account.getUsername());
-            }
-            return allUsernames;
         } catch (SQLException e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -264,37 +231,6 @@ public class AccountControl extends Control implements IOValidity {
         } catch (ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
-    }
-
-    public ArrayList<String> getAdminsUsernames(){
-        ArrayList<String> adminsUsernames = new ArrayList<>();
-        try {
-            for (Account admin : AccountTable.getAllAdmins()) {
-                adminsUsernames.add(admin.getUsername());
-            }
-            return adminsUsernames;
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-            return new ArrayList<>();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public ArrayList<String> getAllCustomerNames() {
-        ArrayList<String> allCustomers = new ArrayList<>();
-        try {
-            for(Account account : AccountTable.getAllCustomers())
-            {
-                allCustomers.add(account.getUsername());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return allCustomers;
     }
 
     public Off getOffByID(String offID) {

@@ -49,7 +49,6 @@ public abstract class Processor {
         if(parentProcessor == null){
             subStage.setOnCloseRequest(event -> {
                 if(this instanceof ProductProcessor) {
-                    System.out.println("MainTimer Stopped");
                     ((ProductProcessor) this).subProcessors.get(0).stopTimer();
                 }
                 this.removeSubStage(subStage);

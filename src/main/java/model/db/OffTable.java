@@ -136,30 +136,6 @@ public class OffTable extends Database{
         return unApprovedOffs;
     }
 
-    public static ArrayList<String> getAllUnApprovedOffNames() throws SQLException, ClassNotFoundException {
-        String command = "SELECT DISTINCT OffName FROM Offs WHERE Status = ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setInt(1, 2);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        ArrayList<String> allUnApprovedOffNames = new ArrayList<>();
-        while (resultSet.next()){
-            allUnApprovedOffNames.add(resultSet.getString("OffName"));
-        }
-        return allUnApprovedOffNames;
-    }
-
-    public static ArrayList<String> getAllUnApprovedOffIDs() throws SQLException, ClassNotFoundException {
-        String command = "SELECT DISTINCT OffID FROM Offs WHERE Status = ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setInt(1, 2);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        ArrayList<String> allUnApprovedOffIDs = new ArrayList<>();
-        while (resultSet.next()){
-            allUnApprovedOffIDs.add(resultSet.getString("OffID"));
-        }
-        return allUnApprovedOffIDs;
-    }
-
     public static void removeOffByID(String offID) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Offs WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);

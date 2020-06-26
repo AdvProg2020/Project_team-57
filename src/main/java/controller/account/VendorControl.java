@@ -26,34 +26,6 @@ public class VendorControl extends AccountControl{
         return vendorControl;
     }
 
-    public ArrayList<String> getVendorProductNames() {
-        ArrayList<String> productNames = new ArrayList<>();
-        try {
-            for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
-                productNames.add(product.getName());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return productNames;
-    }
-
-    public ArrayList<String> getVendorProductIDs() {
-        ArrayList<String> productsIDs = new ArrayList<>();
-        try {
-            for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
-                productsIDs.add(product.getID());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return productsIDs;
-    }
-
     public ArrayList<Notification> addProduct(Product product, ArrayList<File> productImageFiles) {
         ArrayList<Notification> addingProductNotifications = new ArrayList<>();
 
@@ -107,7 +79,6 @@ public class VendorControl extends AccountControl{
 
         return checkNotifications;
     }
-
 
     public Notification editProduct(Product currentProduct, Product editingProduct, ArrayList<File> productImageFiles) {
         Notification editProductNotification = null;
@@ -198,34 +169,6 @@ public class VendorControl extends AccountControl{
         return new ArrayList<>();
     }
 
-    public ArrayList<String> getAllOffNames(){
-        ArrayList<String> offs = new ArrayList<>();
-        try {
-            for (Off vendorOff : OffTable.getVendorOffs(Control.getUsername())) {
-                offs.add(vendorOff.getOffName());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return offs;
-    }
-
-    public ArrayList<String> getAllOffIDs(){
-        ArrayList<String> offs = new ArrayList<>();
-        try {
-            for (Off vendorOff : OffTable.getVendorOffs(Control.getUsername())) {
-                offs.add(vendorOff.getOffID());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return offs;
-    }
-
     public Notification addOff(Off off, File offImageFile){
        if (off.getOffName() == null)
            return Notification.UNCOMPLETED_OFF_NAME;
@@ -277,36 +220,6 @@ public class VendorControl extends AccountControl{
             for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
                 if(!OffTable.isThereProductInOffIgnoreStatus(product.getID()) && product.getStatus() != 2)
                     nonOffProducts.add(product);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return nonOffProducts;
-    }
-
-    public ArrayList<String> getNonOffProductsNames() {
-        ArrayList<String> nonOffProducts = new ArrayList<>();
-        try {
-            for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
-                if(!OffTable.isThereProductInOff(product.getID()))
-                    nonOffProducts.add(product.getName());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return nonOffProducts;
-    }
-
-    public ArrayList<String> getNonOffProductsIDs() {
-        ArrayList<String> nonOffProducts = new ArrayList<>();
-        try {
-            for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
-                if(!OffTable.isThereProductInOff(product.getID()))
-                    nonOffProducts.add(product.getID());
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -402,7 +315,6 @@ public class VendorControl extends AccountControl{
         return Notification.UNKNOWN_ERROR;
     }
 
-
     public Notification removeOffWithID(String offID) {
         try {
             if(OffTable.isThereEditingOffWithID(offID))
@@ -428,37 +340,6 @@ public class VendorControl extends AccountControl{
         return new ArrayList<>();
     }
 
-    public ArrayList<String> getAllVendorLogsName() {
-        try {
-            ArrayList<String> allLogsName = new ArrayList<>();
-            for (Log log : LogTable.getAllVendorLogs(Control.getUsername())) {
-                java.util.Date date = new java.util.Date(log.getDate().getTime());
-                allLogsName.add(date.toString());
-            }
-            return allLogsName;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public ArrayList<String> getAllVendorLogsID() {
-        try {
-            ArrayList<String> allLogsID = new ArrayList<>();
-            for (Log log : LogTable.getAllVendorLogs(Control.getUsername())) {
-                allLogsID.add(log.getLogID());
-            }
-            return allLogsID;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public ArrayList<Product> getAllProductsInSpecificLog() {
         try {
             ArrayList<Product> allProducts = new ArrayList<>();
@@ -472,22 +353,6 @@ public class VendorControl extends AccountControl{
             e.printStackTrace();
         }
         return null;
-    }
-
-    public ArrayList<String> getAllProductsNamesInSpecificLog() {
-        ArrayList<String> allNames = new ArrayList<>();
-        for (Product product : getAllProductsInSpecificLog()) {
-            allNames.add(product.getName());
-        }
-        return allNames;
-    }
-
-    public ArrayList<String> getAllProductsIdsInSpecificLog(){
-        ArrayList<String> allIDs = new ArrayList<>();
-        for (Product product : getAllProductsInSpecificLog()) {
-            allIDs.add(product.getID());
-        }
-        return allIDs;
     }
 
     public String getCustomerName(){
@@ -524,21 +389,6 @@ public class VendorControl extends AccountControl{
             e.printStackTrace();
         }
         return customers;
-    }
-
-    public ArrayList<String> getProductBuyerUsernames() {
-        ArrayList<String> buyers = new ArrayList<>();
-        try {
-            for(String account: LogTable.getAllCustomerUsernamesForProduct(currentProduct))
-            {
-                buyers.add(account);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return buyers;
     }
 
     public String getCurrentProduct() {

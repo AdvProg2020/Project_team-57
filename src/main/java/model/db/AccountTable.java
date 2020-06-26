@@ -87,15 +87,6 @@ public class AccountTable extends Database {
         preparedStatement.execute();
     }
 
-    public static String getValueByField(String username, String fieldName) throws SQLException, ClassNotFoundException {
-        String command = "SELECT " + fieldName + " From Accounts WHERE Username = ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, username);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        return resultSet.getString(fieldName);
-    }
-
     public static void changeCredit(String username, double money) throws SQLException, ClassNotFoundException {
         double credit = getCredit(username);
         credit += money;

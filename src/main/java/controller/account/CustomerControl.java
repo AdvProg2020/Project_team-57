@@ -83,36 +83,6 @@ public class CustomerControl extends AccountControl{
         return null;
     }
 
-    public ArrayList<String> getCartProductNames() {
-        ArrayList<String> cartProducts = new ArrayList<>();
-        try {
-            for(Product product : CartTable.getAllCartWithUsername(Control.getUsername()))
-            {
-                cartProducts.add(product.getName());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return cartProducts;
-    }
-
-    public ArrayList<String> getCartProductIDs() {
-        ArrayList<String> cartProducts = new ArrayList<>();
-        try {
-            for(Product product : CartTable.getAllCartWithUsername(Control.getUsername()))
-            {
-                cartProducts.add(product.getID());
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return cartProducts;
-    }
-
     public Product getCartProductByID(String ID) {
         try {
             return CartTable.getCartProductByID(getUserNameForCart(), ID);
@@ -297,38 +267,6 @@ public class CustomerControl extends AccountControl{
             e.printStackTrace();
         }
         return new ArrayList<>();
-    }
-
-    public ArrayList<String> getAllShowingOffNames(){
-        ArrayList<String> allOffNames = new ArrayList<>();
-        try {
-            for (Off off : OffTable.getAllShowingOffs()) {
-                allOffNames.add(off.getOffName());
-            }
-            return allOffNames;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public ArrayList<String> getAllShowingOffIDs(){
-        ArrayList<String> allOffIds = new ArrayList<>();
-        try {
-            for (Off off : OffTable.getAllShowingOffs()) {
-                allOffIds.add(off.getOffID());
-            }
-            return allOffIds;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
     }
 
     //-------------------------------------------------PURCHASE-------------------------------------------------//
@@ -549,67 +487,6 @@ public class CustomerControl extends AccountControl{
     public ArrayList<Log> getAllLogs() {
         try {
             return LogTable.getAllCustomerLogs(Control.getUsername());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
-    public ArrayList<String> getAllLogesNames() {
-        try {
-            ArrayList<String> allLogNames = new ArrayList<>();
-            for (Log customerLog : LogTable.getAllCustomerLogs(Control.getUsername())) {
-                java.util.Date date = new java.util.Date(customerLog.getDate().getTime());
-                allLogNames.add(date.toString());
-            }
-            return allLogNames;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
-    public ArrayList<String> getAllLogesIDs() {
-        try {
-            ArrayList<String> allLogIDs = new ArrayList<>();
-            for (Log customerLog : LogTable.getAllCustomerLogs(Control.getUsername())) {
-                allLogIDs.add(customerLog.getLogID());
-            }
-            return allLogIDs;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
-    public ArrayList<String> getProductOfLogNames() {
-        try {
-            ArrayList<String> allProductOfLogNames = new ArrayList<>();
-            for (Log.ProductOfLog productOfLog : LogTable.getCustomerLogByID(getCurrentLogID()).getAllProducts()) {
-                allProductOfLogNames.add(ProductTable.getProductByID(productOfLog.getProductID()).getName());
-            }
-            return allProductOfLogNames;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
-    public ArrayList<String> getProductOfLogIDs() {
-        try {
-            ArrayList<String> allProductOfLogIDs = new ArrayList<>();
-            for (Log.ProductOfLog productOfLog : LogTable.getCustomerLogByID(getCurrentLogID()).getAllProducts()) {
-                allProductOfLogIDs.add(productOfLog.getProductID());
-            }
-            return allProductOfLogIDs;
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
