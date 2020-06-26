@@ -565,16 +565,16 @@ public class ProductsProcessor extends Processor{
 
     private void setProductPanePrice(Pane productPane, ProductsProcessor paneProcessor, Product product) {
         if (productControl.isThereProductInOff(product.getID())) {
-            paneProcessor.oldPriceLabel.setText(product.getPrice() + "$");
+            paneProcessor.oldPriceLabel.setText(getSmoothDoubleFormat(product.getPrice()) + "$");
             paneProcessor.oldPriceLabel.getStylesheets().addAll(Main.class.getResource(
                     "Strikethrough.css"
             ).toExternalForm());
             //paneProcessor.oldPriceLabel.setStyle("-fx-strikethrough: true;");
             paneProcessor.newPriceLabel.setText
-                    ((product.getPrice() * (1 - (productControl.getOffByProductID(product.getID()).getOffPercent() / 100.0)))+"$");
+                    (getSmoothDoubleFormat((product.getPrice() * (1 - (productControl.getOffByProductID(product.getID()).getOffPercent() / 100.0)))) + "$");
         } else {
             productPane.getChildren().removeAll(paneProcessor.newPriceLabel, paneProcessor.inOffImage);
-            paneProcessor.oldPriceLabel.setText(product.getPrice() + "$");
+            paneProcessor.oldPriceLabel.setText(getSmoothDoubleFormat(product.getPrice()) + "$");
         }
     }
 
