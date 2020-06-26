@@ -23,7 +23,7 @@ public class ProductControl extends Control {
     private boolean isOffListic;
     private String listicOffID;
     private String currentProduct;
-    private Product[] comparingProducts = null;
+    private Product[] comparingProducts = new Product[2];
 
 
     public String getCurrentProduct() {
@@ -519,6 +519,25 @@ public class ProductControl extends Control {
             e.printStackTrace();
             return new Off();
         }
+    }
+
+    public ArrayList <Product> getAllComparingProducts() {
+        try {
+            String firstProductCategory = ProductTable.getProductByID(comparingProducts[0].getID()).getCategory();
+            while (CategoryTable.getParentCategory(firstProductCategory) != null &&
+                    !CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
+                firstProductCategory = CategoryTable.getParentCategory(firstProductCategory);
+            ArrayList<Product> comparableProducts = convertIDsToProducts(filterOnCategory(firstProductCategory));
+            comparableProducts.removeIf(product -> {
+               return product.getID().equals(comparingProducts[0].getID()) ;
+            });
+            return comparableProducts;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
     public ArrayList<String> getAllComparingProductNames() {

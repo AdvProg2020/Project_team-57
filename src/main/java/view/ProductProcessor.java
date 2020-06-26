@@ -11,7 +11,6 @@ import controller.product.ProductControl;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
@@ -33,7 +32,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.existence.Account;
 import model.existence.Comment;
-import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
 import org.controlsfx.control.Rating;
@@ -66,7 +64,7 @@ public class ProductProcessor extends Processor {
     private static VendorControl vendorControl = VendorControl.getController();
     private static CustomerControl customerControl = CustomerControl.getController();
 
-    private ArrayList<ProductProcessor> subProcessors;
+    protected ArrayList<ProductProcessor> subProcessors;
 
     ///Single Product Menu///
 
@@ -75,7 +73,7 @@ public class ProductProcessor extends Processor {
     private Product product;
     private AnimationTimer mainTimer;
     private long changePictureTimer = -1;
-    private long changePicturePeriod = 8_000_000_000L;
+    private final long CHANGE_PICTURE_PERIOD = 8_000_000_000L;
     public BorderPane upBorderPane;
     private ProductMenuType menuType;
 
@@ -98,8 +96,6 @@ public class ProductProcessor extends Processor {
     //GeneralPart
     public Pane firstGeneralPane;
     public Pane secondGeneralPane;
-    private ArrayList<File> firstProductImageFiles;
-    private ArrayList<File> secondProductImageFiles;
 
     //Comparing Products Menu///
 
@@ -213,18 +209,18 @@ public class ProductProcessor extends Processor {
             processor.mainTimer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
-                    if(changePictureTimer == -1) {
-                        changePictureTimer = now;
+                    if(processor.changePictureTimer == -1) {
+                        processor.changePictureTimer = now;
                     }
-                    if(now - changePictureTimer > changePicturePeriod) {
+                    if(now - processor.changePictureTimer > CHANGE_PICTURE_PERIOD) {
                         processor.nextImage(null);
-                        changePictureTimer = now;
+                        processor.changePictureTimer = now;
                     }
                 }
             };
             processor.imagePane.getChildren().removeAll(processor.addImageButton, processor.editImageButton, processor.removeImageButton);
             processor.productImageFiles = new ArrayList<>();
-            processor.imagePanelProduct = (right ? firstProduct : secondProduct);
+            processor.imagePanelProduct = (!right ? firstProduct : secondProduct);
             processor.getImages();
             if(right)
                 imageBorderPane.setRight(root);
@@ -270,12 +266,12 @@ public class ProductProcessor extends Processor {
             processor.mainTimer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
-                    if(changePictureTimer == -1) {
-                        changePictureTimer = now;
+                    if(processor.changePictureTimer == -1) {
+                        processor.changePictureTimer = now;
                     }
-                    if(now - changePictureTimer > changePicturePeriod) {
+                    if(now - processor.changePictureTimer > CHANGE_PICTURE_PERIOD) {
                         processor.nextImage(null);
-                        changePictureTimer = now;
+                        processor.changePictureTimer = now;
                     }
                 }
             };
@@ -301,7 +297,7 @@ public class ProductProcessor extends Processor {
                     getProductNonEditedImageFiles(imagePanelProduct);
         }
         updateImages();
-        }
+    }
 
     private void updateImages() {
         if(productImageFiles.size() != 0) {
@@ -314,7 +310,7 @@ public class ProductProcessor extends Processor {
                 modifyVendorButtons(true);
             }
             productImageRectangle.setFill(new ImagePattern
-                (getImageFromFileArray((Integer.parseInt(imageNumberLabel.getText()) - 1))));
+                    (getImageFromFileArray((Integer.parseInt(imageNumberLabel.getText()) - 1))));
         } else {
             productImageRectangle.setFill(
                     new ImagePattern(productControl.getProductDefaultImage()));
@@ -481,6 +477,7 @@ public class ProductProcessor extends Processor {
         Product product = null;
 
         ProductProcessor imageProcessor = subProcessors.get(0);
+        imageProcessor.stopTimer();
         //sep
         ProductProcessor generalFieldProcessor = subProcessors.get(1);
         ProductProcessor specialFieldProcessor = subProcessors.get(3);
@@ -527,6 +524,13 @@ public class ProductProcessor extends Processor {
 
     }
 
+    protected void stopTimer() {
+        if(mainTimer != null) {
+            System.out.println("Yesssssssssss");
+            mainTimer.stop();
+        }
+    }
+
     private void successSending(Notification notification) {
         Alert alert = notification.getAlert();
         Optional<ButtonType> optionalButtonType = alert.showAndWait();
@@ -541,6 +545,8 @@ public class ProductProcessor extends Processor {
         Alert alert = productControl.removeProductById(product.getID()).getAlert();
         Optional<ButtonType> optionalButtonType = alert.showAndWait();
         if(optionalButtonType.get() == ButtonType.OK) {
+            ProductProcessor imageProcessor = subProcessors.get(0);
+            imageProcessor.stopTimer();
             closeSubStage(myStage, parentProcessor);
             updateParentProcessor();
         }
@@ -600,6 +606,7 @@ public class ProductProcessor extends Processor {
         subProcessors.add(processor);
         //Todo Check The Use Of MenuType
 
+
         processor.setGeneralTextFields(product);
 //        mainPane.setLeft(loader.getRoot());
         return loader.getRoot();
@@ -607,6 +614,10 @@ public class ProductProcessor extends Processor {
 
     private void setGeneralTextFields(Product product) {
         //Todo Condition Checking With Enum With Unknown Space Of Saving
+
+        //Todo Checke Sangin
+        this.product = product;
+
         ProductMenuType menuType = ((ProductProcessor) parentProcessor).menuType;
         setGeneralStringTextFields();
 
@@ -646,6 +657,7 @@ public class ProductProcessor extends Processor {
 
             countableToggleButton.setSelected(product.isCountable());
 
+
             changeCountableField(null);
 //            if (product.isCountable()) {
 //                countTextField.setText(Integer.toString(product.getCount()));
@@ -668,7 +680,7 @@ public class ProductProcessor extends Processor {
             countableToggleButton.setDisable(true);
             changeCountableField(null);
         }
-            //Todo
+        //Todo
     }
 
     private void setGeneralStringTextFields() {
@@ -792,6 +804,9 @@ public class ProductProcessor extends Processor {
         //Todo Checking Setting Change Listener Multiple Times !!!! Exactly
         Product product = ((ProductProcessor) parentProcessor).product;
 
+        if(product == null)
+            product = this.product;
+
         JFXTextField countTextFieldClone = getCloneOfCountTextField(countTextField);
         generalPane.getChildren().remove(countTextField);
         generalPane.getChildren().add(countTextFieldClone);
@@ -867,7 +882,7 @@ public class ProductProcessor extends Processor {
         for (Comment productComment : productControl.getAllProductComments(productID))
             commentsVBox.getChildren().add(getCommentPane("ProductMenuShowCommentPane", productComment, CommentType.SHOW));
 
-        //HaHa 🤣🤣🤣🤣
+        //HaHa ????????
         switch (menuType) {
 //            case PRODUCTS:
             case PRODUCTS_CUSTOMER:
@@ -910,7 +925,7 @@ public class ProductProcessor extends Processor {
                 if(!customerControl.isProductPurchasedByCustomer(product.getID(), Control.getUsername())) {
                     commentPane.getChildren().remove(commentScore);
                 }
-                    break;
+                break;
             default:
                 System.out.println("Shit. Error In InitCommentFields");
         }
@@ -1021,7 +1036,7 @@ public class ProductProcessor extends Processor {
                 specialPane.getChildren().removeAll(minusButton, plusButton);
                 specialPane.getChildren().remove(cartCount);
                 specialPane.getChildren().remove(addToCart);
-
+                specialPane.getChildren().remove(compareImage);
                 final int layoutYSetter = 5;
                 pricePane.setLayoutY(pricePane.getLayoutY() + layoutYSetter);
                 sellerPane.setLayoutY(sellerPane.getLayoutY() + layoutYSetter);
@@ -1255,7 +1270,28 @@ public class ProductProcessor extends Processor {
     }
 
     public void compareProductMouseClicked(MouseEvent mouseEvent) {
-        //Todo
+        ((ProductProcessor)parentProcessor).openComparingProductsMenu();
+    }
+
+    private void openComparingProductsMenu() {
+        productControl.setFirstComparingProduct(product.getID());
+        Stage stage = new Stage();
+        stage.setTitle("Comparable Products");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("ProductsMenuComparableProducts.fxml"));
+        Parent parent = null;
+        try {
+            parent = loader.load();
+            ProductsProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            processor.initProcessor(ProductsProcessor.ProductsMenuType.PRODUCT_COMPARING_PRODUCTS);
+            processor.setMyStage(stage);
+            stage.setScene(new Scene(parent));
+            stage.setResizable(false);
+            addSubStage(stage);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setProductSpecialFields(Product product) {
