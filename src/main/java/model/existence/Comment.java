@@ -80,6 +80,26 @@ public class Comment {
         return status;
     }
 
+    public String getTheStatus() {
+        String commentStatus = null;
+
+        switch(status) {
+            case 1:
+                commentStatus = "Approved";
+                break;
+            case 2:
+                commentStatus = "Waiting For Approve";
+                break;
+            case 3:
+                commentStatus = "Deleted By App Policy";
+                break;
+            default:
+                System.out.println("Shit Error In Getting Comment Status. Status : " + status);
+        }
+
+        return commentStatus;
+    }
+
     public void setStatus(int status) {
         this.status = status;
     }

@@ -149,10 +149,11 @@ public class ProductProcessor extends Processor {
     //CommentPane
     private Comment comment;
     public Pane commentPane;
+    public JFXTextField userNameComment;
+    public JFXTextField commentStatus;
     public JFXTextField commentTitle;
     public JFXTextArea commentContent;
     public JFXButton addComment;
-    public JFXTextField userNameComment;
     public Rating commentScore;
 
     //SpecialPane
@@ -892,6 +893,7 @@ public class ProductProcessor extends Processor {
         switch (commentType) {
             case SHOW:
                 userNameComment.setText(productComment.getCustomerUsername());
+                commentStatus.setText(productComment.getTheStatus());
                 commentTitle.setText(productComment.getTitle());
                 commentContent.setText(productComment.getContent());
                 commentScore.setRating(productComment.getScore());
