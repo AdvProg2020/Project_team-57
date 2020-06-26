@@ -32,6 +32,10 @@ public abstract class Processor {
         this.subStages = new ArrayList<>();
         this.myStage = myStage;
         this.myStage.setOnCloseRequest(event -> {
+            if(this instanceof ProductProcessor) {
+                System.out.println("MainTimer Stopped");
+                ((ProductProcessor) this).subProcessors.get(0).stopTimer();
+            }
 //            System.out.println("SHE");
             for (Stage subStage : this.subStages) {
                 subStage.close();
@@ -48,6 +52,10 @@ public abstract class Processor {
         this.subStages.add(subStage);
         if(parentProcessor == null){
             subStage.setOnCloseRequest(event -> {
+                if(this instanceof ProductProcessor) {
+                    System.out.println("MainTimer Stopped");
+                    ((ProductProcessor) this).subProcessors.get(0).stopTimer();
+                }
 //                System.out.println("********HE**********");
                 this.removeSubStage(subStage);
             });

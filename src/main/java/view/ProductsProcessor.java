@@ -63,7 +63,9 @@ public class ProductsProcessor extends Processor{
 
     public static enum ProductsMenuType {
         MAIN_PRODUCTS, VENDOR_PRODUCTS, CUSTOMER_CART, ADMIN_PRODUCT_REQUESTS,
-        VENDOR_ADD_OFF_PRODUCTS, ADMIN_OFF_PRODUCTS, VENDOR_OFF_PRODUCTS, VENDOR_OFF_PRODUCTS_UNAPPROVED;
+        VENDOR_ADD_OFF_PRODUCTS, ADMIN_OFF_PRODUCTS, VENDOR_OFF_PRODUCTS,
+        VENDOR_OFF_PRODUCTS_UNAPPROVED, PRODUCT_COMPARING_PRODUCTS;
+
     }
     private ProductsMenuType menuType;
 
@@ -146,6 +148,9 @@ public class ProductsProcessor extends Processor{
             case ADMIN_OFF_PRODUCTS:
             case VENDOR_ADD_OFF_PRODUCTS:
                 initOffProductsMenu();
+                break;
+            case PRODUCT_COMPARING_PRODUCTS:
+                initProductsPage();
                 break;
         }
     }
@@ -337,6 +342,9 @@ public class ProductsProcessor extends Processor{
                     return;
                 allProducts = VendorControl.getController().getNonOffProducts(selectedOff.getOffID());
                 break;
+            case PRODUCT_COMPARING_PRODUCTS:
+                allProducts = productControl.getAllComparingProducts();
+                break;
 
         }
         initCertainProductsPage(productsScrollPane);
@@ -430,8 +438,7 @@ public class ProductsProcessor extends Processor{
             for(int i = 0; i < pageLim; ++i) {
                 hBoxes.get(i).getChildren().add(getCustomerCartProductPane(i));
             }
-        }
-        else if(menuType == ProductsMenuType.ADMIN_PRODUCT_REQUESTS) {
+        } else if(menuType == ProductsMenuType.ADMIN_PRODUCT_REQUESTS) {
             for(int i = 0; i < pageLim; ++i) {
                 hBoxes.get(i).getChildren().add(getAdminProductRequestsProductPane(i));
             }
@@ -449,7 +456,7 @@ public class ProductsProcessor extends Processor{
         return hBoxes;
     }
 
-    private Node getCustomerCartProductPane(int productNumberInPage) throws IOException {
+    private Pane getCustomerCartProductPane(int productNumberInPage) throws IOException {
         Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPaneCustomerCart.fxml"));
         Pane productPane = loader.load();
@@ -618,6 +625,9 @@ public class ProductsProcessor extends Processor{
                     break;
                 case VENDOR_OFF_PRODUCTS_UNAPPROVED:
                     return;
+                case PRODUCT_COMPARING_PRODUCTS:
+                    startComparing(product, parentProcessor);
+                    return;
                 //TODO(MORE)
             }
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));
@@ -641,6 +651,22 @@ public class ProductsProcessor extends Processor{
                 e.printStackTrace();
             }
         });
+    }
+
+    private void startComparing(Product product, ProductsProcessor parentProcessor) {
+        try {
+            productControl.setSecondComparingProduct(product.getID());
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ComparingProductsMenu.fxml"));
+            Parent root = loader.load();
+            ProductProcessor processor = loader.getController();
+            processor.initComparingProcessor(productControl.getComparingProducts()[0], productControl.getComparingProducts()[1]);
+            myStage.setTitle("Compare " + productControl.getComparingProducts()[0].getName() + " And " + productControl.getComparingProducts()[1].getName());
+            myStage.setScene(new Scene(root));
+            processor.setMyStage(myStage);
+            processor.setParentProcessor(parentProcessor.parentProcessor);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void changePage(MouseEvent mouseEvent) {
