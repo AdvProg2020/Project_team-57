@@ -195,21 +195,20 @@ public class ProductProcessor extends Processor {
 
         //Todo Init Image Panel
         initGeneralInfoPane();
-        initGeneralInfoDividers();
     }
 
     private void initGeneralInfoPane() {
         ObservableList<Node> generalInfoItems = generalInfoSplitPane.getItems();
 
         //Todo Empty Panes Dimensions
-        generalInfoItems.add(firstInterfacePane = getPaneWithTheseLayouts(75, 650));
+        generalInfoItems.add(firstInterfacePane = getPaneWithTheseLayouts(67, 600));
         generalInfoItems.add(getInitGeneralInfoPane(firstProduct));
-        generalInfoItems.add(middleInterfacePane = getPaneWithTheseLayouts(150, 650));
+        generalInfoItems.add(middleInterfacePane = getPaneWithTheseLayouts(134, 600));
         generalInfoItems.add(getInitGeneralInfoPane(secondProduct));
-        generalInfoItems.add(secondInterfacePane = getPaneWithTheseLayouts(75, 650));
+        generalInfoItems.add(secondInterfacePane = getPaneWithTheseLayouts(67, 600));
 
         //Todo Checking Dimensions Of Down Split Pane
-        initGeneralInfoDividers();
+        generalInfoSplitPane.setDividerPositions(0.0596, 0.4404, 0.5596, 0.9404);
     }
 
     private Pane getPaneWithTheseLayouts(double width, double height) {
@@ -217,10 +216,6 @@ public class ProductProcessor extends Processor {
         pane.setPrefWidth(width);
         pane.setPrefHeight(height);
         return pane;
-    }
-
-    private void initGeneralInfoDividers() {
-        //Todo
     }
 
     //ImagePane
