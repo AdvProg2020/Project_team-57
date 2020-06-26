@@ -238,7 +238,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             phoneNumber.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
             return false;
         }
-        if (postalCode.getText().length() != 8) {
+        if (postalCode.getText().length() < 5) {
             postalCode.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
             return false;
         }
