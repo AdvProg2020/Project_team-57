@@ -41,6 +41,7 @@ public class AccountControl extends Control implements IOValidity {
 
     public Account getAccountByUsername(String username){
         try {
+
             return AccountTable.getAccountByUsername(username);
         } catch (Exception e) {
             e.printStackTrace();
@@ -235,8 +236,6 @@ public class AccountControl extends Control implements IOValidity {
 
     public Notification deleteUserWithUsername(String username){
         try {
-            AccountTable.deleteUserWithUsername(username);
-            AccountTable.deleteProfileImage(username);
             if(getAccountByUsername(username).getType().equals("Vendor")) {
                 for (Product product : VendorTable.getProductsWithUsername(username)) {
                     ProductControl.getController().removeProductById(product.getID());
@@ -257,6 +256,8 @@ public class AccountControl extends Control implements IOValidity {
                 ProductTable.removeAllUserScores(username);
                 CartTable.removeAllCustomerCartProducts(username);
             }
+            AccountTable.deleteUserWithUsername(username);
+            AccountTable.deleteProfileImage(username);
             return Notification.DELETE_USER;
         } catch (SQLException e) {
            return Notification.UNKNOWN_ERROR;
