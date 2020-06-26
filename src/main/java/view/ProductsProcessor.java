@@ -298,7 +298,8 @@ public class ProductsProcessor extends Processor{
                 processor.initProcessor(ProductsProcessor.ProductsMenuType.CUSTOMER_CART);
                 Stage stage = new Stage();
                 stage.getIcons().add(new Image("Images/Icons/cart (2).png"));
-                stage.setTitle(controller.Control.getUsername() + " Cart");
+
+                stage.setTitle((controller.Control.isLoggedIn() ? controller.Control.getUsername() : "Your")+ " Cart");
                 stage.setScene(new Scene(root));
                 stage.setResizable(false);
                 this.subStages.add(stage);
@@ -579,10 +580,21 @@ public class ProductsProcessor extends Processor{
     }
 
     private void setProductPaneImage(ProductsProcessor paneProcessor, Product product) {
-        if(product.getStatus() != 3) {
-            paneProcessor.productImage.setFill(new ImagePattern(productControl.getProductImageByID(product.getID(), 1)));
-        } else {
-            paneProcessor.productImage.setFill(new ImagePattern(productControl.getEditingProductImage(product.getID(), 1)));
+        switch (menuType) {
+            case VENDOR_PRODUCTS:
+            case ADMIN_PRODUCT_REQUESTS:
+            case VENDOR_ADD_OFF_PRODUCTS:
+            case VENDOR_OFF_PRODUCTS:
+            case VENDOR_OFF_PRODUCTS_UNAPPROVED:
+                if(product.getStatus() != 3) {
+                    paneProcessor.productImage.setFill(new ImagePattern(productControl.getProductImageByID(product.getID(), 1)));
+                } else {
+                    paneProcessor.productImage.setFill(new ImagePattern(productControl.getEditingProductImage(product.getID(), 1)));
+                }
+                break;
+            default:
+                paneProcessor.productImage.setFill(new ImagePattern(productControl.getProductImageByID(product.getID(), 1)));
+                break;
         }
     }
 

@@ -288,12 +288,22 @@ public class ProductProcessor extends Processor {
     }
 
     private void getImages() {
-        if(!(((ProductProcessor)parentProcessor).menuType == ProductMenuType.ADMIN && ((ProductProcessor)parentProcessor).isNonEdited)) {
-            productImageFiles = productControl.
-                    getProductImageFiles(imagePanelProduct);
-        } else {
-            productImageFiles = productControl.
-                    getProductNonEditedImageFiles(imagePanelProduct);
+        switch (((ProductProcessor)parentProcessor).menuType) {
+            case VENDOR_EDIT:
+                productImageFiles = productControl.
+                        getProductImageFiles(imagePanelProduct);
+                break;
+            case ADMIN:
+                if(((ProductProcessor)parentProcessor).isNonEdited)
+                    productImageFiles = productControl.
+                            getProductNonEditedImageFiles(imagePanelProduct);
+                else
+                    productImageFiles = productControl.
+                            getProductImageFiles(imagePanelProduct);
+                break;
+            default:
+                productImageFiles = productControl.
+                        getProductNonEditedImageFiles(imagePanelProduct);
         }
         updateImages();
     }
