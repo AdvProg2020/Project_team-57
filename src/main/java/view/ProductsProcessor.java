@@ -21,7 +21,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.DataFormat;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -41,6 +40,10 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
+
+import static javafx.scene.control.ButtonType.NO;
+import static javafx.scene.control.ButtonType.YES;
 
 public class ProductsProcessor extends Processor{
     private static final int PRODUCT_SCROLL_PANE_WIDTH = 1050;
@@ -55,6 +58,7 @@ public class ProductsProcessor extends Processor{
     public ImageView previousPageImageView;
     public JFXToggleButton offProductToggleButton;
     public ImageView inOffImage;
+    public JFXButton removeFromCartButton;
     private HashMap<String, CheckBox> productsApprovalMap;
 
     public static enum ProductsMenuType {
@@ -390,7 +394,12 @@ public class ProductsProcessor extends Processor{
                 hBoxes.add(hBox);
             }
         }
-        if(menuType == ProductsMenuType.ADMIN_PRODUCT_REQUESTS) {
+        if(menuType == ProductsMenuType.CUSTOMER_CART) {
+            for(int i = 0; i < pageLim; ++i) {
+                hBoxes.get(i).getChildren().add(getCustomerCartProductPane(i));
+            }
+        }
+        else if(menuType == ProductsMenuType.ADMIN_PRODUCT_REQUESTS) {
             for(int i = 0; i < pageLim; ++i) {
                 hBoxes.get(i).getChildren().add(getAdminProductRequestsProductPane(i));
             }
@@ -408,6 +417,38 @@ public class ProductsProcessor extends Processor{
         return hBoxes;
     }
 
+    private Node getCustomerCartProductPane(int productNumberInPage) throws IOException {
+        Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPaneCustomerCart.fxml"));
+        Pane productPane = loader.load();
+        ProductsProcessor paneProcessor = loader.getController();
+        paneProcessor.setParentProcessor(this);
+        paneProcessor.removeFromCartButton.setOnAction(event -> {
+            Optional<ButtonType> buttonType = new Alert(Alert.AlertType.CONFIRMATION, "Do You Really Want To Delete This Great Product From You Cart?", YES, NO).showAndWait();
+            if(buttonType.get() == YES) {
+                System.out.println(product);
+                CustomerControl.getController().removeProductFromCartByID(product.getID()).getAlert().show();
+                initProductsPage();
+            }
+        });
+        setProductStatusIcon(paneProcessor, product);
+        setProductPaneImage(paneProcessor, product);
+        paneProcessor.productNameLabel.setText(product.getName());
+        setProductPanePrice(productPane, paneProcessor, product);
+        setProductPaneOnMouseClick(productPane, product, this);
+        return productPane;
+    }
+
+    private void setProductStatusIcon(ProductsProcessor paneProcessor, Product product) {
+        if (!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
+            paneProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
+            if(product.getStatus() != 1)
+                paneProcessor.availableLabel.setText(product.getTheStatus());
+            else
+                paneProcessor.availableLabel.setText("Out Of Stock");
+        }
+    }
+
     private Pane getVendorOffProductPane(int productNumberInPage) throws IOException {
         Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPaneOff.fxml"));
@@ -421,15 +462,8 @@ public class ProductsProcessor extends Processor{
                 ((SaleProcessor)parentProcessor).deleteProductFromOff(product.getID());
             }
         });
-//        System.out.println(parentProcessor);
         paneProcessor.offProductToggleButton.setSelected(((SaleProcessor)parentProcessor).isProductInOff(product.getID()));
-        if (!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
-            paneProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
-            if(product.getStatus() != 1)
-                paneProcessor.availableLabel.setText(product.getTheStatus());
-            else
-                paneProcessor.availableLabel.setText("Out Of Stock");
-        }
+        setProductStatusIcon(paneProcessor, product);
         setProductPaneImage(paneProcessor, product);
         paneProcessor.productNameLabel.setText(product.getName());
         setProductPanePrice(productPane, paneProcessor, product);
@@ -488,18 +522,12 @@ public class ProductsProcessor extends Processor{
         Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPane.fxml"));
         Pane productPane = loader.load();
-        ProductsProcessor productsProcessor = loader.getController();
-        setProductPaneImage(productsProcessor, product);
-        productsProcessor.productNameLabel.setText(product.getName());
-        setProductPanePrice(productPane, productsProcessor, product);
-        productsProcessor.viewLabel.setText("" + product.getSeen());
-        if (!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
-            productsProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
-            if(product.getStatus() != 1)
-                productsProcessor.availableLabel.setText(product.getTheStatus());
-            else
-                productsProcessor.availableLabel.setText("Out Of Stock");
-        }
+        ProductsProcessor paneProcessor = loader.getController();
+        setProductPaneImage(paneProcessor, product);
+        paneProcessor.productNameLabel.setText(product.getName());
+        setProductPanePrice(productPane, paneProcessor, product);
+        paneProcessor.viewLabel.setText("" + product.getSeen());
+        setProductStatusIcon(paneProcessor, product);
         setProductPaneOnMouseClick(productPane, product, this);
         return productPane;
     }
