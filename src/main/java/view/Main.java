@@ -25,30 +25,12 @@ public class Main extends Application {
     private static Stage stage;
 
     public static void main(String[] args) {
-/*        try {
-            VendorTable.addTempProducts();
-            System.out.println("Products added");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }*/
         launch(args);
-/*        File file = new File("G:\\College\\2nd semester\\second semester PROJECT\\First Phase\\Codes\\First Version\\database\\Images\\Products\\p3456712.jpg");
-        System.out.println(file.delete());*/
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ComparingProductsMenu.fxml"));
-//        Parent root = fxmlLoader.load();
-//        ProductProcessor processor = fxmlLoader.getController();
-//        Control.setType("Vendor");
-//        Control.setUsername("sepehr");
-//        Product firstProduct = ProductTable.getProductByID("p3445422");
-//        Product secondProduct = ProductTable.getProductByID("p2235778");
-//        processor.initComparingProcessor(firstProduct, secondProduct);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
         Parent root = fxmlLoader.load();
         primaryStage.setScene(new Scene(root));
