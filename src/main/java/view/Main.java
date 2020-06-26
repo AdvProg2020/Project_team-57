@@ -41,16 +41,16 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ComparingProductsMenu.fxml"));
-        Parent root = fxmlLoader.load();
-        ProductProcessor processor = fxmlLoader.getController();
-        Control.setType("Vendor");
-        Control.setUsername("sepehr");
-        Product firstProduct = ProductTable.getProductByID("p3445422");
-        Product secondProduct = ProductTable.getProductByID("p2235778");
-        processor.initComparingProcessor(firstProduct, secondProduct);
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
+//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ComparingProductsMenu.fxml"));
 //        Parent root = fxmlLoader.load();
+//        ProductProcessor processor = fxmlLoader.getController();
+//        Control.setType("Vendor");
+//        Control.setUsername("sepehr");
+//        Product firstProduct = ProductTable.getProductByID("p3445422");
+//        Product secondProduct = ProductTable.getProductByID("p2235778");
+//        processor.initComparingProcessor(firstProduct, secondProduct);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("WelcomeMenu.fxml"));
+        Parent root = fxmlLoader.load();
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Boos Market");
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("Main Icon.png")));

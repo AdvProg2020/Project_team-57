@@ -379,6 +379,7 @@ public class ProductsProcessor extends Processor{
             pagesBarProcessor.nextPageButton.setDisable(true);
             pagesBarProcessor.nextPageButton.setOpacity(0.3);
         }
+
         return root;
     }
 

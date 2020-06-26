@@ -9,7 +9,7 @@
 
 <Pane fx:id="specialPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="300.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
    <children>
-      <Pane fx:id="pricePane" layoutX="17.0" layoutY="46.0">
+      <Pane fx:id="pricePane" layoutX="17.0" layoutY="65.0">
          <children>
             <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -33,7 +33,7 @@
             </JFXTextField>
          </children>
       </Pane>
-      <Pane fx:id="sellerPane" layoutX="17.0" layoutY="123.0">
+      <Pane fx:id="sellerPane" layoutX="17.0" layoutY="142.0">
          <children>
             <ImageView fx:id="sellerIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -47,7 +47,7 @@
             </JFXTextField>
          </children>
       </Pane>
-      <Pane fx:id="statusPane" layoutX="17.0" layoutY="203.0">
+      <Pane fx:id="statusPane" layoutX="17.0" layoutY="222.0">
          <children>
             <ImageView fx:id="statusIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -61,25 +61,30 @@
             </JFXTextField>
          </children>
       </Pane>
-      <ImageView fx:id="minusButton" fitHeight="20.0" fitWidth="20.0" layoutX="22.0" layoutY="286.0" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+      <ImageView fx:id="minusButton" fitHeight="20.0" fitWidth="20.0" layoutX="22.0" layoutY="305.0" pickOnBounds="true" preserveRatio="true" styleClass="Button">
          <image>
             <Image url="@../Images/Icons/ProductMenu/Minus.png" />
          </image>
       </ImageView>
-      <JFXTextField fx:id="cartCount" alignment="CENTER" layoutX="47.0" layoutY="280.0" prefHeight="31.0" prefWidth="50.0" text="1">
+      <JFXTextField fx:id="cartCount" alignment="CENTER" layoutX="47.0" layoutY="299.0" prefHeight="31.0" prefWidth="50.0" text="1">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </JFXTextField>
-      <ImageView fx:id="plusButton" fitHeight="30.0" fitWidth="20.0" layoutX="102.0" layoutY="286.0" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+      <ImageView fx:id="plusButton" fitHeight="30.0" fitWidth="20.0" layoutX="102.0" layoutY="305.0" pickOnBounds="true" preserveRatio="true" styleClass="Button">
          <image>
             <Image url="@../Images/Icons/ProductMenu/Plus%202.png" />
          </image>
       </ImageView>
-      <JFXButton fx:id="addToCart" defaultButton="true" layoutX="162.0" layoutY="279.0" onAction="#addToCartMouseClicked" onMouseClicked="#addToCartMouseClicked" prefHeight="32.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" styleClass="Button" text="Add To Cart">
+      <JFXButton fx:id="addToCart" defaultButton="true" layoutX="162.0" layoutY="298.0" onAction="#addToCartMouseClicked" onMouseClicked="#addToCartMouseClicked" prefHeight="32.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" styleClass="Button" text="Add To Cart">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </JFXButton>
+      <ImageView fx:id="compareImage" fitHeight="40.0" fitWidth="40.0" layoutX="236.0" layoutY="15.0" onMouseClicked="#compareProductMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+         <image>
+            <Image url="@../Images/Icons/ProductMenu/Compare%201.png" />
+         </image>
+      </ImageView>
    </children>
 </Pane>
