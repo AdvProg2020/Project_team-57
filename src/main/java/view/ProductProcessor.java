@@ -892,15 +892,12 @@ public class ProductProcessor extends Processor {
         Product product = ((ProductProcessor)parentProcessor.parentProcessor).product;
         switch (commentType) {
             case SHOW:
-                userNameComment.setText(productComment.getCustomerUsername());
-                commentStatus.setText(productComment.getTheStatus());
+                userNameComment.setText(" " + productComment.getCustomerUsername());
+                commentStatus.setText(" " + productComment.getTheStatus());
                 commentTitle.setText(productComment.getTitle());
                 commentContent.setText(productComment.getContent());
                 commentScore.setRating(productComment.getScore());
-                userNameComment.setDisable(true);
-                commentTitle.setDisable(true);
-                commentContent.setDisable(true);
-                commentScore.setDisable(true);
+                disableCommentFields();
 //                commentPane.getChildren().remove(addComment);
                 if(productComment.getScore() == 0)
                     commentPane.getChildren().remove(commentScore);
@@ -917,6 +914,18 @@ public class ProductProcessor extends Processor {
             default:
                 System.out.println("Shit. Error In InitCommentFields");
         }
+    }
+
+    private void disableCommentFields() {
+//        userNameComment.setDisable(true);
+//        commentTitle.setDisable(true);
+//        commentContent.setDisable(true);
+//        commentScore.setDisable(true);
+        userNameComment.setEditable(false);
+        commentStatus.setEditable(false);
+        commentTitle.setEditable(false);
+        commentContent.setEditable(false);
+        commentScore.setDisable(true);
     }
 
     public void addComment(ActionEvent actionEvent) {

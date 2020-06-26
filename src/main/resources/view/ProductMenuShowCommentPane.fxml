@@ -12,7 +12,7 @@
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font></JFXTextField>
-      <JFXTextField fx:id="commentStatus" layoutX="192.0" layoutY="29.0" onAction="#textFieldMouseClicked" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="181.0" promptText=" Status">
+      <JFXTextField fx:id="commentStatus" layoutX="200.0" layoutY="29.0" onAction="#textFieldMouseClicked" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="160.0" promptText=" Status">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font>
