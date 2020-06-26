@@ -61,6 +61,7 @@ public class SaleProcessor extends Processor implements Initializable {
     public Pane addOffButton;
     public VBox optionsVbox;
     public Pane addDiscountButton;
+    public Pane infoPane;
 
     private Discount discount;
     //OffProcess
@@ -138,25 +139,26 @@ public class SaleProcessor extends Processor implements Initializable {
                     startTimePicker.setEditable(false);
                 }
             } else  {
-                discountCodeLabel.setDisable(true);
-                discountCodeTextField.setDisable(true);
-                discountPercentLabel.setDisable(true);
-                discountPercentTextField.setDisable(true);
-                maxRepetitionLabel.setDisable(true);
-                maxRepetitionTextField.setDisable(true);
-                maxDiscountLabel.setDisable(true);
-                maxDiscountTextField.setDisable(true);
+                //discountCodeLabel.setDisable(true);
+                discountCodeTextField.setEditable(false);
+//                discountPercentLabel.setDisable(true);
+                discountPercentTextField.setEditable(false);
+//                maxRepetitionLabel.setDisable(true);
+                maxRepetitionTextField.setEditable(false);
+//                maxDiscountLabel.setDisable(true);
+                maxDiscountTextField.setEditable(false);
 
-                startDateLabel.setDisable(true);
                 startDatePicker.setDisable(true);
+                startDatePicker.setOpacity(0.99);
                 startTimePicker.setDisable(true);
-
-                finishDateLabel.setDisable(true);
+                startTimePicker.setOpacity(0.99);
                 finishDatePicker.setDisable(true);
+                finishDatePicker.setOpacity(0.99);
                 finishTimePicker.setDisable(true);
+                finishTimePicker.setOpacity(0.99);
 
-                Pane pane = (Pane)discountMainPane.getCenter();
-                pane.getChildren().remove(saveChangeButton);
+                Pane pane = (Pane)(((SaleProcessor) parentProcessor)).discountMainPane.getCenter();
+                infoPane.getChildren().remove(saveChangeButton);
                 ((SaleProcessor) parentProcessor).optionsVbox.getChildren().
                         removeAll(((SaleProcessor) parentProcessor).discountCustomersPane, ((SaleProcessor) parentProcessor).addDiscountButton);
             }

@@ -99,6 +99,7 @@ public class TableViewProcessor<T> extends Processor {
     public JFXButton showDiscountCustomerButton;
     public Label repetitionLeftLabel;
     public Label usedDiscountLabel;
+    public Pane invoicePane;
     private TableViewType tableViewType;
     private T selectedItem;
     private String searchedUsername;
@@ -299,6 +300,8 @@ public class TableViewProcessor<T> extends Processor {
                     tableList.addAll((ArrayList<T>) CustomerControl.getController().getAllLogs());
                 break;
             case PRODUCTS_OF_LOG:
+                System.out.println("Jesus: " + this);
+                System.out.println(selectedLog);
                 tableList.addAll((ArrayList<T>) selectedLog.getAllProducts());
                 break;
             case CUSTOMER_DISCOUNTS:
@@ -418,19 +421,19 @@ public class TableViewProcessor<T> extends Processor {
                 ProductOfLog productOfLog = (ProductOfLog) selectedItem;
                 processor.productInitialPriceField.setText("" + productOfLog.getInitPrice() + " $");
                 if(Control.getType() != null) {
-                    logFinalPrice.setText((Control.getType().equals("Vendor")) ?
-                            "" + productOfLog.getOffPrice() + " $" : "" + (productOfLog.getOffPrice() * selectedLog.getDiscountPercent()) + " $");
+                    processor.productFinalPriceField.setText((Control.getType().equals("Vendor")) ?
+                            "" + productOfLog.getOffPrice() + " $" : "" + (productOfLog.getOffPrice() * (1 - (selectedLog.getDiscountPercent()/100.0))) + " $");
                     if(Control.getType().equals("Vendor")) {
-                        root.getChildren().removeAll(processor.discountPercentLabel, processor.vendorUsernameLabel,
+                        processor.invoicePane.getChildren().removeAll(processor.discountPercentLabel, processor.vendorUsernameLabel,
                                 processor.vendorUsernameField, processor.discountPercentField);
                     } else {
                         processor.vendorUsernameField.setText(productOfLog.getVendorUsername());
                         processor.discountPercentField.setText("" + selectedLog.getDiscountPercent());
                     }
                 }
-                processor.logOffPercent.setText("" + ((1.0 - (productOfLog.getOffPrice()/productOfLog.getInitPrice())) * 100) +" %");
+                processor.productOffPriceField.setText("" + ((1.0 - (productOfLog.getOffPrice()/productOfLog.getInitPrice())) * 100) +" %");
                 processor.countLabel.setText("" + (productOfLog.isCountable() ?
-                        productOfLog.getCount() : productOfLog.getAmount()));
+                        "Count" : "Amount"));
                 processor.productQuantityField.setText(productOfLog.getQuantityStr());
             }
             return root;
@@ -441,7 +444,7 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private Pane initLogsOptions() {
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewVendorLogsOptions.fxml"));
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewLogsOptions.fxml"));
         try {
             Pane root = loader.load();
             TableViewProcessor processor = loader.getController();
@@ -463,7 +466,7 @@ public class TableViewProcessor<T> extends Processor {
                 processor.logDateLabel.setText(date.toString());
                 processor.logInitialPrice.setText("" + log.getInitialPrice() + " $");
                 if(Control.getType() != null) {
-                    logFinalPrice.setText((Control.getType().equals("Vendor")) ?
+                    processor.logFinalPrice.setText((Control.getType().equals("Vendor")) ?
                             "" + log.getVendorFinalPrice() + " $" : "" + log.getCustomerFinalPrice() + " $");
                 }
                 processor.logOffPercent.setText("" + ((1.0 - (log.getVendorFinalPrice()/log.getInitialPrice())) * 100) +" %");
@@ -1114,12 +1117,12 @@ public class TableViewProcessor<T> extends Processor {
 
     public void showLogProducts(ActionEvent actionEvent) {
         Log log = (Log) ((TableViewProcessor)parentProcessor).selectedItem;
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewMenu.fxml"));
         try {
             Parent root = loader.load();
             TableViewProcessor<ProductOfLog> processor = loader.getController();
-            processor.initProcessor(TableViewType.PRODUCTS_OF_LOG);
             processor.setLog(log);
+            processor.initProcessor(TableViewType.PRODUCTS_OF_LOG);
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Log Products");
@@ -1131,6 +1134,7 @@ public class TableViewProcessor<T> extends Processor {
 
     private void setLog(Log log) {
         this.selectedLog = log;
+        System.out.println(this.selectedLog);
     }
 
     public void showDiscountCustomer(ActionEvent actionEvent) {

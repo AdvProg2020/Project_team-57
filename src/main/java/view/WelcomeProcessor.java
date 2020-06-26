@@ -93,7 +93,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
                         Main.setScene(Control.getUsername() + " Menu", root);
                         break;
                     case "Customer" :
-                        root = FXMLLoader.load(Main.class.getResource("CustomerProfile.fxml"));
+                        root = FXMLLoader.load(Main.class.getResource("CustomerMenu.fxml"));
                         Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Customer Icon.png")));
                         Main.setScene(Control.getUsername() + " Menu", root);
                         break;

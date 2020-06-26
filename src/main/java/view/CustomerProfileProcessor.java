@@ -275,4 +275,26 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             e.printStackTrace();
         }
     }
+
+    public void showCustomerDiscountCodes(MouseEvent mouseEvent) {
+        if (canOpenSubStage(Control.getUsername() + " Discount Codes", this)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
+                Parent root = loader.load();
+                TableViewProcessor tableViewProcessor = loader.getController();
+                tableViewProcessor.setParentProcessor(this);
+                tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.CUSTOMER_DISCOUNTS);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
+                newStage.setResizable(false);
+                newStage.setTitle(Control.getUsername() + " Discount Codes");
+                this.addSubStage(newStage);
+                tableViewProcessor.setMyStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

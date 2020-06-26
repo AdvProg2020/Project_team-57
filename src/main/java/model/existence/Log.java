@@ -257,8 +257,8 @@ public class Log {
     public double getInitialPrice() {
         double price = 0;
         for (ProductOfLog productOfLog : allProducts) {
-            price += productOfLog.getOffPrice() * productOfLog.getAmount();
-            price += productOfLog.getOffPrice() * productOfLog.getCount();
+            price += productOfLog.getInitPrice() * productOfLog.getAmount();
+            price += productOfLog.getInitPrice() * productOfLog.getCount();
         }
         return price;
     }
