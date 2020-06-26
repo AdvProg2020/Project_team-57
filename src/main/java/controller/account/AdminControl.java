@@ -507,6 +507,7 @@ public class AdminControl extends AccountControl{
     private Notification acceptEditingProductByID(String editingProductID) {
         try {
             Product editingProduct = EditingProductTable.getEditingProductWithID(editingProductID);
+            editingProduct.setApprovalDate(ProductTable.getProductByID(editingProductID).getApprovalDate());
             editingProduct.setSeen(ProductTable.getProductByID(editingProductID).getSeen());
             EditingProductTable.removeProductById(editingProductID);
             ProductTable.removeProductByID(editingProduct.getID());
