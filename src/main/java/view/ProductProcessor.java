@@ -29,6 +29,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import model.db.CartTable;
@@ -56,7 +57,9 @@ public class ProductProcessor extends Processor {
     }
 
     public static enum ProductMenuType {
-        CART, VENDOR_ADD, VENDOR_EDIT, VENDOR_EDIT_UNAPPROVED, ADMIN, PRODUCTS_CUSTOMER, PRODUCTS, PRODUCTS_VENDOR;
+        CART, VENDOR_ADD, VENDOR_EDIT, VENDOR_EDIT_UNAPPROVED,
+        ADMIN, PRODUCTS_CUSTOMER, PRODUCTS, PRODUCTS_VENDOR,
+        COMPARING_PRODUCTS;
     }
 
     public static enum CommentType {
@@ -107,6 +110,7 @@ public class ProductProcessor extends Processor {
     public Pane generalPane;
     public JFXTextField nameTextField;
     public JFXTextField categoryTextField;
+    public JFXTextArea categoryFeaturesTextArea;
     public JFXToggleButton countableToggleButton;
     public Label countLabel;
     public JFXTextField countTextField;
@@ -473,7 +477,26 @@ public class ProductProcessor extends Processor {
         if(menuType == ProductMenuType.VENDOR_EDIT)
             product = productControl.getEditedProductByID(product.getID());
 
-        FXMLLoader loader = loadThePane("ProductMenuGeneralInfo");
+        String generalInfoPaneName = "";
+        switch (menuType) {
+            case COMPARING_PRODUCTS:
+                generalInfoPaneName = "ProductMenuGeneralInfoComparing";
+                break;
+            case VENDOR_ADD:
+            case VENDOR_EDIT:
+            case VENDOR_EDIT_UNAPPROVED:
+                generalInfoPaneName = "ProductMenuGeneralInfo";
+                break;
+            case PRODUCTS_CUSTOMER:
+            case PRODUCTS_VENDOR:
+            case PRODUCTS:
+            case ADMIN:
+            case CART:
+                generalInfoPaneName = "ProductMenuGeneralInfoMainProducts";
+                break;
+        }
+
+        FXMLLoader loader = loadThePane(generalInfoPaneName);
         ProductProcessor processor = loader.getController();
         subProcessors.add(processor);
         //Todo Check The Use Of MenuType
@@ -499,6 +522,18 @@ public class ProductProcessor extends Processor {
         if(menuType == ProductMenuType.VENDOR_ADD) {
             changeCountableField(null);
         } else {
+            switch (menuType) {
+                case PRODUCTS_CUSTOMER:
+                case PRODUCTS_VENDOR:
+                case PRODUCTS:
+                case ADMIN:
+                case CART:
+                    if(product.getCategoryFeatures() == null || product.getCategoryFeatures().length() == 0)
+                        categoryFeaturesTextArea.setText(" Not Set");
+                    else
+                        categoryFeaturesTextArea.setText(product.getCategoryFeatures());
+            }
+
             nameTextField.setText(product.getName());
 
             categoryTextField.setText(product.getCategory());
@@ -533,12 +568,23 @@ public class ProductProcessor extends Processor {
     }
 
     private void disableEditingGeneralFields() {
-        nameTextField.setDisable(true);
-        categoryTextField.setDisable(true);
-        countableToggleButton.setDisable(true);
-        countTextField.setDisable(true);
-        brandTextField.setDisable(true);
-        descriptionTextArea.setDisable(true);
+        switch (menuType) {
+            case PRODUCTS_CUSTOMER:
+            case PRODUCTS_VENDOR:
+            case PRODUCTS:
+            case ADMIN:
+            case CART:
+                categoryFeaturesTextArea.setEditable(false);
+            case VENDOR_ADD:
+            case VENDOR_EDIT:
+            case VENDOR_EDIT_UNAPPROVED:
+                nameTextField.setEditable(false);
+                categoryTextField.setEditable(false);
+                countableToggleButton.setDisable(true);
+                countTextField.setEditable(false);
+                brandTextField.setEditable(false);
+                descriptionTextArea.setEditable(false);
+        }
     }
 
     private void setProductGeneralFields(Product product) {
@@ -662,6 +708,7 @@ public class ProductProcessor extends Processor {
 
         //Properties
         jfxTextField.setEditable(countTextField.isEditable());
+        jfxTextField.setFont(countTextField.getFont());
 
         //Layout
         jfxTextField.setPrefWidth(countTextField.getPrefWidth());
@@ -818,7 +865,8 @@ public class ProductProcessor extends Processor {
             case VENDOR_EDIT_UNAPPROVED:
                 specialImages.getChildren().remove(tickImage);
                 price.setText(Double.toString(product.getPrice()));
-                price.setDisable(true);
+                price.setEditable(false);
+//                price.setDisable(true);
             case VENDOR_ADD:
                 specialImages.getChildren().removeAll(buyersImage, removeImage);
                 specialImages.setLayoutX(specialImages.getLayoutX() + 80);
@@ -840,7 +888,8 @@ public class ProductProcessor extends Processor {
                     pricePane.getChildren().removeAll(offArrow, offPrice);
                 }*/
                 status.setText(product.getTheStatus());
-                status.setDisable(true);
+                status.setEditable(false);
+//                status.setDisable(true);
                 specialPane.getChildren().remove(sellerPane);
                 pricePane.setLayoutY(123);
                 statusPane.setLayoutY(224);
@@ -900,10 +949,12 @@ public class ProductProcessor extends Processor {
 
         setPrices(product);
         seller.setText(product.getSellerUserName());
-        seller.setDisable(true);
+        seller.setEditable(false);
+//        seller.setDisable(true);
 
         status.setText(product.getTheStatus());
-        status.setDisable(true);
+        status.setEditable(false);
+//        status.setDisable(true);
     }
 
     private void setPrices(Product product) {
@@ -913,14 +964,16 @@ public class ProductProcessor extends Processor {
         if(product.isOnSale()) {
             //Todo Set Price StrikeThrough
             offPrice.setText(Double.toString(product.getOffPrice()));
-            offPrice.setDisable(true);
+            offPrice.setEditable(false);
+//            offPrice.setDisable(true);
             setTheCommunicationOfPrices();
         } else {
             pricePane.getChildren().removeAll(offArrow, offPrice);
         }
 
         if(menuType != ProductMenuType.VENDOR_EDIT)
-            price.setDisable(true);
+            price.setEditable(false);
+//            price.setDisable(true);
     }
 
     private void setTheCommunicationOfPrices() {
@@ -985,7 +1038,6 @@ public class ProductProcessor extends Processor {
     private void setCartUnCountable() {
         Product product = ((ProductProcessor) parentProcessor).product;
 
-        System.out.println("Product Amount : " + product.getAmount());
         setDoubleFields(cartCount, product.getAmount() + 0.000001);
         cartCount.textProperty().addListener((observable, oldValue, newValue) -> {
             //Todo Check

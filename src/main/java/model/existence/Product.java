@@ -1,5 +1,6 @@
 package model.existence;
 
+import model.db.CategoryTable;
 import model.db.OffTable;
 import model.db.ProductTable;
 
@@ -29,6 +30,9 @@ public class Product {
     private double offPrice;
     private double offPercent;
 
+    //Category Section
+    private String categoryFeatures;
+
     public Product(ResultSet resultSet) throws SQLException, ClassNotFoundException {
         this.ID = resultSet.getString("ID");
         this.status = resultSet.getInt("Status");
@@ -51,6 +55,8 @@ public class Product {
             this.offPercent = OffTable.getOffByProductID(ID).getOffPercent();
             this.offPrice = (1 - offPercent / 100) * price;
         }
+
+        this.categoryFeatures = CategoryTable.getCategoryWithName(category).getFeatures();
     }
 
     public Product() {
@@ -218,5 +224,13 @@ public class Product {
 
     public void setOffPercent(double offPercent) {
         this.offPercent = offPercent;
+    }
+
+    public String getCategoryFeatures() {
+        return categoryFeatures;
+    }
+
+    public void setCategoryFeatures(String categoryFeatures) {
+        this.categoryFeatures = categoryFeatures;
     }
 }
