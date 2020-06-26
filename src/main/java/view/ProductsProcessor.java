@@ -776,6 +776,7 @@ public class ProductsProcessor extends Processor{
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Purchase.fxml"));
             Parent root = fxmlLoader.load();
             CustomerProfileProcessor customerProfileProcessor = fxmlLoader.getController();
+            customerProfileProcessor.parentProcessor = parentProcessor;
             customerProfileProcessor.setMyStage(myStage);
             myStage.setScene(new Scene(root));
             myStage.setTitle("Purchase Menu");

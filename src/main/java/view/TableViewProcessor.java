@@ -15,7 +15,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -368,7 +367,7 @@ public class TableViewProcessor<T> extends Processor {
                 mainBorderPane.setLeft(initVendorOffsOptions());
                 break;
             case LOGS:
-                mainBorderPane.setLeft(initSellLogsOptions());
+                mainBorderPane.setLeft(initLogsOptions());
                 break;
             case PRODUCTS_OF_LOG:
                 mainBorderPane.setLeft(initProductOfLogsOptions());
@@ -441,7 +440,7 @@ public class TableViewProcessor<T> extends Processor {
         return null;
     }
 
-    private Pane initSellLogsOptions() {
+    private Pane initLogsOptions() {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewVendorLogsOptions.fxml"));
         try {
             Pane root = loader.load();
@@ -461,7 +460,7 @@ public class TableViewProcessor<T> extends Processor {
             if(selectedItem != null) {
                 Log log = (Log)selectedItem;
                 java.util.Date date = new java.util.Date(log.getDate().getTime());
-                processor.offNameLabel.setText(date.toString());
+                processor.LogDateLabel.setText(date.toString());
                 processor.logInitialPrice.setText("" + log.getInitialPrice() + " $");
                 if(Control.getType() != null) {
                     logFinalPrice.setText((Control.getType().equals("Vendor")) ?

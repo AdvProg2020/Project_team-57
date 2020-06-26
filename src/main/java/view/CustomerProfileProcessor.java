@@ -4,12 +4,14 @@ import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import controller.Control;
 import controller.account.AccountControl;
+import controller.account.CustomerControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
@@ -23,9 +25,11 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 import model.existence.Log;
+import notification.Notification;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CustomerProfileProcessor extends AccountProcessor implements Initializable {
@@ -161,13 +165,14 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerCartProducts.fxml"));
             Parent root = loader.load();
             ProductsProcessor processor = loader.getController();
+            processor.parentProcessor = this;
             processor.initProcessor(ProductsProcessor.ProductsMenuType.CUSTOMER_CART);
             Stage stage = new Stage();
             stage.getIcons().add(new Image("Images/Icons/cart (2).png"));
             stage.setTitle(Control.getUsername() + " Cart");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
-            addSubStage(stage);
+            this.subStages.add(stage);
             processor.setMyStage(stage);
             stage.show();
         } catch (IOException e) {
@@ -207,7 +212,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
                 !address.getText().isEmpty() &&
                 !postalCode.getText().isEmpty()) {
                 if (areFieldsOk()) {
-                    //TODO final purchase
+                    doThePurchase();
                 }
         } else {
             if(name.getText().isEmpty()) {
@@ -223,6 +228,14 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
                 postalCode.setBorder(new Border(new BorderStroke(Color.FIREBRICK, BorderStrokeStyle.SOLID, null, new BorderWidths(0, 0, 2, 0))));
             }
         }
+    }
+
+    private void doThePurchase() {
+        Notification notification = CustomerControl.getController().purchase();
+        Optional<ButtonType> buttonType = notification.getAlert().showAndWait();
+
+        if(buttonType.get() == ButtonType.OK)
+            backToCart(null);
     }
 
     private boolean areFieldsOk() {
@@ -247,12 +260,17 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
 
     public void backToCart(MouseEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(""));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("CustomerCartProducts.fxml"));
+            Parent root = fxmlLoader.load();
+            ProductsProcessor productsProcessor = fxmlLoader.getController();
+            productsProcessor.parentProcessor = parentProcessor;
+            productsProcessor.initProcessor(ProductsProcessor.ProductsMenuType.CUSTOMER_CART);
             myStage.getIcons().remove(0);
-            myStage.getIcons().add(new Image(""));
-            Scene scene = new Scene(root);
+//            myStage.getIcons().add(new Image(""));
+            productsProcessor.setMyStage(myStage);
+            myStage.setScene(new Scene(root));
             myStage.setResizable(false);
-            myStage.setTitle("");
+            myStage.setTitle(Control.getUsername() + " Cart");
         } catch (IOException e) {
             e.printStackTrace();
         }

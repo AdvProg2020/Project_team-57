@@ -126,13 +126,17 @@ public enum Notification {
     OFF_EDITING_DECLINED("+Sometimes This Program Makes Me Wonder, Which Would Be Worse,\n" +
             "To Live As A Monster Or Die As A Good Man.\n*Shutter Island\n" +
             "(You Successfully Declined Editing Off Request.)"),
-    UNAVAILABLE_CART_PRODUCT("One Of Your Cart Products Is Not Approved Yet. "),
-    CART_PRODUCT_OUT_OF_STOCK("One Of Your Cart Products Is Out Of Stock. "),
-    CANT_AFFORD_CART("Come Back When You Have Some Money, Buddy. "),
+    UNAVAILABLE_CART_PRODUCT("One Of Your Cart Products Is Not Approved Yet. ",
+            Alert.AlertType.ERROR, "Purchase Error", "Unavailable Cart Product"),
+    CART_PRODUCT_OUT_OF_STOCK("One Of Your Cart Products Is Out Of Stock. ",
+            Alert.AlertType.ERROR, "Purchase Error", "Product Out Of Stock"),
+    CANT_AFFORD_CART("Come Back When You Have Some Money, Buddy. ",
+            Alert.AlertType.ERROR, "Purchase Error", "Can't Afford Cart"),
     PURCHASED_SUCCESSFULLY("I Don't Know How I'm Going To Live With MySelf " +
             "\nIf I Don't Stay True To What I Believe. " +
             "\n+Desmond T.Doss (Hacksaw Ridge)" +
-            "\nPurchased Successfully. 😐"),
+            "\nPurchased Successfully. 😐",
+            Alert.AlertType.INFORMATION, "Purchased", "Purchased Successfully"),
     UPDATE_SCORE("Score updated successfully babe"),
     SET_SCORE("Score done"),
     ERROR_TITLE_LENGTH("Title length must be between 0 & 16 characters"),
@@ -142,10 +146,12 @@ public enum Notification {
     DECLINE_COMMENT("Comment decline successfully"),
     PURCHASED_SUPERBLY("Do You Have A Bed Somewhere?" +
             "\nWe Gave You A Super Discount With 85% Off." +
-            "\nPurchased Successfully But Who Cares About That ?\uD83D\uDE0B"),
+            "\nPurchased Successfully But Who Cares About That ?\uD83D\uDE0B",
+            Alert.AlertType.INFORMATION, "Purchased", "Purchased Superbly"),
     PURCHASED_GOODLY("There Are No Two Words In English Language More Harmful Than GOOD JOB!" +
             "\n+Whiplash" +
-            "\nPurchased Successfully \uD83D\uDE1C"),
+            "\nPurchased Successfully \uD83D\uDE1C",
+            Alert.AlertType.INFORMATION, "Purchased", "Purchased Goodly"),
     INVALID_MIN_PRICE("Minimum Price Must Be A Positive Number. "),
     MIN_PRICE_BIGGER_THAN_MAX_PRICE("Minimum Price Must Be Smaller Than Maximum Price. "),
     SET_PRICE_FILTERS("Price Filters Are Set Successfully. "),
