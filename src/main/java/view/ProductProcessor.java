@@ -77,20 +77,19 @@ public class ProductProcessor extends Processor {
 
     ///Single Product Menu///
 
+
     //Comparing Products Menu///
 
     //MainPart
     private Product firstProduct;
     private Product secondProduct;
 
-    public SplitPane imageSplitPane;
-    public SplitPane generalInfoSplitPane;
+    public BorderPane mainBorderPane;
+    public BorderPane imageBorderPane;
+    public BorderPane generalBorderPane;
 
-    private Pane firstInterfacePane;
     private Pane firstProductGeneralInfoPane;
-    private Pane middleInterfacePane;
     private Pane secondProductGeneralInfoPane;
-    private Pane secondInterfacePane;
 
     //GeneralPart
     public Pane firstGeneralPane;
@@ -155,6 +154,7 @@ public class ProductProcessor extends Processor {
     public ImageView tickImage;
     public ImageView buyersImage;
     public ImageView removeImage;
+    public ImageView compareImage;
     public Pane pricePane;
     public JFXTextField price;
     public ImageView offArrow;
@@ -193,17 +193,10 @@ public class ProductProcessor extends Processor {
     }
 
     private void initGeneralInfoPane() {
-        ObservableList<Node> generalInfoItems = generalInfoSplitPane.getItems();
-
         //Todo Empty Panes Dimensions
-        generalInfoItems.add(firstInterfacePane = getPaneWithTheseLayouts(67, 600));
-        generalInfoItems.add(getInitGeneralInfoPane(firstProduct));
-        generalInfoItems.add(middleInterfacePane = getPaneWithTheseLayouts(134, 600));
-        generalInfoItems.add(getInitGeneralInfoPane(secondProduct));
-        generalInfoItems.add(secondInterfacePane = getPaneWithTheseLayouts(67, 600));
+        generalBorderPane.setLeft(getScrollPaneWithTheseNodesAndDimensions(600, 500, getInitGeneralInfoPane(firstProduct)));
+        generalBorderPane.setRight(getScrollPaneWithTheseNodesAndDimensions(600, 500, getInitGeneralInfoPane(secondProduct)));
 
-        //Todo Checking Dimensions Of Down Split Pane
-        generalInfoSplitPane.setDividerPositions(0.0596, 0.4404, 0.5596, 0.9404);
     }
 
     private Pane getPaneWithTheseLayouts(double width, double height) {
@@ -217,6 +210,7 @@ public class ProductProcessor extends Processor {
         ScrollPane scrollPane = new ScrollPane(node);
         scrollPane.setPrefWidth(width);
         scrollPane.setPrefHeight(height);
+        scrollPane.setFitToWidth(true);
         return scrollPane;
     }
     //ImagePane
@@ -585,6 +579,11 @@ public class ProductProcessor extends Processor {
         } else {
             switch (menuType) {
                 case COMPARING_PRODUCTS:
+                    if(product.isOnSale()) {
+                        offPrice.setText(Double.toString(product.getOffPrice()));
+                    } else {
+                        generalPane.getChildren().removeAll(offArrow, offPrice);
+                    }
                 case PRODUCTS_CUSTOMER:
                 case PRODUCTS_VENDOR:
                 case PRODUCTS:
@@ -602,10 +601,12 @@ public class ProductProcessor extends Processor {
 
             countableToggleButton.setSelected(product.isCountable());
 
-            if (product.isCountable())
-                countTextField.setText(Integer.toString(product.getCount()));
-            else
-                countTextField.setText(Double.toString(product.getAmount()));
+            changeCountableField(null);
+//            if (product.isCountable()) {
+//                countTextField.setText(Integer.toString(product.getCount()));
+//            } else {
+//                countTextField.setText(Double.toString(product.getAmount()));
+//            }
 
             brandTextField.setText(product.getBrand());
 
@@ -895,34 +896,6 @@ public class ProductProcessor extends Processor {
     }
 
     //SpecialInfoPane
-    private void initSpecialPane() {
-        //Todo Condition Making For Choosing The Right Special Pane
-        String paneName = null;
-
-        switch (menuType) {
-            case VENDOR_ADD:
-            case VENDOR_EDIT:
-            case VENDOR_EDIT_UNAPPROVED:
-            case ADMIN:
-                paneName = "ProductMenuSpecialInfoExceptCustomer";
-                break;
-            case CART:
-            case PRODUCTS_CUSTOMER:
-            case PRODUCTS:
-            case PRODUCTS_VENDOR:
-                paneName = "ProductMenuSpecialInfoCustomer";
-                break;
-            default:
-                System.out.println("Error In Init Special Pane");
-        }
-
-        FXMLLoader loader = loadThePane(paneName);
-        ProductProcessor processor = loader.getController();
-        subProcessors.add(processor);
-        processor.initSpecialFields();
-        upBorderPane.setRight(loader.getRoot());
-    }
-
     private void initSpecialFields() {
         //Getting Off Price From parentProduct (Setting It From Control)
         Product product = ((ProductProcessor) parentProcessor).product;
@@ -930,9 +903,14 @@ public class ProductProcessor extends Processor {
         switch (menuType) {
             //Except Customer Section
             case VENDOR_EDIT_UNAPPROVED:
-                specialImages.getChildren().remove(tickImage);
+                specialImages.getChildren().removeAll(tickImage, buyersImage);
+                specialImages.setLayoutX(specialImages.getLayoutX() + 80);
                 price.setText(Double.toString(product.getPrice()));
                 price.setEditable(false);
+                pricePane.getChildren().removeAll(offArrow, offPrice);
+                specialPane.getChildren().removeAll(sellerPane, statusPane);
+                pricePane.setLayoutX(78);
+                break;
 //                price.setDisable(true);
             case VENDOR_ADD:
                 specialImages.getChildren().removeAll(buyersImage, removeImage);
@@ -972,19 +950,15 @@ public class ProductProcessor extends Processor {
                 addToCart.setText("Change Quantity");
                 addToCart.setLayoutX(122);
 //                specialPane.getChildren().removeAll(cartCount, minusButton, plusButton);
-                Product cartProduct = customerControl.getCartProductByID(product.getID());
-
-                if(product.isCountable()) {
-                    cartCount.setText(Integer.toString(cartProduct.getCount()));
-                } else {
-                    cartCount.setText(Double.toString(cartProduct.getAmount()));
-                }
-
+                setCartCountRawText(product);
                 setCartFields();
                 initSpecialFieldsInGeneral();
                 break;
             case PRODUCTS:
             case PRODUCTS_CUSTOMER:
+                setCartCountRawText(product);
+//                if(!product.isCountable())
+//                    cartCount.setText(Double.toString(Math.min(product.getAmount(), 0.2)));
                 initSpecialFieldsInGeneral();
                 setCartFields();
                 break;
@@ -1008,7 +982,34 @@ public class ProductProcessor extends Processor {
             offPrice.setEditable(false);
         }
 
+    }
 
+    private void initSpecialPane() {
+        //Todo Condition Making For Choosing The Right Special Pane
+        String paneName = null;
+
+        switch (menuType) {
+            case VENDOR_ADD:
+            case VENDOR_EDIT:
+            case VENDOR_EDIT_UNAPPROVED:
+            case ADMIN:
+                paneName = "ProductMenuSpecialInfoExceptCustomer";
+                break;
+            case CART:
+            case PRODUCTS_CUSTOMER:
+            case PRODUCTS:
+            case PRODUCTS_VENDOR:
+                paneName = "ProductMenuSpecialInfoCustomer";
+                break;
+            default:
+                System.out.println("Error In Init Special Pane");
+        }
+
+        FXMLLoader loader = loadThePane(paneName);
+        ProductProcessor processor = loader.getController();
+        subProcessors.add(processor);
+        processor.initSpecialFields();
+        upBorderPane.setRight(loader.getRoot());
     }
 
     private void initSpecialFieldsInGeneral() {
@@ -1060,6 +1061,25 @@ public class ProductProcessor extends Processor {
     }
 
 
+    private void setCartCountRawText(Product product) {
+        switch (menuType) {
+            case CART:
+                Product cartProduct = customerControl.getCartProductByID(product.getID());
+
+                if(product.isCountable()) {
+                    cartCount.setText(Integer.toString(cartProduct.getCount()));
+                } else {
+                    cartCount.setText(Double.toString(cartProduct.getAmount()));
+                }
+                break;
+            case PRODUCTS_CUSTOMER:
+            case PRODUCTS:
+                if(!product.isCountable())
+                    cartCount.setText(Double.toString(Math.min(product.getAmount(), 0.2)));
+
+        }
+    }
+
     private void setCartFields() {
         Product product = ((ProductProcessor) parentProcessor).product;
 
@@ -1108,7 +1128,7 @@ public class ProductProcessor extends Processor {
         setDoubleFields(cartCount, product.getAmount() + 0.000001);
         cartCount.textProperty().addListener((observable, oldValue, newValue) -> {
             //Todo Check
-            if(newValue.isEmpty() || newValue.equals("0") || newValue.equals("0.")) {
+            if(newValue.isEmpty() || newValue.equals("0") /*|| newValue.equals("0.")*/) {
                 if (product.getAmount() > 0.2)
                     cartCount.setText("0.2");
                 else
@@ -1155,6 +1175,10 @@ public class ProductProcessor extends Processor {
 
     public void removeProductMouseClicked(MouseEvent mouseEvent) {
         ((ProductProcessor) parentProcessor).removeProduct();
+    }
+
+    public void compareProductMouseClicked(MouseEvent mouseEvent) {
+        //Todo
     }
 
     private void setProductSpecialFields(Product product) {
