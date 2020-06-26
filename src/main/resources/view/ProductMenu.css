@@ -24,4 +24,5 @@
 
 #backToCart:hover{
     -fx-opacity: 1;
+    -fx-cursor: hand;
 }

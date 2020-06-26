@@ -98,6 +98,8 @@ public class ProductProcessor extends Processor {
     //GeneralPart
     public Pane firstGeneralPane;
     public Pane secondGeneralPane;
+    private ArrayList<File> firstProductImageFiles;
+    private ArrayList<File> secondProductImageFiles;
 
     //Comparing Products Menu///
 
@@ -114,6 +116,7 @@ public class ProductProcessor extends Processor {
     public ImageView editImageButton;
     private ArrayList<File> productImageFiles;
     private boolean isNonEdited = false;
+    private Product imagePanelProduct;
 
     //ProductMediaPane
     public ImageView deleteMediaButton;
@@ -192,8 +195,43 @@ public class ProductProcessor extends Processor {
         this.firstProduct = firstProduct;
         this.secondProduct = secondProduct;
 
-        //Todo Init Image Panel
+        initComparingImagePanels(true);
+        initComparingImagePanels(false);
         initGeneralInfoPane();
+    }
+
+    private void initComparingImagePanels(boolean right) {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuImages.fxml"));
+            Parent root = loader.load();
+            ProductProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            subProcessors.add(processor);
+            processor.imageNumberLabel.setText("1");
+            processor.changePictureTimer = -1;
+            processor.mainTimer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    if(changePictureTimer == -1) {
+                        changePictureTimer = now;
+                    }
+                    if(now - changePictureTimer > changePicturePeriod) {
+                        processor.nextImage(null);
+                        changePictureTimer = now;
+                    }
+                }
+            };
+            processor.imagePane.getChildren().removeAll(processor.addImageButton, processor.editImageButton, processor.removeImageButton);
+            processor.productImageFiles = new ArrayList<>();
+            processor.imagePanelProduct = (right ? firstProduct : secondProduct);
+            processor.getImages();
+            if(right)
+                imageBorderPane.setRight(root);
+            else
+                imageBorderPane.setLeft(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initGeneralInfoPane() {
@@ -217,6 +255,7 @@ public class ProductProcessor extends Processor {
         scrollPane.setFitToWidth(true);
         return scrollPane;
     }
+
     //ImagePane
     private void initImagePanel() {
         try {
@@ -226,8 +265,8 @@ public class ProductProcessor extends Processor {
             processor.setParentProcessor(this);
             subProcessors.add(processor);
             processor.imageNumberLabel.setText("1");
-            changePictureTimer = -1;
-            mainTimer = new AnimationTimer() {
+            processor.changePictureTimer = -1;
+            processor.mainTimer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
                     if(changePictureTimer == -1) {
@@ -243,6 +282,7 @@ public class ProductProcessor extends Processor {
                 processor.imagePane.getChildren().removeAll(processor.addImageButton, processor.editImageButton, processor.removeImageButton);
             }
             processor.productImageFiles = new ArrayList<>();
+            processor.imagePanelProduct = product;
             processor.getImages();
             upBorderPane.setLeft(root);
         } catch (IOException e) {
@@ -254,10 +294,10 @@ public class ProductProcessor extends Processor {
 //        System.out.println(((ProductProcessor)parentProcessor).menuType + " " + ((ProductProcessor)parentProcessor).isNonEdited);
         if(!(((ProductProcessor)parentProcessor).menuType == ProductMenuType.ADMIN && ((ProductProcessor)parentProcessor).isNonEdited)) {
             productImageFiles = productControl.
-                    getProductImageFiles(((ProductProcessor)parentProcessor).product);
+                    getProductImageFiles(imagePanelProduct);
         } else {
             productImageFiles = productControl.
-                    getProductNonEditedImageFiles(((ProductProcessor)parentProcessor).product);
+                    getProductNonEditedImageFiles(imagePanelProduct);
         }
         updateImages();
         }
@@ -373,10 +413,10 @@ public class ProductProcessor extends Processor {
 
     public void changeSlideShow(ActionEvent actionEvent) {
         if(slideShowToggleButton.isSelected())
-            ((ProductProcessor)parentProcessor).mainTimer.start();
-            else {
-            ((ProductProcessor)parentProcessor).mainTimer.stop();
-            ((ProductProcessor)parentProcessor).changePictureTimer = -1;
+            mainTimer.start();
+        else {
+            mainTimer.stop();
+            changePictureTimer = -1;
         }
     }
 

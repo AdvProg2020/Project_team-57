@@ -265,7 +265,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             ProductsProcessor productsProcessor = fxmlLoader.getController();
             productsProcessor.parentProcessor = parentProcessor;
             productsProcessor.initProcessor(ProductsProcessor.ProductsMenuType.CUSTOMER_CART);
-            myStage.getIcons().remove(0);
+//            myStage.getIcons().remove(0);
 //            myStage.getIcons().add(new Image(""));
             productsProcessor.setMyStage(myStage);
             myStage.setScene(new Scene(root));
