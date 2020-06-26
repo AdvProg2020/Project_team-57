@@ -386,7 +386,6 @@ public class ProductsProcessor extends Processor{
 
     private Pane setPageNumberBar() throws IOException {
         FXMLLoader loader;
-        //System.out.println(rowSize + ", " + columnMinSize + ", " + columnMaxSize + ", " + pageSize);
         if(rowSize == 4) {
             loader = new FXMLLoader(Main.class.getResource("ProductsPagesBar.fxml"));
         }  else {
@@ -398,7 +397,6 @@ public class ProductsProcessor extends Processor{
         if((int)Math.ceil(((double)allProducts.size())/pageSize) != 0)
             pagesBarProcessor.pageNumberLabel.setText("Page " + (pageNumber + 1) + " of " + (int)Math.ceil(((double)allProducts.size())/pageSize));
         else {
-            System.out.println("Here");
             pagesBarProcessor.pageNumberLabel.setText("Page " + (pageNumber + 1) + " of " + 1);
             pagesBarProcessor.nextPageButton.setDisable(true);
             pagesBarProcessor.nextPageButton.setOpacity(0.3);
@@ -406,19 +404,13 @@ public class ProductsProcessor extends Processor{
             pagesBarProcessor.previousPageButton.setOpacity(0.3);
         }
         if(pageNumber == 0) {
-            System.out.println("There");
             pagesBarProcessor.previousPageButton.setDisable(true);
             pagesBarProcessor.previousPageButton.setOpacity(0.3);
         }
-        System.out.println(allProducts.size());
-        System.out.println((((int)Math.ceil(((double)allProducts.size())/pageSize) - 1)));
-        System.out.println(pageNumber);
         if(pageNumber == (((int)Math.ceil(((double)allProducts.size())/pageSize) - 1))) {
-            System.out.println("Fuck");
             pagesBarProcessor.nextPageButton.setDisable(true);
             pagesBarProcessor.nextPageButton.setOpacity(0.3);
         }
-
         return root;
     }
 
@@ -465,7 +457,6 @@ public class ProductsProcessor extends Processor{
         paneProcessor.removeFromCartButton.setOnAction(event -> {
             Optional<ButtonType> buttonType = new Alert(Alert.AlertType.CONFIRMATION, "Do You Really Want To Delete This Great Product From You Cart?", YES, NO).showAndWait();
             if(buttonType.get() == YES) {
-                System.out.println(product);
                 CustomerControl.getController().removeProductFromCartByID(product.getID()).getAlert().show();
                 initProductsPage();
             }
@@ -530,6 +521,7 @@ public class ProductsProcessor extends Processor{
                     stage.setTitle(product.getName() + " Previous Menu");
                     processor.setMyStage(stage);
                     parentProcessor.addSubStage(stage);
+                    stage.setResizable(false);
                     stage.show();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -643,9 +635,9 @@ public class ProductsProcessor extends Processor{
                 stage.setScene(new Scene(root));
                 stage.setTitle(product.getName() + " Menu");
                 processor.setMyStage(stage);
-                System.out.println();
                 if(parentProcessor.parentProcessor != null)
                     parentProcessor.parentProcessor.addSubStage(stage);
+                stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -760,6 +752,7 @@ public class ProductsProcessor extends Processor{
                 addSubStage(stage);
                 processor.setMyStage(stage);
                 parentProcessor.addSubStage(stage);
+                stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -768,7 +761,6 @@ public class ProductsProcessor extends Processor{
     }
 
     public void addNewOff(MouseEvent mouseEvent) {
-        System.out.println(parentProcessor);
         if(canOpenSubStage("Add New Off", parentProcessor)) {
             try {
                 FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
@@ -800,7 +792,6 @@ public class ProductsProcessor extends Processor{
             }
         }
         showManageProductRequestsResult(results);
-        //System.out.println("Hello");
         initProductsPage();
     }
 

@@ -63,8 +63,8 @@ public class WelcomeProcessor extends Processor implements Initializable {
 
         if(locationFile.contains("WelcomeMenu"))
             setBG();
-        else if(locationFile.contains("SignInMenu"))
-            System.out.println(loginButton.isDefaultButton());
+        else if(locationFile.contains("SignInMenu")) {
+        }
         else if(locationFile.contains("SignUpMenu"))
             initAccTypeComboBox();
 

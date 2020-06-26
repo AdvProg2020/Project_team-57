@@ -110,7 +110,6 @@ public class ProfileProcessor extends Processor implements Initializable {
         pictureCircle.setFill(imagePattern);
 
         if(!accountControl.doesUserHaveImage(account.getUsername())) {
-            System.out.println("Really?");
             deleteImage.setDisable(true);
             deleteImage.setOpacity(0.7);
         }

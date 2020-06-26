@@ -220,7 +220,6 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private void initVendorOffsColumns() {
-        System.out.println("HO HO HO");
         TableColumn<T, String> offName = makeColumn("Off Name", "offName", 0.315);
         TableColumn<T, Date> offFinishDate = makeColumn("Finish Date", "finishDate", 0.25);
         TableColumn<T, Double> offPercent = makeColumn("Off Percentage", "offPercent", 0.23);
@@ -229,7 +228,6 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private void initAdminOffsColumns() {
-        System.out.println("HA HA HA");
         TableColumn<T, String> offName = makeColumn("Off Name", "offName", 0.30);
         TableColumn<T, String> vendorUsername = makeColumn("Vendor Username", "vendorUsername", 0.265);
         TableColumn<T, Double> offPercent = makeColumn("Off Percentage", "offPercent", 0.23);
@@ -314,8 +312,6 @@ public class TableViewProcessor<T> extends Processor {
                     tableList.addAll((ArrayList<T>) CustomerControl.getController().getAllLogs());
                 break;
             case PRODUCTS_OF_LOG:
-                System.out.println("Jesus: " + this);
-                System.out.println(selectedLog);
                 tableList.addAll((ArrayList<T>) selectedLog.getAllProducts());
                 break;
             case CUSTOMER_DISCOUNTS:
@@ -650,7 +646,6 @@ public class TableViewProcessor<T> extends Processor {
             Pane root = loader.load();
             TableViewProcessor processor = loader.getController();
             processor.setParentProcessor(this);
-            System.out.println("!!1!!: " + this);
             if(tableViewType != TableViewType.ADMINS) {
                 root.getChildren().remove(processor.addAdminButton);
             }
@@ -759,7 +754,6 @@ public class TableViewProcessor<T> extends Processor {
                 tableView.getSelectionModel().selectFirst();
 
             initOptions();
-//        System.out.println(selectedItem);
     }
 
     private void setOffPicture(Rectangle offImageRectangle, Off off) {
@@ -810,8 +804,6 @@ public class TableViewProcessor<T> extends Processor {
             newStage.getIcons().add(new Image(getClass().getResourceAsStream("Profile Icon.png")));
             newStage.setResizable(false);
             newStage.setTitle(selectedAccount.getUsername() + " Profile");
-            System.out.println("!!2!!: " + parentProcessor);
-            System.out.println("!!3!!: " + parentProcessor.parentProcessor);
             parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
@@ -877,7 +869,6 @@ public class TableViewProcessor<T> extends Processor {
             newStage.setTitle("Show Discount " + discount.getID());
             newStage.setResizable(false);
             processor.parentProcessor = this.parentProcessor;
-            //System.out.println("Opening : " + processor);
             processor.setMyStage(newStage);
             parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
@@ -963,6 +954,7 @@ public class TableViewProcessor<T> extends Processor {
             stage.setTitle(product.getName() + " Menu");
             productProcessor.setMyStage(stage);
             parentProcessor.parentProcessor.addSubStage(stage);
+            stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -984,6 +976,7 @@ public class TableViewProcessor<T> extends Processor {
                 (Alert.AlertType.CONFIRMATION, alertStr, ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
             AdminControl.getController().modifyCommentApproval(selectedComment.getCommentID(), approve);
+            System.out.println(((TableViewProcessor<T>) parentProcessor).tableViewPane);
             if(((TableViewProcessor<T>) parentProcessor).tableViewPane != null) {
                 ((TableViewProcessor<T>) parentProcessor).mainBorderPane.setCenter(((TableViewProcessor<T>) parentProcessor).tableViewPane);
                 ((TableViewProcessor) parentProcessor).updateTable();
@@ -993,7 +986,6 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void showComment(ActionEvent actionEvent) {
-        ((TableViewProcessor) parentProcessor).tableViewPane = (Pane) ((TableViewProcessor) parentProcessor).mainBorderPane.getCenter();
         Comment comment = (Comment) ((TableViewProcessor) parentProcessor).selectedItem;
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewShowComment.fxml"));
@@ -1007,12 +999,15 @@ public class TableViewProcessor<T> extends Processor {
                 ((TableViewProcessor) parentProcessor).mainBorderPane.setCenter(((TableViewProcessor) parentProcessor).tableViewPane);
                 ((TableViewProcessor) parentProcessor).updateTable();
                 ((TableViewProcessor) parentProcessor).updateSelectedItem();
-                ((TableViewProcessor<T>) parentProcessor).tableViewPane = null;
             });
             ((TableViewProcessor<T>) parentProcessor).mainBorderPane.setCenter(root);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setTableViewPane(Pane tableViewPane) {
+        this.tableViewPane = tableViewPane;
     }
 
     //OffsRequests
@@ -1053,7 +1048,6 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void deleteOff(ActionEvent actionEvent) {
-//        System.out.println(selectedItem);
         Off selectedOff = (Off) ((TableViewProcessor)parentProcessor).selectedItem;
         Optional<ButtonType> buttonType = new Alert
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Delete " + selectedOff.getOffName() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
@@ -1091,7 +1085,6 @@ public class TableViewProcessor<T> extends Processor {
 
     public void addNewOff(ActionEvent actionEvent) {
         if(canOpenSubStage("Add New Off", parentProcessor.parentProcessor)) {
-            System.out.println(parentProcessor);
             try {
                 FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
                 Parent root = loader.load();
@@ -1177,7 +1170,6 @@ public class TableViewProcessor<T> extends Processor {
 
     private void setLog(Log log) {
         this.selectedLog = log;
-        System.out.println(this.selectedLog);
     }
 
     public void showDiscountCustomer(ActionEvent actionEvent) {

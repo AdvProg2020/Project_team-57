@@ -288,7 +288,6 @@ public class ProductProcessor extends Processor {
     }
 
     private void getImages() {
-//        System.out.println(((ProductProcessor)parentProcessor).menuType + " " + ((ProductProcessor)parentProcessor).isNonEdited);
         if(!(((ProductProcessor)parentProcessor).menuType == ProductMenuType.ADMIN && ((ProductProcessor)parentProcessor).isNonEdited)) {
             productImageFiles = productControl.
                     getProductImageFiles(imagePanelProduct);
@@ -526,7 +525,6 @@ public class ProductProcessor extends Processor {
 
     protected void stopTimer() {
         if(mainTimer != null) {
-            System.out.println("Yesssssssssss");
             mainTimer.stop();
         }
     }
@@ -553,12 +551,9 @@ public class ProductProcessor extends Processor {
     }
 
     private void updateParentProcessor() {
-        System.out.println(parentProcessor);
         if(parentProcessor instanceof ProductsProcessor) {
-            System.out.println("Products Processor");
             ((ProductsProcessor) parentProcessor).initProductsPage();
         } else if(parentProcessor instanceof TableViewProcessor) {
-            System.out.println("Table View Processor");
             ((TableViewProcessor) parentProcessor).updateTable();
             ((TableViewProcessor) parentProcessor).updateSelectedItem();
         }
@@ -969,7 +964,6 @@ public class ProductProcessor extends Processor {
     private void initSpecialFields() {
         //Getting Off Price From parentProduct (Setting It From Control)
         Product product = ((ProductProcessor) parentProcessor).product;
-//        System.out.println(product.isOnSale());
         switch (menuType) {
             //Except Customer Section
             case VENDOR_EDIT_UNAPPROVED:

@@ -87,7 +87,6 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     }
 
     public void setOptions(ActionEvent actionEvent) {
-        //System.out.println(this);
         JFXButton selectedButton = (JFXButton) actionEvent.getSource();
         selectThisButton(selectedButton);
         try {
@@ -107,7 +106,6 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 ((AdminProcessor)loader.getController()).setParentProcessor(this);
                 mainPane.setCenter(subRoot);
             } else if(selectedButton.equals(offsButton)) {
-                //System.out.println(this);
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("AdminOffs.fxml"));
                 Parent subRoot = loader.load();
                 ((AdminProcessor)loader.getController()).setParentProcessor(this);
@@ -203,7 +201,6 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     public void manageDiscounts(MouseEvent mouseEvent) {
         if (canOpenSubStage("Manage Discounts", parentProcessor)) {
             try {
-                //System.out.println(parentProcessor);
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
                 Parent root = loader.load();
                 TableViewProcessor<Discount> tableViewProcessor = loader.getController();
@@ -211,7 +208,6 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.DISCOUNTS);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
-                //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
                 newStage.setResizable(false);
                 newStage.setTitle("Manage Discounts");
                 parentProcessor.addSubStage(newStage);
@@ -238,6 +234,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 newStage.setTitle("Manage Comment Requests");
                 parentProcessor.addSubStage(newStage);
                 tableViewProcessor.setMyStage(newStage);
+                tableViewProcessor.setTableViewPane((Pane)tableViewProcessor.mainBorderPane.getCenter());
                 newStage.show();
             } catch (IOException e) {
                 e.printStackTrace();

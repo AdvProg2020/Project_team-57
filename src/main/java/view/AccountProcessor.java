@@ -19,7 +19,6 @@ public class AccountProcessor extends Processor{
 
 
     public void logOutButton() {
-        //System.out.println("hello");
         Optional<ButtonType> buttonType =
                 new Alert(Alert.AlertType.CONFIRMATION, "Are You Sure About Logging Out?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
@@ -47,7 +46,6 @@ public class AccountProcessor extends Processor{
     public void showProfileMenu() {
         try {
             if(Control.getType().equals("Admin")) {
-                System.out.println(parentProcessor);
                 if (!canOpenSubStage(Control.getUsername() + " Profile", parentProcessor))
                     return;
             }

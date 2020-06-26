@@ -144,7 +144,6 @@ public class OffsProcessor implements Initializable {
             processor.minuteLabel.setText("" + minute);
             int second = (int) ((((off.getFinishDate().getTime() - System.currentTimeMillis()) - (day * ONE_DAY_MILLIS)) - (hour * ONE_HOUR_MILLIS) - (minute * ONE_MINUTE_MILLIS))/ONE_SECOND_MILLIS);
             processor.secondLabel.setText("" + second);
-//            System.out.println("number: " + number);
             timers[number].addAnimationTimer(new AnimationTimer() {
                 @Override
                 public void handle(long now) {
@@ -201,7 +200,6 @@ public class OffsProcessor implements Initializable {
 
     private void initPageNumberGraphic() {
         pageNumberLabel.setText("Page " + currentPage + " of " + numberOfPages);
-        System.out.println(currentPage + ", " + numberOfPages);
         if(numberOfPages == 0) {
             previousPage.setDisable(true);
             nextPage.setDisable(true);
@@ -221,7 +219,6 @@ public class OffsProcessor implements Initializable {
     }
 
     public void showPreviousPage() {
-        System.out.println("Hello");
         for (int i = 0; i < timers.length; i++) {
             timers[i].stop();
         }
@@ -232,7 +229,6 @@ public class OffsProcessor implements Initializable {
     }
 
     public void showNextPage() {
-        System.out.println("Hello");
         for (int i = 0; i < timers.length; i++) {
             timers[i].stop();
         }

@@ -33,16 +33,12 @@ public abstract class Processor {
         this.myStage = myStage;
         this.myStage.setOnCloseRequest(event -> {
             if(this instanceof ProductProcessor) {
-                System.out.println("MainTimer Stopped");
                 ((ProductProcessor) this).subProcessors.get(0).stopTimer();
             }
-//            System.out.println("SHE");
             for (Stage subStage : this.subStages) {
                 subStage.close();
             }
-//            System.out.println(parentProcessor);
             if(parentProcessor != null) {
-//                System.out.println("HI");
                 parentProcessor.removeSubStage(myStage);
             }
         });
@@ -56,7 +52,6 @@ public abstract class Processor {
                     System.out.println("MainTimer Stopped");
                     ((ProductProcessor) this).subProcessors.get(0).stopTimer();
                 }
-//                System.out.println("********HE**********");
                 this.removeSubStage(subStage);
             });
         }

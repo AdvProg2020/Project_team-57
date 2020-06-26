@@ -58,9 +58,6 @@ public class VendorControl extends AccountControl{
         ArrayList<Notification> addingProductNotifications = new ArrayList<>();
 
         try {
-            System.out.println(product.isCountable());
-            System.out.println(product.getCount());
-            System.out.println(product.getAmount());
             addingProductNotifications.addAll(checkProductFields(product));
             if (addingProductNotifications.isEmpty()) {
                 while (true) {
@@ -99,7 +96,6 @@ public class VendorControl extends AccountControl{
         } if(product.getCategory() != null && !CategoryTable.isThereCategoryWithName(product.getCategory())) {
             checkNotifications.add(Notification.INVALID_PRODUCT_CATEGORY);
         } if(product.isCountable() && product.getCount() == 0) {
-            System.out.println("Fuck You Sepehr");
             checkNotifications.add(Notification.EMPTY_PRODUCT_COUNT);
         } if(!product.isCountable() && product.getAmount() == 0) {
             checkNotifications.add(Notification.EMPTY_PRODUCT_AMOUNT);
@@ -247,7 +243,6 @@ public class VendorControl extends AccountControl{
                off.setOffID(setOffID());
            } while (OffTable.isThereOffWithID(off.getOffID()));
            off.setStatus(2);
-           System.out.println(offImageFile);
            if(offImageFile != null)
                ProductControl.getController().setOffPicture(off.getOffID(), offImageFile);
            OffTable.addOff(off);
@@ -273,7 +268,6 @@ public class VendorControl extends AccountControl{
         ArrayList<Product> nonOffProducts = new ArrayList<>();
         try {
             if(exceptions != null && exceptions.length > 0) {
-                System.out.println(":|");
                 for (String exception : exceptions) {
                     for (String productID : OffTable.getSpecificOff(exception).getProductIDs()) {
                         nonOffProducts.add(ProductTable.getProductByID(productID));
@@ -281,7 +275,6 @@ public class VendorControl extends AccountControl{
                 }
             }
             for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
-                //System.out.println(product.getName());
                 if(!OffTable.isThereProductInOffIgnoreStatus(product.getID()) && product.getStatus() != 2)
                     nonOffProducts.add(product);
             }
@@ -290,10 +283,6 @@ public class VendorControl extends AccountControl{
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-/*        for (Product nonOffProduct : nonOffProducts) {
-            System.out.println(nonOffProduct.getName());
-        }*/
         return nonOffProducts;
     }
 
@@ -622,12 +611,9 @@ public class VendorControl extends AccountControl{
             return Notification.START_DATE_AFTER_FINISH_DATE;
         try {
             off.setStatus(3);
-            //System.out.println(offImageFile);
-            System.out.println(offImageFile);
             if(offImageFile != null) {
                 ProductControl.getController().setEditingOffPicture(off.getOffID(), offImageFile);
             } else {
-                System.out.println("What the Fuck is this");
                 ProductControl.getController().deleteEditingOffPicture(off.getOffID());
             }
             OffTable.changeOffStatus(off.getOffID(), 3);

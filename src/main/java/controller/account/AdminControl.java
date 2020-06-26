@@ -582,7 +582,6 @@ public class AdminControl extends AccountControl{
             if(ProductControl.getController().doesOffHaveImage(offID))
                 OffTable.removeOffImage(offID);
             if(ProductControl.getController().doesEditingOffHaveImage(offID)) {
-                //System.out.println("LOOK HERE: " + ProductControl.getController().getOffImageFileByID(offID));
                 OffTable.setOffImage(offID, ProductControl.getController().getEditingOffImageFileByID(offID));
                 declineEditingOffImages(offID);
             }
@@ -737,7 +736,6 @@ public class AdminControl extends AccountControl{
             editingProduct.setSeen(ProductTable.getProductByID(editingProductID).getSeen());
             EditingProductTable.removeProductById(editingProductID);
             ProductTable.removeProductByID(editingProduct.getID());
-            System.out.println(editingProduct.getName() + " " + editingProduct.getSeen());
             if(editingProduct.isCountable())
                 VendorTable.addCountableProduct(editingProduct, editingProduct.getSellerUserName());
             else

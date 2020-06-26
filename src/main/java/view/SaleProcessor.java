@@ -172,7 +172,6 @@ public class SaleProcessor extends Processor implements Initializable {
             ((SaleProcessor)parentProcessor).off.setOffID("");
             ((SaleProcessor)parentProcessor).getOffImageFile();
         } else {
-//            System.out.println(":|");
             if(mainOff.getOffName() != null && mainOff.getOffName().length() != 0)
                 offNameField.setText(mainOff.getOffName());
             if(mainOff.getOffPercent() != 0)
@@ -181,7 +180,6 @@ public class SaleProcessor extends Processor implements Initializable {
                 setDateFieldsFromDate(offStartDatePicker, offStartTimePicker, mainOff.getStartDate());
             if(mainOff.getFinishDate() != null)
                 setDateFieldsFromDate(offFinishDatePicker, offFinishTimePicker, mainOff.getFinishDate());
-            //((SaleProcessor)parentProcessor).getOffImageFile();
             if(Control.getType().equals("Admin")) {
                 setAdminOffInfoFields(mainOff);
             } else {
@@ -233,7 +231,6 @@ public class SaleProcessor extends Processor implements Initializable {
             FileInputStream fileInputStream = new FileInputStream(((SaleProcessor)parentProcessor).offImageFile);
             Image image = new Image(fileInputStream);
             offImageRectangle.setFill(new ImagePattern(image));
-            System.out.println(((SaleProcessor)parentProcessor).isDefaultPicture);
             if(((SaleProcessor)parentProcessor).isDefaultPicture) {
                 offImageRectangle.setStrokeWidth(0);
                 deleteImageButton.setDisable(true);
@@ -458,14 +455,12 @@ public class SaleProcessor extends Processor implements Initializable {
         if(!isEditing) {
             Notification resultNotification = VendorControl.getController().addOff(off, imageFile);
             if (resultNotification == Notification.ADD_OFF && this.parentProcessor instanceof TableViewProcessor) {
-                //System.out.println(myStage);
                 ((TableViewProcessor) parentProcessor).updateTable();
                 ((TableViewProcessor) parentProcessor).updateSelectedItem();
                 closeSubStage(myStage, parentProcessor);
             }
             resultNotification.getAlert().show();
         } else {
-            System.out.println("Yeah You're Editing");
             Notification resultNotification = VendorControl.getController().editOff(off, imageFile);
             if (resultNotification == Notification.EDIT_OFF) {
                 ((TableViewProcessor) parentProcessor).updateTable();

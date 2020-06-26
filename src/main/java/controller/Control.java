@@ -175,6 +175,7 @@ public class Control {
         else {
             filter.minPrice = minPrice;
             filter.maxPrice = maxPrice;
+            System.out.println(filter.minPrice + " " + filter.maxPrice);
             return Notification.SET_PRICE_FILTERS;
         }
     }

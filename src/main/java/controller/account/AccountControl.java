@@ -33,7 +33,6 @@ public class AccountControl extends Control implements IOValidity {
 
     public Account getAccount() {
         try {
-            //System.out.println(AccountTable.getAccountByUsername(Control.getUsername()));
             return AccountTable.getAccountByUsername(Control.getUsername());
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,10 +72,6 @@ public class AccountControl extends Control implements IOValidity {
 
     public Notification editField(String fieldName, String newValue) {
         try {
-            /*if (AccountTable.getValueByField(Control.getUsername(), fieldName) != null &&
-                    AccountTable.getValueByField(Control.getUsername(), fieldName).equals(newValue))
-                return Notification.SAME_FIELD_ERROR;*/
-
             if(isNewValueValid(fieldName, newValue)) {
                 AccountTable.editField(Control.getUsername(), fieldName, newValue);
                 return Notification.EDIT_FIELD_SUCCESSFULLY;
@@ -149,7 +144,6 @@ public class AccountControl extends Control implements IOValidity {
             AccountTable.changeCredit(Control.getUsername(), money);
             return Notification.RISE_MONEY_SUCCESSFULLY;
         } catch (NumberFormatException e) {
-            System.out.println("Shit");
             return Notification.INVALID_ADDING_DOUBLE_MONEY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;

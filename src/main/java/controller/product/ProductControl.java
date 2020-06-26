@@ -399,7 +399,6 @@ public class ProductControl extends Control {
     private void filterProductsWithPrice(ArrayList<Product> products) {
         for (int i = 0; i < products.size(); i++) {
             double productPrice = getProductPriceForVendor(products.get(i));
-
             if(!(productPrice <= getFinishPeriod() && productPrice >= getStartPeriod())) {
                 products.remove(products.get(i));
                 i--;
@@ -412,7 +411,7 @@ public class ProductControl extends Control {
             double productPriceForVendor = 0;
 
             if(OffTable.isThereProductInOff(product.getID())) {
-                productPriceForVendor = OffTable.getOffPercentByProductID(product.getID());
+                productPriceForVendor = product.getOffPrice();
             } else {
              productPriceForVendor = product.getPrice();
             }
@@ -667,9 +666,14 @@ public class ProductControl extends Control {
 
             if(Control.getType() != null && Control.getType().equals("Customer")) {
                 for (Comment comment : ProductTable.getAllLoggedInUserComment(Control.getUsername(), productId)) {
-                    comment.setCustomerUsername("*You*");           //Todo Hal Kendi
                     comment.setScore(getScore(comment));
                     productComments.add(comment);
+                }
+            }
+            if(Control.isLoggedIn()) {
+                for (Comment productComment : productComments) {
+                    if (Control.getUsername().equals(productComment.getCustomerUsername()))
+                        productComment.setCustomerUsername("**You**");
                 }
             }
         } catch (SQLException | ClassNotFoundException e) {
@@ -961,7 +965,6 @@ public class ProductControl extends Control {
     }
 
     public ArrayList<File> getProductNonEditedImageFiles(Product product) {
-//        System.out.println("HEllo");
         ArrayList<File> imageFiles = new ArrayList<>();
         for(int i = 0; i < getProductImagesNumberByID(product.getID()); ++i) {
             imageFiles.add(

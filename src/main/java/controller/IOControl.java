@@ -53,12 +53,8 @@ public class IOControl extends Control implements IOValidity {
                         if (Control.getType().equals("Customer") && AccountTable.didPeriodPass("Ya Zahra"))
                             AdminControl.getController().getGiftDiscount();
                         return Notification.LOGIN_SUCCESSFUL;
-                        /*Alert alert = new Alert(Alert.AlertType.INFORMATION, "You have Logged In Successfully", new ButtonType("Ok"));
-                        alert.setHeaderText("Logged In Successfully");
-                        return alert;*/
                     } else {
                         return Notification.USER_NOT_APPROVED;
-                        //Alert alert = new Alert(Alert.AlertType.ERROR, "User")
                     }
                 } else
                     return Notification.WRONG_PASSWORD;
