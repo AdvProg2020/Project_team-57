@@ -72,7 +72,7 @@ public class TableViewProcessor<T> extends Processor {
     public JFXButton editOffButton;
     public JFXButton addNewOffButton;
     public JFXButton showLogProduct;
-    public Label LogDateLabel;
+    public Label logDateLabel;
     public Pane optionPane;
     public Circle imageCircle;
     public Label nameLabel;
@@ -460,7 +460,7 @@ public class TableViewProcessor<T> extends Processor {
             if(selectedItem != null) {
                 Log log = (Log)selectedItem;
                 java.util.Date date = new java.util.Date(log.getDate().getTime());
-                processor.LogDateLabel.setText(date.toString());
+                processor.logDateLabel.setText(date.toString());
                 processor.logInitialPrice.setText("" + log.getInitialPrice() + " $");
                 if(Control.getType() != null) {
                     logFinalPrice.setText((Control.getType().equals("Vendor")) ?
@@ -675,7 +675,7 @@ public class TableViewProcessor<T> extends Processor {
 
     private void terminateVendorSellLogOptions() {
         showLogProduct.setDisable(true);
-        LogDateLabel.setText("Log Date");
+        logDateLabel.setText("Log Date");
     }
 
     private void terminateOffOptions() {

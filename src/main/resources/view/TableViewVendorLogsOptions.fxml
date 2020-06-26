@@ -13,7 +13,7 @@
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2f999f" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="55.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2f999f" height="10.0" layoutX="175.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="55.0" />
-      <Label fx:id="LogDateLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="236.0" prefWidth="210.0" text="Log Date" textFill="WHITE">
+      <Label fx:id="logDateLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="236.0" prefWidth="210.0" text="Log Date" textFill="WHITE">
          <font>
             <Font name="Calibri" size="17.0" />
          </font>
