@@ -3,6 +3,7 @@ package controller.account;
 import controller.Control;
 import controller.product.ProductControl;
 import model.db.*;
+import model.existence.Account;
 import model.existence.Log;
 import model.existence.Off;
 import model.existence.Product;
@@ -520,6 +521,20 @@ public class VendorControl extends AccountControl{
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<Account> getProductBuyers() {
+        ArrayList<Account> customers = new ArrayList<>();
+        try {
+            for (String account : LogTable.getAllCustomerUsernamesForProduct(currentProduct)) {
+                customers.add(AccountTable.getAccountByUsername(account));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return customers;
     }
 
     public ArrayList<String> getProductBuyerUsernames() {
