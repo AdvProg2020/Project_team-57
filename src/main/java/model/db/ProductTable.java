@@ -373,5 +373,19 @@ public class ProductTable extends Database {
             currentFile.delete();
         }
     }
+
+    public static void removeAllUserComments(String username) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Comments WHERE CustomerUsername = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        preparedStatement.execute();
+    }
+
+    public static void removeAllUserScores(String username) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Scores WHERE CustomerUsername = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        preparedStatement.execute();
+    }
 }
 

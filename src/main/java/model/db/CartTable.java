@@ -134,4 +134,11 @@ public class CartTable extends Database{
         preparedStatement.setString(1, productId);
         preparedStatement.execute();
     }
+
+    public static void removeAllCustomerCartProducts(String username) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Carts WHERE CustomerUsername = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        preparedStatement.execute();
+    }
 }

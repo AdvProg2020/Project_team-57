@@ -1,14 +1,13 @@
 package controller.account;
 
 import controller.Control;
+import controller.product.ProductControl;
 import javafx.scene.image.Image;
-import model.db.AccountTable;
-import model.db.LogTable;
-import model.db.OffTable;
-import model.db.VendorTable;
+import model.db.*;
 import model.existence.Account;
 import model.existence.Log;
 import model.existence.Off;
+import model.existence.Product;
 import notification.Notification;
 
 import java.io.File;
@@ -238,6 +237,26 @@ public class AccountControl extends Control implements IOValidity {
         try {
             AccountTable.deleteUserWithUsername(username);
             AccountTable.deleteProfileImage(username);
+            if(getAccountByUsername(username).getType().equals("Vendor")) {
+                for (Product product : VendorTable.getProductsWithUsername(username)) {
+                    ProductControl.getController().removeProductById(product.getID());
+                }
+                for (Off vendorOff : OffTable.getVendorOffs(username)) {
+                    String ID = vendorOff.getOffID();
+                    OffTable.removeOffByID(ID);
+                    if(ProductControl.getController().doesOffHaveImage(ID))
+                        OffTable.removeOffImage(ID);
+                    if(ProductControl.getController().isOffEditing(ID)) {
+                        OffTable.removeEditingOff(ID);
+                        if(ProductControl.getController().doesEditingOffHaveImage(ID))
+                            OffTable.removeEditingOffImage(ID);
+                    }
+                }
+            } else {
+                ProductTable.removeAllUserComments(username);
+                ProductTable.removeAllUserScores(username);
+                CartTable.removeAllCustomerCartProducts(username);
+            }
             return Notification.DELETE_USER;
         } catch (SQLException e) {
            return Notification.UNKNOWN_ERROR;
