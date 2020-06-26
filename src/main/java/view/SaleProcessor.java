@@ -457,7 +457,7 @@ public class SaleProcessor extends Processor implements Initializable {
         File imageFile = (isDefaultPicture ? null : offImageFile);
         if(!isEditing) {
             Notification resultNotification = VendorControl.getController().addOff(off, imageFile);
-            if (resultNotification == Notification.ADD_OFF) {
+            if (resultNotification == Notification.ADD_OFF && this.parentProcessor instanceof TableViewProcessor) {
                 //System.out.println(myStage);
                 ((TableViewProcessor) parentProcessor).updateTable();
                 ((TableViewProcessor) parentProcessor).updateSelectedItem();

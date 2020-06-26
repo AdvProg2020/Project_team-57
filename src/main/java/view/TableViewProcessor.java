@@ -128,19 +128,20 @@ public class TableViewProcessor<T> extends Processor {
     public void initProcessor(TableViewType tableViewType) {
         this.tableViewType = tableViewType;
         setTableViewModifiedFeatures();
-
         initColumns();
         updateTable();
         initOptions();
     }
 
     private void setTableViewModifiedFeatures() {
-        this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                selectedItem = newSelection;
-                updateSelectedItem();
-            }
-        });
+        if(tableViewType != TableViewType.DISCOUNT_CUSTOMERS) {
+            this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+                if (newSelection != null) {
+                    selectedItem = newSelection;
+                    updateSelectedItem();
+                }
+            });
+        }
         this.tableView.widthProperty().addListener(new ChangeListener<Number>()
         {
             @Override
@@ -565,11 +566,7 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private Pane initDiscountCustomersOptions() {
-        try {
-            tableView.getSelectionModel().clearSelection();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        tableView.getSelectionModel().clearSelection();
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewDiscountCustomersOption.fxml"));
         try {
             Pane root = loader.load();
@@ -717,17 +714,13 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void updateSelectedItem() {
-//        System.out.println(selectedItem);
-        if(tableViewType != TableViewType.DISCOUNT_CUSTOMERS) {
             if (tableView.getSelectionModel().getSelectedItem() != null)
                 selectedItem = tableView.getSelectionModel().getSelectedItem();
             else
                 tableView.getSelectionModel().selectFirst();
-        } else {
-            System.out.println("Lucky");
-        }
 
-        initOptions();
+            initOptions();
+//        System.out.println(selectedItem);
     }
 
     private void setOffPicture(Rectangle offImageRectangle, Off off) {

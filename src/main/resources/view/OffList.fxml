@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="845.0" style="-fx-background-color: #eceff1;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.OffsProcessor">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="820.0" prefWidth="845.0" style="-fx-background-color: #eceff1;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.OffsProcessor">
    <children>
       <HBox prefHeight="110.0" prefWidth="845.0" style="-fx-background-color: #b0bec5;">
          <children>
@@ -37,7 +37,7 @@
             </Pane>
             <Pane prefHeight="110.0" prefWidth="432.0">
                <children>
-                  <ImageView fitHeight="134.0" fitWidth="157.0" layoutX="155.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="134.0" fitWidth="157.0" layoutX="158.0" layoutY="-12.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/Icons/ProductsMenu/products%20icon.png" />
                      </image>
@@ -62,7 +62,7 @@
             </Pane>
          </children>
       </HBox>
-      <GridPane fx:id="gridPane" alignment="CENTER" gridLinesVisible="true" hgap="20.0" layoutX="23.0" layoutY="141.0" prefHeight="618.0" prefWidth="800.0" style="-fx-background-color: #eceff1;" vgap="10.0">
+      <GridPane fx:id="gridPane" alignment="CENTER" gridLinesVisible="true" hgap="20.0" layoutX="23.0" layoutY="120.0" prefHeight="646.0" prefWidth="800.0" style="-fx-background-color: #eceff1;" vgap="10.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="252.0" minWidth="10.0" prefWidth="251.0" />
           <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" maxWidth="252.0" minWidth="10.0" prefWidth="251.0" />
@@ -73,9 +73,9 @@
           <RowConstraints maxHeight="455.0" minHeight="10.0" prefHeight="304.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <Pane layoutY="751.0" prefHeight="49.0" prefWidth="800.0">
+      <Pane layoutY="771.0" prefHeight="49.0" prefWidth="845.0">
          <children>
-            <ImageView fx:id="previousPage" fitHeight="37.0" fitWidth="31.0" layoutX="323.0" layoutY="9.0" onMouseClicked="#showPreviousPage" opacity="0.5" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="previousPage" fitHeight="37.0" fitWidth="31.0" layoutX="339.0" layoutY="9.0" onMouseClicked="#showPreviousPage" opacity="0.5" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/Icons/ProductsMenu/previous%20page%20icon.png" />
                </image>
@@ -83,12 +83,12 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <Label fx:id="pageNumberLabel" layoutX="369.0" layoutY="14.0" text="Page 0 of 0">
+            <Label fx:id="pageNumberLabel" layoutX="385.0" layoutY="14.0" text="Page 0 of 0">
                <font>
                   <Font name="Calibri" size="17.0" />
                </font>
             </Label>
-            <ImageView fx:id="nextPage" fitHeight="37.0" fitWidth="31.0" layoutX="459.0" layoutY="9.0" onMouseClicked="#showNextPage" opacity="0.5" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="nextPage" fitHeight="37.0" fitWidth="31.0" layoutX="475.0" layoutY="9.0" onMouseClicked="#showNextPage" opacity="0.5" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/Icons/ProductsMenu/next%20page%20icon.png" />
                </image>
