@@ -525,6 +525,8 @@ public class ProductProcessor extends Processor {
                 case VENDOR_EDIT:
                     generalFieldProcessor.showProductGeneralErrors(productNotifications);
                     generalFieldProcessor.setGeneralTextFields(product);
+                    product.setOnSale(this.product.isOnSale());
+                    product.setOffPrice((1 - this.product.getOffPercent() / 100) * product.getPrice());
                     specialFieldProcessor.setPrices(product);
                     break;
             }
@@ -1100,10 +1102,16 @@ public class ProductProcessor extends Processor {
     }
 
     private void setPrices(Product product) {
+        System.out.println(product);
+        System.out.println(product.isOnSale());
         price.setText(getSmoothDoubleFormat(product.getPrice()));
         setDoubleFields(price, Double.MAX_VALUE);
 
         if(product.isOnSale()) {
+            if(!pricePane.getChildren().contains(offPrice)) {
+                System.out.println("Fuck");
+                pricePane.getChildren().addAll(offArrow, offPrice);
+            }
             //Todo Set Price StrikeThrough
             offPrice.setText(getSmoothDoubleFormat(product.getOffPrice()));
             offPrice.setEditable(false);
