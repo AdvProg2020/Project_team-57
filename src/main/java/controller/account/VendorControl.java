@@ -605,8 +605,6 @@ public class VendorControl extends AccountControl{
             return Notification.OUT_BOUND_OF_PERCENT;
         if(off.getProductIDs() == null || off.getProductIDs().size() == 0)
             return Notification.EMPTY_OFF_PRODUCTS;
-        if(off.getStartDate().compareTo(new Date(System.currentTimeMillis())) < 0)
-            return Notification.START_DATE_BEFORE_NOW;
         if(off.getStartDate().compareTo(off.getFinishDate()) > -1)
             return Notification.START_DATE_AFTER_FINISH_DATE;
         try {
