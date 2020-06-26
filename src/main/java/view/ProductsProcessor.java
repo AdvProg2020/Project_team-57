@@ -454,8 +454,9 @@ public class ProductsProcessor extends Processor{
                     processor.initProcessor(productControl.getProductById(product.getID()), ProductProcessor.ProductMenuType.ADMIN);
                     Stage stage = new Stage();
                     stage.setScene(new Scene(root));
-                    stage.setTitle(product.getName());
+                    stage.setTitle(product.getName() + " Previous Menu");
                     processor.setMyStage(stage);
+                    parentProcessor.addSubStage(stage);
                     stage.show();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -570,8 +571,11 @@ public class ProductsProcessor extends Processor{
                 processor.initProcessor(product, productMenuType);
                 Stage stage = new Stage();
                 stage.setScene(new Scene(root));
-                stage.setTitle(product.getName());
+                stage.setTitle(product.getName() + " Menu");
                 processor.setMyStage(stage);
+                System.out.println();
+                if(parentProcessor.parentProcessor != null)
+                    parentProcessor.parentProcessor.addSubStage(stage);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -669,6 +673,7 @@ public class ProductsProcessor extends Processor{
                 stage.setTitle("Add New Product");
                 addSubStage(stage);
                 processor.setMyStage(stage);
+                parentProcessor.addSubStage(stage);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -767,6 +772,10 @@ public class ProductsProcessor extends Processor{
     public void purchaseProducts(MouseEvent mouseEvent) {
         try {
             CustomerControl customerControl = CustomerControl.getController();
+            if(customerControl.getAllCartProducts().size() == 0) {
+                new Alert(Alert.AlertType.ERROR, "Your Cart Is Empty. At Some Products First Dude :/").show();
+                return;
+            }
             customerControl.setHasDiscount(selectedListCell != null);
 
             if(selectedListCell == null)

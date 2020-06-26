@@ -614,6 +614,7 @@ public class TableViewProcessor<T> extends Processor {
             Pane root = loader.load();
             TableViewProcessor processor = loader.getController();
             processor.setParentProcessor(this);
+            System.out.println("!!1!!: " + this);
             if(tableViewType != TableViewType.ADMINS) {
                 root.getChildren().remove(processor.addAdminButton);
             }
@@ -777,6 +778,9 @@ public class TableViewProcessor<T> extends Processor {
             newStage.getIcons().add(new Image(getClass().getResourceAsStream("Profile Icon.png")));
             newStage.setResizable(false);
             newStage.setTitle(selectedAccount.getUsername() + " Profile");
+            System.out.println("!!2!!: " + parentProcessor);
+            System.out.println("!!3!!: " + parentProcessor.parentProcessor);
+            parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -843,6 +847,7 @@ public class TableViewProcessor<T> extends Processor {
             processor.parentProcessor = this.parentProcessor;
             //System.out.println("Opening : " + processor);
             processor.setMyStage(newStage);
+            parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -861,7 +866,7 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void addNewDiscount(ActionEvent actionEvent) {
-        if(canOpenSubStage("Add New Discount", this)) {
+        if(canOpenSubStage("Add New Discount", parentProcessor)) {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("DiscountMenu.fxml"));
             try {
                 Parent root = loader.load();
@@ -873,8 +878,8 @@ public class TableViewProcessor<T> extends Processor {
                 newStage.setTitle("Add New Discount");
                 newStage.setResizable(false);
                 processor.parentProcessor = this.parentProcessor;
-                this.parentProcessor = this;
-                addSubStage(newStage);
+                parentProcessor.addSubStage(newStage);
+                parentProcessor.parentProcessor.addSubStage(newStage);
                 processor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
@@ -905,6 +910,7 @@ public class TableViewProcessor<T> extends Processor {
             newStage.getIcons().add(new Image(getClass().getResourceAsStream("Profile Icon.png")));
             newStage.setResizable(false);
             newStage.setTitle(commenterAccount.getUsername() + " Profile");
+            parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -924,6 +930,7 @@ public class TableViewProcessor<T> extends Processor {
             stage.setScene(new Scene(root));
             stage.setTitle(product.getName() + " Menu");
             productProcessor.setMyStage(stage);
+            parentProcessor.parentProcessor.addSubStage(stage);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -995,6 +1002,7 @@ public class TableViewProcessor<T> extends Processor {
             newStage.setTitle("Show Off " + off.getOffName());
             newStage.setResizable(false);
             processor.setMyStage(newStage);
+            parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -1042,6 +1050,7 @@ public class TableViewProcessor<T> extends Processor {
             newStage.setTitle("Show Off " + off.getOffName());
             newStage.setResizable(false);
             processor.setMyStage(newStage);
+            this.parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -1055,7 +1064,7 @@ public class TableViewProcessor<T> extends Processor {
                 FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
                 Parent root = loader.load();
                 SaleProcessor processor = loader.getController();
-                processor.setParentProcessor(parentProcessor.parentProcessor);
+                processor.setParentProcessor(parentProcessor);
                 processor.offInfoPaneMouseClick(null);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
@@ -1109,6 +1118,7 @@ public class TableViewProcessor<T> extends Processor {
             newStage.setTitle("Show Off " + off.getOffName());
             newStage.setResizable(false);
             processor.setMyStage(newStage);
+            parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -1126,6 +1136,7 @@ public class TableViewProcessor<T> extends Processor {
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Log Products");
+            this.parentProcessor.parentProcessor.addSubStage(stage);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -1151,6 +1162,7 @@ public class TableViewProcessor<T> extends Processor {
             newStage.setResizable(false);
             processor.parentProcessor = this.parentProcessor.parentProcessor;
             processor.setMyStage(newStage);
+            this.parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();

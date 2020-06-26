@@ -48,7 +48,7 @@ public abstract class Processor {
         this.subStages.add(subStage);
         if(parentProcessor == null){
             subStage.setOnCloseRequest(event -> {
-//                System.out.println("HE");
+//                System.out.println("********HE**********");
                 this.removeSubStage(subStage);
             });
         }
@@ -64,6 +64,8 @@ public abstract class Processor {
     protected boolean canOpenSubStage(String title, Processor processor) {
         for (Stage subStage : processor.getSubStages()) {
             if(subStage.getTitle().equals(title)){
+                subStage.setAlwaysOnTop(true);
+                subStage.setAlwaysOnTop(false);
                 return false;
             }
         }

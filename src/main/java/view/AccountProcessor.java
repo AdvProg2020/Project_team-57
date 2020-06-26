@@ -23,6 +23,9 @@ public class AccountProcessor extends Processor{
         Optional<ButtonType> buttonType =
                 new Alert(Alert.AlertType.CONFIRMATION, "Are You Sure About Logging Out?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
+            subStages.forEach(stage -> {
+                stage.close();
+            });
             Control.logOut();
             backToMainMenu();
         }
@@ -43,6 +46,14 @@ public class AccountProcessor extends Processor{
 
     public void showProfileMenu() {
         try {
+            if(Control.getType().equals("Admin")) {
+                System.out.println(parentProcessor);
+                if (!canOpenSubStage(Control.getUsername() + " Profile", parentProcessor))
+                    return;
+            }
+            else
+                if(!canOpenSubStage(Control.getUsername() + " Profile", this))
+                return;
             AccountControl accountControl = AccountControl.getController();
             ProfileProcessor.setAccount(accountControl.getAccount());
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileMenu.fxml"));
@@ -52,6 +63,10 @@ public class AccountProcessor extends Processor{
             newStage.getIcons().add(new Image(getClass().getResourceAsStream("Profile Icon.png")));
             newStage.setResizable(false);
             newStage.setTitle(Control.getUsername() + " Profile");
+            if(Control.getType().equals("Admin"))
+                parentProcessor.addSubStage(newStage);
+            else
+                addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
