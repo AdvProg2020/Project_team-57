@@ -276,6 +276,34 @@ public class ProductsProcessor extends Processor{
         ((ProductsProcessor)parentProcessor).filteredCategoriesVBox.getChildren().remove(mainFilterPane);
     }
 
+    public void showCartProducts(ActionEvent actionEvent) {
+        if(controller.Control.getType() != null && !controller.Control.getType().equals("Customer")) {
+            new Alert(Alert.AlertType.ERROR, "Sorry. Only Customers Can Use This Option Of The Market!").show();
+            return;
+        }
+        if(canOpenSubStage(controller.Control.getUsername() + " Cart", this))
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerCartProducts.fxml"));
+                Parent root = loader.load();
+                ProductsProcessor processor = loader.getController();
+                if(!(controller.Control.getType() != null && controller.Control.getType().equals("Customer")))
+                    processor.userProductsOptionPane.getChildren().
+                        removeAll(processor.discountCodesListView, processor.useDiscountCodeToggleButton);
+                processor.parentProcessor = this;
+                processor.initProcessor(ProductsProcessor.ProductsMenuType.CUSTOMER_CART);
+                Stage stage = new Stage();
+                stage.getIcons().add(new Image("Images/Icons/cart (2).png"));
+                stage.setTitle(controller.Control.getUsername() + " Cart");
+                stage.setScene(new Scene(root));
+                stage.setResizable(false);
+                this.subStages.add(stage);
+                processor.setMyStage(stage);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
+
     //initProductsScrollPane
     public void initProductsPage() {
         switch (menuType) {
@@ -286,7 +314,10 @@ public class ProductsProcessor extends Processor{
                 allProducts = VendorControl.getController().getAllProducts();
                 break;
             case CUSTOMER_CART:
-                allProducts = CustomerControl.getController().getAllCartProducts();
+                if(controller.Control.getType() != null && controller.Control.getType().equals("Customer") && controller.Control.isLoggedIn())
+                    allProducts = CustomerControl.getController().getAllCartProducts();
+                else
+                    allProducts = CustomerControl.getController().getTempCartProducts();
                 break;
             case ADMIN_PRODUCT_REQUESTS:
                 allProducts = AdminControl.getController().getAllNotApprovedProducts();
@@ -799,29 +830,50 @@ public class ProductsProcessor extends Processor{
     //Purchase Part
     public void purchaseProducts(MouseEvent mouseEvent) {
         try {
-            CustomerControl customerControl = CustomerControl.getController();
-            if(customerControl.getAllCartProducts().size() == 0) {
-                new Alert(Alert.AlertType.ERROR, "Your Cart Is Empty. At Some Products First Dude :/").show();
-                return;
-            }
-            customerControl.setHasDiscount(selectedListCell != null);
-
-            if(selectedListCell == null)
-                customerControl.setDiscount(null);
+            if(controller.Control.isLoggedIn() && controller.Control.getType() != null && controller.Control.getType().equals("Customer"))
+                purchase();
             else
-                customerControl.setDiscount(selectedListCell.getItem().getID());
-
-            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Purchase.fxml"));
-            Parent root = fxmlLoader.load();
-            CustomerProfileProcessor customerProfileProcessor = fxmlLoader.getController();
-            customerProfileProcessor.parentProcessor = parentProcessor;
-            customerProfileProcessor.setMyStage(myStage);
-            myStage.setScene(new Scene(root));
-            myStage.setTitle("Purchase Menu");
+                openSignInMenu();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void openSignInMenu() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("SignInMenu.fxml"));
+        Parent root = loader.load();
+        WelcomeProcessor signInProcessor = loader.getController();
+        signInProcessor.setParentProcessor(this);
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(root));
+        signInProcessor.setMyStage(newStage);
+        newStage.getIcons().add(new Image(getClass().getResourceAsStream("Login Icon.png")));
+        newStage.setResizable(false);
+        newStage.setTitle("Sign In");
+        newStage.show();
+    }
+
+    private void purchase() throws IOException {
+        CustomerControl customerControl = CustomerControl.getController();
+        if (customerControl.getAllCartProducts().size() == 0) {
+            new Alert(Alert.AlertType.ERROR, "Your Cart Is Empty. At Some Products First Dude :/").show();
+            return;
+        }
+        customerControl.setHasDiscount(selectedListCell != null);
+
+        if (selectedListCell == null)
+            customerControl.setDiscount(null);
+        else
+            customerControl.setDiscount(selectedListCell.getItem().getID());
+
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Purchase.fxml"));
+        Parent root = fxmlLoader.load();
+        CustomerProfileProcessor customerProfileProcessor = fxmlLoader.getController();
+        customerProfileProcessor.parentProcessor = parentProcessor;
+        customerProfileProcessor.setMyStage(myStage);
+        myStage.setScene(new Scene(root));
+        myStage.setTitle("Purchase Menu");
     }
 
     //Discount Part

@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import controller.Control;
 import controller.IOControl;
+import controller.product.ProductControl;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
@@ -136,6 +137,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
     }
 
     public void openProductsMenu(ActionEvent actionEvent) {
+        ProductControl.getController().setOffListic(false);
         try {
             Parent root;
             Main.getStage().getIcons().remove(0);
@@ -176,8 +178,13 @@ public class WelcomeProcessor extends Processor implements Initializable {
             Alert alert = ioControl.login(new Account(userNameField.getText(), passwordField.getText())).getAlert();
             Optional<ButtonType> optionalButtonType = alert.showAndWait();
             if(optionalButtonType.get() == ButtonType.OK) {
-                if(alert.getHeaderText().equals("Congratulations"))
-                    myStage.hide();
+                if(alert.getHeaderText().equals("Congratulations")) {
+                    if(parentProcessor != null && parentProcessor instanceof ProductsProcessor) {
+                        ((ProductsProcessor) parentProcessor).myStage.close();
+                        ((ProductsProcessor)((ProductsProcessor) parentProcessor).parentProcessor).showCartProducts(null);
+                    }
+                    myStage.close();
+                }
                 if(alert.getHeaderText().contains("Username"))
                     userNameField.setStyle(errorTextFieldStyle);
                 if(alert.getHeaderText().contains("Password"))
@@ -195,6 +202,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
             root1 = loader.load();
             WelcomeProcessor signUpProcessor = loader.getController();
             signUpProcessor.setMyStage(myStage);
+            signUpProcessor.setParentProcessor(parentProcessor);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -318,6 +326,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
             root1 = loader.load();
             WelcomeProcessor signInProcessor = loader.getController();
             signInProcessor.setMyStage(myStage);
+            signInProcessor.setParentProcessor(parentProcessor);
         } catch (IOException e) {
             e.printStackTrace();
         }

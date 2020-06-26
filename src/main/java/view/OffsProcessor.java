@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class OffListProcessor implements Initializable {
+public class OffsProcessor implements Initializable {
     private static final int PRODUCTS_NUMBER_PER_PAGE = 6;
 
     private final CustomerControl customerControl = CustomerControl.getController();
@@ -81,7 +81,7 @@ public class OffListProcessor implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffPane.fxml"));
             Pane offPane = loader.load();
-            OffListProcessor processor = loader.getController();
+            OffsProcessor processor = loader.getController();
             processor.offImage.setImage(productControl.getOffImageByID(off.getOffID()));
             processor.offPercent.setText(off.getOffPercent() + "%");
             processor.offName.setStyle("-fx-font-family: Calibri; -fx-text-fill: #330939; -fx-font-size: 18px;");
@@ -96,7 +96,22 @@ public class OffListProcessor implements Initializable {
                 processor.offImage.setOpacity(1);
                 offPane.setStyle("-fx-cursor: inherit; -fx-background-color: white; -fx-background-radius: 10px");
             });
-            offPane.setOnMouseClicked(event -> {});
+            offPane.setOnMouseClicked(event -> {
+                productControl.setOffListic(true);
+                productControl.setListicOffID(off.getOffID());
+                try {
+                    Parent root;
+                    Main.getStage().getIcons().remove(0);
+                    Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Market Logo.png")));
+                    FXMLLoader newLoader = new FXMLLoader(Main.class.getResource("ProductsMenu.fxml"));
+                    root = newLoader.load();
+                    ProductsProcessor productsProcessor = newLoader.getController();
+                    productsProcessor.initProcessor(ProductsProcessor.ProductsMenuType.MAIN_PRODUCTS);
+                    Main.setScene( "Products Menu", root);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
             return offPane;
         } catch (IOException e) {
             e.printStackTrace();

@@ -73,7 +73,7 @@
                </children></Pane>
             <Pane prefHeight="100.0" prefWidth="287.0">
                <children>
-                  <JFXButton buttonType="RAISED" layoutX="194.0" layoutY="26.0" prefHeight="50.0" prefWidth="50.0" styleClass="Up_Button" text=" " />
+                  <JFXButton buttonType="RAISED" layoutX="194.0" layoutY="26.0" onAction="#showCartProducts" prefHeight="50.0" prefWidth="50.0" styleClass="Up_Button" text=" " />
                   <JFXButton alignment="CENTER_RIGHT" buttonType="RAISED" layoutX="26.0" layoutY="24.0" onAction="#openAccountMenu" prefHeight="55.0" prefWidth="160.0" style="-fx-background-radius: 10 10 10 10;" styleClass="Up_Button" text="Account Menu">
                      <font>
                         <Font name="Calibri" size="17.0" />

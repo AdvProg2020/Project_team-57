@@ -236,9 +236,9 @@ public class CustomerControl extends AccountControl{
 
     public Notification removeProductFromCartByID(String id) {
         try {
-            if(CartTable.isThereCartProductForUsername(Control.getUsername(), id))
+            if(CartTable.isThereCartProductForUsername(getUserNameForCart(), id))
             {
-                CartTable.deleteCartProduct(Control.getUsername(), id);
+                CartTable.deleteCartProduct(getUserNameForCart(), id);
                 return Notification.CART_PRODUCT_REMOVED;
             }
             return Notification.NOT_YOUR_CART_PRODUCT;
@@ -675,7 +675,7 @@ public class CustomerControl extends AccountControl{
     public double getTotalPriceWithoutDiscount() {
         double offPrice = 0;
         try {
-            for (Product product : CartTable.getAllCartWithUsername(Control.getUsername())) {
+            for (Product product : CartTable.getAllCartWithUsername(getUserNameForCart())) {
                 System.out.println("Product : " + product.getName() + " " + product.getPrice());
                 if (OffTable.isThereProductInOff(product.getID())) {
                     offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent() / 100))
@@ -716,4 +716,14 @@ public class CustomerControl extends AccountControl{
         return null;
     }
 
+    public ArrayList<Product> getTempCartProducts() {
+        try {
+            return CartTable.getAllCartWithUsername("temp");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 }
