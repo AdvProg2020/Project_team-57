@@ -175,16 +175,11 @@ public class ProductProcessor extends Processor {
         this.menuType = productMenuType;
         this.product = product;
         subProcessors = new ArrayList<>();
-        initPanesThroughMainPane();
-    }
-
-    private void initPanesThroughMainPane() {
         initImagePanel();
         //sep
         mainPane.setLeft(getInitGeneralInfoPane(product));
         initCommentsPane();
         initSpecialPane();
-        initPanesThroughMainPane();
     }
 
     public void initComparingProcessor(Product firstProduct, Product secondProduct) {
@@ -218,6 +213,12 @@ public class ProductProcessor extends Processor {
         return pane;
     }
 
+    private ScrollPane getScrollPaneWithTheseNodesAndDimensions(double width, double height, Node node) {
+        ScrollPane scrollPane = new ScrollPane(node);
+        scrollPane.setPrefWidth(width);
+        scrollPane.setPrefHeight(height);
+        return scrollPane;
+    }
     //ImagePane
     private void initImagePanel() {
         try {
