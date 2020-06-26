@@ -624,7 +624,7 @@ public class ProductProcessor extends Processor {
             switch (menuType) {
                 case COMPARING_PRODUCTS:
                     if(product.isOnSale()) {
-                        offPrice.setText(Double.toString(product.getOffPrice()));
+                        offPrice.setText(getSmoothDoubleFormat(product.getOffPrice()));
                     } else {
                         generalPane.getChildren().removeAll(offArrow, offPrice);
                     }
@@ -657,7 +657,7 @@ public class ProductProcessor extends Processor {
             descriptionTextArea.setText(product.getDescription());
 
             if(menuType == ProductMenuType.COMPARING_PRODUCTS)
-                priceTextField.setText(Double.toString(product.getPrice()));
+                priceTextField.setText(getSmoothDoubleFormat(product.getPrice()));
 
             if (menuType != ProductMenuType.VENDOR_EDIT)
                 disableEditingGeneralFields();
@@ -810,7 +810,7 @@ public class ProductProcessor extends Processor {
                 countLabel.setLayoutX(countLabel.getLayoutX() - 15);
             }
 
-            countTextFieldClone.setText(Double.toString(product.getAmount()));
+            countTextFieldClone.setText(getSmoothDoubleFormat(product.getAmount()));
             setDoubleFields(countTextFieldClone, Double.MAX_VALUE);
         }
     }
@@ -949,7 +949,7 @@ public class ProductProcessor extends Processor {
             case VENDOR_EDIT_UNAPPROVED:
                 specialImages.getChildren().removeAll(tickImage, buyersImage);
                 specialImages.setLayoutX(specialImages.getLayoutX() + 80);
-                price.setText(Double.toString(product.getPrice()));
+                price.setText(getSmoothDoubleFormat(product.getPrice()));
                 price.setEditable(false);
                 pricePane.getChildren().removeAll(offArrow, offPrice);
                 specialPane.getChildren().removeAll(sellerPane, statusPane);
@@ -1022,7 +1022,7 @@ public class ProductProcessor extends Processor {
         }
 
         if(product.isOnSale()) {
-            offPrice.setText(Double.toString(product.getOffPrice()));
+            offPrice.setText(getSmoothDoubleFormat(product.getOffPrice()));
             offPrice.setEditable(false);
         }
 
@@ -1070,12 +1070,12 @@ public class ProductProcessor extends Processor {
     }
 
     private void setPrices(Product product) {
-        price.setText(Double.toString(product.getPrice()));
+        price.setText(getSmoothDoubleFormat(product.getPrice()));
         setDoubleFields(price, Double.MAX_VALUE);
 
         if(product.isOnSale()) {
             //Todo Set Price StrikeThrough
-            offPrice.setText(Double.toString(product.getOffPrice()));
+            offPrice.setText(getSmoothDoubleFormat(product.getOffPrice()));
             offPrice.setEditable(false);
 //            offPrice.setDisable(true);
             setTheCommunicationOfPrices();
@@ -1097,7 +1097,7 @@ public class ProductProcessor extends Processor {
                 offPrice.setText("");
             } else {
                 double newOffPrice = (1.0 - product.getOffPercent() / 100) * Double.parseDouble(newValue);
-                offPrice.setText(Double.toString(newOffPrice));
+                offPrice.setText(getSmoothDoubleFormat(newOffPrice));
             }
 
             offPrice.setDisable(true);
@@ -1113,13 +1113,13 @@ public class ProductProcessor extends Processor {
                 if(product.isCountable()) {
                     cartCount.setText(Integer.toString(cartProduct.getCount()));
                 } else {
-                    cartCount.setText(Double.toString(cartProduct.getAmount()));
+                    cartCount.setText(getDoubleFormat(cartProduct.getAmount()));
                 }
                 break;
             case PRODUCTS_CUSTOMER:
             case PRODUCTS:
                 if(!product.isCountable())
-                    cartCount.setText(Double.toString(Math.min(product.getAmount(), 0.2)));
+                    cartCount.setText(getDoubleFormat(Math.min(product.getAmount(), 0.2)));
 
         }
     }
@@ -1190,9 +1190,9 @@ public class ProductProcessor extends Processor {
 
         if(previousCartAmount < product.getAmount()) {
             double nextProductAmount = product.getAmount() - previousCartAmount > 0.2 ? previousCartAmount + 0.2 : product.getAmount();
-            DecimalFormat doubleFormatter = new DecimalFormat("#.#");
-            doubleFormatter.setRoundingMode(RoundingMode.HALF_UP);
-            cartCount.setText(doubleFormatter.format(nextProductAmount));
+//            DecimalFormat doubleFormatter = new DecimalFormat("#.#");
+//            doubleFormatter.setRoundingMode(RoundingMode.HALF_UP);
+            cartCount.setText(getDoubleFormat(nextProductAmount));
         }
     }
 
@@ -1201,7 +1201,8 @@ public class ProductProcessor extends Processor {
 
         //Todo Check
         if(previousCartAmount > 0.2)
-            cartCount.setText(Double.toString((Math.ceil(previousCartAmount * 5) - 1) / 5));
+            cartCount.setText(getDoubleFormat((Math.ceil(previousCartAmount * 5) - 1) / 5));
+//            cartCount.setText(Double.toString((Math.ceil(previousCartAmount * 5) - 1) / 5));
 
     }
 
@@ -1255,6 +1256,18 @@ public class ProductProcessor extends Processor {
         if(productNotifications.contains(Notification.EMPTY_PRODUCT_PRICE)) {
             price.setStyle(errorTextFieldStyle);
         }
+    }
+
+    private String getDoubleFormat(double number) {
+        DecimalFormat doubleFormatter = new DecimalFormat("#.#");
+        doubleFormatter.setRoundingMode(RoundingMode.HALF_UP);
+        return doubleFormatter.format(number);
+    }
+
+    private String getSmoothDoubleFormat(double number) {
+        DecimalFormat doubleFormatter = new DecimalFormat("#.####");
+        doubleFormatter.setRoundingMode(RoundingMode.HALF_UP);
+        return doubleFormatter.format(number);
     }
 
 
