@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="230.0" style="-fx-background-radius: 10 10 10 10; -fx-background-color: #ffffff;" styleClass="product_pane" stylesheets="@../CSS%20files/AdminMenuButtons.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductsProcessor">
+   <children>
+      <Label fx:id="productNameLabel" layoutX="23.0" layoutY="199.0" text="Samsung Galaxy A30">
+         <font>
+            <Font name="Calibri" size="16.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="availableImage" fitHeight="24.0" fitWidth="24.0" layoutX="14.0" layoutY="264.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/ProductsMenu/available.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="availableLabel" layoutX="42.0" layoutY="266.0" text="Available" />
+      <StackPane layoutX="23.0" layoutY="14.0" prefHeight="185.0" prefWidth="185.0" style="-fx-background-radius: 10 10 10 10;">
+         <children>
+            <Rectangle fx:id="productImage" arcHeight="25.0" arcWidth="25.0" fill="#a3a7ab" height="185.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="185.0" />
+         </children>
+      </StackPane>
+      <JFXButton fx:id="removeFromCartButton" layoutX="198.0" layoutY="264.0" prefHeight="26.0" prefWidth="20.0" style="-fx-background-radius: 5 5 5 5;" styleClass="inside_product_pane_button" text=" ">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </JFXButton>
+      <ImageView fx:id="previousPageImageView" disable="true" fitHeight="28.0" fitWidth="28.0" layoutX="194.0" layoutY="263.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/ProductsMenu/delete.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="oldPriceLabel" layoutX="21.0" layoutY="231.0" text="250000$" />
+      <Label fx:id="newPriceLabel" layoutX="98.0" layoutY="231.0" text="190000$" />
+      <ImageView fx:id="inOffImage" fitHeight="40.0" fitWidth="40.0" layoutX="175.0" layoutY="208.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/ProductsMenu/off%20icon.png" />
+         </image>
+      </ImageView>
+   </children>
+</Pane>

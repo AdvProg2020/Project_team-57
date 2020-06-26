@@ -234,7 +234,7 @@ public class CustomerControl extends AccountControl{
         return totalPrice;
     }
 
-    public Notification removeFromCartByID(String id) {
+    public Notification removeProductFromCartByID(String id) {
         try {
             if(CartTable.isThereCartProductForUsername(Control.getUsername(), id))
             {
