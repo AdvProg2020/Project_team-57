@@ -77,20 +77,19 @@ public class ProductProcessor extends Processor {
 
     ///Single Product Menu///
 
+
     //Comparing Products Menu///
 
     //MainPart
     private Product firstProduct;
     private Product secondProduct;
 
-    public SplitPane imageSplitPane;
-    public SplitPane generalInfoSplitPane;
+    public BorderPane mainBorderPane;
+    public BorderPane imageBorderPane;
+    public BorderPane generalBorderPane;
 
-    private Pane firstInterfacePane;
     private Pane firstProductGeneralInfoPane;
-    private Pane middleInterfacePane;
     private Pane secondProductGeneralInfoPane;
-    private Pane secondInterfacePane;
 
     //GeneralPart
     public Pane firstGeneralPane;
@@ -193,17 +192,10 @@ public class ProductProcessor extends Processor {
     }
 
     private void initGeneralInfoPane() {
-        ObservableList<Node> generalInfoItems = generalInfoSplitPane.getItems();
-
         //Todo Empty Panes Dimensions
-        generalInfoItems.add(firstInterfacePane = getPaneWithTheseLayouts(67, 600));
-        generalInfoItems.add(getInitGeneralInfoPane(firstProduct));
-        generalInfoItems.add(middleInterfacePane = getPaneWithTheseLayouts(134, 600));
-        generalInfoItems.add(getInitGeneralInfoPane(secondProduct));
-        generalInfoItems.add(secondInterfacePane = getPaneWithTheseLayouts(67, 600));
+        generalBorderPane.setLeft(getScrollPaneWithTheseNodesAndDimensions(600, 500, getInitGeneralInfoPane(firstProduct)));
+        generalBorderPane.setRight(getScrollPaneWithTheseNodesAndDimensions(600, 500, getInitGeneralInfoPane(secondProduct)));
 
-        //Todo Checking Dimensions Of Down Split Pane
-        generalInfoSplitPane.setDividerPositions(0.0596, 0.4404, 0.5596, 0.9404);
     }
 
     private Pane getPaneWithTheseLayouts(double width, double height) {
@@ -217,6 +209,7 @@ public class ProductProcessor extends Processor {
         ScrollPane scrollPane = new ScrollPane(node);
         scrollPane.setPrefWidth(width);
         scrollPane.setPrefHeight(height);
+        scrollPane.setFitToWidth(true);
         return scrollPane;
     }
     //ImagePane
@@ -585,6 +578,11 @@ public class ProductProcessor extends Processor {
         } else {
             switch (menuType) {
                 case COMPARING_PRODUCTS:
+                    if(product.isOnSale()) {
+                        offPrice.setText(Double.toString(product.getOffPrice()));
+                    } else {
+                        generalPane.getChildren().removeAll(offArrow, offPrice);
+                    }
                 case PRODUCTS_CUSTOMER:
                 case PRODUCTS_VENDOR:
                 case PRODUCTS:
