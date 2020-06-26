@@ -156,7 +156,6 @@ public class ProductsProcessor extends Processor{
         initProductsPage();
     }
 
-
     private void initAdminProductRequestsMenu() {
         productsApprovalMap = new HashMap<>();
         initProductsPage();
@@ -765,7 +764,25 @@ public class ProductsProcessor extends Processor{
 
     //Purchase Part
     public void purchaseProducts(MouseEvent mouseEvent) {
-        //TODO
+        try {
+            CustomerControl customerControl = CustomerControl.getController();
+            customerControl.setHasDiscount(selectedListCell != null);
+
+            if(selectedListCell == null)
+                customerControl.setDiscount(null);
+            else
+                customerControl.setDiscount(selectedListCell.getItem().getID());
+
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Purchase.fxml"));
+            Parent root = fxmlLoader.load();
+            CustomerProfileProcessor customerProfileProcessor = fxmlLoader.getController();
+            customerProfileProcessor.setMyStage(myStage);
+            myStage.setScene(new Scene(root));
+            myStage.setTitle("Purchase Menu");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     //Discount Part
@@ -820,8 +837,10 @@ public class ProductsProcessor extends Processor{
         discountCodesListView.getItems().removeAll(discountCodesListView.getItems());
         discountCodesListView.setDisable(true);
 
-        if(selectedListCell != null)
+        if(selectedListCell != null) {
             selectedListCell.setStyle("");
+            selectedListCell = null;
+        }
     }
 
     private void showDiscountEffect(Discount discount) {

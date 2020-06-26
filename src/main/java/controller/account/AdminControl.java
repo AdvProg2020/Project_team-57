@@ -341,7 +341,7 @@ public class AdminControl extends AccountControl{
         else if(discount.getCode().length() > 16)
             notification = Notification.INVALID_DISCOUNT_CODE_LENGTH;
         else if(discount.getStartDate() == null)
-            notification = Notification.EMPTY_DISCOUNT_START_DATE;
+            discount.setStartDate(new Date(System.currentTimeMillis()));
         else if(discount.getFinishDate() == null)
             notification = Notification.EMPTY_DISCOUNT_FINISH_DATE;
         else if(discount.getStartDate().getTime() < System.currentTimeMillis())

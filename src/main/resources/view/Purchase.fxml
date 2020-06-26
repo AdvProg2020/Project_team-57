@@ -28,7 +28,7 @@
             <Font name="Segoe UI Semibold Italic" size="15.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="phoneNumber" layoutX="201.0" layoutY="181.0" promptText="09111111111" />
+      <JFXTextField fx:id="phoneNumber" layoutX="201.0" layoutY="181.0" promptText=" 09111111111" />
       <Label layoutX="71.0" layoutY="186.0" text="Phone number" textAlignment="RIGHT">
          <font>
             <Font name="Segoe UI Semibold Italic" size="15.0" />
@@ -39,7 +39,7 @@
             <Font name="Segoe UI Semibold Italic" size="15.0" />
          </font>
       </Label>
-      <JFXTextArea fx:id="address" layoutX="201.0" layoutY="243.0" prefHeight="89.0" prefWidth="168.0" promptText="province, city, street" />
+      <JFXTextArea fx:id="address" layoutX="201.0" layoutY="243.0" prefHeight="89.0" prefWidth="168.0" promptText=" province, city, street" />
       <JFXButton fx:id="purchase" buttonType="RAISED" layoutX="217.0" layoutY="429.0" onAction="#purchase" prefHeight="52.0" prefWidth="136.0" ripplerFill="#37474f" style="-fx-background-radius: 10;" stylesheets="@ProductMenu.css" text="Purchase">
          <font>
             <Font name="Serif Bold" size="19.0" />
@@ -53,6 +53,6 @@
             <Font name="Segoe UI Semibold Italic" size="15.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="postalCode" layoutX="194.0" layoutY="375.0" />
+      <JFXTextField fx:id="postalCode" layoutX="201.0" layoutY="375.0" promptText=" US : 85001" />
    </children>
 </Pane>

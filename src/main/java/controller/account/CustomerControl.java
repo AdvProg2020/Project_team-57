@@ -676,6 +676,7 @@ public class CustomerControl extends AccountControl{
         double offPrice = 0;
         try {
             for (Product product : CartTable.getAllCartWithUsername(Control.getUsername())) {
+                System.out.println("Product : " + product.getName() + " " + product.getPrice());
                 if (OffTable.isThereProductInOff(product.getID())) {
                     offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent() / 100))
                             * product.getPrice() * product.getCount();
@@ -686,6 +687,7 @@ public class CustomerControl extends AccountControl{
                     offPrice += product.getPrice() * product.getCount();
                 }
             }
+            System.out.println(offPrice);
             return offPrice;
         } catch (SQLException throwables) {
             throwables.printStackTrace();

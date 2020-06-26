@@ -168,6 +168,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             addSubStage(stage);
+            processor.setMyStage(stage);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
