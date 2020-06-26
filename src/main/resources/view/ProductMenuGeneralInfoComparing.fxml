@@ -65,5 +65,15 @@
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </JFXTextField>
+      <Label layoutX="147.0" layoutY="8.0" prefHeight="35.0" style="-fx-background-color: #ECEFF1; -fx-background-radius: 5;" text=" Features ">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </Label>
+      <JFXTextArea fx:id="categoryFeaturesTextArea" layoutX="223.0" layoutY="8.0" onMouseClicked="#textFieldMouseClicked" prefHeight="80.0" prefWidth="220.0" wrapText="true">
+         <font>
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </JFXTextArea>
    </children>
 </Pane>
