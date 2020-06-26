@@ -11,6 +11,7 @@ import controller.product.ProductControl;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
@@ -26,10 +27,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
-import model.db.CartTable;
 import model.existence.Comment;
 import model.existence.Product;
 import notification.Notification;
@@ -93,6 +92,9 @@ public class ProductProcessor extends Processor {
     private Pane secondProductGeneralInfoPane;
     private Pane secondInterfacePane;
 
+    //GeneralPart
+    public Pane firstGeneralPane;
+    public Pane secondGeneralPane;
 
     //Comparing Products Menu///
 
@@ -131,6 +133,7 @@ public class ProductProcessor extends Processor {
     public JFXTextField countTextField;
     public JFXTextField brandTextField;
     public JFXTextArea descriptionTextArea;
+    public JFXTextField priceTextField;
 
     //CommentsPane
     public VBox commentsVBox;
@@ -172,35 +175,51 @@ public class ProductProcessor extends Processor {
         this.menuType = productMenuType;
         this.product = product;
         subProcessors = new ArrayList<>();
+        initPanesThroughMainPane();
+    }
+
+    private void initPanesThroughMainPane() {
         initImagePanel();
         //sep
-        initGeneralInfoPane();
+        mainPane.setLeft(getInitGeneralInfoPane(product));
         initCommentsPane();
         initSpecialPane();
+        initPanesThroughMainPane();
     }
 
     public void initComparingProcessor(Product firstProduct, Product secondProduct) {
         menuType = ProductMenuType.COMPARING_PRODUCTS;
+        this.subProcessors = new ArrayList<>();
         this.firstProduct = firstProduct;
         this.secondProduct = secondProduct;
 
-        //Todo Initing Image Panel
-
-        initInterfacePanes();
-        initComparingGeneralInfoPane(firstProductGeneralInfoPane);
-        initComparingGeneralInfoPane(secondProductGeneralInfoPane);
+        //Todo Init Image Panel
+        initGeneralInfoPane();
         initGeneralInfoDividers();
     }
 
+    private void initGeneralInfoPane() {
+        ObservableList<Node> generalInfoItems = generalInfoSplitPane.getItems();
+
+        //Todo Empty Panes Dimensions
+        generalInfoItems.add(firstInterfacePane = getPaneWithTheseLayouts(75, 650));
+        generalInfoItems.add(getInitGeneralInfoPane(firstProduct));
+        generalInfoItems.add(middleInterfacePane = getPaneWithTheseLayouts(150, 650));
+        generalInfoItems.add(getInitGeneralInfoPane(secondProduct));
+        generalInfoItems.add(secondInterfacePane = getPaneWithTheseLayouts(75, 650));
+
+        //Todo Checking Dimensions Of Down Split Pane
+        initGeneralInfoDividers();
+    }
+
+    private Pane getPaneWithTheseLayouts(double width, double height) {
+        Pane pane = new Pane();
+        pane.setPrefWidth(width);
+        pane.setPrefHeight(height);
+        return pane;
+    }
+
     private void initGeneralInfoDividers() {
-        //Todo
-    }
-
-    private void initInterfacePanes() {
-        //Todo
-    }
-
-    private void initComparingGeneralInfoPane(Pane productGeneralInfoPane) {
         //Todo
     }
 
@@ -518,7 +537,7 @@ public class ProductProcessor extends Processor {
     }
 
     //GeneralInfoPane
-    private void initGeneralInfoPane() {
+    private Pane getInitGeneralInfoPane(Product product) {
         if(menuType == ProductMenuType.VENDOR_EDIT)
             product = productControl.getEditedProductByID(product.getID());
 
@@ -547,7 +566,8 @@ public class ProductProcessor extends Processor {
         //Todo Check The Use Of MenuType
 
         processor.setGeneralTextFields(product);
-        mainPane.setLeft(loader.getRoot());
+//        mainPane.setLeft(loader.getRoot());
+        return loader.getRoot();
     }
 
     private void setGeneralTextFields(Product product) {
@@ -568,6 +588,7 @@ public class ProductProcessor extends Processor {
             changeCountableField(null);
         } else {
             switch (menuType) {
+                case COMPARING_PRODUCTS:
                 case PRODUCTS_CUSTOMER:
                 case PRODUCTS_VENDOR:
                 case PRODUCTS:
@@ -594,6 +615,9 @@ public class ProductProcessor extends Processor {
 
             descriptionTextArea.setText(product.getDescription());
 
+            if(menuType == ProductMenuType.COMPARING_PRODUCTS)
+                priceTextField.setText(Double.toString(product.getPrice()));
+
             if (menuType != ProductMenuType.VENDOR_EDIT)
                 disableEditingGeneralFields();
         }
@@ -614,6 +638,8 @@ public class ProductProcessor extends Processor {
 
     private void disableEditingGeneralFields() {
         switch (menuType) {
+            case COMPARING_PRODUCTS:
+                priceTextField.setEditable(false);
             case PRODUCTS_CUSTOMER:
             case PRODUCTS_VENDOR:
             case PRODUCTS:

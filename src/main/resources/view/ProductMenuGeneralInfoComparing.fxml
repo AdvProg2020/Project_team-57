@@ -60,7 +60,7 @@
             <Font name="System Bold Italic" size="15.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="brandTextField" layoutX="139.0" layoutY="514.0" onAction="#textFieldMouseClicked" onMouseClicked="#textFieldMouseClicked" prefHeight="35.0" prefWidth="181.0">
+      <JFXTextField fx:id="priceTextField" layoutX="139.0" layoutY="514.0" onAction="#textFieldMouseClicked" onMouseClicked="#textFieldMouseClicked" prefHeight="35.0" prefWidth="181.0">
          <font>
             <Font name="System Bold Italic" size="15.0" />
          </font>
