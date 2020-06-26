@@ -115,7 +115,7 @@ public class CustomerControl extends AccountControl{
 
     public Product getCartProductByID(String ID) {
         try {
-            return CartTable.getCartProductByID(Control.getUsername(), ID);
+            return CartTable.getCartProductByID(getUserNameForCart(), ID);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
