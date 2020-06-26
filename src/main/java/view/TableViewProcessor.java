@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -109,7 +110,8 @@ public class TableViewProcessor<T> extends Processor {
     public static enum TableViewType {
         CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN),
         DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS, ADMIN_OFFS,
-        VENDOR_OFFS, LOGS, PRODUCTS_OF_LOG, CUSTOMER_DISCOUNTS;
+        VENDOR_OFFS, LOGS, PRODUCTS_OF_LOG, CUSTOMER_DISCOUNTS,
+        PRODUCT_BUYERS;
 
         Account.AccountType accountType;
 
@@ -187,7 +189,18 @@ public class TableViewProcessor<T> extends Processor {
             case PRODUCTS_OF_LOG:
                 initProductsOfLogColumns();
                 break;
+            case PRODUCT_BUYERS:
+                initProductBuyersColumns();
+                break;
         }
+    }
+
+    private void initProductBuyersColumns() {
+        TableColumn<T, String> usernameColumn = makeColumn("Username", "username", 0.23);
+        TableColumn<T, String> firstNameColumn = makeColumn("First Name", "firstName", 0.25);
+        TableColumn<T, String> lastNameColumn = makeColumn("Last Name", "lastName", 0.25);
+        TableColumn<T, String> email = makeColumn("Email", "email", 0.25);
+        tableView.getColumns().addAll(usernameColumn, firstNameColumn, lastNameColumn, email);
     }
 
     private void initProductsOfLogColumns() {
@@ -308,6 +321,9 @@ public class TableViewProcessor<T> extends Processor {
             case CUSTOMER_DISCOUNTS:
                 tableList.addAll((ArrayList<T>) CustomerControl.getController().getDiscounts());
                 break;
+            case PRODUCT_BUYERS:
+                tableList.addAll((ArrayList<T>) VendorControl.getController().getProductBuyers());
+                break;
         }
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
@@ -379,7 +395,30 @@ public class TableViewProcessor<T> extends Processor {
             case CUSTOMER_DISCOUNTS:
                 mainBorderPane.setLeft(initCustomerDiscounts());
                 break;
+            case PRODUCT_BUYERS:
+                mainBorderPane.setLeft(initProductBuyersOptions());
+                break;
         }
+    }
+
+    private Pane initProductBuyersOptions() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewProductBuyerOptions.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            if(selectedItem != null) {
+                Account account = (Account)selectedItem;
+                processor.nameLabel.setText(account.getFirstName() + " " + account.getLastName());
+                processor.imageCircle.setFill
+                        (new ImagePattern(AccountControl.getController().getProfileImageByUsername(account.getUsername())));
+                processor.showProfileButton.setDisable(false);
+            }
+            return root;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private Pane initCustomerDiscounts() {

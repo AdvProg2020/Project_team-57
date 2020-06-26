@@ -245,7 +245,9 @@ public class AccountTable extends Database {
     }
 
     public static void deleteProfileImage(String username) {
-        File file = new File(getUserImageFilePath(username));
-        file.delete();
+        if(getUserImageFilePath(username) != null) {
+            File file = new File(getUserImageFilePath(username));
+            file.delete();
+        }
     }
 }

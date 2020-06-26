@@ -90,8 +90,7 @@ public class LogTable extends Database {
                 preparedStatement.setString(1, currentProduct);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 ArrayList<String> accounts = new ArrayList<>();
-                while (resultSet.next())
-                {
+                while (resultSet.next()) {
                         accounts.add(resultSet.getString("CustomerUsername"));
                 }
                 return accounts;
