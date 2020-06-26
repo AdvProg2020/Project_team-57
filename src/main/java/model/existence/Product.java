@@ -1,5 +1,8 @@
 package model.existence;
 
+import model.db.OffTable;
+import model.db.ProductTable;
+
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +29,7 @@ public class Product {
     private double offPrice;
     private double offPercent;
 
-    public Product(ResultSet resultSet) throws SQLException {
+    public Product(ResultSet resultSet) throws SQLException, ClassNotFoundException {
         this.ID = resultSet.getString("ID");
         this.status = resultSet.getInt("Status");
         this.name = resultSet.getString("ProductName");
@@ -42,6 +45,12 @@ public class Product {
         this.scoreNum = resultSet.getInt("ScoreNum");
         this.approvalDate = resultSet.getDate("ApprovalDate");
         this.seen = resultSet.getInt("Seen");
+
+        if(OffTable.isThereProductInOff(ID)) {
+            this.isOnSale = true;
+            this.offPercent = OffTable.getOffByProductID(ID).getOffPercent();
+            this.offPrice = (1 - offPercent / 100) * price;
+        }
     }
 
     public Product() {

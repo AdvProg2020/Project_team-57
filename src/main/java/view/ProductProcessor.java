@@ -881,6 +881,7 @@ public class ProductProcessor extends Processor {
                 pricePane.setLayoutY(pricePane.getLayoutY() + layoutYSetter);
                 sellerPane.setLayoutY(sellerPane.getLayoutY() + layoutYSetter);
                 statusPane.setLayoutY(statusPane.getLayoutY() + layoutYSetter);
+                initSpecialFieldsInGeneral();
             default:
                 System.out.println("Error In #initSpecialFields");
                 break;
