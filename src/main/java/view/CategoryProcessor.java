@@ -132,7 +132,7 @@ public class CategoryProcessor extends Processor implements Initializable {
             stage.getIcons().add(new Image(getClass().getResourceAsStream("Manage Category Menu.png")));
 
             categoryProcessor.setMyStage(stage);
-            addSubStage(stage);
+            this.parentProcessor.addSubStage(stage);
             stage.show();
         }
     }

@@ -50,6 +50,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             Parent subRoot = null;
             try {
                 subRoot = loader.load();
+                ((AdminProcessor)loader.getController()).setParentProcessor(this);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -155,6 +156,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
                 Parent root = loader.load();
                 TableViewProcessor<Account> tableViewProcessor = loader.getController();
+                tableViewProcessor.setParentProcessor(parentProcessor);
                 tableViewProcessor.initProcessor(tableViewType);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
@@ -254,6 +256,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 parent = loader.load();
                 ProductsProcessor processor = loader.getController();
                 processor.initProcessor(ProductsProcessor.ProductsMenuType.ADMIN_PRODUCT_REQUESTS);
+                processor.setParentProcessor(parentProcessor);
             } catch (IOException e) {
                 e.printStackTrace();
             }

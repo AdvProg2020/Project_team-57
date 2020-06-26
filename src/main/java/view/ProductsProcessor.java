@@ -26,10 +26,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
+import javafx.scene.paint.*;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import model.existence.Category;
 import model.existence.Discount;
@@ -56,6 +54,7 @@ public class ProductsProcessor extends Processor{
     public CheckBox approveProductCheckBox;
     public ImageView previousPageImageView;
     public JFXToggleButton offProductToggleButton;
+    public ImageView inOffImage;
     private HashMap<String, CheckBox> productsApprovalMap;
 
     public static enum ProductsMenuType {
@@ -66,7 +65,7 @@ public class ProductsProcessor extends Processor{
 
     public ScrollPane productsScrollPane;
     //ProductPane
-    public ImageView productImage;
+    public Rectangle productImage;
     public Label productNameLabel;
     public Label viewLabel;
     public ImageView availableImage;
@@ -109,7 +108,6 @@ public class ProductsProcessor extends Processor{
     private int pageLim;
     private ProductControl productControl = ProductControl.getController();
     private Off selectedOff;
-
 
     //Discount Part
     public JFXToggleButton useDiscountCodeToggleButton;
@@ -456,8 +454,9 @@ public class ProductsProcessor extends Processor{
                     processor.initProcessor(productControl.getProductById(product.getID()), ProductProcessor.ProductMenuType.ADMIN);
                     Stage stage = new Stage();
                     stage.setScene(new Scene(root));
-                    stage.setTitle(product.getName());
+                    stage.setTitle(product.getName() + " Previous Menu");
                     processor.setMyStage(stage);
+                    parentProcessor.addSubStage(stage);
                     stage.show();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -507,20 +506,24 @@ public class ProductsProcessor extends Processor{
 
     private void setProductPanePrice(Pane productPane, ProductsProcessor paneProcessor, Product product) {
         if (productControl.isThereProductInOff(product.getID())) {
-            //TODO
-            System.out.println("Product In Off");
             paneProcessor.oldPriceLabel.setText(product.getPrice() + "$");
+            paneProcessor.oldPriceLabel.getStylesheets().addAll(Main.class.getResource(
+                    "Strikethrough.css"
+            ).toExternalForm());
+            //paneProcessor.oldPriceLabel.setStyle("-fx-strikethrough: true;");
+            paneProcessor.newPriceLabel.setText
+                    ((product.getPrice() * (1 - (productControl.getOffByProductID(product.getID()).getOffPercent() / 100.0)))+"$");
         } else {
-            productPane.getChildren().remove(paneProcessor.newPriceLabel);
+            productPane.getChildren().removeAll(paneProcessor.newPriceLabel, paneProcessor.inOffImage);
             paneProcessor.oldPriceLabel.setText(product.getPrice() + "$");
         }
     }
 
     private void setProductPaneImage(ProductsProcessor paneProcessor, Product product) {
         if(product.getStatus() != 3) {
-            paneProcessor.productImage.setImage(productControl.getProductImageByID(product.getID(), 1));
+            paneProcessor.productImage.setFill(new ImagePattern(productControl.getProductImageByID(product.getID(), 1)));
         } else {
-            paneProcessor.productImage.setImage(productControl.getEditingProductImage(product.getID(), 1));
+            paneProcessor.productImage.setFill(new ImagePattern(productControl.getEditingProductImage(product.getID(), 1)));
         }
     }
 
@@ -568,8 +571,11 @@ public class ProductsProcessor extends Processor{
                 processor.initProcessor(product, productMenuType);
                 Stage stage = new Stage();
                 stage.setScene(new Scene(root));
-                stage.setTitle(product.getName());
+                stage.setTitle(product.getName() + " Menu");
                 processor.setMyStage(stage);
+                System.out.println();
+                if(parentProcessor.parentProcessor != null)
+                    parentProcessor.parentProcessor.addSubStage(stage);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -654,7 +660,6 @@ public class ProductsProcessor extends Processor{
 
     }
 
-
     public void addNewProduct(MouseEvent mouseEvent) {
         if(canOpenSubStage("Add New Product", this)) {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));
@@ -668,6 +673,7 @@ public class ProductsProcessor extends Processor{
                 stage.setTitle("Add New Product");
                 addSubStage(stage);
                 processor.setMyStage(stage);
+                parentProcessor.addSubStage(stage);
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -766,6 +772,10 @@ public class ProductsProcessor extends Processor{
     public void purchaseProducts(MouseEvent mouseEvent) {
         try {
             CustomerControl customerControl = CustomerControl.getController();
+            if(customerControl.getAllCartProducts().size() == 0) {
+                new Alert(Alert.AlertType.ERROR, "Your Cart Is Empty. At Some Products First Dude :/").show();
+                return;
+            }
             customerControl.setHasDiscount(selectedListCell != null);
 
             if(selectedListCell == null)
@@ -894,7 +904,6 @@ public class ProductsProcessor extends Processor{
     private double calculatePriceWithDiscount(double discountPercent) {
         return (1 - discountPercent / 100) * Double.parseDouble(totalPriceLabel.getText().replace(" $", ""));
     }
-
 
     //Price Part
     private void initTotalPricePart() {
