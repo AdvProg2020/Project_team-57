@@ -32,7 +32,7 @@
       <Label fx:id="availableLabel" layoutX="42.0" layoutY="266.0" text="Available" />
       <Label fx:id="oldPriceLabel" layoutX="22.0" layoutY="231.0" text="250000$" />
       <Label fx:id="newPriceLabel" layoutX="99.0" layoutY="231.0" text="190000$" />
-      <StackPane layoutX="23.0" layoutY="14.0" prefHeight="185.0" prefWidth="185.0" style="-fx-background-radius: 10 10 10 10;">
+      <StackPane fx:id="productImageStackPane" layoutX="23.0" layoutY="14.0" prefHeight="185.0" prefWidth="185.0" style="-fx-background-radius: 10 10 10 10;">
          <children>
             <Rectangle fx:id="productImage" arcHeight="25.0" arcWidth="25.0" fill="#a3a7ab" height="185.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="185.0" />
          </children>

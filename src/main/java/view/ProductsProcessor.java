@@ -59,6 +59,7 @@ public class ProductsProcessor extends Processor{
     public JFXToggleButton offProductToggleButton;
     public ImageView inOffImage;
     public JFXButton removeFromCartButton;
+    public StackPane productImageStackPane;
     private HashMap<String, CheckBox> productsApprovalMap;
 
     public static enum ProductsMenuType {
@@ -465,7 +466,7 @@ public class ProductsProcessor extends Processor{
             }
         });
         setProductStatusIcon(paneProcessor, product);
-        setProductPaneImage(paneProcessor, product);
+        setProductPaneImage(productPane, paneProcessor, product);
         paneProcessor.productNameLabel.setText(product.getName());
         setProductPanePrice(productPane, paneProcessor, product);
         setProductPaneOnMouseClick(productPane, product, this);
@@ -497,7 +498,7 @@ public class ProductsProcessor extends Processor{
         });
         paneProcessor.offProductToggleButton.setSelected(((SaleProcessor)parentProcessor).isProductInOff(product.getID()));
         setProductStatusIcon(paneProcessor, product);
-        setProductPaneImage(paneProcessor, product);
+        setProductPaneImage(productPane, paneProcessor, product);
         paneProcessor.productNameLabel.setText(product.getName());
         setProductPanePrice(productPane, paneProcessor, product);
         setProductPaneOnMouseClick(productPane, product, this);
@@ -545,7 +546,7 @@ public class ProductsProcessor extends Processor{
         });
         paneProcessor.availableImage.setImage(new Image("Images\\Icons\\ProductsMenu\\unavailable.png"));
         paneProcessor.availableLabel.setText(product.getTheStatus());
-        setProductPaneImage(paneProcessor, product);
+        setProductPaneImage(productPane, paneProcessor, product);
         setProductPanePrice(productPane, paneProcessor, product);
         paneProcessor.productNameLabel.setText(product.getName());
         setProductPaneOnMouseClick(productPane, product, this);
@@ -557,7 +558,7 @@ public class ProductsProcessor extends Processor{
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPane.fxml"));
         Pane productPane = loader.load();
         ProductsProcessor paneProcessor = loader.getController();
-        setProductPaneImage(paneProcessor, product);
+        setProductPaneImage(productPane, paneProcessor, product);
         paneProcessor.productNameLabel.setText(product.getName());
         setProductPanePrice(productPane, paneProcessor, product);
         paneProcessor.viewLabel.setText("" + product.getSeen());
@@ -581,7 +582,7 @@ public class ProductsProcessor extends Processor{
         }
     }
 
-    private void setProductPaneImage(ProductsProcessor paneProcessor, Product product) {
+    private void setProductPaneImage(Pane productPane, ProductsProcessor paneProcessor, Product product) {
         switch (menuType) {
             case VENDOR_PRODUCTS:
             case ADMIN_PRODUCT_REQUESTS:
@@ -596,6 +597,13 @@ public class ProductsProcessor extends Processor{
                 break;
             default:
                 paneProcessor.productImage.setFill(new ImagePattern(productControl.getProductImageByID(product.getID(), 1)));
+                if(!(product.getCount() > 0 || product.getAmount() > 0)) {
+                    ImageView imageView = new ImageView(new Image("Images\\Icons\\ProductsMenu\\sold out.png"));
+                    imageView.setFitWidth(paneProcessor.productImage.getWidth());
+                    imageView.setFitHeight(paneProcessor.productImage.getHeight());
+                    imageView.setLayoutX(paneProcessor.productImageStackPane.getLayoutX()); imageView.setLayoutY(paneProcessor.productImageStackPane.getLayoutY());
+                    productPane.getChildren().add(imageView);
+                }
                 break;
         }
     }
