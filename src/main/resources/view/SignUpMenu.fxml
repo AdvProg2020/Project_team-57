@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" prefHeight="503.0" prefWidth="722.0" style="-fx-background-color: #eeeeee#eeeeee;" styleClass="root" stylesheets="@../CSS%20files/SignUpMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.WelcomeProcessor">
+<AnchorPane fx:id="pane" prefHeight="503.0" prefWidth="722.0" style="-fx-background-color: #eeeeee#eeeeee;" styleClass="root" stylesheets="@../CSS%20files/SignUpMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.LoginTest">
    <children>
       <ImageView fx:id="backImage" fitHeight="33.0" fitWidth="51.0" layoutX="26.0" layoutY="24.0" onMouseClicked="#backToSignInMenu" opacity="0.4" pickOnBounds="true" preserveRatio="true" styleClass="BackImage">
          <image>
