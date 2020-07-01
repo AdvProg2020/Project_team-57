@@ -50,6 +50,10 @@ public class ProductProcessor extends Processor {
         this.menuType = menuType;
     }
 
+    public void similarProductsMouseClicked(MouseEvent mouseEvent) {
+        //Todo
+    }
+
     public static enum ProductMenuType {
         CART, VENDOR_ADD, VENDOR_EDIT, VENDOR_EDIT_UNAPPROVED,
         ADMIN, PRODUCTS_CUSTOMER, PRODUCTS, PRODUCTS_VENDOR,
@@ -76,7 +80,7 @@ public class ProductProcessor extends Processor {
     private long changePictureTimer = -1;
     private final long CHANGE_PICTURE_PERIOD = 8_000_000_000L;
     public BorderPane upBorderPane;
-    public BorderPane middleBorderPane;
+    public BorderPane downBorderPane;
     private ProductMenuType menuType;
 
     ///Single Product Menu///
@@ -154,6 +158,13 @@ public class ProductProcessor extends Processor {
     public JFXButton addComment;
     public Rating commentScore;
 
+    //SimilarParts
+    public TitledPane similarProductsPane;
+    private static final double PRODUCT_FIELD_WIDTH = 220;
+    private static final double PRODUCT_FIELD_HEIGHT = 255;
+    public HBox similarProductsHBox;
+    public ScrollPane downPartScrollPane;
+
     //SpecialPane
     public Pane specialPane;
     public HBox specialImages;
@@ -183,7 +194,7 @@ public class ProductProcessor extends Processor {
         subProcessors = new ArrayList<>();
         initImagePanel();
         //sep
-        middleBorderPane.setLeft(getInitGeneralInfoPane(product));
+        downBorderPane.setLeft(getInitGeneralInfoPane(product));
         initCommentsPane();
         initSpecialPane();
 
@@ -194,8 +205,27 @@ public class ProductProcessor extends Processor {
             case CART:
                 productControl.setFirstComparingProduct(product.getID());
                 similarProducts = productControl.getAllComparingProducts();
-                if(!similarProducts.isEmpty()) {
-                    //Doing The Similar Thing
+                if(similarProducts.isEmpty()) {
+                    downBorderPane.getChildren().remove(similarProductsPane);
+                } else {
+//                    downPartScrollPane.vmaxProperty().addListener((observable, oldValue, newValue) -> {
+//            if(!oldValue.equals(newValue)) {
+//                        System.out.println("fuck");
+//                        downPartScrollPane.setVvalue(downPartScrollPane.getVmin());
+//            }
+//                    });
+                    //Creating The Similar Pane
+                    for (int i = 0; i < 4; i++) {
+                        Pane pane = new Pane();
+                        pane.setPrefHeight(255);
+                        pane.setPrefWidth(220);
+                        FXMLLoader fxmlLoader = loadThePane("SimilarProductPane");
+                        Pane similarProductPane = fxmlLoader.getRoot();
+                        similarProductPane.setLayoutX(5);
+//                        similarProductPane.setLayoutY(0);
+                        pane.getChildren().add(similarProductPane);
+                        similarProductsHBox.getChildren().add(pane);
+                    }
                 }
                 break;
         }
@@ -887,7 +917,7 @@ public class ProductProcessor extends Processor {
         ProductProcessor processor = loader.getController();
         subProcessors.add(processor);
         processor.initCommentsThroughThePane();
-        middleBorderPane.setRight(loader.getRoot());
+        downBorderPane.setRight(loader.getRoot());
     }
 
     private void initCommentsThroughThePane() {
