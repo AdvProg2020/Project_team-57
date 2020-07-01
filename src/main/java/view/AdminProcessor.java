@@ -54,7 +54,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 subRoot = loader.load();
                 ((AdminProcessor)loader.getController()).setParentProcessor(this);
             } catch (IOException e) {
-                e.printStackTrace();
+               //:)
             }
             loader.setController(this);
             mainPane.setCenter(subRoot);
@@ -115,7 +115,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 mainPane.setCenter(subRoot);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -167,7 +167,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 parentProcessor.addSubStage(newStage);
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }
@@ -195,7 +195,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 //CategoryProcessor.setCategoriesStage(newStage);
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
 
@@ -217,7 +217,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 tableViewProcessor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }
@@ -240,7 +240,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 tableViewProcessor.setTableViewPane((Pane)tableViewProcessor.mainBorderPane.getCenter());
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }
@@ -258,7 +258,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 processor.initProcessor(ProductsProcessor.ProductsMenuType.ADMIN_PRODUCT_REQUESTS);
                 processor.setParentProcessor(parentProcessor);
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
             stage.setScene(new Scene(parent));
             stage.setResizable(false);
@@ -285,7 +285,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 tableViewProcessor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }

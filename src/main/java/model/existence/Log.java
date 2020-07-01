@@ -82,9 +82,9 @@ public class Log {
             try {
                 this.productName = ProductTable.getProductByID(productID).getName();
             } catch (SQLException e) {
-                e.printStackTrace();
+                //:)
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                //:)
             }
             this.quantityStr = "" + (isCountable ? this.count : this.amount + " Kg");
         }
@@ -104,9 +104,9 @@ public class Log {
             try {
                 this.productName = ProductTable.getProductByID(productID).getName();
             } catch (SQLException e) {
-                e.printStackTrace();
+                //:)
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                //:)
             }
             this.quantityStr = "" + (isCountable ? this.count : this.amount + " Kg");
         }

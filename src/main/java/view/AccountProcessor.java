@@ -47,7 +47,7 @@ public class AccountProcessor extends Processor{
         try {
             root = FXMLLoader.load(Main.class.getResource("WelcomeMenu.fxml"));
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         Main.getStage().getIcons().remove(0);
         Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Main Icon.png")));
@@ -78,7 +78,7 @@ public class AccountProcessor extends Processor{
                 addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 

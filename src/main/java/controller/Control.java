@@ -269,9 +269,9 @@ public class Control {
         try {
             return OffTable.isThereProductInOff(productID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return false;
     }

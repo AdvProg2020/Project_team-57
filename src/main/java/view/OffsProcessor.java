@@ -133,7 +133,7 @@ public class OffsProcessor implements Initializable {
                     productsProcessor.initProcessor(ProductsProcessor.ProductsMenuType.MAIN_PRODUCTS);
                     Main.setScene( "Products Menu", root);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //:)
                 }
             });
             int day = (int) ((off.getFinishDate().getTime() - System.currentTimeMillis())/ONE_DAY_MILLIS);
@@ -159,7 +159,7 @@ public class OffsProcessor implements Initializable {
 
             return offPane;
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return new Pane();
     }
@@ -247,7 +247,7 @@ public class OffsProcessor implements Initializable {
         try {
             root = FXMLLoader.load(Main.class.getResource("WelcomeMenu.fxml"));
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         Main.getStage().getIcons().remove(0);
         Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Main Icon.png")));

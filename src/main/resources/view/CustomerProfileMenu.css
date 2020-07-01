@@ -82,3 +82,8 @@
 .CustomerPane:hover{
     -fx-opacity: 0.7;
 }
+
+.media_button:hover {
+    -fx-opacity: 0.8;
+    -fx-cursor: hand;
+}

@@ -152,18 +152,17 @@ public class AccountControl extends Control implements IOValidity {
         try {
             return AccountTable.getAccountByUsername(Control.getUsername());
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            //:)
+            return new Account();
         }
     }
 
     public Account getAccountByUsername(String username){
         try {
-
             return AccountTable.getAccountByUsername(username);
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            //:)
+            return new Account();
         }
     }
 
@@ -197,7 +196,7 @@ public class AccountControl extends Control implements IOValidity {
                 return InvalidField(fieldName, newValue);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //:)
             return Notification.UNKNOWN_ERROR;
         }
     }
@@ -224,9 +223,6 @@ public class AccountControl extends Control implements IOValidity {
             case "Brand" :
                 notification = Notification.ERROR_BRAND_LENGTH_EDIT;
                 break;
-            default :
-                System.out.println("Shit. Error In Checking Field Validity");
-                break;
         }
 
         return notification;
@@ -243,9 +239,6 @@ public class AccountControl extends Control implements IOValidity {
             case "Email" :
             case "Brand" :
                 fieldValidity = newValue == null || newValue.length() <= 35;
-                break;
-            default :
-                System.out.println("Shit. Error In Checking Field Validity");
                 break;
         }
 
@@ -311,10 +304,10 @@ public class AccountControl extends Control implements IOValidity {
         try {
             return AccountTable.getAllAccounts();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
             return new ArrayList<>();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
             return new ArrayList<>();
         }
     }
@@ -356,20 +349,20 @@ public class AccountControl extends Control implements IOValidity {
             Off off = OffTable.getSpecificOff(offID);
             return off;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-        return null;
+        return new Off();
     }
 
     public boolean isThereOffInEditingTable(String offID) {
         try {
             return OffTable.isThereEditingOffWithID(offID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return false;
     }
@@ -378,9 +371,9 @@ public class AccountControl extends Control implements IOValidity {
         try {
             return OffTable.getSpecificEditingOff(offID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -391,11 +384,11 @@ public class AccountControl extends Control implements IOValidity {
                 return OffTable.getSpecificEditingOff(offID);
             return OffTable.getSpecificOff(offID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-        return null;
+        return new Off();
     }
 
     public Log.ProductOfLog getProductOfLog(String productID){
@@ -405,11 +398,11 @@ public class AccountControl extends Control implements IOValidity {
                     return productOfLog;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-        return null;
+        return new Log.ProductOfLog();
     }
 
     public ArrayList<Account> getModifiedAccounts(Account.AccountType accountType, String... searchs) {
@@ -424,11 +417,11 @@ public class AccountControl extends Control implements IOValidity {
                         return AccountTable.getAllCustomers();
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                //:)
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                //:)
             }
-            return null;
+            return new ArrayList<>();
         } else {
             ArrayList<Account> accounts = getModifiedAccounts(accountType);
             accounts.removeIf(account -> {
@@ -458,9 +451,9 @@ public class AccountControl extends Control implements IOValidity {
             fileInputStream.close();
             return image;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //:)
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -480,7 +473,7 @@ public class AccountControl extends Control implements IOValidity {
             try {
                 AccountTable.setProfileImage(username, pictureFile);
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
 

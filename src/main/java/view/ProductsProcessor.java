@@ -245,7 +245,7 @@ public class ProductsProcessor extends Processor{
             try {
                 loadFilterPane(category, null);
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }
@@ -306,7 +306,7 @@ public class ProductsProcessor extends Processor{
                 processor.setMyStage(stage);
                 stage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
     }
 
@@ -382,7 +382,7 @@ public class ProductsProcessor extends Processor{
             borderPane.setCenter(gridPane);
             scrollPane.setContent(borderPane);
             scrollPane.setVvalue(0);
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) { //:) }
     }
 
     private Pane setPageNumberBar() throws IOException {
@@ -525,7 +525,7 @@ public class ProductsProcessor extends Processor{
                     stage.setResizable(false);
                     stage.show();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //:)
                 }
             });
         } else {
@@ -652,7 +652,7 @@ public class ProductsProcessor extends Processor{
                 stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         });
     }
@@ -669,7 +669,7 @@ public class ProductsProcessor extends Processor{
             processor.setMyStage(myStage);
             processor.setParentProcessor(parentProcessor.parentProcessor);
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -744,7 +744,7 @@ public class ProductsProcessor extends Processor{
             try {
                 loadFilterPane(null, searchTextField.getText());
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
 
@@ -767,7 +767,7 @@ public class ProductsProcessor extends Processor{
                 stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }
@@ -788,7 +788,7 @@ public class ProductsProcessor extends Processor{
                 processor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();;
+                //:);
             }
         }
     }
@@ -846,7 +846,7 @@ public class ProductsProcessor extends Processor{
         try {
             root = FXMLLoader.load(Main.class.getResource("WelcomeMenu.fxml"));
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         Main.getStage().getIcons().remove(0);
         Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Main Icon.png")));
@@ -865,7 +865,7 @@ public class ProductsProcessor extends Processor{
             else
                 openSignInMenu();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
 
     }
@@ -994,7 +994,7 @@ public class ProductsProcessor extends Processor{
             this.priceArrow = priceArrow;
             imageFileInputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 

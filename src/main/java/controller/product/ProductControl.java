@@ -47,9 +47,9 @@ public class ProductControl extends Control {
         try {
             this.comparingProducts[0] = ProductTable.getProductByID(productID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -58,9 +58,9 @@ public class ProductControl extends Control {
         try {
             this.comparingProducts[1] = ProductTable.getProductByID(productID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -95,8 +95,7 @@ public class ProductControl extends Control {
             setProductOffPrice(product);
             return product;
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            return new Product();
         }
     }
 
@@ -114,7 +113,6 @@ public class ProductControl extends Control {
             EditingProductTable.removeAllEditingProductImages(productId);
             return Notification.REMOVE_PRODUCT_SUCCESSFULLY;
         } catch (Exception e) {
-            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         }
     }
@@ -147,10 +145,8 @@ public class ProductControl extends Control {
 
             return Notification.EDIT_FIELD_SUCCESSFULLY;
         } catch (SQLException e) {
-            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         }
     }
@@ -169,7 +165,7 @@ public class ProductControl extends Control {
             else if (fieldName.equals("Price"))
                 EditingProductTable.changeProductPrice(ID, Double.parseDouble(newField));
         } catch (Exception e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -215,9 +211,9 @@ public class ProductControl extends Control {
             setProductOffPrice(product);
             return product;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -228,9 +224,9 @@ public class ProductControl extends Control {
             ProductTable.setProductStatus(editingProductID, 1);
             return Notification.DECLINE_EDITING_PRODUCT;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -242,9 +238,9 @@ public class ProductControl extends Control {
             sortProducts(showingProducts);
             return showingProducts;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -299,11 +295,10 @@ public class ProductControl extends Control {
 
             return productPriceForVendor;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-
         return 0;
     }
 
@@ -370,11 +365,10 @@ public class ProductControl extends Control {
                     }
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                //:)
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                //:)
             }
-
             return result;
         });
     }
@@ -383,9 +377,9 @@ public class ProductControl extends Control {
         try {
             ProductTable.addSeenToProductWithID(productID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -393,10 +387,8 @@ public class ProductControl extends Control {
         try {
             return OffTable.getOffByProductID(productID);
         } catch (SQLException e) {
-            e.printStackTrace();
             return new Off();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
             return new Off();
         }
     }
@@ -413,9 +405,9 @@ public class ProductControl extends Control {
             });
             return comparableProducts;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -427,8 +419,7 @@ public class ProductControl extends Control {
                 return ProductTable.getScore(comment.getCustomerUsername(), comment.getProductID());
             return 0;
         } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Shit. Error In Getting Score");
-            e.printStackTrace();
+            //:)
         }
         return 0;
     }
@@ -444,7 +435,7 @@ public class ProductControl extends Control {
             ProductTable.updateProductsAvgScore(comment.getProductID());
             return Notification.SET_SCORE;
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
 
         return Notification.UNKNOWN_ERROR;
@@ -459,9 +450,9 @@ public class ProductControl extends Control {
             }
             return averageScore / ProductTable.getAllScores(productID).size();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return 1;
     }
@@ -484,7 +475,7 @@ public class ProductControl extends Control {
 
             return Notification.ADD_COMMENT;
         } catch (SQLException | ClassNotFoundException e){
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -521,7 +512,7 @@ public class ProductControl extends Control {
                 }
             }
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
 
         return productComments;
@@ -531,12 +522,12 @@ public class ProductControl extends Control {
         try {
             return ProductTable.getCommentByID(commentID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
 
-        return null;
+        return new Comment();
     }
 
     public Image getProductImageByID(String ID, int number) {
@@ -552,9 +543,9 @@ public class ProductControl extends Control {
             fileInputStream.close();
             return image;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //:)
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -572,9 +563,9 @@ public class ProductControl extends Control {
         fileInputStream.close();
         return image;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //:)
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -598,9 +589,9 @@ public class ProductControl extends Control {
             fileInputStream.close();
             return image;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //:)
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -633,7 +624,7 @@ public class ProductControl extends Control {
             try {
                 OffTable.setOffImage(offID, pictureFile);
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }
@@ -647,7 +638,7 @@ public class ProductControl extends Control {
                 try {
                     OffTable.setEditingOffImage(offID, pictureFile);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //:)
                 }
             }
         }
@@ -685,11 +676,10 @@ public class ProductControl extends Control {
             setSubCategories(rootCategory);
             return rootCategory;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-
         return null;
     }
 
@@ -707,7 +697,7 @@ public class ProductControl extends Control {
             try {
                 ProductTable.addImage(productID, getProductImagesNumberByID(productID) + 1, pictureFile);
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }
@@ -730,7 +720,7 @@ public class ProductControl extends Control {
             }
             EditingProductTable.removeEditingProductTempImages(productId);
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -747,9 +737,9 @@ public class ProductControl extends Control {
             fileInputStream.close();
             return image;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //:)
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -786,9 +776,9 @@ public class ProductControl extends Control {
         try {
             return convertIDsToProducts(off.getProductIDs());
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -797,9 +787,9 @@ public class ProductControl extends Control {
         try {
             return OffTable.getSpecificOff(offID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new Off();
     }
@@ -808,9 +798,9 @@ public class ProductControl extends Control {
         try {
             return OffTable.isThereOffWithID(offID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return false;
     }
@@ -819,9 +809,9 @@ public class ProductControl extends Control {
         try {
             return OffTable.isThereEditingOffWithID(offID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return false;
     }
@@ -838,9 +828,9 @@ public class ProductControl extends Control {
         try {
             return OffTable.getSpecificEditingOff(offID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new Off();
     }

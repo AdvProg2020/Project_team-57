@@ -27,9 +27,9 @@ public class CustomerControl extends AccountControl{
         try {
             return CartTable.getAllCartWithUsername(IOControl.getUsername());
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -45,11 +45,12 @@ public class CustomerControl extends AccountControl{
             }
             CartTable.addToCartCountable(getUserNameForCart(), id, count);
             return Notification.ADD_TO_CART;
-        } catch (SQLException throwable) {
-            return Notification.UNKNOWN_ERROR;
+        } catch (SQLException e) {
+            //:)
         } catch (ClassNotFoundException e) {
-            return Notification.UNKNOWN_ERROR;
+            //:)
         }
+        return Notification.UNKNOWN_ERROR;
     }
 
     public Notification addToCartUnCountable(/*String username, */String id, double amount){
@@ -64,7 +65,6 @@ public class CustomerControl extends AccountControl{
             CartTable.addToCartUnCountable(getUserNameForCart(), id, amount);
             return Notification.ADD_TO_CART;
         } catch (SQLException e) {
-            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         } catch (ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
@@ -73,7 +73,7 @@ public class CustomerControl extends AccountControl{
 
     private String getUserNameForCart() {
         if(Control.getType() != null && !Control.getType().equals("Customer")) {
-            System.out.println("Fuck. Error In Getting UserName For Cart");
+            //:)
         } else if(Control.isLoggedIn()) {
             return Control.getUsername();
         } else {
@@ -87,11 +87,11 @@ public class CustomerControl extends AccountControl{
         try {
             return CartTable.getCartProductByID(getUserNameForCart(), ID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-        return null;
+        return new Product();
     }
 
     public Notification increaseCount(String productID, String command) {
@@ -106,9 +106,9 @@ public class CustomerControl extends AccountControl{
                     }
                     return Notification.MORE_THAN_INVENTORY_COUNTABLE;
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    //:)
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    //:)
                 }
             }
         } catch (NumberFormatException e) { } catch (NullPointerException e) { }
@@ -127,9 +127,9 @@ public class CustomerControl extends AccountControl{
                     }
                     return Notification.MORE_THAN_CART_COUNTABLE;
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    //:)
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    //:)
                 }
             }
         } catch (NumberFormatException e) { } catch (NullPointerException e) { }
@@ -148,9 +148,9 @@ public class CustomerControl extends AccountControl{
                         return Notification.INCREASED;
                     }
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    //:)
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    //:)
                 }
                 return Notification.MORE_THAN_INVENTORY_UNCOUNTABLE;
             }
@@ -170,9 +170,9 @@ public class CustomerControl extends AccountControl{
                         return Notification.DECREASED;
                     }
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    //:)
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    //:)
                 }
                 return Notification.MORE_THAN_CART_UNCOUNTABLE;
             }
@@ -196,9 +196,9 @@ public class CustomerControl extends AccountControl{
                     totalPrice += newPrice * product.getAmount();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return totalPrice;
     }
@@ -220,9 +220,9 @@ public class CustomerControl extends AccountControl{
             DiscountTable.updateDiscountCodesTime();
             return DiscountTable.getCustomerDiscountCodes(Control.getUsername());
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -236,9 +236,9 @@ public class CustomerControl extends AccountControl{
                     discountCodes.add(discountCode.getCode());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return discountCodes;
     }
@@ -250,9 +250,9 @@ public class CustomerControl extends AccountControl{
                 discountIDs.add(discountCode.getID());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return discountIDs;
     }
@@ -262,9 +262,9 @@ public class CustomerControl extends AccountControl{
         try {
             return OffTable.getAllShowingOffs();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -300,9 +300,9 @@ public class CustomerControl extends AccountControl{
             return affordability(initPrice, offPrice, finalPrice);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -331,9 +331,9 @@ public class CustomerControl extends AccountControl{
                     return Notification.PURCHASED_SUCCESSFULLY;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -347,9 +347,9 @@ public class CustomerControl extends AccountControl{
                     ProductTable.reduceProductAmount(product.getID(), product.getAmount());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -367,9 +367,9 @@ public class CustomerControl extends AccountControl{
                 AccountTable.changeCredit(product.getSellerUserName(), price);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -387,9 +387,9 @@ public class CustomerControl extends AccountControl{
         try {
             this.discount = DiscountTable.getDiscountByID(discountID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -477,20 +477,20 @@ public class CustomerControl extends AccountControl{
         try {
             return DiscountTable.getDiscountByID(discountID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-        return null;
+        return new Discount();
     }
 
     public ArrayList<Log> getAllLogs() {
         try {
             return LogTable.getAllCustomerLogs(Control.getUsername());
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -499,9 +499,9 @@ public class CustomerControl extends AccountControl{
         try {
             return LogTable.getCustomerLogByID(getCurrentLogID());
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new Log();
     }
@@ -512,9 +512,9 @@ public class CustomerControl extends AccountControl{
                 return ProductTable.getScore(Control.getUsername(), productID);
             return -1;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return 1;
     }
@@ -530,9 +530,9 @@ public class CustomerControl extends AccountControl{
             ProductTable.updateProductsAvgScore(productID);
             return Notification.SET_SCORE;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -541,9 +541,9 @@ public class CustomerControl extends AccountControl{
         try {
             return LogTable.isProductPurchasedByCustomer(productID, customerUsername);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return false;
     }
@@ -563,10 +563,10 @@ public class CustomerControl extends AccountControl{
                 }
             }
             return offPrice;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return 0;
     }
@@ -583,8 +583,7 @@ public class CustomerControl extends AccountControl{
 
             return availableDiscounts;
         } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Shit. Error In Getting Available Discounts");
-            e.printStackTrace();
+            //:)
         }
 
         return null;
@@ -594,9 +593,9 @@ public class CustomerControl extends AccountControl{
         try {
             return CartTable.getAllCartWithUsername("temp");
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }

@@ -49,8 +49,7 @@ public class VendorControl extends AccountControl{
                 addingProductNotifications.add(Notification.ADD_PRODUCT);
             }
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
 
         return addingProductNotifications;
@@ -103,7 +102,6 @@ public class VendorControl extends AccountControl{
             }
         } catch (SQLException | ClassNotFoundException e) {
             editProductNotification = Notification.UNKNOWN_ERROR;
-            e.printStackTrace();
         }
 
         return editProductNotification;
@@ -151,9 +149,9 @@ public class VendorControl extends AccountControl{
         try {
             return CategoryTable.isThereCategoryWithName(categoryName);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return false;
     }
@@ -162,9 +160,9 @@ public class VendorControl extends AccountControl{
         try {
             return OffTable.getVendorOffs(Control.getUsername());
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -222,9 +220,9 @@ public class VendorControl extends AccountControl{
                     nonOffProducts.add(product);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return nonOffProducts;
     }
@@ -248,9 +246,9 @@ public class VendorControl extends AccountControl{
             }
             return Notification.OFF_EDITED;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -278,9 +276,9 @@ public class VendorControl extends AccountControl{
             }
             return Notification.OFF_EDITED;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -308,9 +306,9 @@ public class VendorControl extends AccountControl{
             }
             return Notification.OFF_EDITED;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -322,9 +320,9 @@ public class VendorControl extends AccountControl{
             OffTable.removeOffByID(offID);
             return Notification.OFF_REMOVED;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -333,9 +331,9 @@ public class VendorControl extends AccountControl{
         try {
             return LogTable.getAllVendorLogs(Control.getUsername());
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -348,20 +346,20 @@ public class VendorControl extends AccountControl{
             }
             return allProducts;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public String getCustomerName(){
         try {
             return LogTable.getVendorLogByID(getCurrentLogID(), Control.getUsername()).getCustomerName();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -370,11 +368,11 @@ public class VendorControl extends AccountControl{
         try {
             return LogTable.getVendorLogByID(AccountControl.getCurrentLogID(), Control.getUsername());
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-        return null;
+        return new Log();
     }
 
     public ArrayList<Account> getProductBuyers() {
@@ -384,9 +382,9 @@ public class VendorControl extends AccountControl{
                 customers.add(AccountTable.getAccountByUsername(account));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return customers;
     }
@@ -403,11 +401,10 @@ public class VendorControl extends AccountControl{
         try {
             return LogTable.getMaxSaleByID(currentProduct);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-
         return 0;
     }
 
@@ -415,11 +412,10 @@ public class VendorControl extends AccountControl{
         try {
             return LogTable.getMaxCountOfSaleByProductID(currentProduct);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-
         return 0;
     }
 
@@ -427,11 +423,10 @@ public class VendorControl extends AccountControl{
         try {
             return LogTable.getMaxAmountOfSaleByProductID(currentProduct);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-
         return 0;
     }
 
@@ -439,9 +434,9 @@ public class VendorControl extends AccountControl{
         try {
             return VendorTable.getProductsWithUsername(Control.getUsername());
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }

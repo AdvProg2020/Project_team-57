@@ -240,7 +240,7 @@ public class SaleProcessor extends Processor implements Initializable {
             }
             fileInputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -278,7 +278,7 @@ public class SaleProcessor extends Processor implements Initializable {
             processor.initProcessor(TableViewProcessor.TableViewType.DISCOUNT_CUSTOMERS);
             discountMainPane.setCenter(root);
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -295,7 +295,7 @@ public class SaleProcessor extends Processor implements Initializable {
                 saleProcessor.setDiscountFields();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -412,7 +412,7 @@ public class SaleProcessor extends Processor implements Initializable {
                 saleProcessor.setOffFields();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -443,7 +443,7 @@ public class SaleProcessor extends Processor implements Initializable {
                 //TODO
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 

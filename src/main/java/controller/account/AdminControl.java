@@ -62,8 +62,6 @@ public class AdminControl extends AccountControl{
     public boolean isUserAddedInDiscount(Discount discount, String userName) {
         if(discountsAddedUsers.containsKey(discount))
             return discountsAddedUsers.get(discount).contains(userName);
-        else
-            System.out.println("Shit Error In Controller");
         return false;
     }
 
@@ -86,9 +84,9 @@ public class AdminControl extends AccountControl{
             }
             return Notification.DUPLICATE_CATEGORY_NAME;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
 
         return Notification.UNKNOWN_ERROR;
@@ -116,9 +114,9 @@ public class AdminControl extends AccountControl{
             }
             return Notification.CATEGORY_NOT_FOUND;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
 
         return Notification.UNKNOWN_ERROR;
@@ -137,8 +135,6 @@ public class AdminControl extends AccountControl{
             case "Features" :
                 notification = editCategoryFeatures(oldCategory, newCategory);
                 break;
-            default:
-                System.out.println("Shit. Error In Edit Category.");
         }
 
         return notification;
@@ -168,9 +164,9 @@ public class AdminControl extends AccountControl{
             return Notification.CATEGORY_MODIFIED;
             //return Notification.SAME_CATEGORY_FIELD_ERROR;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -188,9 +184,9 @@ public class AdminControl extends AccountControl{
             return Notification.CATEGORY_MODIFIED;
             //return Notification.SAME_CATEGORY_FIELD_ERROR;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
 
         return Notification.UNKNOWN_ERROR;
@@ -208,9 +204,9 @@ public class AdminControl extends AccountControl{
                     return Notification.PARENT_CATEGORY_NOT_FOUND;
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                //:)
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                //:)
             }
         }
         return Notification.CATEGORY_MODIFIED;
@@ -221,11 +217,11 @@ public class AdminControl extends AccountControl{
         try {
             return CategoryTable.getCategoryWithName(categoryName);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-        return null;
+        return new Category();
     }
 
     public ArrayList<Discount> getAllDiscounts() {
@@ -233,9 +229,9 @@ public class AdminControl extends AccountControl{
             DiscountTable.updateDiscountCodesTime();
             return DiscountTable.getAllDiscountCodes();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -244,11 +240,11 @@ public class AdminControl extends AccountControl{
         try {
             return DiscountTable.getDiscountByID(ID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-        return null;
+        return new Discount();
     }
 
     public Notification removeDiscountByID(String ID)
@@ -256,9 +252,9 @@ public class AdminControl extends AccountControl{
         try {
             DiscountTable.removeDiscountCode(ID);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.DELETED_DISCOUNT;
     }
@@ -277,11 +273,10 @@ public class AdminControl extends AccountControl{
             discount.setID(ID);
             DiscountTable.addDiscount(discount);
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
-
         return Notification.ADD_DISCOUNT;
     }
 
@@ -327,9 +322,9 @@ public class AdminControl extends AccountControl{
         try {
             return OffTable.getAllUnApprovedOffs();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -369,9 +364,9 @@ public class AdminControl extends AccountControl{
                 return Notification.OFF_EDITING_DECLINED;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -391,7 +386,7 @@ public class AdminControl extends AccountControl{
                 declineEditingOffImages(offID);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
 
     }
@@ -400,9 +395,9 @@ public class AdminControl extends AccountControl{
         try {
             return ProductTable.getAllUnApprovedComments();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -416,9 +411,9 @@ public class AdminControl extends AccountControl{
             ProductTable.modifyCommentApproval(commentID, 3);
             return Notification.DECLINE_COMMENT;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -440,9 +435,9 @@ public class AdminControl extends AccountControl{
             }
             AccountTable.updatePeriod("Ya Zahra");
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -460,9 +455,9 @@ public class AdminControl extends AccountControl{
         try {
             return ProductTable.getAllNotApprovedProducts();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return new ArrayList<>();
     }
@@ -478,7 +473,7 @@ public class AdminControl extends AccountControl{
                 return ProductControl.getController().removeEditingProductById(productID);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -495,10 +490,10 @@ public class AdminControl extends AccountControl{
             ProductTable.setProductStatus(id, 1);
             ProductTable.setProductApprovalDate(id);
             return Notification.ACCEPT_ADDING_PRODUCT;
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        } catch (ClassNotFoundException throwable) {
-            throwable.printStackTrace();
+        } catch (SQLException e) {
+            //:)
+        } catch (ClassNotFoundException e) {
+            //:)
         }
 
         return Notification.UNKNOWN_ERROR;
@@ -518,9 +513,9 @@ public class AdminControl extends AccountControl{
             ProductTable.setProductStatus(editingProduct.getID(), 1);
             return Notification.ACCEPT_EDITING_PRODUCT;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //:)
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
         return Notification.UNKNOWN_ERROR;
     }

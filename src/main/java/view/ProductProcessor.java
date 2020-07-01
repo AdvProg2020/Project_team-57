@@ -242,16 +242,12 @@ public class ProductProcessor extends Processor {
     private void initSimilarProductsPane() {
         similarProductHBoxes = new ArrayList<>();
         pagesNumber = (int)Math.ceil(similarProducts.size() / 4.0);
-        System.out.println(pagesNumber);
 
         for (int i = 0; i < pagesNumber; i++) {
             HBox hBox = new HBox();
             hBox.setPrefWidth(HBOX_WIDTH);
             hBox.setPrefHeight(HBOX_HEIGHT);
             int similarProductBeginIndex = 4 * i, similarProductEndIndex = Math.min(4 * (i + 1), similarProducts.size());
-
-            System.out.println(similarProductBeginIndex);
-            System.out.println(similarProductEndIndex);
 
             hBox.getChildren().add(getSimilarProductPagePane(i != 0, false));
 
@@ -297,7 +293,7 @@ public class ProductProcessor extends Processor {
                 }
 
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                //:)
             }
 
             imageView.setImage(new Image(fileInputStream));
@@ -308,12 +304,10 @@ public class ProductProcessor extends Processor {
     }
 
     public void previousPage() {
-        System.out.println("Fuck");
         changePage(false);
     }
 
     public void nextPage() {
-        System.out.println("Fuck");
         changePage(true);
     }
 
@@ -367,7 +361,7 @@ public class ProductProcessor extends Processor {
             else
                 imageBorderPane.setLeft(root);
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -450,7 +444,7 @@ public class ProductProcessor extends Processor {
             processor.getImages();
             upBorderPane.setLeft(root);
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -560,8 +554,10 @@ public class ProductProcessor extends Processor {
             Image image = new Image(inStream);
             inStream.close();
             return image;
-        } catch (IOException e) { e.printStackTrace(); }
-        return null;
+        } catch (IOException e) {
+            //:)
+            return null;
+        }
     }
 
     private FadeTransition getFadeTransition(double from, double to, double seconds, Node node) {
@@ -676,8 +672,6 @@ public class ProductProcessor extends Processor {
                 generalFieldProcessor.setProductGeneralFields(product);
                 productNotifications.add(vendorControl.editProduct(this.product, product, imageProcessor.productImageFiles));
                 break;
-            default:
-                System.out.println("Serious Error In Sending Product");
         }
 
         if(productNotifications.get(0).equals(Notification.ADD_PRODUCT)
@@ -901,8 +895,6 @@ public class ProductProcessor extends Processor {
                 case " Amount ":
                     product.setAmount(Double.parseDouble(countTextField.getText()));
                     break;
-                default:
-                    System.out.println("Fuck!!!! \nError In Save Changes Count Amount Part");
             }
         }
 
@@ -1100,8 +1092,6 @@ public class ProductProcessor extends Processor {
                     commentPane.getChildren().remove(commentScore);
                 }
                 break;
-            default:
-                System.out.println("Shit. Error In InitCommentFields");
         }
     }
 
@@ -1215,9 +1205,6 @@ public class ProductProcessor extends Processor {
                 sellerPane.setLayoutY(sellerPane.getLayoutY() + layoutYSetter);
                 statusPane.setLayoutY(statusPane.getLayoutY() + layoutYSetter);
                 initSpecialFieldsInGeneral();
-            default:
-                System.out.println("Error In #initSpecialFields");
-                break;
         }
 
         if(product.isOnSale()) {
@@ -1244,8 +1231,6 @@ public class ProductProcessor extends Processor {
             case PRODUCTS_VENDOR:
                 paneName = "ProductMenuSpecialInfoCustomer";
                 break;
-            default:
-                System.out.println("Error In Init Special Pane");
         }
 
         FXMLLoader loader = loadThePane(paneName);
@@ -1433,7 +1418,7 @@ public class ProductProcessor extends Processor {
             tableViewProcessor.setMyStage(newStage);
             newStage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -1462,7 +1447,7 @@ public class ProductProcessor extends Processor {
             addSubStage(stage);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -1500,10 +1485,8 @@ public class ProductProcessor extends Processor {
             processor.menuType = menuType;
             return loader;
         } catch (IOException e) {
-            System.out.println("Shit. Error In Loading The Pane : " + paneName);
-            e.printStackTrace();
+            //:)
         }
-
         return null;
     }
     //Sepehr's Section

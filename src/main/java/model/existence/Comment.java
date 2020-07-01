@@ -93,8 +93,6 @@ public class Comment {
             case 3:
                 commentStatus = "Deleted By App Policy";
                 break;
-            default:
-                System.out.println("Shit Error In Getting Comment Status. Status : " + status);
         }
 
         return commentStatus;

@@ -412,7 +412,7 @@ public class TableViewProcessor<T> extends Processor {
             }
             return root;
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -431,7 +431,7 @@ public class TableViewProcessor<T> extends Processor {
             }
             return root;
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -474,7 +474,7 @@ public class TableViewProcessor<T> extends Processor {
             }
             return root;
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -511,7 +511,7 @@ public class TableViewProcessor<T> extends Processor {
             }
             return root;
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -536,7 +536,7 @@ public class TableViewProcessor<T> extends Processor {
             }
             return root;
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -570,7 +570,7 @@ public class TableViewProcessor<T> extends Processor {
                 return root;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return new Pane();
     }
@@ -595,7 +595,7 @@ public class TableViewProcessor<T> extends Processor {
             }
             return root;
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -614,7 +614,7 @@ public class TableViewProcessor<T> extends Processor {
                     ((searchedUsername == null ? "" : searchedUsername));
             return root;
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -635,7 +635,7 @@ public class TableViewProcessor<T> extends Processor {
             }
             return root;
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -671,7 +671,7 @@ public class TableViewProcessor<T> extends Processor {
             }
             return root;
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         return null;
     }
@@ -807,7 +807,7 @@ public class TableViewProcessor<T> extends Processor {
             parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -851,7 +851,7 @@ public class TableViewProcessor<T> extends Processor {
                 ((TableViewProcessor)parentProcessor).updateSelectedItem();
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -873,7 +873,7 @@ public class TableViewProcessor<T> extends Processor {
             parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -906,7 +906,7 @@ public class TableViewProcessor<T> extends Processor {
                 processor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }
@@ -936,7 +936,7 @@ public class TableViewProcessor<T> extends Processor {
             parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -957,7 +957,7 @@ public class TableViewProcessor<T> extends Processor {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -1001,7 +1001,7 @@ public class TableViewProcessor<T> extends Processor {
             });
             ((TableViewProcessor<T>) parentProcessor).mainBorderPane.setCenter(root);
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -1031,7 +1031,7 @@ public class TableViewProcessor<T> extends Processor {
             parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -1078,7 +1078,7 @@ public class TableViewProcessor<T> extends Processor {
             this.parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -1098,7 +1098,7 @@ public class TableViewProcessor<T> extends Processor {
                 processor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();;
+                //:);
             }
         }
     }
@@ -1145,7 +1145,7 @@ public class TableViewProcessor<T> extends Processor {
             parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -1163,7 +1163,7 @@ public class TableViewProcessor<T> extends Processor {
             this.parentProcessor.parentProcessor.addSubStage(stage);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -1188,7 +1188,7 @@ public class TableViewProcessor<T> extends Processor {
             this.parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 

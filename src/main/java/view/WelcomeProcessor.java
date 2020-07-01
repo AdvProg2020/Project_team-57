@@ -100,7 +100,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
                         break;
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
 
 
@@ -117,7 +117,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
                 newStage.setTitle("Sign In");
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }
@@ -131,7 +131,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
             Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Admin Icon.png")));
             Main.setScene(Control.getUsername() + " Menu", root);
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
 
     }
@@ -148,7 +148,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
             productsProcessor.initProcessor(ProductsProcessor.ProductsMenuType.MAIN_PRODUCTS);
             Main.setScene( "Products Menu", root);
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -159,7 +159,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
             Main.getStage().getIcons().add(new Image("Images/Icons/discount.png"));
             Main.setScene("Off Menu", root);
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -204,7 +204,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
             signUpProcessor.setMyStage(myStage);
             signUpProcessor.setParentProcessor(parentProcessor);
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         myStage.setTitle("Sign Up Menu");
         myStage.setScene(new Scene(root1));
@@ -328,7 +328,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
             signInProcessor.setMyStage(myStage);
             signInProcessor.setParentProcessor(parentProcessor);
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
         myStage.setTitle("Sign In");
         myStage.setScene(new Scene(root1));

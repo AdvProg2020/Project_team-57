@@ -183,8 +183,6 @@ public class CategoryProcessor extends Processor implements Initializable {
                 case PARENT_CATEGORY_NOT_FOUND:
                     parentNameTextField.setStyle(errorTextFieldStyle);
                     break;
-                default:
-                    System.out.println("Serious Shit In Adding Category");
             }
 
             category = new Category();

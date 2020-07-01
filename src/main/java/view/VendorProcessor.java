@@ -56,7 +56,7 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
                 processor.setParentProcessor(this);
                 processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_PRODUCTS);
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
             stage.setScene(new Scene(parent));
             stage.setResizable(false);
@@ -83,7 +83,7 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
                 tableViewProcessor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }
@@ -106,7 +106,7 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
                 tableViewProcessor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }

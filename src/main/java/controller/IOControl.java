@@ -63,7 +63,6 @@ public class IOControl extends Control implements IOValidity {
             } else
                 return Notification.ERROR_FREE_USERNAME;
         } catch (SQLException e) {
-            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         } catch (ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
@@ -74,7 +73,7 @@ public class IOControl extends Control implements IOValidity {
         try {
             return AccountTable.isThereAdmin();
         } catch (Exception e) {
-            e.printStackTrace();
+            //:)
             return false;
         }
     }

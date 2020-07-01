@@ -66,6 +66,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             if (accountControl.getAccount().getFirstName() != null && accountControl.getAccount().getLastName() != null)
                 name.setText(accountControl.getAccount().getFirstName() + " " + accountControl.getAccount().getLastName());
         } else {
+            initMusicPlayer();
             profileButton.setText(Control.getUsername());
         }
     }
@@ -95,7 +96,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             processor.setMyStage(stage);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -116,7 +117,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
                 tableViewProcessor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }
@@ -191,7 +192,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             myStage.setResizable(false);
             myStage.setTitle(Control.getUsername() + " Cart");
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -212,7 +213,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
                 tableViewProcessor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+                //:)
             }
         }
     }

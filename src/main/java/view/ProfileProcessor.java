@@ -216,7 +216,7 @@ public class ProfileProcessor extends Processor implements Initializable {
             mainPane.setBottom(subRoot);
             Pane pane = (Pane) mainPane.getBottom();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -366,7 +366,7 @@ public class ProfileProcessor extends Processor implements Initializable {
                 fileInputStream.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
 
     }
@@ -378,7 +378,7 @@ public class ProfileProcessor extends Processor implements Initializable {
             pictureFile = null;
             deleteImage.setDisable(true);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //:)
         }
     }
 
@@ -409,7 +409,7 @@ public class ProfileProcessor extends Processor implements Initializable {
             circle.setFill(imagePattern);
             fileInputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //:)
         }
 
         profilePictureStackPane.getChildren().remove(1, profilePictureStackPane.getChildren().size());
