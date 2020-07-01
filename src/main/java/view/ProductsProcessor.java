@@ -382,7 +382,9 @@ public class ProductsProcessor extends Processor{
             borderPane.setCenter(gridPane);
             scrollPane.setContent(borderPane);
             scrollPane.setVvalue(0);
-        } catch (IOException e) { //:) }
+        } catch (IOException e) {
+            //:)
+        }
     }
 
     private Pane setPageNumberBar() throws IOException {

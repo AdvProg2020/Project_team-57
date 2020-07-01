@@ -226,7 +226,7 @@ public class AdminControl extends AccountControl{
 
     public ArrayList<Discount> getAllDiscounts() {
         try {
-            DiscountTable.updateDiscountCodesTime();
+            DiscountTable.removeOutDatedDiscounts();
             return DiscountTable.getAllDiscountCodes();
         } catch (SQLException e) {
             //:)
@@ -320,6 +320,7 @@ public class AdminControl extends AccountControl{
 
     public ArrayList<Off> getAllUnApprovedOffs() {
         try {
+            OffTable.removeOutDatedOffs();
             return OffTable.getAllUnApprovedOffs();
         } catch (SQLException e) {
             //:)
@@ -453,6 +454,7 @@ public class AdminControl extends AccountControl{
 
     public ArrayList<Product> getAllNotApprovedProducts() {
         try {
+            OffTable.removeOutDatedOffs();
             return ProductTable.getAllNotApprovedProducts();
         } catch (SQLException e) {
             //:)

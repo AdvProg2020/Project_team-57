@@ -8,9 +8,9 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="230.0" style="-fx-background-color: #9ce7f0;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.TableViewProcessor">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="230.0" style="-fx-background-color: #ffd180;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.TableViewProcessor">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutX="170.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f57c00" height="10.0" layoutX="170.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
       <Label fx:id="codeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="228.0" prefWidth="210.0" text="Discount Code">
          <font>
             <Font name="Calibri" size="17.0" />
@@ -26,7 +26,7 @@
             <Image url="@../Images/Icons/TableViewMenu/discount%20menu%20customer.png" />
          </image>
       </ImageView>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f57c00" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
       <Pane layoutX="15.0" layoutY="465.0" prefHeight="81.0" prefWidth="200.0" style="-fx-background-color: WHITE; -fx-background-radius: 10 10 10 10;">
          <children>
             <Label layoutX="14.0" layoutY="14.0" text="Used: " />

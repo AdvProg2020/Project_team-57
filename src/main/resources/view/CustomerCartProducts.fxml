@@ -20,7 +20,7 @@
       </ScrollPane>
    </center>
    <left>
-      <Pane fx:id="userProductsOptionPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #2F999F;" BorderPane.alignment="CENTER">
+      <Pane fx:id="userProductsOptionPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffd180;" BorderPane.alignment="CENTER">
          <children>
             <Pane layoutX="13.0" layoutY="36.0" onMouseClicked="#purchaseProducts" opacity="0.7" prefHeight="200.0" prefWidth="175.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" styleClass="vendor_products_button">
                <children>

@@ -5,6 +5,8 @@ import controller.account.AdminControl;
 import controller.account.IOValidity;
 import model.db.AccountTable;
 import model.db.CartTable;
+import model.db.DiscountTable;
+import model.db.OffTable;
 import model.existence.Account;
 import notification.Notification;
 
@@ -54,6 +56,8 @@ public class IOControl extends Control implements IOValidity {
                         if (Control.getType().equals("Customer") && AccountTable.didPeriodPass("Ya Zahra"))
                             AdminControl.getController().getGiftDiscount();
                         AccountControl.getController().initAudios();
+                        DiscountTable.removeOutDatedDiscounts();
+                        OffTable.removeOutDatedOffs();
                         return Notification.LOGIN_SUCCESSFUL;
                     } else {
                         return Notification.USER_NOT_APPROVED;

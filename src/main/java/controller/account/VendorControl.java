@@ -158,6 +158,7 @@ public class VendorControl extends AccountControl{
 
     public ArrayList<Off> getAllOffs() {
         try {
+            OffTable.removeOutDatedOffs();
             return OffTable.getVendorOffs(Control.getUsername());
         } catch (SQLException e) {
             //:)
@@ -208,6 +209,7 @@ public class VendorControl extends AccountControl{
     public ArrayList<Product> getNonOffProducts(String... exceptions) {
         ArrayList<Product> nonOffProducts = new ArrayList<>();
         try {
+            OffTable.removeOutDatedOffs();
             if(exceptions != null && exceptions.length > 0) {
                 for (String exception : exceptions) {
                     for (String productID : OffTable.getSpecificOff(exception).getProductIDs()) {
@@ -432,6 +434,7 @@ public class VendorControl extends AccountControl{
 
     public ArrayList<Product> getAllProducts() {
         try {
+            OffTable.removeOutDatedOffs();
             return VendorTable.getProductsWithUsername(Control.getUsername());
         } catch (SQLException e) {
             //:)

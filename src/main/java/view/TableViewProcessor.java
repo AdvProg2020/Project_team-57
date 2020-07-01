@@ -101,6 +101,9 @@ public class TableViewProcessor<T> extends Processor {
     public Label repetitionLeftLabel;
     public Label usedDiscountLabel;
     public Pane invoicePane;
+    public Rectangle rightRectangle;
+    public Rectangle leftRectangle;
+    public ImageView logsImageView;
     private TableViewType tableViewType;
     private T selectedItem;
     private String searchedUsername;
@@ -451,7 +454,7 @@ public class TableViewProcessor<T> extends Processor {
                 BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
                 processor.optionPane.setBackground(new Background(backgroundFill));
             } else {
-                processor.optionPane.setStyle("-fx-background-color: #9ce7f0;");
+                processor.optionPane.setStyle("-fx-background-color: #ffd180;");
             }
             if(selectedItem != null) {
                 ProductOfLog productOfLog = (ProductOfLog) selectedItem;
@@ -494,7 +497,10 @@ public class TableViewProcessor<T> extends Processor {
                 BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
                 processor.optionPane.setBackground(new Background(backgroundFill));
             } else {
-                processor.optionPane.setStyle("-fx-background-color: #9ce7f0;");
+                processor.rightRectangle.setFill(Color.valueOf("#f57c00"));
+                processor.leftRectangle.setFill(Color.valueOf("#f57c00"));
+                processor.logsImageView.setImage(new Image("Images\\Icons\\customer invoice.png"));
+                processor.optionPane.setStyle("-fx-background-color: #ffd180;");
             }
             if(selectedItem != null) {
                 Log log = (Log)selectedItem;

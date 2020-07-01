@@ -38,6 +38,9 @@ public class Database {
         initCommentsTable(initConnection.createStatement());
         initTimeLapseTable(initConnection.createStatement());
         removeTempAccountsFromCarts(initConnection);
+/*        DiscountTable.removeOutDatedDiscount();
+        OffTable.removeOutDatedDiscount();*/
+
 
         isDBInit = true;
         initConnection.close();

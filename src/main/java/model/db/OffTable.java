@@ -366,4 +366,15 @@ public class OffTable extends Database{
     public static FileInputStream getEditingOffImageInputStream(String offID) throws FileNotFoundException {
         return new FileInputStream(getEditingOffImageFilePath(offID));
     }
+
+    public static void removeOutDatedOffs() throws SQLException, ClassNotFoundException {
+        for (Off off : getAllOffs()) {
+            if(off.getFinishDate().compareTo(new Date(System.currentTimeMillis())) < 0) {
+                removeOffByID(off.getOffID());
+                removeEditingOff(off.getOffID());
+                removeOffImage(off.getOffID());
+                removeEditingOffImage(off.getOffID());
+            }
+        }
+    }
 }

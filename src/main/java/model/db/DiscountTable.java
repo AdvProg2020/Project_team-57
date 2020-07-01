@@ -120,14 +120,6 @@ public class DiscountTable extends Database {
         return discounts;
     }
 
-    public static void updateDiscountCodesTime() throws SQLException, ClassNotFoundException {
-        ArrayList<Discount> allDiscountCodes = getAllDiscountCodes();
-        for (Discount discountCode : allDiscountCodes) {
-            if(discountCode.getFinishDate().compareTo(new Date(System.currentTimeMillis())) != 1)
-                removeDiscountCode(discountCode.getID());
-        }
-    }
-
     public static void updateDiscountCodesRep() throws SQLException, ClassNotFoundException {
         ArrayList<Discount> allDiscountCodes = getAllDiscountCodes();
         for (Discount discountCode : allDiscountCodes) {
@@ -169,5 +161,12 @@ public class DiscountTable extends Database {
         preparedStatement.setString(8, username);
         preparedStatement.setString(9, discount.getID());
         preparedStatement.execute();
+    }
+
+    public static void removeOutDatedDiscounts() throws SQLException, ClassNotFoundException {
+        for (Discount discount : getAllDiscountCodes()) {
+            if(discount.getFinishDate().compareTo(new Date(System.currentTimeMillis())) < 0)
+                removeDiscountCode(discount.getID());
+        }
     }
 }

@@ -11,8 +11,8 @@
 
 <Pane fx:id="optionPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="230.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.TableViewProcessor">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2f999f" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="55.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2f999f" height="10.0" layoutX="175.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="55.0" />
+      <Rectangle fx:id="rightRectangle" arcHeight="5.0" arcWidth="5.0" fill="#2f999f" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="55.0" />
+      <Rectangle fx:id="leftRectangle" arcHeight="5.0" arcWidth="5.0" fill="#2f999f" height="10.0" layoutX="175.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="55.0" />
       <Label fx:id="logDateLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="236.0" prefWidth="210.0" text="Log Date" textFill="WHITE">
          <font>
             <Font name="Calibri" size="17.0" />
@@ -23,7 +23,7 @@
             <Font size="14.0" />
          </font>
       </JFXButton>
-      <ImageView fitHeight="125.0" fitWidth="125.0" layoutX="53.0" layoutY="101.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="logsImageView" fitHeight="125.0" fitWidth="125.0" layoutX="53.0" layoutY="101.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/Icons/Vendor%20Menu%20Icons/icons8-transaction-list-96.png" />
          </image>

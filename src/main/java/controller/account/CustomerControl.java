@@ -25,6 +25,8 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Product> getAllCartProducts(){
         try {
+            DiscountTable.removeOutDatedDiscounts();
+            OffTable.removeOutDatedOffs();
             return CartTable.getAllCartWithUsername(IOControl.getUsername());
         } catch (SQLException e) {
             //:)
@@ -217,7 +219,7 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Discount> getDiscounts() {
         try {
-            DiscountTable.updateDiscountCodesTime();
+            DiscountTable.removeOutDatedDiscounts();
             return DiscountTable.getCustomerDiscountCodes(Control.getUsername());
         } catch (SQLException e) {
             //:)
@@ -227,39 +229,10 @@ public class CustomerControl extends AccountControl{
         return new ArrayList<>();
     }
 
-    public ArrayList<String> getDiscountCodes() {
-        ArrayList<String> discountCodes = new ArrayList<>();
-        try {
-            DiscountTable.updateDiscountCodesTime();
-            for (Discount discountCode : DiscountTable.getCustomerDiscountCodes(Control.getUsername())) {
-                if(discountCode.getMaxRepetition() > discountCode.getCustomersWithRepetition().get(Control.getUsername()))
-                    discountCodes.add(discountCode.getCode());
-            }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return discountCodes;
-    }
-
-    public ArrayList<String> getDiscountIDs() {
-        ArrayList<String> discountIDs = new ArrayList<>();
-        try {
-            for (Discount discountCode : DiscountTable.getCustomerDiscountCodes(Control.getUsername())) {
-                discountIDs.add(discountCode.getID());
-            }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return discountIDs;
-    }
-
 
     public ArrayList<Off> getAllShowingOffs() {
         try {
+            OffTable.removeOutDatedOffs();
             return OffTable.getAllShowingOffs();
         } catch (SQLException e) {
             //:)
@@ -591,6 +564,7 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Product> getTempCartProducts() {
         try {
+            OffTable.removeOutDatedOffs();
             return CartTable.getAllCartWithUsername("temp");
         } catch (SQLException e) {
             //:)

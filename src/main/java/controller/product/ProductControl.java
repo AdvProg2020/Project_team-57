@@ -233,6 +233,7 @@ public class ProductControl extends Control {
 
     public ArrayList<Product> getAllShowingProducts() {
         try {
+            OffTable.removeOutDatedOffs();
             ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts());
             filterProductsWithPrice(showingProducts);
             sortProducts(showingProducts);
@@ -383,7 +384,7 @@ public class ProductControl extends Control {
         }
     }
 
-    public Off getOffByProductID(String productID){
+    public Off getOffByProductID(String productID) {
         try {
             return OffTable.getOffByProductID(productID);
         } catch (SQLException e) {
@@ -395,6 +396,7 @@ public class ProductControl extends Control {
 
     public ArrayList <Product> getAllComparingProducts() {
         try {
+            OffTable.removeOutDatedOffs();
             String firstProductCategory = ProductTable.getProductByID(comparingProducts[0].getID()).getCategory();
             while (CategoryTable.getParentCategory(firstProductCategory) != null &&
                     !CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
