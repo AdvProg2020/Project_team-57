@@ -8,19 +8,19 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="pain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="728.0" prefWidth="947.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CustomerProfileProcessor">
+<Pane fx:id="pain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="728.0" prefWidth="947.0" style="-fx-background-color: #f5f5f5;" stylesheets="@../CSS%20files/CustomerProfileMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CustomerProfileProcessor">
    <children>
-      <Pane fx:id="discountPane" layoutX="53.0" layoutY="230.0" onMouseClicked="#showCustomerDiscountCodes"  prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10;">
+      <Pane fx:id="discountPane" layoutX="53.0" layoutY="230.0" onMouseClicked="#showCustomerDiscountCodes" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10; -fx-background-color: #ffb74d;">
          <children>
-            <ImageView fx:id="infoImage" fitHeight="92.0" fitWidth="105.0" layoutX="78.0" layoutY="42.0"  opacity="0.7" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="infoImage" fitHeight="112.0" fitWidth="107.0" layoutX="70.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Images/Icons/taxation.png" />
+                  <Image url="@../Images/Icons/discountCustomer.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <Label fx:id="infoLabel" layoutX="66.0" layoutY="164.0" opacity="0.7" stylesheets="@../CSS%20files/customerProfile.css" text="Discount Code" textFill="#117d8a">
+            <Label fx:id="infoLabel" layoutX="66.0" layoutY="164.0" stylesheets="@../CSS%20files/customerProfile.css" text="Discount Code" textFill="#8a5b12">
                <font>
                   <Font name="System Bold Italic" size="17.0" />
                </font>
@@ -33,17 +33,17 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
-      <Pane fx:id="historyPane" layoutX="640.0" layoutY="230.0" onMouseClicked="#showBuyLogs" onMouseEntered="#enterHistory" onMouseExited="#exitHistory" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10;">
+      <Pane fx:id="historyPane" layoutX="640.0" layoutY="230.0" onMouseClicked="#showBuyLogs" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10; -fx-background-color: #ffb74d;">
          <children>
-            <ImageView fx:id="historyImage" fitHeight="92.0" fitWidth="105.0" layoutX="64.0" layoutY="58.0" onMouseEntered="#enterHistory" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="historyImage" fitHeight="92.0" fitWidth="105.0" layoutX="78.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Images/Icons/buy%20history.png" />
+                  <Image url="@../Images/Icons/buyHistoryCustomer.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <Label fx:id="historyLabel" layoutX="64.0" layoutY="162.0" stylesheets="@../CSS%20files/customerProfile.css" text="Buy History" textFill="#117d8a">
+            <Label fx:id="historyLabel" layoutX="78.0" layoutY="162.0" stylesheets="@../CSS%20files/customerProfile.css" text="Buy History" textFill="#8a5b12">
                <font>
                   <Font name="System Bold Italic" size="17.0" />
                </font>
@@ -56,17 +56,17 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
-      <Pane fx:id="cartPane" layoutX="337.0" layoutY="230.0" onMouseClicked="#showCart" onMouseEntered="#enterCart" onMouseExited="#exitCart" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10;">
+      <Pane fx:id="cartPane" layoutX="350.0" layoutY="230.0" onMouseClicked="#showCart" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10; -fx-background-color: #ffb74d;">
          <children>
-            <ImageView fx:id="cartImage" disable="true" fitHeight="92.0" fitWidth="105.0" layoutX="73.0" layoutY="51.0" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="cartImage" disable="true" fitHeight="107.0" fitWidth="114.0" layoutX="61.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Images/Icons/cart.png" />
+                  <Image url="@../Images/Icons/cartCustomer.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <Label fx:id="cartLabel" layoutX="107.0" layoutY="166.0" stylesheets="@../CSS%20files/customerProfile.css" text="Cart" textFill="#117d8a">
+            <Label fx:id="cartLabel" layoutX="98.0" layoutY="169.0" stylesheets="@../CSS%20files/customerProfile.css" text="Cart" textFill="#8a5b12">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
@@ -79,26 +79,26 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
-      <JFXButton contentDisplay="RIGHT" layoutX="734.0" layoutY="54.0" style="-fx-background-radius: 10;" text="Logout">
+      <JFXButton buttonType="RAISED" contentDisplay="RIGHT" layoutX="734.0" layoutY="54.0" ripplerFill="#ffc107" style="-fx-background-radius: 10;" styleClass="CustomerProfileButton" stylesheets="@../CSS%20files/CustomerProfileMenu.css" text="Logout" textFill="#8a5b12">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
          <graphic>
-            <ImageView fx:id="logout" fitHeight="54.0" fitWidth="43.0" onMouseClicked="#logOutButton" onMouseEntered="#logoutEnter" onMouseExited="#logoutExit" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="logout" fitHeight="54.0" fitWidth="43.0" nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#logOutButton" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Images/Icons/signOut.png" />
+                  <Image url="@../Images/Icons/logoutCustomer.png" />
                </image>
             </ImageView>
          </graphic>
       </JFXButton>
-      <JFXButton contentDisplay="RIGHT" layoutX="390.0" layoutY="51.0" style="-fx-background-radius: 10;" text="Label">
+      <JFXButton fx:id="profileButton" buttonType="RAISED" contentDisplay="RIGHT" layoutX="390.0" layoutY="51.0" style="-fx-background-radius: 10;" styleClass="CustomerProfileButton" stylesheets="@../CSS%20files/CustomerProfileMenu.css" text="Label" textFill="#8a5b12">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
          <graphic>
-            <ImageView fx:id="profile" fitHeight="43.0" fitWidth="48.0" onMouseEntered="#enterProfile" onMouseExited="#exitProfile" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="profile" fitHeight="43.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Images/Icons/login-as-user.png" />
+                  <Image url="@../Images/Icons/userCustomer.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />
@@ -106,14 +106,14 @@
             </ImageView>
          </graphic>
       </JFXButton>
-      <JFXButton contentDisplay="RIGHT" layoutX="53.0" layoutY="51.0" nodeOrientation="RIGHT_TO_LEFT" style="-fx-background-radius: 10;" text="Main Menu">
+      <JFXButton buttonType="RAISED" contentDisplay="RIGHT" layoutX="53.0" layoutY="51.0" nodeOrientation="RIGHT_TO_LEFT" ripplerFill="#ffc107" style="-fx-background-radius: 10;" styleClass="CustomerProfileButton" stylesheets="@../CSS%20files/CustomerProfileMenu.css" text="Main Menu" textFill="#8a5b12">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
          <graphic>
-            <ImageView fx:id="back" fitHeight="43.0" fitWidth="48.0" onMouseClicked="#backToMainMenu" onMouseEntered="#enterBack" onMouseExited="#exitBack" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="back" fitHeight="43.0" fitWidth="48.0" onMouseClicked="#backToMainMenu" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Images/Icons/backCustomerMenu.png" />
+                  <Image url="@../Images/Icons/backCustomer.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />

@@ -1,5 +1,6 @@
 package view;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import controller.Control;
@@ -13,8 +14,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.effect.BlurType;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -47,9 +46,9 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     public Pane historyPane;
     public Pane cartPane;
     public ImageView back;
-    public Label profileLabel;
     private Stage myStage;
     public Pane pain;
+    public JFXButton profileButton;
 
     /**
      * Purchase.fxml
@@ -67,7 +66,8 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             if (accountControl.getAccount().getFirstName() != null && accountControl.getAccount().getLastName() != null)
                 name.setText(accountControl.getAccount().getFirstName() + " " + accountControl.getAccount().getLastName());
         } else {
-           /* Stop[] stops = new Stop[]{
+            System.out.println("dddddd");
+            Stop[] stops = new Stop[]{
                     new Stop(0, Color.valueOf("#fb8c00")),
                     new Stop(0.25, Color.valueOf("#f57c00")),
                     new Stop(0.5, Color.valueOf("#ef6c00")),
@@ -75,8 +75,13 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             };
             LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
             BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
-            pain.setBackground(new Background(backgroundFill));
-            DropShadow dropShadow = new DropShadow();
+            discountPane.setStyle("-fx-background-radius: 10px");
+            cartPane.setStyle("-fx-background-radius: 10px");
+            historyPane.setStyle("-fx-background-radius: 10px");
+            discountPane.setBackground(new Background(backgroundFill));
+            cartPane.setBackground(new Background(backgroundFill));
+            historyPane.setBackground(new Background(backgroundFill));
+            /*DropShadow dropShadow = new DropShadow();
             dropShadow.setBlurType(BlurType.ONE_PASS_BOX);
             dropShadow.setColor(Color.valueOf("#4787bf"));
             dropShadow.setHeight(5);
@@ -87,7 +92,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             infoLabel.setEffect(dropShadow);
             historyLabel.setEffect(dropShadow);
             cartLabel.setEffect(dropShadow);*/
-            profileLabel.setText(Control.getUsername());
+            profileButton.setText(Control.getUsername());
         }
     }
 
@@ -95,7 +100,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         return myStage;
     }
 
-    public void setMyStage(Stage myStage) {
+    /*public void setMyStage(Stage myStage) {
         this.myStage = myStage;
     }
 
@@ -146,7 +151,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
 
     public void exitBack(MouseEvent event) {
         back.setOpacity(0.7);
-    }
+    }*/
 
     public void showCart(MouseEvent event) {
         if(canOpenSubStage(Control.getUsername() + " Cart", this))
