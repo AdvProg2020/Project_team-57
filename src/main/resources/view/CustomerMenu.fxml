@@ -8,9 +8,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="pain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="728.0" prefWidth="947.0" style="-fx-background-color: #f5f5f5;" stylesheets="@../CSS%20files/CustomerProfileMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CustomerProfileProcessor">
+<Pane fx:id="pain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="728.0" prefWidth="947.0" style="-fx-background-color: #f5f5f5;" stylesheets="@CustomerProfileMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.CustomerProfileProcessor">
    <children>
-      <Pane fx:id="discountPane" layoutX="53.0" layoutY="230.0" onMouseClicked="#showCustomerDiscountCodes" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10; -fx-background-color: #ffb74d;">
+      <Pane fx:id="discountPane" layoutX="53.0" layoutY="252.0" onMouseClicked="#showCustomerDiscountCodes" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10; -fx-background-color: #ffb74d;" styleClass="CustomerPane" stylesheets="@CustomerProfileMenu.css">
          <children>
             <ImageView fx:id="infoImage" fitHeight="112.0" fitWidth="107.0" layoutX="70.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -20,7 +20,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <Label fx:id="infoLabel" layoutX="66.0" layoutY="164.0" stylesheets="@../CSS%20files/customerProfile.css" text="Discount Code" textFill="#8a5b12">
+            <Label fx:id="infoLabel" layoutX="66.0" layoutY="164.0" stylesheets="@CustomerProfileMenu.css" text="Discount Code" textFill="#8a5b12">
                <font>
                   <Font name="System Bold Italic" size="17.0" />
                </font>
@@ -33,7 +33,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
-      <Pane fx:id="historyPane" layoutX="640.0" layoutY="230.0" onMouseClicked="#showBuyLogs" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10; -fx-background-color: #ffb74d;">
+      <Pane fx:id="historyPane" layoutX="641.0" layoutY="252.0" onMouseClicked="#showBuyLogs" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10; -fx-background-color: #ffb74d;" styleClass="CustomerPane" stylesheets="@CustomerProfileMenu.css">
          <children>
             <ImageView fx:id="historyImage" fitHeight="92.0" fitWidth="105.0" layoutX="78.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -43,7 +43,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <Label fx:id="historyLabel" layoutX="78.0" layoutY="162.0" stylesheets="@../CSS%20files/customerProfile.css" text="Buy History" textFill="#8a5b12">
+            <Label fx:id="historyLabel" layoutX="78.0" layoutY="162.0" stylesheets="@CustomerProfileMenu.css" text="Buy History" textFill="#8a5b12">
                <font>
                   <Font name="System Bold Italic" size="17.0" />
                </font>
@@ -56,7 +56,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
-      <Pane fx:id="cartPane" layoutX="350.0" layoutY="230.0" onMouseClicked="#showCart" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10; -fx-background-color: #ffb74d;">
+      <Pane fx:id="cartPane" layoutX="350.0" layoutY="252.0" onMouseClicked="#showCart" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10; -fx-background-color: #ffb74d;" styleClass="CustomerPane" stylesheets="@CustomerProfileMenu.css">
          <children>
             <ImageView fx:id="cartImage" disable="true" fitHeight="107.0" fitWidth="114.0" layoutX="61.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -66,7 +66,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ImageView>
-            <Label fx:id="cartLabel" layoutX="98.0" layoutY="169.0" stylesheets="@../CSS%20files/customerProfile.css" text="Cart" textFill="#8a5b12">
+            <Label fx:id="cartLabel" layoutX="107.0" layoutY="169.0" stylesheets="@CustomerProfileMenu.css" text="Cart" textFill="#8a5b12">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
@@ -79,7 +79,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
-      <JFXButton buttonType="RAISED" contentDisplay="RIGHT" layoutX="734.0" layoutY="54.0" ripplerFill="#ffc107" style="-fx-background-radius: 10;" styleClass="CustomerProfileButton" stylesheets="@../CSS%20files/CustomerProfileMenu.css" text="Logout" textFill="#8a5b12">
+      <JFXButton fx:id="logoutButton" buttonType="RAISED" contentDisplay="RIGHT" layoutX="734.0" layoutY="54.0" onAction="#logOutButton" ripplerFill="#ffa726" style="-fx-background-radius: 10;" styleClass="CustomerProfileButton" stylesheets="@CustomerProfileMenu.css" text="Logout" textFill="#8a5b12">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -90,8 +90,11 @@
                </image>
             </ImageView>
          </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
-      <JFXButton fx:id="profileButton" buttonType="RAISED" contentDisplay="RIGHT" layoutX="390.0" layoutY="51.0" style="-fx-background-radius: 10;" styleClass="CustomerProfileButton" stylesheets="@../CSS%20files/CustomerProfileMenu.css" text="Label" textFill="#8a5b12">
+      <JFXButton fx:id="profileButton" buttonType="RAISED" contentDisplay="RIGHT" layoutX="390.0" layoutY="51.0" onAction="#showProfileMenu" ripplerFill="#ffa726" style="-fx-background-radius: 10;" styleClass="CustomerProfileButton" stylesheets="@CustomerProfileMenu.css" text="Label" textFill="#8a5b12">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -105,8 +108,11 @@
                </cursor>
             </ImageView>
          </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
-      <JFXButton buttonType="RAISED" contentDisplay="RIGHT" layoutX="53.0" layoutY="51.0" nodeOrientation="RIGHT_TO_LEFT" ripplerFill="#ffc107" style="-fx-background-radius: 10;" styleClass="CustomerProfileButton" stylesheets="@../CSS%20files/CustomerProfileMenu.css" text="Main Menu" textFill="#8a5b12">
+      <JFXButton fx:id="backButton" buttonType="RAISED" contentDisplay="RIGHT" layoutX="53.0" layoutY="51.0" nodeOrientation="RIGHT_TO_LEFT" onAction="#backToMainMenu" ripplerFill="#ffa726" style="-fx-background-radius: 10;" styleClass="CustomerProfileButton" stylesheets="@CustomerProfileMenu.css" text="Main Menu" textFill="#8a5b12">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -120,6 +126,9 @@
                </cursor>
             </ImageView>
          </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </JFXButton>
    </children>
 </Pane>

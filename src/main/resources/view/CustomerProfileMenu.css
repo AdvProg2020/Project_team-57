@@ -76,5 +76,9 @@
 }
 
 .CustomerProfileButton:hover {
-    -fx-background-color: #ff9800;
+    -fx-background-color: #ffcc80;
+}
+
+.CustomerPane:hover{
+    -fx-opacity: 0.7;
 }
