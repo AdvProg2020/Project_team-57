@@ -1,5 +1,6 @@
 package controller;
 
+import controller.account.AccountControl;
 import controller.account.AdminControl;
 import controller.account.IOValidity;
 import model.db.AccountTable;
@@ -52,6 +53,7 @@ public class IOControl extends Control implements IOValidity {
                         CartTable.removeTemp();
                         if (Control.getType().equals("Customer") && AccountTable.didPeriodPass("Ya Zahra"))
                             AdminControl.getController().getGiftDiscount();
+                        AccountControl.getController().initAudios();
                         return Notification.LOGIN_SUCCESSFUL;
                     } else {
                         return Notification.USER_NOT_APPROVED;
