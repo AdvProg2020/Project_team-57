@@ -34,7 +34,13 @@ public class AccountControl extends Control implements IOValidity {
             case "Admin" :
                 audios = Audio.getAdminMusics();
                 break;
+            case "Vendor" :
+                audios = Audio.getVendorMusics();
+                break;
+            case "Customer" :
+                audios = Audio.getCustomerMusics();
          }
+         isMusicPlaying = false;
         musicCounter = 0;
     }
 
@@ -57,6 +63,9 @@ public class AccountControl extends Control implements IOValidity {
     }
 
     public static class Audio {
+        private static ArrayList<Audio> adminAudios;
+        private static ArrayList<Audio> vendorAudios;
+        private static ArrayList<Audio> customerAudios;
         private String artist;
         private String name;
         private MediaPlayer music;
@@ -68,22 +77,50 @@ public class AccountControl extends Control implements IOValidity {
         }
 
         private static ArrayList<Audio> getAdminMusics() {
+            if(adminAudios != null)
+                return adminAudios;
             try {
-                ArrayList<Audio> audios = new ArrayList<>();
-                System.out.println();
-                audios.add(
-                        new Audio
-                                ("Mohsen Chavoshi", "Dele Man", new MediaPlayer(
-                                        new Media(Main.class.getResource("Original SoundTracks\\Admin\\Mohsen Chavoshi Dele Man.mp3").toURI().toString()))));
-                audios.add(
-                        new Audio
-                            ("Mohsen Chavoshi", "Amire Bi Gazand", new MediaPlayer(
-                                    new Media(Main.class.getResource("Original SoundTracks\\Admin\\Mohsen Chavoshi Amire Bi Gazand.mp3").toURI().toString()))));
-                return audios;
+                adminAudios = new ArrayList<>();
+                adminAudios.add(makeAudio("Mohsen Chavoshi", "Dele Man", "Admin","Mohsen Chavoshi Dele Man.mp3"));
+                adminAudios.add(makeAudio("Mohsen Chavoshi", "Amire Bi Gazand", "Admin","Mohsen Chavoshi Amire Bi Gazand.mp3"));
+                return adminAudios;
             } catch (URISyntaxException e) {
                 //:)
             }
             return new ArrayList<>();
+        }
+
+        public static ArrayList<Audio> getVendorMusics() {
+            if(vendorAudios != null)
+                return vendorAudios;
+            try {
+                vendorAudios = new ArrayList<>();
+                vendorAudios.add(makeAudio("Benyamin Bahadori", "Bi Etena", "Vendor","Benyamin Bahadori - Bi Etena.mp3"));
+                vendorAudios.add(makeAudio("Shadmehr Aghili", "Alamate Soal", "Vendor","Shadmehr-Aghili-Alamate-Soal.mp3"));
+                return vendorAudios;
+            } catch (URISyntaxException e) {
+                //:)
+            }
+            return new ArrayList<>();
+        }
+        public static ArrayList<Audio> getCustomerMusics() {
+            if(customerAudios != null)
+                return customerAudios;
+            try {
+                customerAudios = new ArrayList<>();
+                customerAudios.add(makeAudio("Shayea & Hidden", "Mosser", "Customer","Shayea-Mosser_FT_Mehrad_Hidden.mp3"));
+                customerAudios.add(makeAudio("Imagine Dragons", "Believer", "Customer","Imagine Dragons - Believer.mp3"));
+                customerAudios.add(makeAudio("Nico Vega", "Beast", "Customer","Beast (Extended Version).mp3"));
+                return customerAudios;
+            } catch (URISyntaxException e) {
+                //:)
+            }
+            return new ArrayList<>();
+        }
+
+        private static Audio makeAudio(String artist, String name, String type, String fileName) throws URISyntaxException {
+            return new Audio(artist, name, new MediaPlayer(
+                    new Media(Main.class.getResource("Original SoundTracks\\" + type + "\\" + fileName).toURI().toString())));
         }
 
         public String getName() {

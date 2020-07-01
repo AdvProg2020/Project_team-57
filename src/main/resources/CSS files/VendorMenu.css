@@ -27,3 +27,8 @@
     -fx-background-color: #2F999F;
     -fx-cursor: hand;
 }
+
+.media_button:hover {
+    -fx-cursor: hand;
+    -fx-opacity: 0.8;
+}

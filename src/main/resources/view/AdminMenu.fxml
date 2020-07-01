@@ -15,7 +15,7 @@
    <left>
       <VBox prefHeight="700.0" prefWidth="220.0" style="-fx-background-color: #ffffff;" BorderPane.alignment="CENTER">
          <children>
-            <HBox prefHeight="100.0" prefWidth="200.0" />
+            <HBox prefHeight="48.0" prefWidth="220.0" />
             <Pane prefHeight="80.0" prefWidth="220.0" style="-fx-background-color: #ffffff;">
                <children>
                   <JFXButton fx:id="dashboardButton" onAction="#setOptions" prefHeight="80.0" prefWidth="220.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff;" styleClass="hover_button" text="Dashboard">
@@ -72,7 +72,8 @@
                   </ImageView>
                </children>
             </Pane>
-            <Pane prefHeight="131.0" prefWidth="220.0" style="-fx-background-color: #ffffff;">
+            <Pane prefHeight="60.0" prefWidth="220.0" />
+            <Pane prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #ffffff;">
                <children>
                   <ImageView fx:id="startMediaButton" fitHeight="40.0" fitWidth="40.0" layoutX="90.0" layoutY="14.0" onMouseClicked="#modifyPlayingMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
                      <image>
