@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 
@@ -14,4 +15,18 @@
          </right>
       </BorderPane>
    </top>
+   <center>
+      <ScrollPane prefHeight="325.0" prefWidth="900.0" BorderPane.alignment="CENTER">
+         <content>
+            <BorderPane fx:id="middleBorderPane" prefHeight="550.0" prefWidth="880.0" />
+         </content>
+      </ScrollPane>
+   </center>
+   <bottom>
+      <ScrollPane prefHeight="275.0" prefWidth="900.0" BorderPane.alignment="CENTER">
+         <content>
+            <Pane prefHeight="270.0" prefWidth="880.0" />
+         </content>
+      </ScrollPane>
+   </bottom>
 </BorderPane>

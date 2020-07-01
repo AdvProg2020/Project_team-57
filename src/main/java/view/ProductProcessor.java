@@ -71,10 +71,12 @@ public class ProductProcessor extends Processor {
     //MainPane
     public BorderPane mainPane;
     private Product product;
+    private ArrayList<Product> similarProducts;
     private AnimationTimer mainTimer;
     private long changePictureTimer = -1;
     private final long CHANGE_PICTURE_PERIOD = 8_000_000_000L;
     public BorderPane upBorderPane;
+    public BorderPane middleBorderPane;
     private ProductMenuType menuType;
 
     ///Single Product Menu///
@@ -181,9 +183,23 @@ public class ProductProcessor extends Processor {
         subProcessors = new ArrayList<>();
         initImagePanel();
         //sep
-        mainPane.setLeft(getInitGeneralInfoPane(product));
+        middleBorderPane.setLeft(getInitGeneralInfoPane(product));
         initCommentsPane();
         initSpecialPane();
+
+        //Showing Similar Products Page
+        switch (menuType) {
+            case PRODUCTS_CUSTOMER:
+            case PRODUCTS:
+            case CART:
+                productControl.setFirstComparingProduct(product.getID());
+                similarProducts = productControl.getAllComparingProducts();
+                if(!similarProducts.isEmpty()) {
+                    //Doing The Similar Thing
+                }
+                break;
+        }
+
     }
 
     public void initComparingProcessor(Product firstProduct, Product secondProduct) {
@@ -871,7 +887,7 @@ public class ProductProcessor extends Processor {
         ProductProcessor processor = loader.getController();
         subProcessors.add(processor);
         processor.initCommentsThroughThePane();
-        mainPane.setRight(loader.getRoot());
+        middleBorderPane.setRight(loader.getRoot());
     }
 
     private void initCommentsThroughThePane() {
