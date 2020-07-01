@@ -13,6 +13,7 @@ import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -38,6 +39,7 @@ import org.controlsfx.control.Rating;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -50,9 +52,13 @@ public class ProductProcessor extends Processor {
         this.menuType = menuType;
     }
 
-    public void similarProductsMouseClicked(MouseEvent mouseEvent) {
-        //Todo
-    }
+//    public void similarProductsMouseClicked(MouseEvent mouseEvent) {
+//        similarProductsPane.setCollapsible(true);
+//        similarProductsPane.setExpanded(!similarProductsPane.isExpanded());
+//        similarProductsPane.setCollapsible(false);
+//
+//        downPartScrollPane.setVvalue(1.0);
+//    }
 
     public static enum ProductMenuType {
         CART, VENDOR_ADD, VENDOR_EDIT, VENDOR_EDIT_UNAPPROVED,
@@ -158,12 +164,27 @@ public class ProductProcessor extends Processor {
     public JFXButton addComment;
     public Rating commentScore;
 
-    //SimilarParts
+    //SimilarPart
     public TitledPane similarProductsPane;
     private static final double PRODUCT_FIELD_WIDTH = 220;
     private static final double PRODUCT_FIELD_HEIGHT = 255;
     public HBox similarProductsHBox;
     public ScrollPane downPartScrollPane;
+
+    //SimilarProductsPane
+    private ArrayList<HBox> similarProductHBoxes;
+    private static final double HBOX_WIDTH = 885;
+    private static final double HBOX_HEIGHT = 265;
+    private int pagesNumber;
+    private int currentPageNumber;
+
+    //SimilarProductPane
+    public Pane similarProductPane;
+    public Label productNameLabel;
+    public Label oldPriceLabel;
+    public Label newPriceLabel;
+    public Rectangle productImage;
+    public ImageView inOffImage;
 
     //SpecialPane
     public Pane specialPane;
@@ -202,34 +223,107 @@ public class ProductProcessor extends Processor {
         switch (menuType) {
             case PRODUCTS_CUSTOMER:
             case PRODUCTS:
-            case CART:
                 productControl.setFirstComparingProduct(product.getID());
                 similarProducts = productControl.getAllComparingProducts();
                 if(similarProducts.isEmpty()) {
                     downBorderPane.getChildren().remove(similarProductsPane);
                 } else {
-//                    downPartScrollPane.vmaxProperty().addListener((observable, oldValue, newValue) -> {
-//            if(!oldValue.equals(newValue)) {
-//                        System.out.println("fuck");
-//                        downPartScrollPane.setVvalue(downPartScrollPane.getVmin());
-//            }
-//                    });
                     //Creating The Similar Pane
-                    for (int i = 0; i < 4; i++) {
-                        Pane pane = new Pane();
-                        pane.setPrefHeight(255);
-                        pane.setPrefWidth(220);
-                        FXMLLoader fxmlLoader = loadThePane("SimilarProductPane");
-                        Pane similarProductPane = fxmlLoader.getRoot();
-                        similarProductPane.setLayoutX(5);
-//                        similarProductPane.setLayoutY(0);
-                        pane.getChildren().add(similarProductPane);
-                        similarProductsHBox.getChildren().add(pane);
-                    }
+                    initSimilarProductsPane();
+
+                    currentPageNumber = 0;
+                    similarProductsPane.setContent(similarProductHBoxes.get(currentPageNumber));
                 }
                 break;
         }
 
+    }
+
+    private void initSimilarProductsPane() {
+        similarProductHBoxes = new ArrayList<>();
+        pagesNumber = (int)Math.ceil(similarProducts.size() / 4.0);
+        System.out.println(pagesNumber);
+
+        for (int i = 0; i < pagesNumber; i++) {
+            HBox hBox = new HBox();
+            hBox.setPrefWidth(HBOX_WIDTH);
+            hBox.setPrefHeight(HBOX_HEIGHT);
+            int similarProductBeginIndex = 4 * i, similarProductEndIndex = Math.min(4 * (i + 1), similarProducts.size());
+
+            System.out.println(similarProductBeginIndex);
+            System.out.println(similarProductEndIndex);
+
+            hBox.getChildren().add(getSimilarProductPagePane(i != 0, false));
+
+            for (Product similarProduct : similarProducts.subList(similarProductBeginIndex, similarProductEndIndex)) {
+                Pane pane = new Pane();
+                pane.setPrefHeight(255);
+                pane.setPrefWidth(205);
+                FXMLLoader fxmlLoader = loadThePane("SimilarProductPane");
+                ProductProcessor similarProductProcessor = fxmlLoader.getController();
+                similarProductProcessor.initSimilarProductPane(similarProduct);
+                pane.getChildren().add(fxmlLoader.getRoot());
+                hBox.getChildren().add(pane);
+            }
+
+            hBox.getChildren().add(getSimilarProductPagePane(i != pagesNumber - 1, true));
+
+            similarProductHBoxes.add(hBox);
+        }
+    }
+
+    private Pane getSimilarProductPagePane(boolean isNecessary, boolean isNext) {
+        Pane pane = new Pane();
+        pane.setPrefWidth(30);
+        pane.setPrefHeight(HBOX_HEIGHT);
+
+        if(isNecessary) {
+            ImageView imageView = new ImageView();
+            imageView.setLayoutY(HBOX_HEIGHT / 2 - 15);
+            imageView.setFitWidth(30);
+            imageView.setFitHeight(30);
+            imageView.getStyleClass().add("Page_Button");
+
+            FileInputStream fileInputStream = null;
+
+            try {
+                if (isNext) {
+                    imageView.setOnMouseClicked(event -> nextPage());
+                    fileInputStream = new FileInputStream("src\\main\\resources\\Images\\Icons\\ProductMenu\\NextPage.png");
+
+                } else {
+                    imageView.setOnMouseClicked(event -> previousPage());
+                    fileInputStream = new FileInputStream("src\\main\\resources\\Images\\Icons\\ProductMenu\\PreviousPage.png");
+                }
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            imageView.setImage(new Image(fileInputStream));
+            pane.getChildren().add(imageView);
+        }
+
+        return pane;
+    }
+
+    public void previousPage() {
+        System.out.println("Fuck");
+        changePage(false);
+    }
+
+    public void nextPage() {
+        System.out.println("Fuck");
+        changePage(true);
+    }
+
+    private void changePage(boolean isNext) {
+        if(isNext)
+            currentPageNumber++;
+        else
+            currentPageNumber--;
+
+        similarProductsPane.setContent(similarProductHBoxes.get(currentPageNumber));
     }
 
     public void initComparingProcessor(Product firstProduct, Product secondProduct) {
@@ -275,6 +369,33 @@ public class ProductProcessor extends Processor {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void initSimilarProductPane(Product product) {
+        this.product = product;
+        productImage.setFill(new ImagePattern(productControl.getProductImageByID(product.getID(), 1)));
+        productNameLabel.setText(product.getName());
+
+        if(product.isOnSale()) {
+            similarProductPane.getChildren().removeAll(inOffImage, newPriceLabel);
+        } else {
+            oldPriceLabel.setText(Double.toString(product.getPrice()));
+            oldPriceLabel.getStylesheets().addAll(Main.class.getResource("Strikethrough.css").toExternalForm());
+            newPriceLabel.setText(Double.toString(product.getOffPrice()));
+        }
+
+        similarProductPane.setOnMouseClicked(event -> ((ProductProcessor)parentProcessor).openProductMenu(product));
+    }
+
+    public void openProductMenu(Product product) {
+        FXMLLoader fxmlLoader = loadThePane("ProductMenu");
+        ProductProcessor productProcessor = fxmlLoader.getController();
+        productControl.addSeenToProduct(product.getID());
+        productProcessor.initProcessor(product, menuType);
+        myStage.setScene(new Scene(fxmlLoader.getRoot()));
+        myStage.setTitle(product.getName() + " Menu");
+        productProcessor.setMyStage(myStage);
+
     }
 
     private void initGeneralInfoPane() {

@@ -23,7 +23,7 @@
          <content>
             <BorderPane fx:id="downBorderPane" prefWidth="885.0">
                <bottom>
-                  <TitledPane fx:id="similarProductsPane" animated="false" onMouseClicked="#similarProductsMouseClicked" text="Similar Products" BorderPane.alignment="CENTER">
+                  <TitledPane fx:id="similarProductsPane" text="Similar Products" BorderPane.alignment="CENTER">
                      <font>
                         <Font name="System Bold Italic" size="15.0" />
                      </font>

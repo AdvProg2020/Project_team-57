@@ -8,7 +8,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="245.0" prefWidth="195.0" style="-fx-background-radius: 10 10 10 10; -fx-background-color: #ffffff;" styleClass="product_pane" stylesheets="@../CSS%20files/ProductPane.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
+<Pane fx:id="similarProductPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="245.0" prefWidth="195.0" style="-fx-background-radius: 10 10 10 10; -fx-background-color: #ffffff;" styleClass="product_pane" stylesheets="@../CSS%20files/ProductPane.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ProductProcessor">
    <children>
       <Label fx:id="productNameLabel" layoutX="9.0" layoutY="190.0" text="Samsung Galaxy A30">
          <font>
