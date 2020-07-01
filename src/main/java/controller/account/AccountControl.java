@@ -3,17 +3,21 @@ package controller.account;
 import controller.Control;
 import controller.product.ProductControl;
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import model.db.*;
 import model.existence.Account;
 import model.existence.Log;
 import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
+import view.Main;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -21,6 +25,83 @@ import java.util.ArrayList;
 public class AccountControl extends Control implements IOValidity {
     private static AccountControl customerControl = null;
     private static String currentLogID;
+    private boolean isMusicPlaying = false;
+    private ArrayList<Audio> audios;
+    private long musicCounter = 0;
+
+    public void initAudios() {
+        switch (getType()) {
+            case "Admin" :
+                audios = Audio.getAdminMusics();
+                break;
+         }
+        musicCounter = 0;
+    }
+
+    public void stopMusics() {
+        if(audios != null) {
+            for (Audio audio : audios) {
+                audio.stop();
+            }
+        }
+    }
+
+    public long getMusicCount() {
+        if(audios == null)
+            return 0;
+        return audios.size();
+    }
+
+    public void stopPlayingMusic() {
+        audios.get((int) (musicCounter % audios.size())).music.stop();
+    }
+
+    public static class Audio {
+        private String artist;
+        private String name;
+        private MediaPlayer music;
+
+        private Audio(String artist, String name, MediaPlayer music) {
+            this.artist = artist;
+            this.name = name;
+            this.music = music;
+        }
+
+        private static ArrayList<Audio> getAdminMusics() {
+            try {
+                ArrayList<Audio> audios = new ArrayList<>();
+                System.out.println();
+                audios.add(
+                        new Audio
+                                ("Mohsen Chavoshi", "Dele Man", new MediaPlayer(
+                                        new Media(Main.class.getResource("Original SoundTracks\\Admin\\Mohsen Chavoshi Dele Man.mp3").toURI().toString()))));
+                audios.add(
+                        new Audio
+                            ("Mohsen Chavoshi", "Amire Bi Gazand", new MediaPlayer(
+                                    new Media(Main.class.getResource("Original SoundTracks\\Admin\\Mohsen Chavoshi Amire Bi Gazand.mp3").toURI().toString()))));
+                return audios;
+            } catch (URISyntaxException e) {
+                //:)
+            }
+            return new ArrayList<>();
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public MediaPlayer getMusic() {
+            return music;
+        }
+
+        public void stop() {
+            music.stop();
+        }
+
+        public String getArtist() {
+            return artist;
+        }
+    }
 
     public static String getCurrentLogID() {
         return currentLogID;
@@ -366,5 +447,35 @@ public class AccountControl extends Control implements IOValidity {
             }
         }
 
+    }
+
+    public boolean isMusicPlaying() {
+        return isMusicPlaying;
+    }
+
+    public void setMusicPlaying(boolean musicPlaying) {
+        isMusicPlaying = musicPlaying;
+    }
+
+    public boolean modifyPlayingMusic() {
+        if(!isMusicPlaying) {
+            audios.get((int) (musicCounter % audios.size())).getMusic().play();
+        } else {
+            audios.get((int) (musicCounter % audios.size())).getMusic().pause();
+        }
+        isMusicPlaying = !isMusicPlaying;
+        return isMusicPlaying;
+    }
+
+    public Audio getPlayingMusic() {
+        return audios.get((int) (musicCounter % audios.size()));
+    }
+
+    public long getMusicCounter() {
+        return musicCounter;
+    }
+
+    public void setMusicCounter(long musicCounter) {
+        this.musicCounter = musicCounter;
     }
 }

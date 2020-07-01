@@ -1,6 +1,7 @@
 package view;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXProgressBar;
 import controller.Control;
 import controller.account.AdminControl;
 import javafx.event.ActionEvent;
@@ -10,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -57,6 +59,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             loader.setController(this);
             mainPane.setCenter(subRoot);
             AdminControl.getController().createDiscountAddedUsers();
+            initMusicPlayer();
         }
     }
 

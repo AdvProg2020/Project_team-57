@@ -1,6 +1,8 @@
 package controller;
 
+import controller.account.AccountControl;
 import model.db.OffTable;
+import model.existence.Account;
 import notification.Notification;
 
 import java.sql.SQLException;
@@ -275,6 +277,8 @@ public class Control {
     }
 
     public static void logOut() {
+        AccountControl.getController().stopMusics();
+        AccountControl.getController().setMusicPlaying(false);
         isLoggedIn = false;
         username = null;
         type = null;
