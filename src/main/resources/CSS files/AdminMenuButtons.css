@@ -57,3 +57,8 @@
     -fx-cursor: hand;
     -fx-background-color: #607d8b;
 }
+
+.media_button:hover{
+    -fx-cursor: hand;
+    -fx-opacity: 0.8;
+}
