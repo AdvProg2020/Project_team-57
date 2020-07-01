@@ -43,10 +43,9 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     public Label cartLabel;
     public ImageView profile;
     public ImageView logout;
-    public Pane infoPane;
+    public Pane discountPane;
     public Pane historyPane;
     public Pane cartPane;
-    public Pane profilePane;
     public ImageView back;
     public Label profileLabel;
     private Stage myStage;
@@ -68,9 +67,11 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             if (accountControl.getAccount().getFirstName() != null && accountControl.getAccount().getLastName() != null)
                 name.setText(accountControl.getAccount().getFirstName() + " " + accountControl.getAccount().getLastName());
         } else {
-            Stop[] stops = new Stop[]{
-                    new Stop(0.5, Color.valueOf("#42878f")),
-                    new Stop(1, Color.valueOf("#345f63"))
+           /* Stop[] stops = new Stop[]{
+                    new Stop(0, Color.valueOf("#fb8c00")),
+                    new Stop(0.25, Color.valueOf("#f57c00")),
+                    new Stop(0.5, Color.valueOf("#ef6c00")),
+                    new Stop(1, Color.valueOf("#e65100"))
             };
             LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
             BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
@@ -85,7 +86,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             dropShadow.setOffsetY(1);
             infoLabel.setEffect(dropShadow);
             historyLabel.setEffect(dropShadow);
-            cartLabel.setEffect(dropShadow);
+            cartLabel.setEffect(dropShadow);*/
             profileLabel.setText(Control.getUsername());
         }
     }
@@ -96,18 +97,6 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
 
     public void setMyStage(Stage myStage) {
         this.myStage = myStage;
-    }
-
-    public void enterInfo() {
-        infoImage.setOpacity(1);
-        infoLabel.setOpacity(1);
-        infoPane.setStyle("-fx-background-color:#79dbf0; -fx-background-radius: 10");
-    }
-
-    public void exitInfo(MouseEvent event) {
-        infoPane.setOpacity(0.7);
-        infoLabel.setOpacity(0.7);
-        infoPane.setStyle("-fx-background-color: #9ce7f0; -fx-background-radius: 10");
     }
 
     public void enterHistory(MouseEvent event) {
