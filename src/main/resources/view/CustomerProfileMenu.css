@@ -4,17 +4,17 @@
 }
 
 .Up_Button:hover {
-    -fx-border-color: #56B6BF;
+    -fx-border-color: #FFB74D;
     -fx-border-width: 0 0 3 0;
     -fx-cursor: hand;
 }
 
 .HBox {
-    -fx-background-color: #baf9ff;
+    -fx-background-color: #FFD180;
 }
 
 .Center_Pane {
-    -fx-background-color: white;
+    -fx-background-color: #F5F5F5;
 }
 
 .Down_Button {
@@ -55,11 +55,11 @@
 }
 
 .Label {
-    -fx-text-fill: #330939;
+    -fx-text-fill: black;
 }
 
 .Menu_Line {
-    -fx-fill: #9CE7F0;
+    -fx-fill: #F57C00;
 }
 
 .Profile_Image {

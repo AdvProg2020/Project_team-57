@@ -244,7 +244,7 @@ public class ProfileProcessor extends Processor implements Initializable {
                 color = Color.valueOf("#233C5E");
                 break;
             case "Customer":
-                color = Color.valueOf("#56B6BF");
+                color = Color.valueOf("#FFB74D");
                 break;
         }
 
