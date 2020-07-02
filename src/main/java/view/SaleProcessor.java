@@ -301,17 +301,21 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     public void AddDiscountMouseClicked(MouseEvent mouseEvent) {
-        //Todo Setting Notifications
-        Notification notification = adminControl.addAddedDiscount(discount);
+        if(discount.getID() == null || discount.getID().isEmpty()) {
+            //Todo Setting Notifications
+            Notification notification = adminControl.addAddedDiscount(discount);
 
-        Optional<ButtonType> optionalButtonType = notification.getAlert().showAndWait();
+            Optional<ButtonType> optionalButtonType = notification.getAlert().showAndWait();
 
-        if(optionalButtonType.get() == ButtonType.OK) {
-            if(notification.equals(Notification.ADD_DISCOUNT)) {
-                updateParentTable();
-                this.myStage.close();
-            } else
-                discountInfoMouseClicked(null);
+            if(optionalButtonType.get() == ButtonType.OK) {
+                if(notification.equals(Notification.ADD_DISCOUNT)) {
+                    updateParentTable();
+                    this.myStage.close();
+                } else
+                    discountInfoMouseClicked(null);
+            }
+        } else {
+
         }
     }
 
