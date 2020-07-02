@@ -94,6 +94,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             stage.setResizable(false);
             this.subStages.add(stage);
             processor.setMyStage(stage);
+            stage.getIcons().add(new Image(Main.class.getResourceAsStream("cartCustomer.png")));
             stage.show();
         } catch (IOException e) {
             //:)
@@ -110,7 +111,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
                 tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.LOGS);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
-                //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("customer invoice.png")));
                 newStage.setResizable(false);
                 newStage.setTitle("Show Buy Logs");
                 this.addSubStage(newStage);
@@ -206,7 +207,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
                 tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.CUSTOMER_DISCOUNTS);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
-                //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("discount menu customer.png")));
                 newStage.setResizable(false);
                 newStage.setTitle(Control.getUsername() + " Discount Codes");
                 this.addSubStage(newStage);

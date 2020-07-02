@@ -215,6 +215,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 newStage.setTitle("Manage Discounts");
                 parentProcessor.addSubStage(newStage);
                 tableViewProcessor.setMyStage(newStage);
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("Discounts Icon.png")));
                 newStage.show();
             } catch (IOException e) {
                 //:)
@@ -238,6 +239,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 parentProcessor.addSubStage(newStage);
                 tableViewProcessor.setMyStage(newStage);
                 tableViewProcessor.setTableViewPane((Pane)tableViewProcessor.mainBorderPane.getCenter());
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("Comments Icon.png")));
                 newStage.show();
             } catch (IOException e) {
                 //:)
@@ -263,6 +265,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             stage.setScene(new Scene(parent));
             stage.setResizable(false);
             parentProcessor.addSubStage(stage);
+            stage.getIcons().add(new Image(Main.class.getResourceAsStream("Product Requests Icon.png")));
             stage.show();
         }
 
@@ -278,11 +281,11 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.ADMIN_OFFS);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
-                //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
                 newStage.setResizable(false);
                 newStage.setTitle("Manage Off Requests");
                 parentProcessor.addSubStage(newStage);
                 tableViewProcessor.setMyStage(newStage);
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("Offs Icon.png")));
                 newStage.show();
             } catch (IOException e) {
                 //:)
