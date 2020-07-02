@@ -222,6 +222,8 @@ public class ProductProcessor extends Processor {
         //Showing Similar Products Page
         switch (menuType) {
             case PRODUCTS_CUSTOMER:
+            case PRODUCTS_VENDOR:
+            case ADMIN:
             case PRODUCTS:
                 productControl.setFirstComparingProduct(product.getID());
                 similarProducts = productControl.getAllComparingProducts();
@@ -235,89 +237,10 @@ public class ProductProcessor extends Processor {
                     similarProductsPane.setContent(similarProductHBoxes.get(currentPageNumber));
                 }
                 break;
+            default:
+                downBorderPane.getChildren().remove(similarProductsPane);
         }
 
-    }
-
-    private void initSimilarProductsPane() {
-        similarProductHBoxes = new ArrayList<>();
-        pagesNumber = (int)Math.ceil(similarProducts.size() / 4.0);
-
-        for (int i = 0; i < pagesNumber; i++) {
-            HBox hBox = new HBox();
-            hBox.setPrefWidth(HBOX_WIDTH);
-            hBox.setPrefHeight(HBOX_HEIGHT);
-            int similarProductBeginIndex = 4 * i, similarProductEndIndex = Math.min(4 * (i + 1), similarProducts.size());
-
-            hBox.getChildren().add(getSimilarProductPagePane(i != 0, false));
-
-            for (Product similarProduct : similarProducts.subList(similarProductBeginIndex, similarProductEndIndex)) {
-                Pane pane = new Pane();
-                pane.setPrefHeight(255);
-                pane.setPrefWidth(205);
-                FXMLLoader fxmlLoader = loadThePane("SimilarProductPane");
-                ProductProcessor similarProductProcessor = fxmlLoader.getController();
-                similarProductProcessor.initSimilarProductPane(similarProduct);
-                pane.getChildren().add(fxmlLoader.getRoot());
-                hBox.getChildren().add(pane);
-            }
-
-            hBox.getChildren().add(getSimilarProductPagePane(i != pagesNumber - 1, true));
-
-            similarProductHBoxes.add(hBox);
-        }
-    }
-
-    private Pane getSimilarProductPagePane(boolean isNecessary, boolean isNext) {
-        Pane pane = new Pane();
-        pane.setPrefWidth(30);
-        pane.setPrefHeight(HBOX_HEIGHT);
-
-        if(isNecessary) {
-            ImageView imageView = new ImageView();
-            imageView.setLayoutY(HBOX_HEIGHT / 2 - 15);
-            imageView.setFitWidth(30);
-            imageView.setFitHeight(30);
-            imageView.getStyleClass().add("Page_Button");
-
-            FileInputStream fileInputStream = null;
-
-            try {
-                if (isNext) {
-                    imageView.setOnMouseClicked(event -> nextPage());
-                    fileInputStream = new FileInputStream("src\\main\\resources\\Images\\Icons\\ProductMenu\\NextPage.png");
-
-                } else {
-                    imageView.setOnMouseClicked(event -> previousPage());
-                    fileInputStream = new FileInputStream("src\\main\\resources\\Images\\Icons\\ProductMenu\\PreviousPage.png");
-                }
-
-            } catch (FileNotFoundException e) {
-                //:)
-            }
-
-            imageView.setImage(new Image(fileInputStream));
-            pane.getChildren().add(imageView);
-        }
-
-        return pane;
-    }
-
-    public void previousPage() {
-        changePage(false);
-    }
-
-    public void nextPage() {
-        changePage(true);
-    }
-
-    private void changePage(boolean isNext) {
-        if(isNext)
-            currentPageNumber++;
-        else
-            currentPageNumber--;
-
-        similarProductsPane.setContent(similarProductHBoxes.get(currentPageNumber));
     }
 
     public void initComparingProcessor(Product firstProduct, Product secondProduct) {
@@ -1389,6 +1312,91 @@ public class ProductProcessor extends Processor {
 
     }
 
+
+    //Similar Products Part
+    private void initSimilarProductsPane() {
+        similarProductHBoxes = new ArrayList<>();
+        pagesNumber = (int)Math.ceil(similarProducts.size() / 4.0);
+
+        for (int i = 0; i < pagesNumber; i++) {
+            HBox hBox = new HBox();
+            hBox.setPrefWidth(HBOX_WIDTH);
+            hBox.setPrefHeight(HBOX_HEIGHT);
+            int similarProductBeginIndex = 4 * i, similarProductEndIndex = Math.min(4 * (i + 1), similarProducts.size());
+
+            hBox.getChildren().add(getSimilarProductPagePane(i != 0, false));
+
+            for (Product similarProduct : similarProducts.subList(similarProductBeginIndex, similarProductEndIndex)) {
+                Pane pane = new Pane();
+                pane.setPrefHeight(255);
+                pane.setPrefWidth(205);
+                FXMLLoader fxmlLoader = loadThePane("SimilarProductPane");
+                ProductProcessor similarProductProcessor = fxmlLoader.getController();
+                similarProductProcessor.initSimilarProductPane(similarProduct);
+                pane.getChildren().add(fxmlLoader.getRoot());
+                hBox.getChildren().add(pane);
+            }
+
+            hBox.getChildren().add(getSimilarProductPagePane(i != pagesNumber - 1, true));
+
+            similarProductHBoxes.add(hBox);
+        }
+    }
+
+    private Pane getSimilarProductPagePane(boolean isNecessary, boolean isNext) {
+        Pane pane = new Pane();
+        pane.setPrefWidth(30);
+        pane.setPrefHeight(HBOX_HEIGHT);
+
+        if(isNecessary) {
+            ImageView imageView = new ImageView();
+            imageView.setLayoutY(HBOX_HEIGHT / 2 - 15);
+            imageView.setFitWidth(30);
+            imageView.setFitHeight(30);
+            imageView.getStyleClass().add("Page_Button");
+
+            FileInputStream fileInputStream = null;
+
+            try {
+                if (isNext) {
+                    imageView.setOnMouseClicked(event -> nextPage());
+                    fileInputStream = new FileInputStream("src\\main\\resources\\Images\\Icons\\ProductMenu\\NextPage.png");
+
+                } else {
+                    imageView.setOnMouseClicked(event -> previousPage());
+                    fileInputStream = new FileInputStream("src\\main\\resources\\Images\\Icons\\ProductMenu\\PreviousPage.png");
+                }
+
+            } catch (FileNotFoundException e) {
+                //:)
+            }
+
+            imageView.setImage(new Image(fileInputStream));
+            pane.getChildren().add(imageView);
+        }
+
+        return pane;
+    }
+
+    public void previousPage() {
+        changePage(false);
+    }
+
+    public void nextPage() {
+        changePage(true);
+    }
+
+    private void changePage(boolean isNext) {
+        if(isNext)
+            currentPageNumber++;
+        else
+            currentPageNumber--;
+
+        similarProductsPane.setContent(similarProductHBoxes.get(currentPageNumber));
+    }
+
+
+    //Main Functions Part
     public void addToCartMouseClicked() {
         ((ProductProcessor) parentProcessor).addToCart(cartCount.getText());
     }

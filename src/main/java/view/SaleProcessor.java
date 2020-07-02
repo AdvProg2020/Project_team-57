@@ -102,6 +102,7 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     private void setFieldsSpecifications() {
+        setStringFields(discountCodeTextField, 16);
         setDoubleFields(discountPercentTextField, 100.000001);
         setIntegerFields(maxRepetitionTextField, Integer.MAX_VALUE);
         setDoubleFields(maxDiscountTextField, Double.MAX_VALUE);
