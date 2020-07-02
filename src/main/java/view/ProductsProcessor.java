@@ -464,6 +464,7 @@ public class ProductsProcessor extends Processor{
             if(buttonType.get() == YES) {
                 CustomerControl.getController().removeProductFromCartByID(product.getID()).getAlert().show();
                 initProductsPage();
+                initTotalPricePart();
             }
         });
         setProductStatusIcon(paneProcessor, product);
@@ -1034,7 +1035,7 @@ public class ProductsProcessor extends Processor{
     }
 
     //Price Part
-    private void initTotalPricePart() {
+    protected void initTotalPricePart() {
         double totalPrice = CustomerControl.getController().getTotalPriceWithoutDiscount();
         totalPriceLabel.setText(getSmoothDoubleFormat(totalPrice));
     }

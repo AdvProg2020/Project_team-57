@@ -662,6 +662,10 @@ public class ProductProcessor extends Processor {
             customerControl.addToCartUnCountable(product.getID(), Double.parseDouble(count));
         }
 
+        if(menuType == ProductMenuType.CART) {
+            ((ProductsProcessor) parentProcessor).initTotalPricePart();
+        }
+
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "The Product Added To Cart Successfully");
         alert.setTitle("Congratulations, Buyer!!!");
         alert.setHeaderText("Yeah");
