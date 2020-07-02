@@ -710,7 +710,6 @@ public class TableViewProcessor<T> extends Processor {
     private void terminateVendorOffOptions() {
         editOffButton.setDisable(true);
         deleteOffButton.setDisable(true);
-        addNewOffButton.setDisable(true);
         offNameLabel.setText("Off Name");
     }
 
@@ -877,6 +876,7 @@ public class TableViewProcessor<T> extends Processor {
             processor.parentProcessor = this.parentProcessor;
             processor.setMyStage(newStage);
             parentProcessor.parentProcessor.addSubStage(newStage);
+            newStage.getIcons().add(new Image(getClass().getResourceAsStream("Discounts Icon.png")));
             newStage.show();
         } catch (IOException e) {
             //:)
@@ -910,6 +910,7 @@ public class TableViewProcessor<T> extends Processor {
                 parentProcessor.addSubStage(newStage);
                 parentProcessor.parentProcessor.addSubStage(newStage);
                 processor.setMyStage(newStage);
+                newStage.getIcons().add(new Image(getClass().getResourceAsStream("Discounts Icon.png")));
                 newStage.show();
             } catch (IOException e) {
                 //:)
@@ -954,13 +955,13 @@ public class TableViewProcessor<T> extends Processor {
             productProcessor.setParentProcessor(parentProcessor);
             Product product = ProductControl.getController().getProductById(((Comment)(((TableViewProcessor)parentProcessor).selectedItem)).getProductID());
             productProcessor.initProcessor(product, ProductProcessor.ProductMenuType.ADMIN);
-
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle(product.getName() + " Menu");
             productProcessor.setMyStage(stage);
             parentProcessor.parentProcessor.addSubStage(stage);
             stage.setResizable(false);
+            stage.getIcons().add(new Image(Main.class.getResourceAsStream("Product Icon.png")));
             stage.show();
         } catch (IOException e) {
             //:)
@@ -1035,6 +1036,7 @@ public class TableViewProcessor<T> extends Processor {
             newStage.setResizable(false);
             processor.setMyStage(newStage);
             parentProcessor.parentProcessor.addSubStage(newStage);
+            newStage.getIcons().add(new Image(Main.class.getResourceAsStream("Offs Icon.png")));
             newStage.show();
         } catch (IOException e) {
             //:)
@@ -1082,6 +1084,7 @@ public class TableViewProcessor<T> extends Processor {
             newStage.setResizable(false);
             processor.setMyStage(newStage);
             this.parentProcessor.parentProcessor.addSubStage(newStage);
+            newStage.getIcons().add(new Image(Main.class.getResourceAsStream("Offs Icon.png")));
             newStage.show();
         } catch (IOException e) {
             //:)
@@ -1102,6 +1105,7 @@ public class TableViewProcessor<T> extends Processor {
                 newStage.setResizable(false);
                 parentProcessor.parentProcessor.addSubStage(newStage);
                 processor.setMyStage(newStage);
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("Offs Icon.png")));
                 newStage.show();
             } catch (IOException e) {
                 //:);
@@ -1149,6 +1153,7 @@ public class TableViewProcessor<T> extends Processor {
             newStage.setResizable(false);
             processor.setMyStage(newStage);
             parentProcessor.parentProcessor.addSubStage(newStage);
+            newStage.getIcons().add(new Image(Main.class.getResourceAsStream("Offs Icon.png")));
             newStage.show();
         } catch (IOException e) {
             //:)
@@ -1167,6 +1172,7 @@ public class TableViewProcessor<T> extends Processor {
             stage.setScene(new Scene(root));
             stage.setTitle("Log Products");
             this.parentProcessor.parentProcessor.addSubStage(stage);
+            stage.getIcons().add(new Image(Main.class.getResourceAsStream("Product Icon.png")));
             stage.show();
         } catch (IOException e) {
             //:)
@@ -1192,6 +1198,7 @@ public class TableViewProcessor<T> extends Processor {
             processor.parentProcessor = this.parentProcessor.parentProcessor;
             processor.setMyStage(newStage);
             this.parentProcessor.parentProcessor.addSubStage(newStage);
+            newStage.getIcons().add(new Image(Main.class.getResourceAsStream("discount menu customer.png")));
             newStage.show();
         } catch (IOException e) {
             //:)

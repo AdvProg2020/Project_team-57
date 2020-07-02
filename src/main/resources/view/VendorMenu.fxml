@@ -47,9 +47,9 @@
       </Pane>
       <Pane layoutX="58.0" layoutY="307.0" onMouseClicked="#showProducts" opacity="0.7" prefHeight="313.0" prefWidth="273.0" style="-fx-background-color: #292A51; -fx-background-radius: 10 10 10 10;" styleClass="Vendor_Menu_Center_Pane">
          <children>
-            <ImageView fx:id="showProducts" disable="true" fitHeight="207.0" fitWidth="200.0" layoutX="38.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="showProducts" disable="true" fitHeight="207.0" fitWidth="200.0" layoutX="32.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Images/Icons/Vendor%20Menu%20Icons/checklist.png" />
+                  <Image url="@../Images/Icons/Vendor%20Menu%20Icons/product.png" />
                </image></ImageView>
             <Label alignment="CENTER" layoutX="75.0" layoutY="240.0" prefHeight="44.0" prefWidth="125.0" text="Products" textFill="#2f999f">
                <font>
@@ -78,9 +78,9 @@
                   <Font name="System Bold Italic" size="20.0" />
                </font>
             </Label>
-            <ImageView fitHeight="207.0" fitWidth="200.0" layoutX="38.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="207.0" fitWidth="200.0" layoutX="47.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Images/Icons/Vendor%20Menu%20Icons/product.png" />
+                  <Image url="@../Images/Icons/Vendor%20Menu%20Icons/checklist.png" />
                </image>
             </ImageView>
          </children>

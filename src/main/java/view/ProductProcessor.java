@@ -1411,11 +1411,11 @@ public class ProductProcessor extends Processor {
             tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.PRODUCT_BUYERS);
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
-            //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
             newStage.setResizable(false);
             newStage.setTitle("Manage Offs");
             parentProcessor.parentProcessor.addSubStage(newStage);
             tableViewProcessor.setMyStage(newStage);
+            newStage.getIcons().add(new Image(getClass().getResourceAsStream("Buyers.png")));
             newStage.show();
         } catch (IOException e) {
             //:)
@@ -1445,6 +1445,7 @@ public class ProductProcessor extends Processor {
             stage.setScene(new Scene(parent));
             stage.setResizable(false);
             addSubStage(stage);
+            stage.getIcons().add(new Image(Main.class.getResourceAsStream("Compare 1.png")));
             stage.show();
         } catch (IOException e) {
             //:)

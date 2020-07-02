@@ -305,6 +305,7 @@ public class ProductsProcessor extends Processor{
                 stage.setResizable(false);
                 this.subStages.add(stage);
                 processor.setMyStage(stage);
+                stage.getIcons().add(new Image(Main.class.getResourceAsStream("cartCustomer.png")));
                 stage.show();
             } catch (IOException e) {
                 //:)
@@ -526,6 +527,7 @@ public class ProductsProcessor extends Processor{
                     processor.setMyStage(stage);
                     parentProcessor.addSubStage(stage);
                     stage.setResizable(false);
+                    stage.getIcons().add(new Image(Main.class.getResourceAsStream("Product Icon.png")));
                     stage.show();
                 } catch (IOException e) {
                     //:)
@@ -660,6 +662,7 @@ public class ProductsProcessor extends Processor{
                 if(parentProcessor.parentProcessor != null)
                     parentProcessor.parentProcessor.addSubStage(stage);
                 stage.setResizable(false);
+                stage.getIcons().add(new Image(Main.class.getResourceAsStream("Product Icon.png")));
                 stage.show();
             } catch (IOException e) {
                 //:)
@@ -775,6 +778,7 @@ public class ProductsProcessor extends Processor{
                 processor.setMyStage(stage);
                 parentProcessor.addSubStage(stage);
                 stage.setResizable(false);
+                stage.getIcons().add(new Image(Main.class.getResourceAsStream("Product Icon.png")));
                 stage.show();
             } catch (IOException e) {
                 //:)
@@ -796,6 +800,7 @@ public class ProductsProcessor extends Processor{
                 newStage.setResizable(false);
                 parentProcessor.addSubStage(newStage);
                 processor.setMyStage(newStage);
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("Offs Icon.png")));
                 newStage.show();
             } catch (IOException e) {
                 //:);

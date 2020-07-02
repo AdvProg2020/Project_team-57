@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -61,6 +62,7 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
             stage.setScene(new Scene(parent));
             stage.setResizable(false);
             addSubStage(stage);
+            stage.getIcons().add(new Image(getClass().getResourceAsStream("product.png")));
             stage.show();
         }
 
@@ -76,7 +78,7 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
                 tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.VENDOR_OFFS);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
-                //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
+                newStage.getIcons().add(new Image(getClass().getResourceAsStream("Offs Icon.png")));
                 newStage.setResizable(false);
                 newStage.setTitle("Manage Offs");
                 this.addSubStage(newStage);
@@ -99,7 +101,7 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
                 tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.LOGS);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
-                //newStage.getIcons().add(new Image(getClass().getResourceAsStream("view accounts icon.png")));
+                newStage.getIcons().add(new Image(getClass().getResourceAsStream("checklist.png")));
                 newStage.setResizable(false);
                 newStage.setTitle("Show Sell Logs");
                 this.addSubStage(newStage);
