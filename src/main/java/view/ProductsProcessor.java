@@ -563,7 +563,10 @@ public class ProductsProcessor extends Processor{
         setProductPaneImage(productPane, paneProcessor, product);
         paneProcessor.productNameLabel.setText(product.getName());
         setProductPanePrice(productPane, paneProcessor, product);
-        paneProcessor.viewLabel.setText("" + product.getSeen());
+        if(product.getSeen() < 100)
+            paneProcessor.viewLabel.setText("" + product.getSeen());
+        else
+            paneProcessor.viewLabel.setText("99+");
         setProductStatusIcon(paneProcessor, product);
         setProductPaneOnMouseClick(productPane, product, this);
         return productPane;
