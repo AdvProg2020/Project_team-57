@@ -39,8 +39,8 @@
             <Image url="@../Images/Icons/ProductsMenu/rollback.png" />
          </image>
       </ImageView>
-      <Label fx:id="oldPriceLabel" layoutX="21.0" layoutY="231.0" text="250000$" />
-      <Label fx:id="newPriceLabel" layoutX="98.0" layoutY="231.0" text="190000$" />
+      <Label fx:id="oldPriceLabel" layoutX="21.0" layoutY="231.0" prefWidth="65.0" text="250000$" />
+      <Label fx:id="newPriceLabel" layoutX="98.0" layoutY="231.0" prefWidth="65.0" text="190000$" />
       <ImageView fx:id="inOffImage" fitHeight="40.0" fitWidth="40.0" layoutX="175.0" layoutY="208.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../Images/Icons/ProductsMenu/off%20icon.png" />
