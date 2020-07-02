@@ -75,27 +75,27 @@
             <Pane prefHeight="60.0" prefWidth="220.0" />
             <Pane prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #ffffff;">
                <children>
-                  <ImageView fx:id="startMediaButton" fitHeight="40.0" fitWidth="40.0" layoutX="90.0" layoutY="14.0" onMouseClicked="#modifyPlayingMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
+                  <ImageView fx:id="startMediaButton" fitHeight="40.0" fitWidth="40.0" layoutX="89.0" layoutY="12.0" onMouseClicked="#modifyPlayingMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
                      <image>
                         <Image url="@../Images/Icons/MediaIcons/Admin%20Start.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="nextMediaButton" fitHeight="25.0" fitWidth="25.0" layoutX="136.0" layoutY="22.0" onMouseClicked="#changeMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
+                  <ImageView fx:id="nextMediaButton" fitHeight="25.0" fitWidth="25.0" layoutX="135.0" layoutY="20.0" onMouseClicked="#changeMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
                      <image>
                         <Image url="@../Images/Icons/MediaIcons/Admin%20Next.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="previousMediaButton" fitHeight="25.0" fitWidth="25.0" layoutX="59.0" layoutY="22.0" onMouseClicked="#changeMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
+                  <ImageView fx:id="previousMediaButton" fitHeight="25.0" fitWidth="25.0" layoutX="58.0" layoutY="20.0" onMouseClicked="#changeMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
                      <image>
                         <Image url="@../Images/Icons/MediaIcons/Admin%20Previous.png" />
                      </image>
                   </ImageView>
-                  <Label fx:id="mediaArtistLabel" alignment="CENTER" layoutX="17.0" layoutY="61.0" prefHeight="21.0" prefWidth="187.0" text="Music Artist" wrapText="true">
+                  <Label fx:id="mediaArtistLabel" alignment="CENTER" layoutX="16.0" layoutY="59.0" prefHeight="21.0" prefWidth="187.0" text="Music Artist" wrapText="true">
                      <font>
                         <Font name="Calibri" size="15.0" />
                      </font></Label>
-                  <JFXProgressBar fx:id="mediaProgressBar" layoutX="35.0" layoutY="116.0" prefWidth="150.0" progress="0.0" style="-fx-accent: BLACK;" />
-                  <Label fx:id="mediaNameLabel" alignment="CENTER" layoutX="17.0" layoutY="84.0" prefHeight="21.0" prefWidth="187.0" text="Music Name" wrapText="true">
+                  <JFXProgressBar fx:id="mediaProgressBar" layoutX="34.0" layoutY="114.0" prefWidth="150.0" progress="0.0" style="-fx-accent: BLACK;" />
+                  <Label fx:id="mediaNameLabel" alignment="CENTER" layoutX="16.0" layoutY="82.0" prefHeight="21.0" prefWidth="187.0" text="Music Name" wrapText="true">
                      <font>
                         <Font name="Calibri" size="15.0" />
                      </font>
