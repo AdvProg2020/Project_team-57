@@ -371,11 +371,11 @@ public class ProductProcessor extends Processor {
         productNameLabel.setText(product.getName());
 
         if(product.isOnSale()) {
-            similarProductPane.getChildren().removeAll(inOffImage, newPriceLabel);
-        } else {
-            oldPriceLabel.setText(Double.toString(product.getPrice()));
+            oldPriceLabel.setText(getSmoothDoubleFormat(product.getPrice()));
             oldPriceLabel.getStylesheets().addAll(Main.class.getResource("Strikethrough.css").toExternalForm());
-            newPriceLabel.setText(Double.toString(product.getOffPrice()));
+            newPriceLabel.setText(getSmoothDoubleFormat(product.getOffPrice()));
+        } else {
+            similarProductPane.getChildren().removeAll(inOffImage, newPriceLabel);
         }
 
         similarProductPane.setOnMouseClicked(event -> ((ProductProcessor)parentProcessor).openProductMenu(product));
