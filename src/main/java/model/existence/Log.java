@@ -64,7 +64,6 @@ public class Log {
         private String productID;
         private String productName;
         private String vendorUsername;
-        private String quantityStr;
         private int count;
         private double amount;
         private double initPrice;
@@ -86,7 +85,6 @@ public class Log {
             } catch (ClassNotFoundException e) {
                 //:)
             }
-            this.quantityStr = "" + (isCountable ? this.count : this.amount + " Kg");
         }
 
         public ProductOfLog(Product product) throws SQLException, ClassNotFoundException {
@@ -108,7 +106,6 @@ public class Log {
             } catch (ClassNotFoundException e) {
                 //:)
             }
-            this.quantityStr = "" + (isCountable ? this.count : this.amount + " Kg");
         }
         public ProductOfLog() {
 
@@ -172,10 +169,6 @@ public class Log {
 
         public String getProductName() {
             return productName;
-        }
-
-        public String getQuantityStr() {
-            return quantityStr;
         }
     }
     //End Inner Class

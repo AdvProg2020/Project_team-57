@@ -458,7 +458,7 @@ public class TableViewProcessor<T> extends Processor {
             }
             if(selectedItem != null) {
                 ProductOfLog productOfLog = (ProductOfLog) selectedItem;
-                processor.productInitialPriceField.setText("" + productOfLog.getInitPrice() + " $");
+                processor.productInitialPriceField.setText(getSmoothDoubleFormat(productOfLog.getInitPrice()) + " $");
                 if(Control.getType() != null) {
                     processor.productFinalPriceField.setText((Control.getType().equals("Vendor")) ?
                             "" + productOfLog.getOffPrice() + " $" : "" + (productOfLog.getOffPrice() * (1 - (selectedLog.getDiscountPercent()/100.0))) + " $");
@@ -467,13 +467,14 @@ public class TableViewProcessor<T> extends Processor {
                                 processor.vendorUsernameField, processor.discountPercentField);
                     } else {
                         processor.vendorUsernameField.setText(productOfLog.getVendorUsername());
-                        processor.discountPercentField.setText("" + selectedLog.getDiscountPercent());
+                        processor.discountPercentField.setText(getSmoothDoubleFormat(selectedLog.getDiscountPercent()) + " %");
                     }
                 }
-                processor.productOffPriceField.setText("" + ((1.0 - (productOfLog.getOffPrice()/productOfLog.getInitPrice())) * 100) +" %");
+                processor.productOffPriceField.setText(getSmoothDoubleFormat(((1.0 - (productOfLog.getOffPrice()/productOfLog.getInitPrice())) * 100)) +" %");
                 processor.countLabel.setText("" + (productOfLog.isCountable() ?
                         "Count" : "Amount"));
-                processor.productQuantityField.setText(productOfLog.getQuantityStr());
+                String quantity = "" + ((!productOfLog.isCountable()) ? getSmoothDoubleFormat(productOfLog.getAmount()) : productOfLog.getCount());
+                processor.productQuantityField.setText(quantity);
             }
             return root;
         } catch (IOException e) {
@@ -506,12 +507,12 @@ public class TableViewProcessor<T> extends Processor {
                 Log log = (Log)selectedItem;
                 java.util.Date date = new java.util.Date(log.getDate().getTime());
                 processor.logDateLabel.setText(date.toString());
-                processor.logInitialPrice.setText("" + log.getInitialPrice() + " $");
+                processor.logInitialPrice.setText(getSmoothDoubleFormat(log.getInitialPrice()) + " $");
                 if(Control.getType() != null) {
                     processor.logFinalPrice.setText((Control.getType().equals("Vendor")) ?
                             "" + log.getVendorFinalPrice() + " $" : "" + log.getCustomerFinalPrice() + " $");
                 }
-                processor.logOffPercent.setText("" + ((1.0 - (log.getVendorFinalPrice()/log.getInitialPrice())) * 100) +" %");
+                processor.logOffPercent.setText(getSmoothDoubleFormat(((1.0 - (log.getVendorFinalPrice()/log.getInitialPrice())) * 100)) +" %");
             } else {
                 processor.terminateOptions();
             }

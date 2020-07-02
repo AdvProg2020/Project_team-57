@@ -6,6 +6,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.stage.Stage;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public abstract class Processor {
@@ -166,4 +168,11 @@ public abstract class Processor {
     public void setParentProcessor(Processor parentProcessor) {
         this.parentProcessor = parentProcessor;
     }
+
+    protected String getSmoothDoubleFormat(double number) {
+        DecimalFormat doubleFormatter = new DecimalFormat("#.####");
+        doubleFormatter.setRoundingMode(RoundingMode.HALF_UP);
+        return doubleFormatter.format(number);
+    }
+
 }

@@ -1481,13 +1481,6 @@ public class ProductProcessor extends Processor {
         return doubleFormatter.format(number);
     }
 
-    private String getSmoothDoubleFormat(double number) {
-        DecimalFormat doubleFormatter = new DecimalFormat("#.####");
-        doubleFormatter.setRoundingMode(RoundingMode.HALF_UP);
-        return doubleFormatter.format(number);
-    }
-
-
     private FXMLLoader loadThePane(String paneName) {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource(paneName + ".fxml"));

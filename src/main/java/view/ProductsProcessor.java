@@ -60,6 +60,7 @@ public class ProductsProcessor extends Processor{
     public ImageView inOffImage;
     public JFXButton removeFromCartButton;
     public StackPane productImageStackPane;
+    public Pane purchaseButton;
     private HashMap<String, CheckBox> productsApprovalMap;
 
     public static enum ProductsMenuType {
@@ -326,6 +327,7 @@ public class ProductsProcessor extends Processor{
                     allProducts = CustomerControl.getController().getAllCartProducts();
                 else
                     allProducts = CustomerControl.getController().getTempCartProducts();
+                purchaseButton.setDisable(allProducts.size() == 0);
                 break;
             case ADMIN_PRODUCT_REQUESTS:
                 allProducts = AdminControl.getController().getAllNotApprovedProducts();
@@ -780,7 +782,6 @@ public class ProductsProcessor extends Processor{
                 stage.setTitle("Add New Product");
                 addSubStage(stage);
                 processor.setMyStage(stage);
-                parentProcessor.addSubStage(stage);
                 stage.setResizable(false);
                 stage.getIcons().add(new Image(Main.class.getResourceAsStream("Product Icon.png")));
                 stage.show();
@@ -1038,12 +1039,6 @@ public class ProductsProcessor extends Processor{
     protected void initTotalPricePart() {
         double totalPrice = CustomerControl.getController().getTotalPriceWithoutDiscount();
         totalPriceLabel.setText(getSmoothDoubleFormat(totalPrice));
-    }
-
-    private String getSmoothDoubleFormat(double number) {
-        DecimalFormat doubleFormatter = new DecimalFormat("#.####");
-        doubleFormatter.setRoundingMode(RoundingMode.HALF_UP);
-        return doubleFormatter.format(number);
     }
 
 
