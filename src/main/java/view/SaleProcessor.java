@@ -128,8 +128,11 @@ public class SaleProcessor extends Processor implements Initializable {
             if(mainDiscount.getMaxDiscount() != 0)
                 maxDiscountTextField.setText(Double.toString(mainDiscount.getMaxDiscount()));
 
-            if(mainDiscount.getStartDate() != null)
+            if(mainDiscount.getStartDate() != null) {
                 setDateFieldsFromDate(startDatePicker, startTimePicker, mainDiscount.getStartDate());
+                startDatePicker.setDisable(true);
+                startTimePicker.setDisable(true);
+            }
 
             if(mainDiscount.getFinishDate() != null)
                 setDateFieldsFromDate(finishDatePicker, finishTimePicker, mainDiscount.getFinishDate());
@@ -301,21 +304,22 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     public void AddDiscountMouseClicked(MouseEvent mouseEvent) {
-        if(discount.getID() == null || discount.getID().isEmpty()) {
-            //Todo Setting Notifications
-            Notification notification = adminControl.addAddedDiscount(discount);
+        //Todo Setting Notifications
+        Notification notification = adminControl.addAddedDiscount(discount);
 
-            Optional<ButtonType> optionalButtonType = notification.getAlert().showAndWait();
+        Optional<ButtonType> optionalButtonType = notification.getAlert().showAndWait();
 
-            if(optionalButtonType.get() == ButtonType.OK) {
-                if(notification.equals(Notification.ADD_DISCOUNT)) {
-                    updateParentTable();
-                    this.myStage.close();
-                } else
-                    discountInfoMouseClicked(null);
-            }
-        } else {
+        if(optionalButtonType.get() == ButtonType.OK) {
+            if(notification == Notification.ADD_DISCOUNT || notification == Notification.EDIT_DISCOUNT) {
+                //Todo Check
+                for (Discount discount : adminControl.getAllDiscounts()) {
+                    System.out.println(discount.getCode());
+                }
 
+                updateParentTable();
+                this.myStage.close();
+            } else
+                discountInfoMouseClicked(null);
         }
     }
 

@@ -260,12 +260,25 @@ public class AdminControl extends AccountControl{
     }
 
     public Notification addDiscount(Discount discount) {
-        if(isDiscountComplete(discount) != null)
-            return isDiscountComplete(discount);
-
-        String ID = "";
+        Notification notification = null;
 
         try {
+            if(discount.getID() != null && !discount.getID().isEmpty()) {
+                if((notification = setNewDiscountsEmptyFields(discount)) == null) {
+                    DiscountTable.removeDiscountCode(discount.getID());
+                    notification = Notification.EDIT_DISCOUNT;
+                } else
+                    return notification;
+            } else {
+                if((notification = isDiscountComplete(discount)) == null) {
+                    notification = Notification.ADD_DISCOUNT;
+                } else {
+                    return notification;
+                }
+            }
+
+            String ID = "";
+
             do {
                 ID = generateDiscountID();
             } while (DiscountTable.isThereDiscountWithID(ID));
@@ -277,7 +290,31 @@ public class AdminControl extends AccountControl{
         } catch (ClassNotFoundException e) {
             //:)
         }
-        return Notification.ADD_DISCOUNT;
+        return notification;
+    }
+
+    public Notification setNewDiscountsEmptyFields(Discount newDiscount) throws SQLException, ClassNotFoundException {
+        Discount oldDiscount = DiscountTable.getDiscountByID(newDiscount.getID());
+
+        if(newDiscount.getCode() == null || newDiscount.getCode().isEmpty())
+            newDiscount.setCode(oldDiscount.getCode());
+        if(newDiscount.getDiscountPercent() == 0)
+            newDiscount.setDiscountPercent(oldDiscount.getDiscountPercent());
+        if(newDiscount.getMaxRepetition() == 0)
+            newDiscount.setMaxRepetition(oldDiscount.getMaxRepetition());
+        if(newDiscount.getMaxDiscount() == 0)
+            newDiscount.setMaxDiscount(oldDiscount.getMaxDiscount());
+        if(newDiscount.getStartDate() == null)
+            System.out.println("Shit. Empty StartDate In Setting New Discount's Empty Fields");
+        if(newDiscount.getFinishDate() == null)
+            newDiscount.setFinishDate(oldDiscount.getFinishDate());
+
+        if(newDiscount.getFinishDate().getTime() <= newDiscount.getStartDate().getTime())
+            return Notification.INVALID_FINISH_DATE_EARLIER_THAN_START_DATE;
+        else if(newDiscount.getFinishDate().getTime() <= System.currentTimeMillis())
+            return Notification.INVALID_FINISH_DATE_EARLIER_THAN_CURRENT_DATE;
+
+        return null;
     }
 
     public Notification isDiscountComplete(Discount discount) {
@@ -445,8 +482,16 @@ public class AdminControl extends AccountControl{
     public Notification addAddedDiscount(Discount discount) {
         discount.setCustomersWithRepetition(new HashMap<>());
 
-        for (String addedUser : discountsAddedUsers.get(discount)) {
-            discount.addCustomerWithRepetition(addedUser, 0);
+        if(discount.getID() == null || discount.getID().isEmpty()) {
+            for (String addedUser : discountsAddedUsers.get(discount)) {
+                discount.addCustomerWithRepetition(addedUser, 0);
+            }
+        } else {
+            for (String addedUser : discountsAddedUsers.get(discount)) {
+                if(!discount.isCustomerInDiscount(addedUser)) {
+                    discount.addCustomerWithRepetition(addedUser, 0);
+                }
+            }
         }
 
         return addDiscount(discount);

@@ -208,7 +208,9 @@ public enum Notification {
     EDIT_PRODUCT("You Edited Your Product Successfully. Wait For The Lord's Approval",
             Alert.AlertType.INFORMATION, "Editing Product Successful", "Product Request"),
     DECLINE_EDITING_PRODUCT("Editing Off Requests Denied Successfully Great King.",
-            Alert.AlertType.INFORMATION, "Editing Product Accepted", "Product Request");
+            Alert.AlertType.INFORMATION, "Editing Product Accepted", "Product Request"),
+    EDIT_DISCOUNT("Discount Editted Successfully. Are You Done?", Alert.AlertType.INFORMATION,
+            "Congratulations", "Edited Successfully");
 
 
     private String message;
