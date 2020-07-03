@@ -14,6 +14,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -83,15 +84,7 @@ public class AccountProcessor extends Processor{
     }
 
     public void modifyPlayingMusic() {
-        boolean start = AccountControl.getController().modifyPlayingMusic();
-        if(start) {
-            accountControl.getPlayingMusic().getMusic().setOnEndOfMedia(new Runnable() {
-                @Override
-                public void run() {
-                    changeMusic(null);
-                }
-            });
-        }
+        AccountControl.getController().modifyPlayingMusic().setOnEndOfMedia(() -> this.changeMusic(null));
         initMusicPlayer();
     }
 
@@ -103,27 +96,26 @@ public class AccountProcessor extends Processor{
         } else {
             k = 1;
         }
-        long nextMusicNumber = ((k + accountControl.getMusicCounter() > -1) ? k + accountControl.getMusicCounter() : accountControl.getMusicCount() - 1);
-        if(k == -1) {
-            if(accountControl.getPlayingMusic().getMusic().getCurrentTime().compareTo(Duration.seconds(2)) >= 0) {
-                nextMusicNumber = accountControl.getMusicCounter();
-            }
+        MediaPlayer mediaPlayer = accountControl.changeMusic(k);
+        if(mediaPlayer != null) {
+            mediaPlayer.setOnEndOfMedia(() -> this.changeMusic(null));
         }
-        accountControl.stopPlayingMusic();
-        accountControl.setMusicPlaying(!accountControl.isMusicPlaying());
-        accountControl.setMusicCounter(nextMusicNumber);
-        modifyPlayingMusic();
+        initMusicPlayer();
     }
 
     protected void initMusicPlayer() {
-        String url = Control.getType() + " " + (accountControl.isMusicPlaying() ? "Pause" : "Start") + ".png";
-        startMediaButton.setImage(new Image("Images/Icons/MediaIcons/" + url));
+        setStartMediaButton();
         mediaArtistLabel.setText(accountControl.getPlayingMusic().getArtist());
         mediaNameLabel.setText(accountControl.getPlayingMusic().getName());
         if(accountControl.isMusicPlaying())
             mediaProgressBar.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
         else
             mediaProgressBar.setProgress(0);
+    }
+
+    private void setStartMediaButton() {
+        String url = Control.getType() + " " + (accountControl.isMusicPlaying() ? "Pause" : "Start") + ".png";
+        startMediaButton.setImage(new Image("Images/Icons/MediaIcons/" + url));
     }
 
 }

@@ -1,10 +1,13 @@
 package controller.account;
 
+import com.jfoenix.controls.JFXProgressBar;
 import controller.Control;
 import controller.product.ProductControl;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 import model.db.*;
 import model.existence.Account;
 import model.existence.Log;
@@ -28,117 +31,8 @@ public class AccountControl extends Control implements IOValidity {
     private boolean isMusicPlaying = false;
     private ArrayList<Audio> audios;
     private long musicCounter = 0;
-
-    public void initAudios() {
-        switch (getType()) {
-            case "Admin" :
-                audios = Audio.getAdminMusics();
-                break;
-            case "Vendor" :
-                audios = Audio.getVendorMusics();
-                break;
-            case "Customer" :
-                audios = Audio.getCustomerMusics();
-         }
-         isMusicPlaying = false;
-        musicCounter = 0;
-    }
-
-    public void stopMusics() {
-        if(audios != null) {
-            for (Audio audio : audios) {
-                audio.stop();
-            }
-        }
-    }
-
-    public long getMusicCount() {
-        if(audios == null)
-            return 0;
-        return audios.size();
-    }
-
-    public void stopPlayingMusic() {
-        audios.get((int) (musicCounter % audios.size())).music.stop();
-    }
-
-    public static class Audio {
-        private static ArrayList<Audio> adminAudios;
-        private static ArrayList<Audio> vendorAudios;
-        private static ArrayList<Audio> customerAudios;
-        private String artist;
-        private String name;
-        private MediaPlayer music;
-
-        private Audio(String artist, String name, MediaPlayer music) {
-            this.artist = artist;
-            this.name = name;
-            this.music = music;
-        }
-
-        private static ArrayList<Audio> getAdminMusics() {
-            if(adminAudios != null)
-                return adminAudios;
-            try {
-                adminAudios = new ArrayList<>();
-                adminAudios.add(makeAudio("Mohsen Chavoshi", "Dele Man", "Admin","Mohsen Chavoshi Dele Man.mp3"));
-                adminAudios.add(makeAudio("Mohsen Chavoshi", "Amire Bi Gazand", "Admin","Mohsen Chavoshi Amire Bi Gazand.mp3"));
-                return adminAudios;
-            } catch (URISyntaxException e) {
-                //:)
-            }
-            return new ArrayList<>();
-        }
-
-        public static ArrayList<Audio> getVendorMusics() {
-            if(vendorAudios != null)
-                return vendorAudios;
-            try {
-                vendorAudios = new ArrayList<>();
-                vendorAudios.add(makeAudio("Benyamin Bahadori", "Bi Etena", "Vendor","Benyamin Bahadori - Bi Etena.mp3"));
-                vendorAudios.add(makeAudio("Shadmehr Aghili", "Alamate Soal", "Vendor","Shadmehr-Aghili-Alamate-Soal.mp3"));
-                return vendorAudios;
-            } catch (URISyntaxException e) {
-                //:)
-            }
-            return new ArrayList<>();
-        }
-        public static ArrayList<Audio> getCustomerMusics() {
-            if(customerAudios != null)
-                return customerAudios;
-            try {
-                customerAudios = new ArrayList<>();
-                customerAudios.add(makeAudio("Shayea & Hidden", "Mosser", "Customer","Shayea-Mosser_FT_Mehrad_Hidden.mp3"));
-                customerAudios.add(makeAudio("Imagine Dragons", "Believer", "Customer","Imagine Dragons - Believer.mp3"));
-                customerAudios.add(makeAudio("Nico Vega", "Beast", "Customer","Beast (Extended Version).mp3"));
-                return customerAudios;
-            } catch (URISyntaxException e) {
-                //:)
-            }
-            return new ArrayList<>();
-        }
-
-        private static Audio makeAudio(String artist, String name, String type, String fileName) throws URISyntaxException {
-            return new Audio(artist, name, new MediaPlayer(
-                    new Media(Main.class.getResource("Original SoundTracks\\" + type + "\\" + fileName).toURI().toString())));
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public MediaPlayer getMusic() {
-            return music;
-        }
-
-        public void stop() {
-            music.stop();
-        }
-
-        public String getArtist() {
-            return artist;
-        }
-    }
+    private ChangeMusicThread changeMusicThread = new ChangeMusicThread();
+    private int nextMusicK = 0;
 
     public static String getCurrentLogID() {
         return currentLogID;
@@ -479,6 +373,116 @@ public class AccountControl extends Control implements IOValidity {
 
     }
 
+    public static class Audio {
+        private static ArrayList<Audio> adminAudios;
+        private static ArrayList<Audio> vendorAudios;
+        private static ArrayList<Audio> customerAudios;
+        private String artist;
+        private String name;
+        private MediaPlayer music;
+
+        private Audio(String artist, String name, MediaPlayer music) {
+            this.artist = artist;
+            this.name = name;
+            this.music = music;
+        }
+
+        private static ArrayList<Audio> getAdminMusics() {
+            if(adminAudios != null)
+                return adminAudios;
+            try {
+                adminAudios = new ArrayList<>();
+                adminAudios.add(makeAudio("Mohsen Chavoshi", "Dele Man", "Admin","Mohsen Chavoshi Dele Man.mp3"));
+                adminAudios.add(makeAudio("Mohsen Chavoshi", "Amire Bi Gazand", "Admin","Mohsen Chavoshi Amire Bi Gazand.mp3"));
+                return adminAudios;
+            } catch (URISyntaxException e) {
+                //:)
+            }
+            return new ArrayList<>();
+        }
+        public static ArrayList<Audio> getVendorMusics() {
+            if(vendorAudios != null)
+                return vendorAudios;
+            try {
+                vendorAudios = new ArrayList<>();
+                vendorAudios.add(makeAudio("Benyamin Bahadori", "Bi Etena", "Vendor","Benyamin Bahadori - Bi Etena.mp3"));
+                vendorAudios.add(makeAudio("Shadmehr Aghili", "Alamate Soal", "Vendor","Shadmehr-Aghili-Alamate-Soal.mp3"));
+                return vendorAudios;
+            } catch (URISyntaxException e) {
+                //:)
+            }
+            return new ArrayList<>();
+        }
+        public static ArrayList<Audio> getCustomerMusics() {
+            if(customerAudios != null)
+                return customerAudios;
+            try {
+                customerAudios = new ArrayList<>();
+                customerAudios.add(makeAudio("Shayea & Hidden", "Mosser", "Customer","Shayea-Mosser_FT_Mehrad_Hidden.mp3"));
+                customerAudios.add(makeAudio("Imagine Dragons", "Believer", "Customer","Imagine Dragons - Believer.mp3"));
+                customerAudios.add(makeAudio("Nico Vega", "Beast", "Customer","Beast (Extended Version).mp3"));
+                return customerAudios;
+            } catch (URISyntaxException e) {
+                //:)
+            }
+            return new ArrayList<>();
+        }
+        private static Audio makeAudio(String artist, String name, String type, String fileName) throws URISyntaxException {
+            return new Audio(artist, name, new MediaPlayer(
+                    new Media(Main.class.getResource("Original SoundTracks\\" + type + "\\" + fileName).toURI().toString())));
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public MediaPlayer getMusic() {
+            return music;
+        }
+
+        public void stop() {
+            music.stop();
+        }
+
+        public String getArtist() {
+            return artist;
+        }
+    }
+
+    public void initAudios() {
+        switch (getType()) {
+            case "Admin" :
+                audios = Audio.getAdminMusics();
+                break;
+            case "Vendor" :
+                audios = Audio.getVendorMusics();
+                break;
+            case "Customer" :
+                audios = Audio.getCustomerMusics();
+        }
+        isMusicPlaying = false;
+        musicCounter = 0;
+        changeMusicThread = new ChangeMusicThread();
+    }
+
+    public void stopMusics() {
+        if(audios != null) {
+            for (Audio audio : audios) {
+                audio.stop();
+            }
+        }
+    }
+
+    public long getMusicCount() {
+        if(audios == null)
+            return 0;
+        return audios.size();
+    }
+
+    public void stopPlayingMusic() {
+        audios.get((int) (musicCounter % audios.size())).stop();
+    }
+
     public boolean isMusicPlaying() {
         return isMusicPlaying;
     }
@@ -487,25 +491,87 @@ public class AccountControl extends Control implements IOValidity {
         isMusicPlaying = musicPlaying;
     }
 
-    public boolean modifyPlayingMusic() {
-        if(!isMusicPlaying) {
-            audios.get((int) (musicCounter % audios.size())).getMusic().play();
-        } else {
-            audios.get((int) (musicCounter % audios.size())).getMusic().pause();
-        }
-        isMusicPlaying = !isMusicPlaying;
-        return isMusicPlaying;
-    }
-
     public Audio getPlayingMusic() {
         return audios.get((int) (musicCounter % audios.size()));
     }
 
-    public long getMusicCounter() {
-        return musicCounter;
+    public void setMusicCounter(int k) {
+        musicCounter = ((k + musicCounter > -1) ? k + musicCounter : audios.size() - 1);
     }
 
-    public void setMusicCounter(long musicCounter) {
-        this.musicCounter = musicCounter;
+    public MediaPlayer modifyPlayingMusic() {
+        Audio mediaPlayer = audios.get((int) (musicCounter % audios.size()));
+        if(!isMusicPlaying) {
+            changeMusicThread.stopThread();
+            changeMusicThread = new ChangeMusicThread(null, mediaPlayer, true);
+        } else {
+            changeMusicThread.stopThread();
+            changeMusicThread = new ChangeMusicThread(mediaPlayer, null, false);
+        }
+        changeMusicThread.start();
+        isMusicPlaying = !isMusicPlaying;
+        return mediaPlayer.getMusic();
+    }
+
+    public MediaPlayer changeMusic(int nextMusicK) {
+        Audio first = audios.get((int) (musicCounter % audios.size()));
+        if(nextMusicK == -1 && audios.get((int) (musicCounter % audios.size())).getMusic().getCurrentTime().compareTo(Duration.seconds(2)) >= 0)   {
+            setMusicCounter(0);
+        } else
+            setMusicCounter(nextMusicK);
+        Audio second = audios.get((int) (musicCounter % audios.size()));
+        if(isMusicPlaying) {
+            changeMusicThread.stopThread();
+            changeMusicThread = new ChangeMusicThread(first, second, true);
+            changeMusicThread.start();
+            return second.getMusic();
+        }
+        return null;
+    }
+
+    private static class ChangeMusicThread extends Thread {
+        private Audio firstMediaPlayer;
+        private Audio secondMediaPlayer;
+        private boolean isStop = true;
+        public ChangeMusicThread() { }
+
+        public ChangeMusicThread(Audio firstMediaPlayer, Audio secondMediaPlayer, boolean isStop) {
+            this.firstMediaPlayer = firstMediaPlayer;
+            this.secondMediaPlayer = secondMediaPlayer;
+            this.isStop = isStop;
+        }
+
+        public void stopThread() {
+            if (firstMediaPlayer != null)
+                firstMediaPlayer.getMusic().stop();
+            super.stop();
+        }
+
+        @Override
+        public void run() {
+            try {
+                if(firstMediaPlayer != null) {
+                    while (firstMediaPlayer.getMusic().getVolume() > 0) {
+                        firstMediaPlayer.getMusic().setVolume(firstMediaPlayer.getMusic().getVolume() - 0.01);
+                        Thread.sleep(20);
+                    }
+                    if(isStop)
+                        firstMediaPlayer.getMusic().stop();
+                    else
+                        firstMediaPlayer.getMusic().pause();
+                }
+                if(secondMediaPlayer != null) {
+                    secondMediaPlayer.getMusic().play();
+                    secondMediaPlayer.getMusic().setVolume(0);
+                    while (secondMediaPlayer.getMusic().getVolume() < 1) {
+                        secondMediaPlayer.getMusic().setVolume(secondMediaPlayer.getMusic().getVolume() + 0.01);
+                        Thread.sleep(50);
+                    }
+                }
+            } catch (Exception e) {
+                //:)
+            }
+
+        }
     }
 }
