@@ -1,6 +1,7 @@
 package client.view;
 
 import client.api.Command;
+import com.google.gson.GsonBuilder;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
@@ -175,6 +176,10 @@ public class WelcomeProcessor extends Processor implements Initializable {
                 passwordField.setStyle(errorTextFieldStyle);
         } else {
             Command<Account> command = getIOCommand("login", new Account(userNameField.getText(), passwordField.getText()));
+            System.out.println("Message : " + command.getMessage());
+            System.out.println("Account : " + command.getData().get(0).getUsername());
+            String commandStr = new GsonBuilder().setPrettyPrinting().create().toJson(command);
+            System.out.println("Command : " + commandStr);
             Response<String> loginResponse = client.postAndGet(command, Response.class, (Class<String>)String.class);
             Alert alert = loginResponse.getMessage().getAlert();
             Optional<ButtonType> optionalButtonType = alert.showAndWait();

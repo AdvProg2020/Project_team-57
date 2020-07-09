@@ -45,4 +45,8 @@ public class Command<T> {
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
     }
+
+    public HandleType getType() {
+        return type;
+    }
 }
