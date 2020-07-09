@@ -1,8 +1,8 @@
 package client.view;
 
 import com.jfoenix.controls.JFXProgressBar;
-import controller.Control;
-import controller.account.AccountControl;
+import server.controller.Control;
+import server.controller.account.AccountControl;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

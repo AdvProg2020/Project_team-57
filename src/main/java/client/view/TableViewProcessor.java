@@ -2,12 +2,12 @@ package client.view;
 
 import com.jfoenix.controls.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import controller.Control;
-import controller.account.AccountControl;
-import controller.account.AdminControl;
-import controller.account.CustomerControl;
-import controller.account.VendorControl;
-import controller.product.ProductControl;
+import server.controller.Control;
+import server.controller.account.AccountControl;
+import server.controller.account.AdminControl;
+import server.controller.account.CustomerControl;
+import server.controller.account.VendorControl;
+import server.controller.product.ProductControl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -29,15 +29,15 @@ import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import model.existence.*;
+import server.model.existence.*;
 
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Optional;
-import model.existence.Log.ProductOfLog;
+import server.model.existence.Log.ProductOfLog;
 
-import static model.existence.Account.AccountType.*;
+import static server.model.existence.Account.AccountType.*;
 
 public class TableViewProcessor<T> extends Processor {
 

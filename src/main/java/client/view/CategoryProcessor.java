@@ -2,9 +2,9 @@ package client.view;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import controller.Control;
-import controller.account.AdminControl;
-import controller.product.ProductControl;
+import server.controller.Control;
+import server.controller.account.AdminControl;
+import server.controller.product.ProductControl;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -17,7 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import model.existence.Category;
+import server.model.existence.Category;
 import notification.Notification;
 
 import java.io.IOException;

@@ -1,8 +1,8 @@
 package client.view;
 
 import com.jfoenix.controls.JFXButton;
-import controller.Control;
-import controller.account.AdminControl;
+import server.controller.Control;
+import server.controller.account.AdminControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,10 +15,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.existence.Account;
-import model.existence.Comment;
-import model.existence.Discount;
-import model.existence.Off;
+import server.model.existence.Account;
+import server.model.existence.Comment;
+import server.model.existence.Discount;
+import server.model.existence.Off;
 
 import java.io.IOException;
 import java.net.URL;

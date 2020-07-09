@@ -4,10 +4,10 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
-import controller.account.AdminControl;
-import controller.account.CustomerControl;
-import controller.account.VendorControl;
-import controller.product.ProductControl;
+import server.controller.account.AdminControl;
+import server.controller.account.CustomerControl;
+import server.controller.account.VendorControl;
+import server.controller.product.ProductControl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -28,10 +28,10 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import model.existence.Category;
-import model.existence.Discount;
-import model.existence.Off;
-import model.existence.Product;
+import server.model.existence.Category;
+import server.model.existence.Discount;
+import server.model.existence.Off;
+import server.model.existence.Product;
 import notification.Notification;
 
 import java.io.FileInputStream;
@@ -236,12 +236,12 @@ public class ProductsProcessor extends Processor{
     private void setPriceFilter(/*JFXTextField priceTextField*/) {
         double minPrice = fromPriceTextField.getText().isEmpty() ? 0 : Double.parseDouble(fromPriceTextField.getText());
         double maxPrice = toPriceTextField.getText().isEmpty() ? Double.MAX_VALUE : Double.parseDouble(toPriceTextField.getText());
-        controller.Control.getController().setPriceFilters(minPrice, maxPrice);
+        server.controller.Control.getController().setPriceFilters(minPrice, maxPrice);
         initProductsPage();
     }
 
     private void addCategoryToFilters(Category category) {
-        if(!controller.Control.getController().isThereFilteringCategoryWithName(category.getName())) {
+        if(!server.controller.Control.getController().isThereFilteringCategoryWithName(category.getName())) {
             try {
                 loadFilterPane(category, null);
             } catch (IOException e) {
@@ -259,12 +259,12 @@ public class ProductsProcessor extends Processor{
             if (filterCategory == null) {
                 productsProcessor.filterName = filterName;
                 productsProcessor.filterNameLabel.setText(" " + filterName + " ");
-                controller.Control.getController().addToFilterNameList(filterName);
+                server.controller.Control.getController().addToFilterNameList(filterName);
                 searchTextField.setText(null);
             } else if (filterName == null) {
                 productsProcessor.filterCategory = filterCategory;
                 productsProcessor.filterNameLabel.setText(" " + filterCategory.getName() + " ");
-                controller.Control.getController().addToFilterCategoryList(filterCategory.getName());
+                server.controller.Control.getController().addToFilterCategoryList(filterCategory.getName());
             }
 
             initProductsPage();
@@ -273,33 +273,33 @@ public class ProductsProcessor extends Processor{
 
     public void deleteFilterCategoryMouseClicked(MouseEvent mouseEvent) {
         if(filterCategory == null)
-            controller.Control.getController().removeFromFilterNameList(filterName);
+            server.controller.Control.getController().removeFromFilterNameList(filterName);
         else if(filterName == null)
-            controller.Control.getController().removeFromFilterCategoryList(filterCategory.getName());
+            server.controller.Control.getController().removeFromFilterCategoryList(filterCategory.getName());
 
         ((ProductsProcessor)parentProcessor).initProductsPage();
         ((ProductsProcessor)parentProcessor).filteredCategoriesVBox.getChildren().remove(mainFilterPane);
     }
 
     public void showCartProducts(ActionEvent actionEvent) {
-        if(controller.Control.getType() != null && !controller.Control.getType().equals("Customer")) {
+        if(server.controller.Control.getType() != null && !server.controller.Control.getType().equals("Customer")) {
             new Alert(Alert.AlertType.ERROR, "Sorry. Only Customers Can Use This Option Of The Market!").show();
             return;
         }
-        if(canOpenSubStage(controller.Control.getUsername() + " Cart", this))
+        if(canOpenSubStage(server.controller.Control.getUsername() + " Cart", this))
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerCartProducts.fxml"));
                 Parent root = loader.load();
                 ProductsProcessor processor = loader.getController();
-                if(!(controller.Control.getType() != null && controller.Control.getType().equals("Customer")))
+                if(!(server.controller.Control.getType() != null && server.controller.Control.getType().equals("Customer")))
                     processor.userProductsOptionPane.getChildren().
                         removeAll(processor.discountCodesListView, processor.useDiscountCodeToggleButton);
                 processor.parentProcessor = this;
                 processor.initProcessor(ProductsProcessor.ProductsMenuType.CUSTOMER_CART);
                 Stage stage = new Stage();
-                stage.getIcons().add(new Image("Images/Icons/cart (2).png"));
+                stage.getIcons().add(new Image(IMAGE_FOLDER_URL + "Icons\\cart (2).png"));
 
-                stage.setTitle((controller.Control.isLoggedIn() ? controller.Control.getUsername() : "Your")+ " Cart");
+                stage.setTitle((server.controller.Control.isLoggedIn() ? server.controller.Control.getUsername() : "Your")+ " Cart");
                 stage.setScene(new Scene(root));
                 stage.setResizable(false);
                 this.subStages.add(stage);
@@ -321,7 +321,7 @@ public class ProductsProcessor extends Processor{
                 allProducts = VendorControl.getController().getAllProducts();
                 break;
             case CUSTOMER_CART:
-                if(controller.Control.getType() != null && controller.Control.getType().equals("Customer") && controller.Control.isLoggedIn())
+                if(server.controller.Control.getType() != null && server.controller.Control.getType().equals("Customer") && server.controller.Control.isLoggedIn())
                     allProducts = CustomerControl.getController().getAllCartProducts();
                 else
                     allProducts = CustomerControl.getController().getTempCartProducts();
@@ -628,11 +628,11 @@ public class ProductsProcessor extends Processor{
                     break;
                 case ADMIN_OFF_PRODUCTS:
                 case MAIN_PRODUCTS:
-                    if(controller.Control.getType() != null && controller.Control.getType().equals("Admin")){
+                    if(server.controller.Control.getType() != null && server.controller.Control.getType().equals("Admin")){
                         productMenuType = ProductProcessor.ProductMenuType.ADMIN;
-                    } else if(controller.Control.getType() != null && controller.Control.getType().equals("Customer")) {
+                    } else if(server.controller.Control.getType() != null && server.controller.Control.getType().equals("Customer")) {
                         productMenuType = ProductProcessor.ProductMenuType.PRODUCTS_CUSTOMER;
-                    } else if(controller.Control.getType() != null && controller.Control.getType().equals("Vendor"))
+                    } else if(server.controller.Control.getType() != null && server.controller.Control.getType().equals("Vendor"))
                         productMenuType = ProductProcessor.ProductMenuType.PRODUCTS_VENDOR;
                     else
                         productMenuType = ProductProcessor.ProductMenuType.PRODUCTS;
@@ -757,7 +757,7 @@ public class ProductsProcessor extends Processor{
 
         if(searchFieldText == null || searchFieldText.isEmpty()) {
             searchTextField.requestFocus();
-        } else if(!controller.Control.getController().isThereFilteringNameWithName(searchFieldText)) {
+        } else if(!server.controller.Control.getController().isThereFilteringNameWithName(searchFieldText)) {
             try {
                 loadFilterPane(null, searchTextField.getText());
             } catch (IOException e) {
@@ -878,7 +878,7 @@ public class ProductsProcessor extends Processor{
     //Purchase Part
     public void purchaseProducts(MouseEvent mouseEvent) {
         try {
-            if(controller.Control.isLoggedIn() && controller.Control.getType() != null && controller.Control.getType().equals("Customer"))
+            if(server.controller.Control.isLoggedIn() && server.controller.Control.getType() != null && server.controller.Control.getType().equals("Customer"))
                 purchase();
             else
                 openSignInMenu();

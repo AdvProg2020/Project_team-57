@@ -1,8 +1,8 @@
 package client.view;
 
 import com.jfoenix.controls.JFXButton;
-import controller.account.CustomerControl;
-import controller.product.ProductControl;
+import server.controller.account.CustomerControl;
+import server.controller.product.ProductControl;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,7 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import model.existence.Off;
+import server.model.existence.Off;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
