@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.control.cell.TreeItemPropertyValueFactory?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane fx:id="mainPane" prefHeight="630.0" prefWidth="675.0" style="-fx-background-color: #eceff1;" stylesheets="@../CSS%20files/CategoriesMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.CategoryProcessor">
+   <children>
+      <TreeTableView fx:id="categoriesTableView" layoutX="167.0" layoutY="301.0" prefHeight="322.0" prefWidth="500.0">
+         <columns>
+            <TreeTableColumn editable="false" minWidth="2.0" prefWidth="173.0" sortable="false" text="Name">
+               <cellValueFactory>
+                  <TreeItemPropertyValueFactory property="Name" />
+               </cellValueFactory>
+            </TreeTableColumn>
+            <TreeTableColumn editable="false" prefWidth="311.0" sortable="false" text="Features">
+               <cellValueFactory>
+                  <TreeItemPropertyValueFactory property="Features" />
+               </cellValueFactory>
+            </TreeTableColumn>
+         </columns>
+      </TreeTableView>
+      <JFXButton fx:id="addCategoryButton" layoutX="18.0" layoutY="462.0" onMouseClicked="#addSubCategoryMouseClicked" style="-fx-background-color: #80CBC4;" styleClass="Button" text="Add SubCategory" textFill="WHITE" />
+      <JFXButton fx:id="deleteCategoryButton" layoutX="56.0" layoutY="550.0" onMouseClicked="#deleteCategoryMouseClicked" style="-fx-background-color: #80CBC4;" styleClass="Button" text="Delete" textFill="WHITE" />
+      <JFXButton fx:id="editCategoryButton" layoutX="64.0" layoutY="502.0" onMouseClicked="#editCategoryMouseClicked" style="-fx-background-color: #80CBC4;" styleClass="Button" text="Edit" textFill="WHITE" />
+      <ImageView fitHeight="500.0" fitWidth="500.0" layoutX="88.0" layoutY="-89.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Backgrounds/discount.png" />
+         </image>
+      </ImageView>
+   </children>
+</Pane>

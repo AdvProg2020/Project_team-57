@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="vendorProductsMainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1250.0" stylesheets="@../CSS%20files/VendorMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.ProductsProcessor">
+   <center>
+      <ScrollPane fx:id="productsScrollPane" prefHeight="720.0" prefWidth="1050.0" BorderPane.alignment="CENTER">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+         </content>
+      </ScrollPane>
+   </center>
+   <left>
+      <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #e0f2f1;" BorderPane.alignment="CENTER">
+         <children>
+            <Pane layoutX="13.0" layoutY="36.0" onMouseClicked="#saveChangesForAdminProductRequests" opacity="0.7" prefHeight="200.0" prefWidth="175.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" styleClass="vendor_products_button">
+               <children>
+                  <ImageView disable="true" fitHeight="96.0" fitWidth="96.0" layoutX="40.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/Icons/ProductsMenu/admin%20save%20changes%20for%20product%20requests.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="34.0" layoutY="156.0" text="Save Changes">
+                     <font>
+                        <Font name="Calibri" size="17.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+   </left>
+</BorderPane>

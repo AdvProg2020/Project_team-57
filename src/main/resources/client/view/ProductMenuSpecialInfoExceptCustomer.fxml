@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="specialPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="300.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.ProductProcessor">
+   <children>
+      <HBox fx:id="specialImages" layoutX="165.0" layoutY="15.0">
+         <children>
+            <ImageView fx:id="tickImage" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#tickMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Tick%205.png" />
+               </image></ImageView>
+            <ImageView fx:id="buyersImage" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#viewBuyers" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Buyers.png" />
+               </image></ImageView>
+            <ImageView fx:id="removeImage" fitHeight="40.0" fitWidth="40.0" onMouseClicked="#removeProductMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Special%20Remove%202.png" />
+               </image></ImageView>
+         </children>
+      </HBox>
+      <Pane fx:id="pricePane" layoutX="16.0" layoutY="96.0">
+         <children>
+            <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Price.png" />
+               </image>
+            </ImageView>
+            <JFXTextField fx:id="price" layoutX="32.0" onMouseEntered="#textFieldMouseClicked" prefHeight="32.0" prefWidth="90.0" promptText=" Price">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </JFXTextField>
+            <ImageView fx:id="offArrow" fitHeight="32.0" fitWidth="32.0" layoutX="124.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Right%20Arrow.png" />
+               </image>
+            </ImageView>
+            <JFXTextField fx:id="offPrice" layoutX="157.0" prefHeight="32.0" prefWidth="90.0" promptText=" Off Price">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </JFXTextField>
+         </children>
+      </Pane>
+      <Pane fx:id="sellerPane" layoutX="16.0" layoutY="173.0">
+         <children>
+            <ImageView fx:id="sellerIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Seller3.png" />
+               </image>
+            </ImageView>
+            <JFXTextField fx:id="seller" layoutX="34.0" prefHeight="32.0" prefWidth="213.0" promptText=" Seller">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </JFXTextField>
+         </children>
+      </Pane>
+      <Pane fx:id="statusPane" layoutX="16.0" layoutY="253.0">
+         <children>
+            <ImageView fx:id="statusIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/ProductMenu/Status.png" />
+               </image>
+            </ImageView>
+            <JFXTextField fx:id="status" layoutX="34.0" prefHeight="32.0" prefWidth="213.0" promptText=" Status">
+               <font>
+                  <Font name="System Bold Italic" size="15.0" />
+               </font>
+            </JFXTextField>
+         </children>
+      </Pane>
+   </children>
+</Pane>

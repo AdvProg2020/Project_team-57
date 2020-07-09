@@ -1,14 +1,9 @@
 package controller;
 
-import com.jfoenix.controls.JFXTextField;
-import javafx.application.Application;
-import javafx.stage.Stage;
 import model.existence.Account;
 import notification.Notification;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import view.Main;
 
 public class IOControlTest {
 

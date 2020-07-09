@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.control.cell.TreeItemPropertyValueFactory?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1300.0" stylesheets="@../CSS%20files/ProductsMenu.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.ProductsProcessor">
+   <center>
+      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <top>
+            <Pane prefHeight="80.0" prefWidth="1050.0" style="-fx-background-color: #eceff1;" BorderPane.alignment="CENTER">
+               <children>
+                  <Label layoutX="57.0" layoutY="26.0" text="Sort By:">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <JFXButton fx:id="viewSortButton" buttonType="RAISED" layoutX="128.0" layoutY="24.0" onAction="#changeSort" onMouseEntered="#sortButtonOnMouse" onMouseExited="#sortButtonOutMouse" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="View" />
+                  <JFXButton fx:id="timeSortButton" buttonType="RAISED" layoutX="198.0" layoutY="24.0" onAction="#changeSort" onMouseEntered="#sortButtonOnMouse" onMouseExited="#sortButtonOutMouse" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Time" />
+                  <JFXButton fx:id="nameSortButton" buttonType="RAISED" layoutX="268.0" layoutY="24.0" onAction="#changeSort" onMouseEntered="#sortButtonOnMouse" onMouseExited="#sortButtonOutMouse" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Name" />
+                  <JFXButton fx:id="scoreSortButton" buttonType="RAISED" layoutX="338.0" layoutY="24.0" onAction="#changeSort" onMouseEntered="#sortButtonOnMouse" onMouseExited="#sortButtonOutMouse" prefHeight="31.0" prefWidth="60.0" style="-fx-background-radius: 10 10 10 10;" text="Score" />
+                  <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/Icons/ProductsMenu/sorting%20icon.png" />
+                     </image>
+                  </ImageView>
+                  <JFXToggleButton fx:id="descendingSortButton" layoutX="398.0" layoutY="19.0" maxHeight="-Infinity" minHeight="-Infinity" onAction="#setSort" prefHeight="43.0" prefWidth="145.0" selected="true" text="Descending" toggleColor="#607d8b" toggleLineColor="#b0bec5" unToggleLineColor="WHITE">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </JFXToggleButton>
+               </children></Pane>
+         </top>
+         <center>
+            <ScrollPane fx:id="productsScrollPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </center>
+   <top>
+      <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #cfd8dc;" BorderPane.alignment="CENTER">
+         <children>
+            <Pane prefHeight="100.0" prefWidth="272.0">
+               <children>
+                  <JFXTextField fx:id="searchTextField" layoutX="21.0" layoutY="35.0" onKeyTyped="#filterByNameKeyTyped" prefHeight="30.0" prefWidth="168.0" promptText="Search" />
+                  <JFXButton buttonType="RAISED" layoutX="195.0" layoutY="31.0" onMouseClicked="#filterByNameMouseClicked" prefHeight="40.0" prefWidth="40.0" styleClass="Up_Button" text=" " />
+                  <ImageView disable="true" fitHeight="30.0" fitWidth="30.0" layoutX="200.0" layoutY="36.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/Icons/ProductsMenu/search%20icon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </Pane>
+            <Pane prefHeight="100.0" prefWidth="806.0">
+               <children>
+                  <JFXButton buttonType="RAISED" layoutX="358.0" layoutY="9.0" onAction="#backToMainMenu" prefHeight="84.0" prefWidth="156.0" styleClass="Up_Button" text=" " />
+                  <ImageView disable="true" fitHeight="150.0" fitWidth="200.0" layoutX="358.0" layoutY="-24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/Icons/ProductsMenu/products%20icon.png" />
+                     </image>
+                  </ImageView>
+               </children></Pane>
+            <Pane prefHeight="100.0" prefWidth="287.0">
+               <children>
+                  <JFXButton buttonType="RAISED" layoutX="194.0" layoutY="26.0" onAction="#showCartProducts" prefHeight="50.0" prefWidth="50.0" styleClass="Up_Button" text=" " />
+                  <JFXButton alignment="CENTER_RIGHT" buttonType="RAISED" layoutX="26.0" layoutY="24.0" onAction="#openAccountMenu" prefHeight="55.0" prefWidth="160.0" style="-fx-background-radius: 10 10 10 10;" styleClass="Up_Button" text="Account Menu">
+                     <font>
+                        <Font name="Calibri" size="17.0" />
+                     </font>
+                  </JFXButton>
+                  <ImageView disable="true" fitHeight="45.0" fitWidth="45.0" layoutX="24.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/Icons/ProductsMenu/user%20icon.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView disable="true" fitHeight="45.0" fitWidth="45.0" layoutX="197.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/Icons/ProductsMenu/cart%20icon.png" />
+                     </image>
+                  </ImageView>
+               </children></Pane>
+         </children>
+      </HBox>
+   </top>
+   <left>
+      <Pane prefHeight="800.0" prefWidth="250.0" BorderPane.alignment="CENTER">
+         <children>
+            <Pane prefHeight="661.0" prefWidth="250.0">
+               <children>
+                  <TreeTableView fx:id="categoriesTableTreeView" layoutX="21.0" layoutY="21.0" prefHeight="306.0" prefWidth="209.0">
+                     <columns>
+                        <TreeTableColumn prefWidth="197.0" sortable="false" text="Categories">
+                           <cellValueFactory>
+                              <TreeItemPropertyValueFactory property="Name" />
+                           </cellValueFactory>
+                        </TreeTableColumn>
+                     </columns>
+                  </TreeTableView>
+                  <ScrollPane layoutX="21.0" layoutY="343.0" prefHeight="100.0" prefWidth="209.0">
+                     <content>
+                        <VBox fx:id="filteredCategoriesVBox" prefWidth="189.0" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </Pane>
+            <Pane layoutY="732.0" prefHeight="68.0" prefWidth="250.0">
+               <children>
+                  <JFXTextField fx:id="fromPriceTextField" labelFloat="true" layoutX="84.0" layoutY="16.0" prefHeight="11.0" prefWidth="60.0" promptText=" From" />
+                  <JFXTextField fx:id="toPriceTextField" labelFloat="true" layoutX="170.0" layoutY="16.0" prefHeight="31.0" prefWidth="60.0" promptText=" To" />
+                  <Label alignment="CENTER" layoutX="20.0" layoutY="14.0" prefHeight="36.0" style="-fx-background-color: #D5D5D5; -fx-background-radius: 10;" text=" Price : " />
+                  <Label layoutX="153.0" layoutY="18.0" text="\\">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+   </left>
+</BorderPane>

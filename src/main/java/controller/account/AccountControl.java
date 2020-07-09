@@ -1,9 +1,7 @@
 package controller.account;
 
-import com.jfoenix.controls.JFXProgressBar;
 import controller.Control;
 import controller.product.ProductControl;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -14,7 +12,7 @@ import model.existence.Log;
 import model.existence.Off;
 import model.existence.Product;
 import notification.Notification;
-import view.Main;
+import client.view.Main;
 
 import java.io.File;
 import java.io.FileInputStream;

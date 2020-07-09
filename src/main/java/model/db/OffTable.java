@@ -350,8 +350,10 @@ public class OffTable extends Database{
     }
 
     public static void removeEditingOffImage(String offID) {
-        File file = new File(getEditingOffImageFilePath(offID));
-        file.delete();
+        if(getEditingOffImageFilePath(offID) != null) {
+            File file = new File(getEditingOffImageFilePath(offID));
+            file.delete();
+        }
     }
 
     public static void setEditingOffImage(String offID, File pictureFile) throws IOException {

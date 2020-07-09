@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="230.0" style="-fx-background-color: #e0f2f1;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.TableViewProcessor">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="41.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutX="189.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="41.0" />
+      <Label fx:id="offNameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="252.0" prefWidth="210.0" text="Off Name">
+         <font>
+            <Font name="Calibri" size="17.0" />
+         </font>
+      </Label>
+      <JFXButton fx:id="editOffButton" buttonType="RAISED" layoutX="62.0" layoutY="347.0" onAction="#editOff" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefWidth="106.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show/Edit Off">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="deleteOffButton" buttonType="RAISED" layoutX="73.0" layoutY="391.0" onAction="#deleteOff" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Delete Off">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+      <Rectangle fx:id="offImageRectangle" arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="150.0" layoutX="40.0" layoutY="88.0" stroke="#4db6ac" strokeType="INSIDE" width="150.0" />
+      <JFXButton fx:id="addNewOffButton" buttonType="RAISED" layoutX="22.0" layoutY="569.0" onAction="#addNewOff" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="30.0" prefWidth="187.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Add New Off">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+   </children>
+</Pane>
