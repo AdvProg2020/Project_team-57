@@ -1,5 +1,6 @@
 package client.view;
 
+import client.api.Client;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
@@ -15,6 +16,7 @@ public abstract class Processor {
     protected Stage myStage;
     protected Processor parentProcessor;
     protected ArrayList<Stage> subStages = new ArrayList<>();
+    protected Client client = Client.getClient();
 
     protected static final String errorTextFieldStyle = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
 

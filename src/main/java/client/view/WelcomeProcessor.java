@@ -1,5 +1,6 @@
 package client.view;
 
+import client.api.Command;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
@@ -23,6 +24,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import server.server.Response;
 import server.model.existence.Account;
 
 import java.io.IOException;
@@ -172,7 +174,9 @@ public class WelcomeProcessor extends Processor implements Initializable {
             if(passwordField.getText().equals(""))
                 passwordField.setStyle(errorTextFieldStyle);
         } else {
-            Alert alert = ioControl.login(new Account(userNameField.getText(), passwordField.getText())).getAlert();
+            Command<Account> command = getIOCommand("login", new Account(userNameField.getText(), passwordField.getText()));
+            Response<String> loginResponse = client.postAndGet(command, Response.class, (Class<String>)String.class);
+            Alert alert = loginResponse.getMessage().getAlert();
             Optional<ButtonType> optionalButtonType = alert.showAndWait();
             if(optionalButtonType.get() == ButtonType.OK) {
                 if(alert.getHeaderText().equals("Congratulations")) {
@@ -180,6 +184,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
                         ((ProductsProcessor) parentProcessor).myStage.close();
                         ((ProductsProcessor)((ProductsProcessor) parentProcessor).parentProcessor).showCartProducts(null);
                     }
+                    client.setAuthToken(loginResponse.getData().get(0));
                     myStage.close();
                 }
                 if(alert.getHeaderText().contains("Username"))
@@ -238,7 +243,9 @@ public class WelcomeProcessor extends Processor implements Initializable {
             account.setFirstName(name.getText());
             account.setLastName(lastName.getText());
             account.setType(getAccountType());
-            Alert alert = ioControl.register(account).getAlert();
+            Response response =
+                    client.postAndGet(getIOCommand("Register", account), Response.class, (Class<Object>)Object.class);
+            Alert alert = response.getMessage().getAlert();
             if (alert.getTitle().equals("Successful")) {
                 alert.show();
                 signUp.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(1.5))));
@@ -335,4 +342,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
         ((TextField) event.getSource()).setBorder(null);
     }
 
+    private Command<Account> getIOCommand(String message, Account account) {
+        return new Command<>(message, Command.HandleType.ACCOUNT, account);
+    }
 }
