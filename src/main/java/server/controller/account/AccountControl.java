@@ -353,13 +353,19 @@ public class AccountControl extends Control implements IOValidity {
         return null;
     }
 
-    public BufferedImage getProfileBufferedImageByUsername(String username) {
+    public Integer[] getProfileImageArrayByUsername(String username) {
         try {
             String imageInput = doesUserHaveImage(username) ? username : "1";
             FileInputStream fileInputStream = AccountTable.getProfileImageInputStream(imageInput);
-            BufferedImage image = ImageIO.read(fileInputStream);
+            ArrayList<Integer> imageArray = new ArrayList<>();
+
+            int i;
+            while ((i = fileInputStream.read()) > -1) {
+                imageArray.add(i);
+            }
+
             fileInputStream.close();
-            return image;
+            return (Integer[]) imageArray.toArray();
         } catch (FileNotFoundException e) {
             //:)
         } catch (IOException e) {

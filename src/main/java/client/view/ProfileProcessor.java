@@ -153,7 +153,7 @@ public class ProfileProcessor extends Processor implements Initializable {
 
     private Image getProfileImage() {
         Command<String> command = new Command<>("get user image", Command.HandleType.ACCOUNT, account.getUsername());
-        Response<BufferedImage> response = client.postAndGet(command, Response.class, (Class<BufferedImage>)BufferedImage.class);
+        Response<Integer> response = client.postAndGet(command, Response.class, (Class<Integer>)Integer.class);
         return bufferedImage2Image.apply(response.getData().get(0));
     }
 

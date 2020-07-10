@@ -8,13 +8,9 @@ import server.controller.account.AccountControl;
 import server.model.existence.Account;
 import server.server.Response;
 import server.server.Server;
-import sun.misc.IOUtils;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class AccountHandler extends Handler {
     IOControl ioControl = IOControl.getController();
@@ -52,8 +48,8 @@ public class AccountHandler extends Handler {
 
     private String getUserImage() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
-        BufferedImage userImage = accountControl.getProfileBufferedImageByUsername(command.getData().get(0));
-        Response<BufferedImage> response = new Response<>(Notification.PACKET_NOTIFICATION, userImage);
+        Integer[] userImageIntegerArray = accountControl.getProfileImageArrayByUsername(command.getData().get(0));
+        Response<Integer> response = new Response<>(Notification.PACKET_NOTIFICATION, userImageIntegerArray);
         return gson.toJson(response);
     }
 
