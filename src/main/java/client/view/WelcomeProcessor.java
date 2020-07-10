@@ -248,7 +248,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
             account.setLastName(lastName.getText());
             account.setType(getAccountType());
             Response response =
-                    client.postAndGet(getIOCommand("Register", account), Response.class, (Class<Object>)Object.class);
+                    client.postAndGet(getIOCommand("register", account), Response.class, (Class<Object>)Object.class);
             Alert alert = response.getMessage().getAlert();
             if (alert.getTitle().equals("Successful")) {
                 alert.show();

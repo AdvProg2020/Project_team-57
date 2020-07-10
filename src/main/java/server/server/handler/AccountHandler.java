@@ -20,13 +20,15 @@ public class AccountHandler extends Handler {
 
     @Override
     protected String handle() throws InterruptedException {
+        System.out.println("Message : " + message);
+        System.out.println("Is : " + message.equals("register"));
         switch (message) {
             case "register":
                 return register();
             case "login":
                 return login();
             default:
-                return server.getUnknownError();
+                return null/*server.getUnknownError()*/;
         }
     }
 
@@ -45,6 +47,7 @@ public class AccountHandler extends Handler {
     }
 
     private String register() {
+        System.out.println("Fuck");
         Account account = commandParser.parseDatum(Command.class, (Class<Account>)Account.class);
         Response response = new Response(ioControl.register(account));
         return gson.toJson(response);

@@ -47,9 +47,10 @@ public class Server {
             ObjectNode objectNode = mapper.readValue(input, ObjectNode.class);
             Command.HandleType type = gson.fromJson(objectNode.get("type").asText(), Command.HandleType.class);
 
+            System.out.println("Type : " + type);
             switch (type) {
                 case ACCOUNT:
-                    //new AccountHandler()
+                    new AccountHandler(outStream, inStream, this, input).start();
                     break;
                 default:
                     outStream.writeUTF(getUnknownError());

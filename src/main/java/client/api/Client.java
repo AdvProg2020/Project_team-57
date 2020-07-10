@@ -10,7 +10,7 @@ import java.io.*;
 import java.net.Socket;
 
 public class Client {
-    private static int PORT = 53719;
+    private static int PORT = 30651;
     private static Client client = null;
     private final static String HOME = "127.0.0.1";
     private Socket mySocket;
@@ -40,6 +40,7 @@ public class Client {
             makeConnection();
             System.out.println("4");
             command.setAuthToken(authToken);
+            System.out.println("Command Message : " + command.getMessage());
             String commandStr = gson.toJson(command/*,  new TypeToken<Command<E>>(){}.getType()*/);
             System.out.println("5");
             //System.out.println(commandStr);

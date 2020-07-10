@@ -36,6 +36,10 @@ public abstract class Handler extends Thread{
     public void run() {
         try {
             String output = handle();
+            System.out.println("Output : " + output);
+            if(output == null)
+                output = server.getUnknownError();
+
             outStream.writeUTF(output);
             outStream.flush();
             System.out.println(new Date());
