@@ -96,7 +96,7 @@ public class CustomerControl extends AccountControl{
         return new Product();
     }
 
-    public Notification increaseCount(String productID, String command) {
+/*    public Notification increaseCount(String productID, String command) {
         try {
             int input = Integer.parseInt(command);
             if(input > 0) {
@@ -115,9 +115,9 @@ public class CustomerControl extends AccountControl{
             }
         } catch (NumberFormatException e) { } catch (NullPointerException e) { }
         return Notification.INVALID_COUNT;
-    }
+    }*/
 
-    public Notification decreaseCount(String productID, String command) {
+/*    public Notification decreaseCount(String productID, String command) {
         try {
             int input = Integer.parseInt(command);
             if(input > 0) {
@@ -136,9 +136,9 @@ public class CustomerControl extends AccountControl{
             }
         } catch (NumberFormatException e) { } catch (NullPointerException e) { }
         return Notification.INVALID_COUNT;
-    }
+    }*/
 
-    public Notification increaseAmount(String productID, String command) {
+/*    public Notification increaseAmount(String productID, String command) {
         try {
             double input = Double.parseDouble(command);
             if(input > 0)
@@ -158,9 +158,9 @@ public class CustomerControl extends AccountControl{
             }
         } catch (NumberFormatException e) {} catch (NullPointerException e) {}
         return Notification.INVALID_AMOUNT;
-    }
+    }*/
 
-    public Notification decreaseAmount(String productID, String command) {
+/*    public Notification decreaseAmount(String productID, String command) {
         try {
             double input = Double.parseDouble(command);
             if(input > 0)
@@ -180,7 +180,7 @@ public class CustomerControl extends AccountControl{
             }
         } catch (NumberFormatException e) {} catch (NullPointerException e) {}
         return Notification.INVALID_AMOUNT;
-    }
+    }*/
 
     public double calculateCartTotalPrice() {
         double totalPrice = 0;

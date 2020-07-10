@@ -276,8 +276,9 @@ public class Control {
     }
 
     public static void logOut() {
-        AccountControl.getController().stopMusics();
-        AccountControl.getController().setMusicPlaying(false);
+        //TODO(FOR MEDIA)
+/*        AccountControl.getController().stopMusics();
+        AccountControl.getController().setMusicPlaying(false);*/
         isLoggedIn = false;
         username = null;
         type = null;

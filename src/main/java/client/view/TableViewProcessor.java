@@ -174,7 +174,8 @@ public class TableViewProcessor<T> extends Processor {
                 initDiscountColumns();
                 break;
             case DISCOUNT_CUSTOMERS:
-                initDiscountCustomersColumns();
+                //TODO(FOR CHECKBOX)
+                /*initDiscountCustomersColumns();*/
                 break;
             case ADMIN_COMMENTS:
                 initAdminCommentsColumns();
@@ -296,7 +297,8 @@ public class TableViewProcessor<T> extends Processor {
                 tableList.addAll((ArrayList<T>)AdminControl.getController().getAllDiscounts());
                 break;
             case DISCOUNT_CUSTOMERS:
-                tableList.addAll(getAllCustomersForDiscount());
+                //TODO(FOR CHECKBOX)
+                //tableList.addAll(getAllCustomersForDiscount());
                 break;
             case ADMIN_COMMENTS:
                 tableList.addAll((ArrayList<T>)AdminControl.getController().getAllUnApprovedComments());
@@ -328,7 +330,8 @@ public class TableViewProcessor<T> extends Processor {
         selectedItem = tableView.getSelectionModel().getSelectedItem();
     }
 
-    private ArrayList<T> getAllCustomersForDiscount() {
+    //TODO(FOR CHECKBOX)
+/*    private ArrayList<T> getAllCustomersForDiscount() {
         ArrayList<Account> customers = new ArrayList<>();
         if(searchedUsername != null && searchedUsername.length() > 0) {
             customers = AccountControl.getController().getModifiedAccounts(CUSTOMER, searchedUsername);
@@ -360,7 +363,7 @@ public class TableViewProcessor<T> extends Processor {
         });
 
         return (ArrayList<T>) customers;
-    }
+    }*/
 
     private void initOptions() {
         switch (tableViewType) {
@@ -373,7 +376,8 @@ public class TableViewProcessor<T> extends Processor {
                 mainBorderPane.setLeft(initDiscountOptions());
                 break;
             case DISCOUNT_CUSTOMERS:
-                mainBorderPane.setLeft(initDiscountCustomersOptions());
+                //TODO(FOR CHECKBOX)
+                //mainBorderPane.setLeft(initDiscountCustomersOptions());
                 break;
             case ADMIN_COMMENTS:
                 mainBorderPane.setLeft(initAdminCommentsOptions());
@@ -606,7 +610,8 @@ public class TableViewProcessor<T> extends Processor {
         return null;
     }
 
-    private Pane initDiscountCustomersOptions() {
+    //TODO(FOR CHECKBOX)
+/*    private Pane initDiscountCustomersOptions() {
         tableView.getSelectionModel().clearSelection();
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewDiscountCustomersOption.fxml"));
         try {
@@ -623,7 +628,7 @@ public class TableViewProcessor<T> extends Processor {
             //:)
         }
         return null;
-    }
+    }*/
 
     private Pane initDiscountOptions() {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewDiscountOptions.fxml"));

@@ -176,10 +176,6 @@ public class WelcomeProcessor extends Processor implements Initializable {
                 passwordField.setStyle(errorTextFieldStyle);
         } else {
             Command<Account> command = getIOCommand("login", new Account(userNameField.getText(), passwordField.getText()));
-            System.out.println("Message : " + command.getMessage());
-            System.out.println("Account : " + command.getData().get(0).getUsername());
-            String commandStr = new GsonBuilder().setPrettyPrinting().create().toJson(command);
-            System.out.println("Command : " + commandStr);
             Response<String> loginResponse = client.postAndGet(command, Response.class, (Class<String>)String.class);
             Alert alert = loginResponse.getMessage().getAlert();
             Optional<ButtonType> optionalButtonType = alert.showAndWait();

@@ -10,7 +10,7 @@ import java.io.*;
 import java.net.Socket;
 
 public class Client {
-    private static int PORT = 29805;
+    private static int PORT = 53643;
     private static Client client = null;
     private final static String HOME = "127.0.0.1";
     private Socket mySocket;

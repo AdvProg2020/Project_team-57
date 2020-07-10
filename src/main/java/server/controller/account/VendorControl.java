@@ -229,7 +229,7 @@ public class VendorControl extends AccountControl{
         return nonOffProducts;
     }
 
-    public Notification editOffName(String offID, String offName)
+/*    public Notification editOffName(String offID, String offName)
     {
         try {
             if(OffTable.isThereEditingOffWithID(offID)) {
@@ -253,9 +253,9 @@ public class VendorControl extends AccountControl{
             //:)
         }
         return Notification.UNKNOWN_ERROR;
-    }
+    }*/
 
-    public Notification editOffFinishDate(String offID, Date date)
+/*    public Notification editOffFinishDate(String offID, Date date)
     {
         try {
             if(OffTable.isThereEditingOffWithID(offID)) {
@@ -283,9 +283,9 @@ public class VendorControl extends AccountControl{
             //:)
         }
         return Notification.UNKNOWN_ERROR;
-    }
+    }*/
 
-    public Notification editOffPercent(String offID, Double percent)
+    /*public Notification editOffPercent(String offID, Double percent)
     {
         try {
             if(OffTable.isThereEditingOffWithID(offID)) {
@@ -313,9 +313,9 @@ public class VendorControl extends AccountControl{
             //:)
         }
         return Notification.UNKNOWN_ERROR;
-    }
+    }*/
 
-    public Notification removeOffWithID(String offID) {
+/*    public Notification removeOffWithID(String offID) {
         try {
             if(OffTable.isThereEditingOffWithID(offID))
                 OffTable.removeEditingOff(offID);
@@ -327,7 +327,7 @@ public class VendorControl extends AccountControl{
             //:)
         }
         return Notification.UNKNOWN_ERROR;
-    }
+    }*/
 
     public ArrayList<Log> getAllVendorLogs() {
         try {
