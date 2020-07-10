@@ -18,6 +18,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
+import server.model.existence.Account;
 import server.model.existence.Log;
 import server.model.existence.Off;
 
@@ -41,15 +42,16 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
         mainPane.setBackground(new Background(backgroundFill));
         Pane pane = (Pane) mainPane.getChildren().get(1);
         Label label = (Label) pane.getChildren().get(1);
-        label.setText(Control.getUsername());
+        label.setText(getLoggedInAccount().getUsername());
         //TODO(FOR MEDIA)
         //initMusicPlayer();
     }
 
-    public void showProducts(){
-        if(canOpenSubStage(Control.getUsername() + " Products", this)) {
+    public void showProducts() {
+        Account loggedInAccount = getLoggedInAccount();
+        if(canOpenSubStage(loggedInAccount.getUsername() + " Products", this)) {
             Stage stage = new Stage();
-            stage.setTitle(Control.getUsername() + " Products");
+            stage.setTitle(loggedInAccount.getUsername() + " Products");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("VendorAddProducts.fxml"));
             Parent parent = null;
             try {
