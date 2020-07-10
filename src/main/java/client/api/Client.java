@@ -10,7 +10,7 @@ import java.io.*;
 import java.net.Socket;
 
 public class Client {
-    private static int PORT = 53643;
+    private static int PORT = 53719;
     private static Client client = null;
     private final static String HOME = "127.0.0.1";
     private Socket mySocket;
@@ -36,17 +36,22 @@ public class Client {
 
     public  <T, E, C extends Response> Response<T> postAndGet(Command<E> command, Class<C> responseType, Class<T> responseDataType){
         try {
+            System.out.println("3");
             makeConnection();
+            System.out.println("4");
             command.setAuthToken(authToken);
-            System.out.println(command.getMessage());
-            System.out.println("Type : " + command.getType());
             String commandStr = gson.toJson(command/*,  new TypeToken<Command<E>>(){}.getType()*/);
-            System.out.println(commandStr);
+            System.out.println("5");
+            //System.out.println(commandStr);
             outStream.writeUTF(commandStr);
             outStream.flush();
+            System.out.println("6");
             String responseStr = inStream.readUTF();
+            System.out.println("7");
             Response<T> response = gson.fromJson(responseStr,  TypeToken.getParameterized(responseType, responseDataType).getType());
+            System.out.println("8");
             closeConnection();
+            System.out.println("9");
             return response;
         } catch (IOException e) {
             System.err.println("SHIT ERROR IN POST AND GET");

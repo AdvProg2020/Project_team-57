@@ -175,8 +175,11 @@ public class WelcomeProcessor extends Processor implements Initializable {
             if(passwordField.getText().equals(""))
                 passwordField.setStyle(errorTextFieldStyle);
         } else {
+            System.out.println("1");
             Command<Account> command = getIOCommand("login", new Account(userNameField.getText(), passwordField.getText()));
+            System.out.println("2");
             Response<String> loginResponse = client.postAndGet(command, Response.class, (Class<String>)String.class);
+            System.out.println("10");
             Alert alert = loginResponse.getMessage().getAlert();
             Optional<ButtonType> optionalButtonType = alert.showAndWait();
             if(optionalButtonType.get() == ButtonType.OK) {

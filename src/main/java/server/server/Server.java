@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import notification.Notification;
+import server.server.handler.AccountHandler;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -48,7 +49,7 @@ public class Server {
 
             switch (type) {
                 case ACCOUNT:
-//                    new AccountHandler()
+                    //new AccountHandler()
                     break;
                 default:
                     outStream.writeUTF(getUnknownError());
