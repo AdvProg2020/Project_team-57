@@ -48,6 +48,7 @@ public class AccountHandler extends Handler {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
         Integer[] userImageIntegerArray = accountControl.getProfileImageArrayByUsername(command.getData().get(0));
         Response<Integer> response = new Response<>(Notification.PACKET_NOTIFICATION, userImageIntegerArray);
+        outStream.write
         return gson.toJson(response);
     }
 

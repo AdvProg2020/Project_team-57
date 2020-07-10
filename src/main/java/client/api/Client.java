@@ -8,6 +8,7 @@ import server.server.Server;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Client {
     private static int PORT = 32107;
@@ -36,29 +37,41 @@ public class Client {
 
     public  <T, E, C extends Response> Response<T> postAndGet(Command<E> command, Class<C> responseType, Class<T> responseDataType){
         try {
-            System.out.println("1");
             makeConnection();
-            System.out.println("2");
             command.setAuthToken(authToken);
-            System.out.println("3");
             String commandStr = gson.toJson(command);
-            System.out.println("4");
             outStream.writeUTF(commandStr);
-            System.out.println("5");
             outStream.flush();
-            System.out.println("6");
             String responseStr = inStream.readUTF();
-            System.out.println("7");
             Response<T> response = gson.fromJson(responseStr,  TypeToken.getParameterized(responseType, responseDataType).getType());
-            System.out.println("8");
             closeConnection();
-            System.out.println("9");
             return response;
         } catch (IOException e) {
             System.err.println("SHIT ERROR IN POST AND GET");
             e.printStackTrace();
         }
         return null;
+    }
+
+    public <E> void postAndGetImage(Command<E> command) {
+        try {
+            makeConnection();
+            command.setAuthToken(authToken);
+            String commandStr = gson.toJson(command);
+            outStream.writeUTF(commandStr);
+            outStream.flush();
+            int i;
+            StringBuilder builder = new StringBuilder();
+            ArrayList<Integer> integers = new ArrayList<>();
+            while ( (i = inStream.read()) > -1) {
+                integers.add(i);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     public String getAuthToken() {
