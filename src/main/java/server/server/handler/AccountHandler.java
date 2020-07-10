@@ -8,9 +8,13 @@ import server.controller.account.AccountControl;
 import server.model.existence.Account;
 import server.server.Response;
 import server.server.Server;
+import sun.misc.IOUtils;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class AccountHandler extends Handler {
     IOControl ioControl = IOControl.getController();
@@ -31,13 +35,40 @@ public class AccountHandler extends Handler {
                 return login();
             case "get login type":
                 return getType();
+            case "get login username" :
+                return getUsername();
             case "get login account":
                 return getLoggedInAccount();
             case "is there admin":
                 return isThereAdmin();
+            case "does user have image":
+                return doesUserHaveImage();
+            case "get user image":
+                return getUserImage();
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String getUserImage() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        BufferedImage userImage = accountControl.getProfileBufferedImageByUsername(command.getData().get(0));
+        Response<BufferedImage> response = new Response<>(Notification.PACKET_NOTIFICATION, userImage);
+        return gson.toJson(response);
+    }
+
+    private String doesUserHaveImage() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        Boolean doesHaveImage = accountControl.doesUserHaveImage(command.getData().get(0));
+        Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, doesHaveImage);
+        return gson.toJson(response);
+    }
+
+    private String getUsername() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        Account account = accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken()));
+        Response<String> response = new Response<>(Notification.PACKET_NOTIFICATION, account.getUsername());
+        return gson.toJson(response);
     }
 
     private String isThereAdmin() {

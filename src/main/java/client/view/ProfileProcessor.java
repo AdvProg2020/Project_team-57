@@ -1,5 +1,6 @@
 package client.view;
 
+import client.api.Command;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -27,7 +28,9 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import server.model.existence.Account;
 import notification.Notification;
+import server.server.Response;
 
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -92,7 +95,7 @@ public class ProfileProcessor extends Processor implements Initializable {
         if(account.getType().equals("Admin")) {
             optionsHBox.getChildren().remove(profileCreditButton);
         }
-        if(!account.getUsername().equals(Control.getUsername())) {
+        if(!account.getUsername().equals(getUsername())) {
             optionsHBox.getChildren().remove(profilePasswordButton);
             optionsHBox.getChildren().remove(profileCreditButton);
         }
@@ -104,10 +107,10 @@ public class ProfileProcessor extends Processor implements Initializable {
         lastNameField.setText(account.getLastName());
         emailField.setText(account.getEmail());
 
-        ImagePattern imagePattern = new ImagePattern(accountControl.getProfileImageByUsername(account.getUsername()));
+        ImagePattern imagePattern = new ImagePattern(getProfileImage()/*accountControl.getProfileImageByUsername(account.getUsername())*/);
         pictureCircle.setFill(imagePattern);
 
-        if(!accountControl.doesUserHaveImage(account.getUsername())) {
+        if(!doesUserHaveImage()) {
             deleteImage.setDisable(true);
             deleteImage.setOpacity(0.7);
         }
@@ -125,7 +128,7 @@ public class ProfileProcessor extends Processor implements Initializable {
             creditField.setText(Double.toString(account.getCredit()));
         }
 
-        if(!account.getUsername().equals(Control.getUsername())) {
+        if(!account.getUsername().equals(super.getUsername())) {
             profileInfoPane.getChildren().remove(deleteImage);
             profileInfoPane.getChildren().remove(saveChangesButton);
 
@@ -148,10 +151,22 @@ public class ProfileProcessor extends Processor implements Initializable {
 
     }
 
+    private Image getProfileImage() {
+        Command<String> command = new Command<>("get user image", Command.HandleType.ACCOUNT, account.getUsername());
+        Response<BufferedImage> response = client.postAndGet(command, Response.class, (Class<BufferedImage>)BufferedImage.class);
+        return bufferedImage2Image.apply(response.getData().get(0));
+    }
+
+    private boolean doesUserHaveImage() {
+        Command<String> command = new Command<>("does user have image", Command.HandleType.ACCOUNT, account.getUsername());
+        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+        return response.getData().get(0);
+    }
+
     private void setProfileCreditFields() {
         currentCreditField.setText(Double.toString(account.getCredit()));
 
-        if(!account.getUsername().equals(Control.getUsername())) {
+        if(!account.getUsername().equals(super.getUsername())) {
             profileCreditPane.getChildren().remove(addButton);
             profileCreditPane.getChildren().remove(subButton);
         }
@@ -181,7 +196,7 @@ public class ProfileProcessor extends Processor implements Initializable {
 
     public void setStyleSheets() {
         //Todo
-        String accountType = Control.getType(), styleSheet;
+        String accountType = account.getType(), styleSheet;
         ObservableList<String> styleSheets = mainPane.getStylesheets();
         styleSheets.removeAll(styleSheets);
 

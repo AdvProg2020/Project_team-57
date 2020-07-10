@@ -1,7 +1,6 @@
 package client.view;
 
 import com.jfoenix.controls.JFXButton;
-import server.controller.Control;
 import server.controller.account.AdminControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +25,6 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class AdminProcessor extends AccountProcessor implements Initializable {
-    private Account adminAccount;
     public JFXButton dashboardButton;
     public BorderPane mainPane;
     public JFXButton accountsButton;
@@ -42,8 +40,9 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        loggedInAccount = getLoggedInAccount();
+
         if(location.toString().contains("AdminMenu")) {
-            adminAccount = getLoggedInAccount();
             initButtons();
             selectThisButton(dashboardButton);
             initLabelsForUsername();
@@ -65,7 +64,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     }
 
     private void initLabelsForUsername() {
-        usernameLabel.setText(adminAccount.getUsername());
+        usernameLabel.setText(loggedInAccount.getUsername());
     }
 
     private void initButtons() {

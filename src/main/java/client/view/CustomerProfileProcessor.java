@@ -3,8 +3,6 @@ package client.view;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
-import server.controller.Control;
-import server.controller.account.AccountControl;
 import server.controller.account.CustomerControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -29,7 +27,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CustomerProfileProcessor extends AccountProcessor implements Initializable {
-    private Account customerAccount;
     public ImageView infoImage;
     public Label infoLabel;
     public ImageView historyImage;
@@ -59,14 +56,14 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (location.toString().contains("Purchase.fxml")) {
-             customerAccount = getLoggedInAccount();
-            if (customerAccount.getFirstName() != null && customerAccount.getLastName() != null)
-                name.setText(customerAccount.getFirstName() + " " + customerAccount.getLastName());
+             loggedInAccount = getLoggedInAccount();
+            if (loggedInAccount.getFirstName() != null && loggedInAccount.getLastName() != null)
+                name.setText(loggedInAccount.getFirstName() + " " + loggedInAccount.getLastName());
         } else {
-            customerAccount = getLoggedInAccount();
+            loggedInAccount = getLoggedInAccount();
             //TODO(FOR MEDIA)
             //initMusicPlayer();
-            profileButton.setText(customerAccount.getUsername());
+            profileButton.setText(loggedInAccount.getUsername());
         }
     }
 
@@ -79,7 +76,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     }
 
     public void showCart(MouseEvent event) {
-        if(canOpenSubStage(customerAccount.getUsername() + " Cart", this))
+        if(canOpenSubStage(loggedInAccount.getUsername() + " Cart", this))
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerCartProducts.fxml"));
             Parent root = loader.load();
@@ -88,7 +85,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             processor.initProcessor(ProductsProcessor.ProductsMenuType.CUSTOMER_CART);
             Stage stage = new Stage();
             stage.getIcons().add(new Image(IMAGE_FOLDER_URL + "Icons/cart (2).png"));
-            stage.setTitle(customerAccount.getUsername() + " Cart");
+            stage.setTitle(loggedInAccount.getUsername() + " Cart");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             this.subStages.add(stage);
@@ -191,14 +188,14 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             productsProcessor.setMyStage(myStage);
             myStage.setScene(new Scene(root));
             myStage.setResizable(false);
-            myStage.setTitle(customerAccount.getUsername() + " Cart");
+            myStage.setTitle(loggedInAccount.getUsername() + " Cart");
         } catch (IOException e) {
             //:)
         }
     }
 
     public void showCustomerDiscountCodes(MouseEvent mouseEvent) {
-        if (canOpenSubStage(customerAccount.getUsername() + " Discount Codes", this)) {
+        if (canOpenSubStage(loggedInAccount.getUsername() + " Discount Codes", this)) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
                 Parent root = loader.load();
@@ -209,7 +206,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
                 newStage.setScene(new Scene(root));
                 newStage.getIcons().add(new Image(Main.class.getResourceAsStream("discount menu customer.png")));
                 newStage.setResizable(false);
-                newStage.setTitle(customerAccount.getUsername() + " Discount Codes");
+                newStage.setTitle(loggedInAccount.getUsername() + " Discount Codes");
                 this.addSubStage(newStage);
                 tableViewProcessor.setMyStage(newStage);
                 newStage.show();

@@ -15,11 +15,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
+import server.model.existence.Account;
 
 import java.io.IOException;
 import java.util.Optional;
 
 public class AccountProcessor extends Processor{
+    protected Account loggedInAccount;
+
     public ImageView startMediaButton;
     public ImageView nextMediaButton;
     public ImageView previousMediaButton;
@@ -54,23 +57,22 @@ public class AccountProcessor extends Processor{
 
     public void showProfileMenu() {
         try {
-            if(Control.getType().equals("Admin")) {
-                if (!canOpenSubStage(Control.getUsername() + " Profile", parentProcessor))
+            if(loggedInAccount.getType().equals("Admin")) {
+                if (!canOpenSubStage(loggedInAccount.getUsername() + " Profile", parentProcessor))
                     return;
             }
             else
-                if(!canOpenSubStage(Control.getUsername() + " Profile", this))
+                if(!canOpenSubStage(loggedInAccount.getUsername() + " Profile", this))
                 return;
-            AccountControl accountControl = AccountControl.getController();
-            ProfileProcessor.setAccount(accountControl.getAccount());
+            ProfileProcessor.setAccount(loggedInAccount);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileMenu.fxml"));
             Parent root = loader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             newStage.getIcons().add(new Image(getClass().getResourceAsStream("Profile Icon.png")));
             newStage.setResizable(false);
-            newStage.setTitle(Control.getUsername() + " Profile");
-            if(Control.getType().equals("Admin"))
+            newStage.setTitle(loggedInAccount.getUsername() + " Profile");
+            if(loggedInAccount.getType().equals("Admin"))
                 parentProcessor.addSubStage(newStage);
             else
                 addSubStage(newStage);
@@ -79,6 +81,7 @@ public class AccountProcessor extends Processor{
             //:)
         }
     }
+
 
     //TODO(FOR MEDIA)
 /*    public void modifyPlayingMusic() {

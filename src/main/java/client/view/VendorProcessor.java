@@ -40,15 +40,17 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
         LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
         BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
         mainPane.setBackground(new Background(backgroundFill));
+
+
+        loggedInAccount = getLoggedInAccount();
         Pane pane = (Pane) mainPane.getChildren().get(1);
         Label label = (Label) pane.getChildren().get(1);
-        label.setText(getLoggedInAccount().getUsername());
+        label.setText(loggedInAccount.getUsername());
         //TODO(FOR MEDIA)
         //initMusicPlayer();
     }
 
     public void showProducts() {
-        Account loggedInAccount = getLoggedInAccount();
         if(canOpenSubStage(loggedInAccount.getUsername() + " Products", this)) {
             Stage stage = new Stage();
             stage.setTitle(loggedInAccount.getUsername() + " Products");

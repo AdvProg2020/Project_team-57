@@ -6,13 +6,19 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 import server.model.existence.Account;
 import server.server.Response;
 
+import java.awt.image.BufferedImage;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.function.Function;
 
 public abstract class Processor {
     protected final String IMAGE_FOLDER_URL = "client\\Images\\";
@@ -20,6 +26,27 @@ public abstract class Processor {
     protected Processor parentProcessor;
     protected ArrayList<Stage> subStages = new ArrayList<>();
     protected Client client = Client.getClient();
+
+    protected static Function<BufferedImage, Image> bufferedImage2Image;
+    static {
+        bufferedImage2Image = new Function<BufferedImage, Image>() {
+            @Override
+            public Image apply(BufferedImage bufferedImage) {
+                WritableImage wr = null;
+                if (bufferedImage != null) {
+                    wr = new WritableImage(bufferedImage.getWidth(), bufferedImage.getHeight());
+                    PixelWriter pw = wr.getPixelWriter();
+                    for (int x = 0; x < bufferedImage.getWidth(); x++) {
+                        for (int y = 0; y < bufferedImage.getHeight(); y++) {
+                            pw.setArgb(x, y, bufferedImage.getRGB(x, y));
+                        }
+                    }
+                }
+
+                return new ImageView(wr).getImage();
+            }
+        };
+    }
 
     protected static final String errorTextFieldStyle = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
 
@@ -193,9 +220,16 @@ public abstract class Processor {
         return response.getData().get(0);
     }
 
+    protected String getUsername() {
+        Command command = new Command("get login username", Command.HandleType.ACCOUNT);
+        Response<String> response = client.postAndGet(command, Response.class, (Class<String>)String.class);
+        return response.getData().get(0);
+    }
+
     protected Account getLoggedInAccount() {
         Command command = new Command("get login account", Command.HandleType.ACCOUNT);
         Response<Account> response = client.postAndGet(command, Response.class, (Class<Account>)Account.class);
         return response.getData().get(0);
     }
+
 }

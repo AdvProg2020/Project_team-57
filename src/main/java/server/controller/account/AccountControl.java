@@ -14,6 +14,8 @@ import server.model.existence.Product;
 import notification.Notification;
 import client.view.Main;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -205,7 +207,7 @@ public class AccountControl extends Control implements IOValidity {
         }
     }
 
-    public Notification deleteUserWithUsername(String username){
+    public synchronized Notification deleteUserWithUsername(String username) {
         try {
             if(getAccountByUsername(username).getType().equals("Vendor")) {
                 for (Product product : VendorTable.getProductsWithUsername(username)) {
@@ -341,6 +343,21 @@ public class AccountControl extends Control implements IOValidity {
             }
             FileInputStream fileInputStream = AccountTable.getProfileImageInputStream("1");
             Image image = new Image(fileInputStream);
+            fileInputStream.close();
+            return image;
+        } catch (FileNotFoundException e) {
+            //:)
+        } catch (IOException e) {
+            //:)
+        }
+        return null;
+    }
+
+    public BufferedImage getProfileBufferedImageByUsername(String username) {
+        try {
+            String imageInput = doesUserHaveImage(username) ? username : "1";
+            FileInputStream fileInputStream = AccountTable.getProfileImageInputStream(imageInput);
+            BufferedImage image = ImageIO.read(fileInputStream);
             fileInputStream.close();
             return image;
         } catch (FileNotFoundException e) {
