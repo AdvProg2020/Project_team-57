@@ -14,10 +14,15 @@ import javafx.stage.Stage;
 import server.model.existence.Account;
 import server.server.Response;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 public abstract class Processor {
@@ -28,6 +33,7 @@ public abstract class Processor {
     protected Client client = Client.getClient();
 
     protected static Function<BufferedImage, Image> bufferedImage2Image;
+    protected static Function<List<Integer>, Image> integerArray2Image;
     static {
         bufferedImage2Image = new Function<BufferedImage, Image>() {
             @Override
@@ -46,7 +52,27 @@ public abstract class Processor {
                 return new ImageView(wr).getImage();
             }
         };
+        integerArray2Image = new Function<List<Integer>, Image>() {
+            @Override
+            public Image apply(List<Integer> integers) {
+                try {
+                    byte[] bytes = new byte[integers.size()];
+
+                    for (int i = 0; i < integers.size(); i++) {
+                        bytes[i] = integers.get(i).byteValue();
+                    }
+
+                    InputStream inputStream = new ByteArrayInputStream(bytes);
+                    return bufferedImage2Image.apply(ImageIO.read(inputStream));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
     }
+
+
 
     protected static final String errorTextFieldStyle = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
 

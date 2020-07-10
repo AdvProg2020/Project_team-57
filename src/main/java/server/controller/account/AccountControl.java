@@ -365,7 +365,12 @@ public class AccountControl extends Control implements IOValidity {
             }
 
             fileInputStream.close();
-            return (Integer[]) imageArray.toArray();
+
+            Integer[] integers = new Integer[imageArray.size()];
+            for (int j = 0; j < imageArray.size(); j++) {
+                integers[j] = imageArray.get(j);
+            }
+            return integers;
         } catch (FileNotFoundException e) {
             //:)
         } catch (IOException e) {

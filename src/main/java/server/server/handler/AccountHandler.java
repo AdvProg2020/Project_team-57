@@ -22,8 +22,6 @@ public class AccountHandler extends Handler {
 
     @Override
     protected String handle() throws InterruptedException {
-        System.out.println("Message : " + message);
-        System.out.println("Is : " + message.equals("register"));
         switch (message) {
             case "register":
                 return register();
