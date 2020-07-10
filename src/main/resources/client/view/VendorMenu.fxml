@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXProgressBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -95,36 +94,6 @@
             <Label layoutX="50.0" layoutY="7.0" prefHeight="44.0" text="Back" textFill="#2f999f">
                <font>
                   <Font name="System Bold Italic" size="16.0" />
-               </font>
-            </Label>
-         </children>
-      </Pane>
-      <Pane layoutX="876.0" layoutY="640.0" prefHeight="130.0" prefWidth="220.0">
-         <children>
-            <ImageView fx:id="startMediaButton" fitHeight="40.0" fitWidth="40.0" layoutX="90.0" layoutY="14.0" onMouseClicked="#modifyPlayingMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
-               <image>
-                  <Image url="@../Images/Icons/MediaIcons/Vendor%20Start.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="nextMediaButton" fitHeight="25.0" fitWidth="25.0" layoutX="136.0" layoutY="22.0" onMouseClicked="#changeMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
-               <image>
-                  <Image url="@../Images/Icons/MediaIcons/Vendor%20Next.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="previousMediaButton" fitHeight="25.0" fitWidth="25.0" layoutX="59.0" layoutY="22.0" onMouseClicked="#changeMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
-               <image>
-                  <Image url="@../Images/Icons/MediaIcons/Vednor%20Previous.png" />
-               </image>
-            </ImageView>
-            <Label fx:id="mediaArtistLabel" alignment="CENTER" layoutX="17.0" layoutY="61.0" prefHeight="21.0" prefWidth="187.0" text="Music Artist" textFill="WHITE" wrapText="true">
-               <font>
-                  <Font name="Calibri" size="15.0" />
-               </font>
-            </Label>
-            <JFXProgressBar fx:id="mediaProgressBar" layoutX="35.0" layoutY="116.0" prefWidth="150.0" progress="0.0" style="-fx-accent: BLACK;" />
-            <Label fx:id="mediaNameLabel" alignment="CENTER" layoutX="17.0" layoutY="84.0" prefHeight="21.0" prefWidth="187.0" text="Music Name" textFill="WHITE" wrapText="true">
-               <font>
-                  <Font name="Calibri" size="15.0" />
                </font>
             </Label>
          </children>

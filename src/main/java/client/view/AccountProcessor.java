@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class AccountProcessor extends Processor{
-    protected AccountControl accountControl = AccountControl.getController();
     public ImageView startMediaButton;
     public ImageView nextMediaButton;
     public ImageView previousMediaButton;

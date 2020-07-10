@@ -88,6 +88,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
 
                 switch (loggedInAccount.getType()) {
                     case "Admin" :
+                        System.out.println("1");
                         initAdminMenu();
                         break;
                     case "Vendor" :
@@ -101,8 +102,9 @@ public class WelcomeProcessor extends Processor implements Initializable {
                         Main.setScene(loggedInAccount.getUsername() + " Menu", root);
                         break;
                 }
+                System.out.println("Tamoom Shod");
             } catch (IOException e) {
-                //:)
+                e.printStackTrace();
             }
 
 
@@ -131,9 +133,9 @@ public class WelcomeProcessor extends Processor implements Initializable {
             AdminProcessor adminProcessor = loader.getController();
             adminProcessor.setMyStage(Main.getStage());
             Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Admin Icon.png")));
-            Main.setScene(Control.getUsername() + " Menu", root);
+            Main.setScene(getLoggedInAccount().getUsername() + " Menu", root);
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
 
     }
@@ -177,11 +179,8 @@ public class WelcomeProcessor extends Processor implements Initializable {
             if(passwordField.getText().equals(""))
                 passwordField.setStyle(errorTextFieldStyle);
         } else {
-            System.out.println("1");
             Command<Account> command = getIOCommand("login", new Account(userNameField.getText(), passwordField.getText()));
-            System.out.println("2");
             Response<String> loginResponse = client.postAndGet(command, Response.class, (Class<String>)String.class);
-            System.out.println("10");
             Alert alert = loginResponse.getMessage().getAlert();
             Optional<ButtonType> optionalButtonType = alert.showAndWait();
             if(optionalButtonType.get() == ButtonType.OK) {
@@ -225,7 +224,9 @@ public class WelcomeProcessor extends Processor implements Initializable {
     //SignUpMenu
     private void initAccTypeComboBox() {
         if(isNormal) {
-            if(!ioControl.isThereAdmin()) {
+            Command command = new Command("is there admin", Command.HandleType.ACCOUNT);
+            Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+            if(!response.getData().get(0)) {
                 accountTypeComboBox.getItems().add("Admin");
             }
             accountTypeComboBox.getItems().add("Vendor");
@@ -291,9 +292,14 @@ public class WelcomeProcessor extends Processor implements Initializable {
 
     private String getAccountType() {
         if(isNormal) {
-            if(!ioControl.isThereAdmin()) {
-                if(accountTypeComboBox.getSelectionModel().isSelected(0))
+            Command command = new Command("is there admin", Command.HandleType.ACCOUNT);
+            Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+            System.out.println(response.getData().get(0));
+            if(!response.getData().get(0)) {
+                if(accountTypeComboBox.getSelectionModel().isSelected(0)) {
+                    System.out.println("HERE");
                     return "Admin";
+                }
                 else if(accountTypeComboBox.getSelectionModel().isSelected(1))
                     return "Vendor";
                 else

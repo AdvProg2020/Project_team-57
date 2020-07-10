@@ -33,9 +33,16 @@ public class AccountHandler extends Handler {
                 return getType();
             case "get login account":
                 return getLoggedInAccount();
+            case "is there admin":
+                return isThereAdmin();
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String isThereAdmin() {
+        Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, ioControl.isThereAdmin());
+        return gson.toJson(response);
     }
 
     private String getLoggedInAccount() {

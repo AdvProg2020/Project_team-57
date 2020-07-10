@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class AdminProcessor extends AccountProcessor implements Initializable {
-
+    private Account adminAccount;
     public JFXButton dashboardButton;
     public BorderPane mainPane;
     public JFXButton accountsButton;
@@ -43,6 +43,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if(location.toString().contains("AdminMenu")) {
+            adminAccount = getLoggedInAccount();
             initButtons();
             selectThisButton(dashboardButton);
             initLabelsForUsername();
@@ -52,10 +53,11 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 subRoot = loader.load();
                 ((AdminProcessor)loader.getController()).setParentProcessor(this);
             } catch (IOException e) {
-               //:)
+               e.printStackTrace();
             }
             loader.setController(this);
             mainPane.setCenter(subRoot);
+            //TODO(???)
             AdminControl.getController().createDiscountAddedUsers();
             //TODO(FOR MEDIA)
             //initMusicPlayer();
@@ -63,7 +65,7 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     }
 
     private void initLabelsForUsername() {
-        usernameLabel.setText(Control.getUsername());
+        usernameLabel.setText(adminAccount.getUsername());
     }
 
     private void initButtons() {
