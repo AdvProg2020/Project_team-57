@@ -55,7 +55,8 @@ public class IOControl extends Control implements IOValidity {
                         CartTable.removeTemp();
                         if (Control.getType().equals("Customer") && AccountTable.didPeriodPass("Ya Zahra"))
                             AdminControl.getController().getGiftDiscount();
-                        AccountControl.getController().initAudios();
+                        //TODO(FOR MEDIA)
+                        //AccountControl.getController().initAudios();
                         DiscountTable.removeOutDatedDiscounts();
                         OffTable.removeOutDatedOffs();
                         return Notification.LOGIN_SUCCESSFUL;

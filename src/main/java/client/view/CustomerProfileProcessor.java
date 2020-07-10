@@ -62,7 +62,8 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             if (accountControl.getAccount().getFirstName() != null && accountControl.getAccount().getLastName() != null)
                 name.setText(accountControl.getAccount().getFirstName() + " " + accountControl.getAccount().getLastName());
         } else {
-            initMusicPlayer();
+            //TODO(FOR MEDIA)
+            //initMusicPlayer();
             profileButton.setText(Control.getUsername());
         }
     }

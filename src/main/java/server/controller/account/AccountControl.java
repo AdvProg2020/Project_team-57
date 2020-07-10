@@ -27,9 +27,10 @@ public class AccountControl extends Control implements IOValidity {
     private static AccountControl customerControl = null;
     private static String currentLogID;
     private boolean isMusicPlaying = false;
-    private ArrayList<Audio> audios;
+    //TODO(FOR MEDIA)
+    //private ArrayList<Audio> audios;
     private long musicCounter = 0;
-    private ChangeMusicThread changeMusicThread = new ChangeMusicThread();
+    //private ChangeMusicThread changeMusicThread = new ChangeMusicThread();
     private int nextMusicK = 0;
 
     public static String getCurrentLogID() {
@@ -371,7 +372,8 @@ public class AccountControl extends Control implements IOValidity {
 
     }
 
-    public static class Audio {
+    //TODO(FOR MEDIA)
+    /*public static class Audio {
         private static ArrayList<Audio> adminAudios;
         private static ArrayList<Audio> vendorAudios;
         private static ArrayList<Audio> customerAudios;
@@ -571,5 +573,5 @@ public class AccountControl extends Control implements IOValidity {
             }
 
         }
-    }
+    }*/
 }

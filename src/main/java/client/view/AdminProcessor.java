@@ -57,7 +57,8 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             loader.setController(this);
             mainPane.setCenter(subRoot);
             AdminControl.getController().createDiscountAddedUsers();
-            initMusicPlayer();
+            //TODO(FOR MEDIA)
+            //initMusicPlayer();
         }
     }
 

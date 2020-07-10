@@ -81,7 +81,8 @@ public class AccountProcessor extends Processor{
         }
     }
 
-    public void modifyPlayingMusic() {
+    //TODO(FOR MEDIA)
+/*    public void modifyPlayingMusic() {
         AccountControl.getController().modifyPlayingMusic().setOnEndOfMedia(() -> this.changeMusic(null));
         initMusicPlayer();
     }
@@ -114,6 +115,6 @@ public class AccountProcessor extends Processor{
     private void setStartMediaButton() {
         String url = Control.getType() + " " + (accountControl.isMusicPlaying() ? "Pause" : "Start") + ".png";
         startMediaButton.setImage(new Image(IMAGE_FOLDER_URL + "Icons/MediaIcons/" + url));
-    }
+    }*/
 
 }
