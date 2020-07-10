@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Server {
@@ -20,7 +21,7 @@ public class Server {
     private ServerSocket serverSocket;
     private ObjectMapper mapper;
     private Gson gson;
-    private ArrayList<String> authTokens;
+    private HashMap<String, String> authTokens;
 
     public Server() {
         try {
@@ -28,7 +29,7 @@ public class Server {
             SERVER_PORT = serverSocket.getLocalPort();
             System.out.println(SERVER_PORT);
             mapper = new ObjectMapper();
-            this.authTokens = new ArrayList<>();
+            this.authTokens = new HashMap<>();
             gson = new GsonBuilder().setPrettyPrinting().create();
             run();
         } catch (IOException e) {
@@ -73,19 +74,19 @@ public class Server {
         new Server();
     }
 
-    public ArrayList<String> getAuthTokens() {
+    public HashMap<String, String> getAuthTokens() {
         return authTokens;
     }
 
-    public void addAuth(String authToken) {
-        this.authTokens.add(authToken);
+    public void addAuth(String authToken, String username) {
+        authTokens.put(authToken, username);
     }
 
     public String makeAuth() {
         String auth;
         do {
             auth = generateRandomAuth();
-        } while (authTokens.contains(auth));
+        } while (authTokens.containsKey(auth));
         return auth;
     }
 
@@ -100,5 +101,15 @@ public class Server {
             ID.append(Character.valueOf((char)x));
         }
         return ID.toString();
+    }
+
+    public String getUsernameByAuth (String auth) {
+        if(authTokens.containsKey(auth)) {
+            return authTokens.get(auth);
+        } else {
+            System.out.println("Shit. Error IN Get Username");
+        }
+
+        return null;
     }
 }

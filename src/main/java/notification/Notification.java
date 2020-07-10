@@ -187,7 +187,8 @@ public enum Notification {
     MORE_THAN_INVENTORY_COUNTABLE("",null , "","" ),
     NEGATIVE_NUMBER("",null , "","" ),
     ADD_TO_CART("",null , "","" ),
-    MORE_THAN_INVENTORY_UNCOUNTABLE("",null , "","" );
+    MORE_THAN_INVENTORY_UNCOUNTABLE("",null , "","" ),
+    PACKET_NOTIFICATION("", null, "", "");
 
 
     private String message;

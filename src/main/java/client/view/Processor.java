@@ -1,11 +1,14 @@
 package client.view;
 
 import client.api.Client;
+import client.api.Command;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.stage.Stage;
+import server.model.existence.Account;
+import server.server.Response;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -178,4 +181,21 @@ public abstract class Processor {
         return doubleFormatter.format(number);
     }
 
+
+    //Login Part
+    protected boolean isLoggedIn() {
+        return client.getAuthToken() != null && !client.getAuthToken().isEmpty();
+    }
+
+    protected String getType() {
+        Command command = new Command("get login type", Command.HandleType.ACCOUNT);
+        Response<String> response = client.postAndGet(command, Response.class, (Class<String>)String.class);
+        return response.getData().get(0);
+    }
+
+    protected Account getLoggedInAccount() {
+        Command command = new Command("get login account", Command.HandleType.ACCOUNT);
+        Response<Account> response = client.postAndGet(command, Response.class, (Class<Account>)Account.class);
+        return response.getData().get(0);
+    }
 }

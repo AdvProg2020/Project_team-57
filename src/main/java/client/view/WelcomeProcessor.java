@@ -80,23 +80,25 @@ public class WelcomeProcessor extends Processor implements Initializable {
     }
 
     public void openAccountMenu() {
-        if(IOControl.isLoggedIn()) {
+        if(isLoggedIn()) {
             try {
                 Parent root = null;
                 Main.getStage().getIcons().remove(0);
-                switch (Control.getType()) {
+                Account loggedInAccount = getLoggedInAccount();
+
+                switch (loggedInAccount.getType()) {
                     case "Admin" :
                         initAdminMenu();
                         break;
                     case "Vendor" :
                         root = FXMLLoader.load(Main.class.getResource("VendorMenu.fxml"));
                         Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Vendor Icon.png")));
-                        Main.setScene(Control.getUsername() + " Menu", root);
+                        Main.setScene( loggedInAccount.getUsername() + " Menu", root);
                         break;
                     case "Customer" :
                         root = FXMLLoader.load(Main.class.getResource("CustomerMenu.fxml"));
                         Main.getStage().getIcons().add(new Image(Main.class.getResourceAsStream("Customer Icon.png")));
-                        Main.setScene(Control.getUsername() + " Menu", root);
+                        Main.setScene(loggedInAccount.getUsername() + " Menu", root);
                         break;
                 }
             } catch (IOException e) {
