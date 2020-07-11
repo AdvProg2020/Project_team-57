@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountHandler extends Handler {
-    IOControl ioControl = IOControl.getController();
-    AccountControl accountControl = AccountControl.getController();
+    private final IOControl ioControl = IOControl.getController();
+    private final AccountControl accountControl = AccountControl.getController();
 
     public AccountHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
         super(outStream, inStream, server, input);
