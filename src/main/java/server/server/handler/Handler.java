@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import notification.Notification;
+import server.server.Response;
 import server.server.Server;
 
 import java.io.DataInputStream;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import java.util.Date;
 
 public abstract class Handler extends Thread{
+    protected static final Response<String> hackResponse = new Response<>(Notification.FUCK_YOU, "Bi Adab");
     protected DataOutputStream outStream;
     protected DataInputStream inStream;
     protected Gson gson;
@@ -29,6 +32,7 @@ public abstract class Handler extends Thread{
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode objectNode = mapper.readValue(input, ObjectNode.class);
         this.message = objectNode.get("message").asText();
+        System.out.println("Client Asked: " + message);
         this.server = server;
     }
 

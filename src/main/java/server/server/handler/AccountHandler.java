@@ -69,8 +69,7 @@ public class AccountHandler extends Handler {
             response.setData(accountControl.getModifiedAccounts(command.getDatum(), accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getUsername()));
             return gson.toJson(response);
         }
-        Response<String> response = new Response<>(Notification.FUCK_YOU, "Bi Adab");
-        return gson.toJson(response);
+        return gson.toJson(hackResponse);
     }
 
     private String logOut() {

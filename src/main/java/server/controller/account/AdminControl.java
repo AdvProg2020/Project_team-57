@@ -126,13 +126,13 @@ public class AdminControl extends AccountControl{
         Notification notification = null;
 
         switch (fieldName) {
-            case "Name" :
+            case "name" :
                 notification = editCategoryName(oldCategory, newCategory);
                 break;
-            case "Parent Name" :
+            case "parent name" :
                 notification = editCategoryParentName(oldCategory, newCategory);
                 break;
-            case "Features" :
+            case "features" :
                 notification = editCategoryFeatures(oldCategory, newCategory);
                 break;
         }
@@ -559,11 +559,18 @@ public class AdminControl extends AccountControl{
                 VendorTable.addUnCountableProduct(editingProduct, editingProduct.getSellerUserName());
             ProductTable.setProductStatus(editingProduct.getID(), 1);
             return Notification.ACCEPT_EDITING_PRODUCT;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return Notification.UNKNOWN_ERROR;
+    }
+
+    public ArrayList<Category> getAllCategories() {
+        try {
+            return CategoryTable.getAllCategories();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }

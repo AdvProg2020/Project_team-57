@@ -1,7 +1,9 @@
 package client.view;
 
+import client.api.Command;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import javafx.scene.control.*;
 import server.controller.Control;
 import server.controller.account.AdminControl;
 import server.controller.product.ProductControl;
@@ -9,25 +11,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TreeTableRow;
-import javafx.scene.control.TreeTableView;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import server.model.existence.Category;
 import notification.Notification;
+import server.server.Response;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CategoryProcessor extends Processor implements Initializable {
-    public ProductControl productControl = ProductControl.getController();
-    public AdminControl adminControl = AdminControl.getController();
+/*    public ProductControl productControl = ProductControl.getController();
+    public AdminControl adminControl = AdminControl.getController();*/
 
     public Pane mainPane;
     public TreeTableView<Category> categoriesTableView;
@@ -45,9 +45,9 @@ public class CategoryProcessor extends Processor implements Initializable {
 
         if(locationFile.contains("CategoriesMenu")) {
             initCategoriesTableRow();
-            categoriesTableView.setRoot(productControl.getCategoryTableRoot());
+            categoriesTableView.setRoot(getCategoryTableRoot());
 
-            if (!Control.getType().equals("Admin")) {
+            if (super.getType().equals("Admin")) {
                 mainPane.getChildren().remove(addCategoryButton);
                 mainPane.getChildren().remove(editCategoryButton);
                 mainPane.getChildren().remove(deleteCategoryButton);
@@ -55,6 +55,29 @@ public class CategoryProcessor extends Processor implements Initializable {
             categoriesTableView.getSelectionModel().selectFirst();
             initButtons();
         }
+    }
+
+    private TreeItem<Category> getCategoryTableRoot() {
+        ArrayList<Category> allCategories = getAllCategoriesAsArray();
+        TreeItem<Category> rootCategory = new TreeItem<>(allCategories.get(0));
+        setSubCategories(rootCategory, allCategories.get(0).getName(), allCategories);
+        return rootCategory;
+    }
+
+    private void setSubCategories(TreeItem<Category> parentCategoryTreeItem, String parentName, ArrayList<Category> allCategories) {
+        for (Category category : allCategories) {
+            if(category.getParentCategory().equals(parentName)) {
+                TreeItem<Category> subCategoryTreeItem = new TreeItem<>(category);
+                parentCategoryTreeItem.getChildren().addAll(subCategoryTreeItem);
+                setSubCategories(subCategoryTreeItem, category.getName(), allCategories);
+            }
+        }
+    }
+
+    private ArrayList<Category> getAllCategoriesAsArray() {
+        Command command = new Command("get all categories", Command.HandleType.SALE);
+        Response<Category> categoryResponse = client.postAndGet(command, Response.class, (Class<Category>)Category.class);
+        return new ArrayList<>(categoryResponse.getData());
     }
 
     private void initCategoriesTableRow() {
@@ -137,11 +160,12 @@ public class CategoryProcessor extends Processor implements Initializable {
 
     public void deleteCategoryMouseClicked(MouseEvent mouseEvent) {
             Category selectedCategory = categoriesTableView.getSelectionModel().getSelectedItem().getValue();
-            Notification notification = adminControl.removeCategory(selectedCategory);
+
+            Notification notification = sendCategoryRequestToServer("delete category", selectedCategory);
             notification.getAlert().show();
 
             if(notification.equals(Notification.CATEGORY_DELETED)) {
-                categoriesTableView.setRoot(productControl.getCategoryTableRoot());
+                categoriesTableView.setRoot(getCategoryTableRoot());
                 categoriesTableView.getSelectionModel().selectFirst();
                 initButtons();
             }
@@ -159,7 +183,7 @@ public class CategoryProcessor extends Processor implements Initializable {
     private void addCreatedCategory() {
         createCategoryWithFields();
 
-        Notification notification = adminControl.addCategory(category);
+        Notification notification = sendCategoryRequestToServer("add category", category);
 
         if(notification.equals(Notification.CATEGORY_ADDED)) {
             Optional<ButtonType> optionalButtonType = notification.getAlert().showAndWait();
@@ -191,9 +215,9 @@ public class CategoryProcessor extends Processor implements Initializable {
         createCategoryWithFields();
 
         Alert alert = null;
-        alert = editField(oldCategory, category, "Name", alert, nameTextField);
-        alert = editField(oldCategory, category, "Parent Name", alert, parentNameTextField);
-        alert = editField(oldCategory, category, "Features", alert, featuresTextField);
+        alert = editField(oldCategory, category, "name", alert, nameTextField);
+        alert = editField(oldCategory, category, "parent name", alert, parentNameTextField);
+        alert = editField(oldCategory, category, "features", alert, featuresTextField);
 
         if(alert.getTitle().equals("Modify Successful")) {
             Optional<ButtonType> optionalButtonType = alert.showAndWait();
@@ -207,7 +231,7 @@ public class CategoryProcessor extends Processor implements Initializable {
 
     private Alert editField(Category oldCategory, Category newCategory, String fieldName,
                             Alert previousAlert, JFXTextField textField) {
-        Alert alert = adminControl.editCategory(oldCategory, newCategory, fieldName).getAlert();
+        Alert alert = sendCategoryRequestToServer("edit category field-" + fieldName, oldCategory, newCategory).getAlert();
 
         if(alert.getTitle().equals("Modify Successful"))
             textField.setStyle("");
@@ -232,11 +256,17 @@ public class CategoryProcessor extends Processor implements Initializable {
         parentProcessor.removeSubStage(myStage);
         ((CategoryProcessor)parentProcessor).categoriesTableView.getSelectionModel().selectFirst();
         ((CategoryProcessor)parentProcessor).initButtons();
-        ((CategoryProcessor)parentProcessor).categoriesTableView.setRoot(productControl.getCategoryTableRoot());
+        ((CategoryProcessor)parentProcessor).categoriesTableView.setRoot(getCategoryTableRoot());
     }
 
     public void textFieldMouseClicked(MouseEvent mouseEvent) {
         JFXTextField textField = (JFXTextField)mouseEvent.getSource();
         textField.setStyle("");
+    }
+
+    private Notification sendCategoryRequestToServer(String message, Category... categories) {
+        Command<Category> command = new Command<>(message, Command.HandleType.SALE, categories);
+        Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+        return response.getMessage();
     }
 }
