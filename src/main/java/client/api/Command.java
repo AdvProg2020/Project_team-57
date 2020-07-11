@@ -6,7 +6,7 @@ import java.util.List;
 public class Command<T> {
 
     public static enum HandleType {
-        ACCOUNT, PICTURE_SEND, PICTURE_GET,
+        ACCOUNT, PICTURE_SEND, PICTURE_GET, PRODUCT, SALE
     }
 
     private HandleType type;

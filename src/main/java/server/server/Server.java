@@ -9,6 +9,8 @@ import com.google.gson.GsonBuilder;
 import notification.Notification;
 import server.server.handler.AccountHandler;
 import server.server.handler.PictureHandler;
+import server.server.handler.ProductHandler;
+import server.server.handler.SaleHandler;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -51,6 +53,12 @@ public class Server {
             switch (type) {
                 case ACCOUNT:
                     new AccountHandler(outStream, inStream, this, input).start();
+                    break;
+                case SALE:
+                    new SaleHandler(outStream, inStream, this, input).start();
+                    break;
+                case PRODUCT:
+                    new ProductHandler(outStream, inStream, this, input).start();
                     break;
                 case PICTURE_SEND:
                 case PICTURE_GET:
