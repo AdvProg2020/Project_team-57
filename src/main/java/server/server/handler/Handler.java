@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Date;
 
 public abstract class Handler extends Thread{
-    protected static final Response<String> hackResponse = new Response<>(Notification.FUCK_YOU, "Bi Adab");
+    protected static final Response<String> HACK_RESPONSE = new Response<>(Notification.FUCK_YOU, "Bi Adab");
     protected DataOutputStream outStream;
     protected DataInputStream inStream;
     protected Gson gson;

@@ -6,9 +6,7 @@ import notification.Notification;
 import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
 import server.controller.product.ProductControl;
-import server.model.existence.Account;
 import server.model.existence.Category;
-import server.model.existence.Product;
 import server.server.Response;
 import server.server.Server;
 
@@ -47,7 +45,7 @@ public class SaleHandler extends Handler {
             Response response = new Response<>(adminControl.editCategory(command.getData().get(0), command.getData().get(1), command.getMessage().split("-")[1]));
             return gson.toJson(response);
         }
-        return gson.toJson(hackResponse);
+        return gson.toJson(HACK_RESPONSE);
     }
 
 
@@ -57,7 +55,7 @@ public class SaleHandler extends Handler {
             Response response = new Response<>(adminControl.addCategory(command.getDatum()));
             return gson.toJson(response);
         }
-        return gson.toJson(hackResponse);
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String deleteCategory() {
@@ -66,7 +64,7 @@ public class SaleHandler extends Handler {
             Response response = new Response<>(adminControl.removeCategory(command.getDatum()));
             return gson.toJson(response);
         }
-        return gson.toJson(hackResponse);
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String getAllCategories() {
@@ -76,6 +74,6 @@ public class SaleHandler extends Handler {
             response.setData(adminControl.getAllCategories());
             return gson.toJson(response);
         }
-        return gson.toJson(hackResponse);
+        return gson.toJson(HACK_RESPONSE);
     }
 }

@@ -489,10 +489,10 @@ public class VendorControl extends AccountControl{
         return 0;
     }
 
-    public ArrayList<Product> getAllProducts() {
+    public ArrayList<Product> getAllProducts(String username) {
         try {
             OffTable.removeOutDatedOffs();
-            return VendorTable.getProductsWithUsername(Control.getUsername());
+            return VendorTable.getProductsWithUsername(username);
         } catch (SQLException e) {
             //:)
         } catch (ClassNotFoundException e) {

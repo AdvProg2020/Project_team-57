@@ -1,5 +1,6 @@
 package client.view;
 
+import client.api.Command;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
@@ -28,11 +29,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import server.model.existence.Category;
-import server.model.existence.Discount;
-import server.model.existence.Off;
-import server.model.existence.Product;
+import server.model.existence.*;
 import notification.Notification;
+import server.server.Response;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -318,7 +317,7 @@ public class ProductsProcessor extends Processor{
                 allProducts = productControl.getAllShowingProducts();
                 break;
             case VENDOR_PRODUCTS:
-                allProducts = VendorControl.getController().getAllProducts();
+                allProducts = new ArrayList<>(client.postAndGet(new Command("get vendor products", Command.HandleType.PRODUCT), Response.class, (Class<Account>)Account.class).getData());
                 break;
             case CUSTOMER_CART:
                 if(server.controller.Control.getType() != null && server.controller.Control.getType().equals("Customer") && server.controller.Control.isLoggedIn())

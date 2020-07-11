@@ -3,6 +3,7 @@ package server.server.handler;
 import client.api.Command;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import notification.Notification;
+import server.controller.account.AccountControl;
 import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
 import server.controller.product.ProductControl;
@@ -19,6 +20,7 @@ public class ProductHandler extends Handler {
     private final ProductControl productControl = ProductControl.getController();
     private final VendorControl vendorControl = VendorControl.getController();
     private final CustomerControl customerControl = CustomerControl.getController();
+    private final AccountControl accountControl = AccountControl.getController();
 
     public ProductHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
         super(outStream, inStream, server, input);
@@ -44,9 +46,24 @@ public class ProductHandler extends Handler {
                 return getProductImageCount();
             case "get edit product image count":
                 return getEditProductImageCount();
+            case "get vendor products":
+                return getVendorProducts();
             default:
                 return null;
         }
+    }
+
+    private String getVendorProducts() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if(server.getAuthTokens().containsKey(command.getAuthToken())) {
+            String username = server.getUsernameByAuth(command.getAuthToken());
+            if(accountControl.getAccountByUsername(username).getType().equalsIgnoreCase("Vendor")) {
+                Response<Product> response = new Response<>(Notification.PACKET_NOTIFICATION);
+                response.setData(vendorControl.getAllProducts(username));
+                return gson.toJson(response);
+            }
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String getEditProductImageCount() {

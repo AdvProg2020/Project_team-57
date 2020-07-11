@@ -10,7 +10,6 @@ import server.server.Response;
 import server.server.Server;
 
 import java.io.*;
-import java.util.ArrayList;
 
 public class AccountHandler extends Handler {
     private final IOControl ioControl = IOControl.getController();
@@ -69,7 +68,7 @@ public class AccountHandler extends Handler {
             response.setData(accountControl.getModifiedAccounts(command.getDatum(), accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getUsername()));
             return gson.toJson(response);
         }
-        return gson.toJson(hackResponse);
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String logOut() {
