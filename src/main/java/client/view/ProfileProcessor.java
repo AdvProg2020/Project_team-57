@@ -79,6 +79,7 @@ public class ProfileProcessor extends Processor implements Initializable {
             setStyleSheets();
             adjustMainPanesForAccounts();
         } else if(locationFile.contains("profileInfoMenu")) {
+            setProfileInfoSpecifications();
             setProfileInfoFields();
         } else if(locationFile.contains("profileCreditMenu")) {
             setProfileCreditFields();
@@ -99,6 +100,15 @@ public class ProfileProcessor extends Processor implements Initializable {
             optionsHBox.getChildren().remove(profilePasswordButton);
             optionsHBox.getChildren().remove(profileCreditButton);
         }
+    }
+
+    private void setProfileInfoSpecifications() {
+        setStringFields(firstNameField, 25);
+        setStringFields(lastNameField, 25);
+        setStringFields(emailField, 35);
+
+        if(account.getType().equals("Vendor"))
+            setStringFields(brandField, 35);
     }
 
     private void setProfileInfoFields() {
@@ -170,27 +180,29 @@ public class ProfileProcessor extends Processor implements Initializable {
             profileCreditPane.getChildren().remove(subButton);
         }
 
-        additionCreditField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue,
-                                String newValue) {
-                //Todo Checking
-
-                if(newValue.equals(".")) {
-                    additionCreditField.setText("0.");
-                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
-                    if(additionCreditField.getText().contains(".")) {
-                        additionCreditField.setText(removeDots(additionCreditField.getText()));
-                    } else {
-                        additionCreditField.setText(newValue.replaceAll("[^\\d\\.]", ""));
-                    }
-                }
-            }
-        });
+        setDoubleFields(additionCreditField, Double.MAX_VALUE);
+//        additionCreditField.textProperty().addListener(new ChangeListener<String>() {
+//            @Override
+//            public void changed(ObservableValue<? extends String> observable, String oldValue,
+//                                String newValue) {
+//                //Todo Checking
+//
+//                if(newValue.equals(".")) {
+//                    additionCreditField.setText("0.");
+//                } else if (!newValue.matches("\\d+(.(\\d)+)?")) {
+//                    if(additionCreditField.getText().contains(".")) {
+//                        additionCreditField.setText(removeDots(additionCreditField.getText()));
+//                    } else {
+//                        additionCreditField.setText(newValue.replaceAll("[^\\d\\.]", ""));
+//                    }
+//                }
+//            }
+//        });
     }
 
     private void setProfilePasswordFields() {
-        //Todo
+        setStringFields(oldPasswordField, 16);
+        setStringFields(newPasswordField, 16);
     }
 
     public void setStyleSheets() {
@@ -269,16 +281,28 @@ public class ProfileProcessor extends Processor implements Initializable {
 //        alert = editField("FirstName", firstNameField, alert);
 //        alert = editField("LastName", lastNameField, alert);
 //        alert = editField("Email", emailField, alert);
-
 //        accountControl.setAccountPicture(account.getUsername(), pictureFile);
+
+        account.setFirstName(firstNameField.getText());
+        account.setLastName(lastNameField.getText());
+        account.setEmail(emailField.getText());
+
+        if(account.getType().equals("Vendor"))
+            account.setBrand(brandField.getText());
+
         if(doesUserHavePicture) {
             if(pictureFile != null) {
                 sendUserImage(account.getUsername(), pictureFile, pictureExtension);
             }
         } else
             deleteUserImage(account.getUsername());
+
+        Command<Account> command = new Command<>("edit account info", Command.HandleType.ACCOUNT, account);
+        Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+        Alert alert = response.getMessage().getAlert();
+
         /*if(account.getType().equals("Vendor"))
-            alert = editField("Brand", brandField, alert);
+            alert = editField("Brand", brandField, alert);*/
 
 
         if(alert.getTitle().equals("Edit Successful")) {
@@ -288,9 +312,9 @@ public class ProfileProcessor extends Processor implements Initializable {
             lastNameField.setText(account.getLastName());
             emailField.setText(account.getEmail());
             brandField.setText(account.getBrand());
-        }*/
+        }
 
-//        alert.show();
+        alert.show();
         System.out.println("Yes. We Did It");
     }
 
@@ -317,13 +341,15 @@ public class ProfileProcessor extends Processor implements Initializable {
     }
 
     public void changePasswordMouseClicked(MouseEvent mouseEvent) {
-        Alert alert = accountControl.changePassword(oldPasswordField.getText(), newPasswordField.getText()).getAlert();
+//        Alert alert = accountControl.changePassword(oldPasswordField.getText(), newPasswordField.getText()).getAlert();
+        Command<String> command = new Command<>("change password", Command.HandleType.ACCOUNT, oldPasswordField.getText(), newPasswordField.getText());
+        Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+        Alert alert = response.getMessage().getAlert();
 
-        String style = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
         if(alert.getHeaderText().contains("New") || alert.getHeaderText().equals("Duplicate Password"))
-            newPasswordField.setStyle(style);
+            newPasswordField.setStyle(errorTextFieldStyle);
         if(alert.getHeaderText().contains("Old"))
-            oldPasswordField.setStyle(style);
+            oldPasswordField.setStyle(errorTextFieldStyle);
 
         alert.show();
     }

@@ -11,6 +11,7 @@ import server.server.Server;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AccountHandler extends Handler {
     IOControl ioControl = IOControl.getController();
@@ -39,9 +40,28 @@ public class AccountHandler extends Handler {
                 return doesUserHaveImage();
             case "delete user image":
                 return deleteUserImage();
+            case "edit account info":
+                return editAccount();
+            case "change password":
+                return changePassword();
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String changePassword() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String username = server.getUsernameByAuth(command.getAuthToken()),
+                oldPassword = command.getData().get(0),
+                newPassword = command.getData().get(1);
+        //Todo ChangePassword
+        return null;
+    }
+
+    private String editAccount() {
+        Account account = commandParser.parseDatum(Command.class, (Class<Account>)Account.class);
+        Response response = new Response(Notification.PACKET_NOTIFICATION);
+        return gson.toJson(response);
     }
 
     private String deleteUserImage() {
