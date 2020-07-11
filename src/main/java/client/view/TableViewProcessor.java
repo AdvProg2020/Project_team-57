@@ -828,9 +828,10 @@ public class TableViewProcessor<T> extends Processor {
     public void showProfile(ActionEvent actionEvent) {
         try {
             Account selectedAccount = (Account) ((TableViewProcessor)parentProcessor).selectedItem;
-            ProfileProcessor.setAccount(selectedAccount);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileMenu.fxml"));
             Parent root = loader.load();
+            ProfileProcessor profileProcessor = loader.getController();
+            profileProcessor.init(selectedAccount, "ProfileMenu");
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             newStage.getIcons().add(new Image(getClass().getResourceAsStream("Profile Icon.png")));
@@ -959,9 +960,10 @@ public class TableViewProcessor<T> extends Processor {
     public void showCommenterProfile(MouseEvent mouseEvent) {
         try {
             Account commenterAccount = AccountControl.getController().getAccountByUsername(((Comment)(((TableViewProcessor)parentProcessor).selectedItem)).getCustomerUsername());
-            ProfileProcessor.setAccount(commenterAccount);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileMenu.fxml"));
             Parent root = loader.load();
+            ProfileProcessor profileProcessor = loader.getController();
+            profileProcessor.init(commenterAccount, "ProfileMenu");
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             newStage.getIcons().add(new Image(getClass().getResourceAsStream("Profile Icon.png")));

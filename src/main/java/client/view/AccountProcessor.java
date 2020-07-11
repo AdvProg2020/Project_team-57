@@ -66,9 +66,10 @@ public class AccountProcessor extends Processor{
             else
                 if(!canOpenSubStage(loggedInAccount.getUsername() + " Profile", this))
                 return;
-            ProfileProcessor.setAccount(loggedInAccount);
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileMenu.fxml"));
             Parent root = loader.load();
+            ProfileProcessor profileProcessor = loader.getController();
+            profileProcessor.init(loggedInAccount, "ProfileMenu");
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             newStage.getIcons().add(new Image(getClass().getResourceAsStream("Profile Icon.png")));

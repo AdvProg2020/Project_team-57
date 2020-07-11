@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public class Client {
-    private static int PORT = 60263;
+    private static int PORT = 32578;
     private static Client client = null;
     private final static String HOME = "127.0.0.1";
     private Socket mySocket;

@@ -33,17 +33,11 @@ import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ProfileProcessor extends Processor implements Initializable {
+public class ProfileProcessor extends Processor {
     private static AccountControl accountControl = AccountControl.getController();
-    private static Account account;
+    private Account account;
 
-    public static Account getAccount() {
-        return account;
-    }
 
-    public static void setAccount(Account account) {
-        ProfileProcessor.account = account;
-    }
 
     public BorderPane mainPane;
     public Pane profileMenusPane;
@@ -70,24 +64,22 @@ public class ProfileProcessor extends Processor implements Initializable {
     private File pictureFile;
     private String pictureExtension;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void init(Account account, String location) {
+        this.account = account;
 
-        String locationFile = location.getFile();
-
-        if(locationFile.contains("ProfileMenu")) {
+        if(location.equals("ProfileMenu")) {
             setStyleSheets();
             adjustMainPanesForAccounts();
-        } else if(locationFile.contains("profileInfoMenu")) {
+        } else if(location.equals("profileInfoMenu")) {
             setProfileInfoSpecifications();
             setProfileInfoFields();
-        } else if(locationFile.contains("profileCreditMenu")) {
+        } else if(location.equals("profileCreditMenu")) {
             setProfileCreditFields();
-        } else if(locationFile.contains("profilePasswordMenu")) {
+        } else if(location.equals("profilePasswordMenu")) {
             setProfilePasswordFields();
         }
-
     }
+
 
     private void adjustMainPanesForAccounts() {
         changeCenterPane("profileInfoMenu");
@@ -231,7 +223,8 @@ public class ProfileProcessor extends Processor implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(centerPaneName + ".fxml"));
             Parent subRoot = loader.load();
-            loader.setController(this);
+            ProfileProcessor profileProcessor = loader.getController();
+            profileProcessor.init(account, centerPaneName);
             mainPane.setBottom(subRoot);
             Pane pane = (Pane) mainPane.getBottom();
         } catch (IOException e) {
