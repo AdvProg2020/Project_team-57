@@ -1,5 +1,6 @@
 package client.view;
 
+import client.api.Command;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
@@ -35,6 +36,7 @@ import server.model.existence.Comment;
 import server.model.existence.Product;
 import notification.Notification;
 import org.controlsfx.control.Rating;
+import server.server.Response;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,6 +45,7 @@ import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ProductProcessor extends Processor {
@@ -674,7 +677,7 @@ public class ProductProcessor extends Processor {
     //GeneralInfoPane
     private Pane getInitGeneralInfoPane(Product product) {
         if(menuType == ProductMenuType.VENDOR_EDIT)
-            product = productControl.getEditedProductByID(product.getID());
+            product = /*productControl.getEditedProductByID(product.getID());*/getProductByID(product.getID(), "editing product");
 
         String generalInfoPaneName = "";
         switch (menuType) {
@@ -718,9 +721,9 @@ public class ProductProcessor extends Processor {
         //Todo getQuantityOfCart
         if(menuType == ProductMenuType.CART) {
             if(product.isCountable()) {
-                product.setCount(productControl.getProductById(product.getID()).getCount());
+                product.setCount(/*productControl.getProductById(product.getID())*/getProductByID(product.getID(), "product").getCount());
             } else {
-                product.setAmount(productControl.getProductById(product.getID()).getAmount());
+                product.setAmount(/*productControl.getProductById(product.getID())*/getProductByID(product.getID(), "product").getAmount());
             }
         }
 
@@ -964,14 +967,14 @@ public class ProductProcessor extends Processor {
         String productID = product.getID();
         int seen = product.getSeen();
 
-        averageScore.setRating(productControl.getAverageScore(productID));
+        averageScore.setRating(getAverageScore(productID));
         averageScore.setDisable(true);
 
         viewsNum.setText(Integer.toString(seen));
         viewsNum.setDisable(true);
 
         commentsVBox.getChildren().removeAll(commentsVBox.getChildren());
-        for (Comment productComment : productControl.getAllProductComments(productID))
+        for (Comment productComment : getAllProductComments(productID))
             commentsVBox.getChildren().add(getCommentPane("ProductMenuShowCommentPane", productComment, CommentType.SHOW));
 
         //HaHa ????????
@@ -984,6 +987,12 @@ public class ProductProcessor extends Processor {
                 commentsVBox.getChildren().add(getCommentPane("ProductMenuAddCommentPane", comment, CommentType.ADD));
         }
 
+    }
+
+    private List<Comment> getAllProductComments(String productID) {
+        Command<String> command = new Command<>("get product comments", Command.HandleType.PRODUCT, productID);
+        Response<Comment> response = client.postAndGet(command, Response.class, (Class<Comment>)Comment.class);
+        return response.getData();
     }
 
     //CommentPane
@@ -1014,7 +1023,7 @@ public class ProductProcessor extends Processor {
                 comment = productComment;
                 setStringFields(commentTitle, 16);
                 setStringFields(commentContent, 100);
-                if(!customerControl.isProductPurchasedByCustomer(product.getID(), Control.getUsername())) {
+                if(!customerControl.isProductPurchasedByCustomer(product.getID(), getUsername())) {
                     commentPane.getChildren().remove(commentScore);
                 }
                 break;
@@ -1217,6 +1226,7 @@ public class ProductProcessor extends Processor {
     private void setCartCountRawText(Product product) {
         switch (menuType) {
             case CART:
+                //Here
                 Product cartProduct = customerControl.getCartProductByID(product.getID());
 
                 if(product.isCountable()) {
@@ -1495,5 +1505,17 @@ public class ProductProcessor extends Processor {
         return null;
     }
     //Sepehr's Section
+
+    private Product getProductByID(String ID, String productType) {
+        Command<String> command = new Command<>("get " + productType, Command.HandleType.PRODUCT, ID);
+        Response<Product> response = client.postAndGet(command, Response.class, (Class<Product>)Product.class);
+        return response.getDatum();
+    }
+
+    private double getAverageScore(String productID) {
+        Command<String> command = new Command<>("get average score", Command.HandleType.PRODUCT, productID);
+        Response<String> response = client.postAndGet(command, Response.class, (Class<String>)String.class);
+        return Double.parseDouble(response.getDatum());
+    }
 
 }
