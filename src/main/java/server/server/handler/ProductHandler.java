@@ -4,6 +4,7 @@ import client.api.Command;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import notification.Notification;
 import server.controller.account.CustomerControl;
+import server.controller.account.VendorControl;
 import server.controller.product.ProductControl;
 import server.model.existence.Comment;
 import server.model.existence.Product;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 
 public class ProductHandler extends Handler {
     private final ProductControl productControl = ProductControl.getController();
+    private final VendorControl vendorControl = VendorControl.getController();
     private final CustomerControl customerControl = CustomerControl.getController();
 
     public ProductHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
@@ -25,6 +27,9 @@ public class ProductHandler extends Handler {
     @Override
     protected String handle() throws InterruptedException {
         switch (message) {
+            case "add product":
+            case "edit product":
+                return sendProduct(message.substring(0, message.length() - 8));
             case "get product":
             case "get editing product":
             case "get cart product":
@@ -36,6 +41,29 @@ public class ProductHandler extends Handler {
             default:
                 return null;
         }
+    }
+
+    private String sendProduct(String sendType) {
+        Command<Product> command = commandParser.parseToCommand(Command.class, (Class<Product>)Product.class);
+
+        ArrayList<Notification> notifications = null;
+        switch (sendType) {
+            case "add":
+                Product product = command.getDatum();
+                notifications = vendorControl.addProduct(product);
+                break;
+            case "edit":
+                Product currentProduct = command.getData(0), editingProduct = command.getData(1);
+                notifications = vendorControl.editProduct(currentProduct, editingProduct);
+                break;
+            default:
+                System.out.println("Shit. Error In #sendProduct");
+                return null;
+        }
+
+        Notification[] notificationsArray = notifications.toArray(new Notification[0]);
+        Response<Notification> response = new Response<>(Notification.PACKET_NOTIFICATION, notificationsArray);
+        return gson.toJson(response);
     }
 
     private String getAllProductComments() {

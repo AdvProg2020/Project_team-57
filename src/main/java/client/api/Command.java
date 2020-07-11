@@ -38,6 +38,10 @@ public class Command<T> {
         return data;
     }
 
+    public T getData(int i) {
+        return data.get(i);
+    }
+
     public T getDatum() {
         return data.get(0);
     }

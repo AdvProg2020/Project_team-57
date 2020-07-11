@@ -5,7 +5,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
-import server.controller.Control;
 import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
 import server.controller.product.ProductControl;
@@ -579,14 +578,14 @@ public class ProductProcessor extends Processor {
         ProductProcessor generalFieldProcessor = subProcessors.get(1);
         ProductProcessor specialFieldProcessor = subProcessors.get(3);
 
-        ArrayList<Notification> productNotifications = new ArrayList<>();
+        List<Notification> productNotifications = new ArrayList<>();
 
         switch (menuType) {
             case VENDOR_ADD:
                 product = this.product;
                 specialFieldProcessor.setProductSpecialFields(product);
                 generalFieldProcessor.setProductGeneralFields(product);
-                productNotifications = vendorControl.addProduct(product, imageProcessor.productImageFiles);
+                productNotifications = sendProduct(imageProcessor.productImageFiles, "add", product);
                 break;
             case VENDOR_EDIT:
                 product = new Product();
@@ -595,7 +594,7 @@ public class ProductProcessor extends Processor {
                 product.setSellerUserName(product.getSellerUserName());
                 specialFieldProcessor.setProductSpecialFields(product);
                 generalFieldProcessor.setProductGeneralFields(product);
-                productNotifications.add(vendorControl.editProduct(this.product, product, imageProcessor.productImageFiles));
+                productNotifications = sendProduct(imageProcessor.productImageFiles, "edit", this.product, product);
                 break;
         }
 
@@ -619,6 +618,15 @@ public class ProductProcessor extends Processor {
 
         }
 
+    }
+
+    private List<Notification> sendProduct(ArrayList<File> productImageFiles, String sendType, Product... products) {
+        Command<Product> productCommand = new Command<>(sendType + " product", Command.HandleType.PRODUCT, products);
+        Response<Notification> productResponse = client.postAndGet(productCommand, Response.class, (Class<Notification>)Notification.class);
+
+        //Todo Sending Image
+
+        return productResponse.getData();
     }
 
     protected void stopTimer() {
@@ -832,7 +840,7 @@ public class ProductProcessor extends Processor {
 
     }
 
-    private void showProductGeneralErrors(ArrayList<Notification> productNotifications) {
+    private void showProductGeneralErrors(List<Notification> productNotifications) {
 
 //        for (Notification productNotification : productNotifications) {
 //            productNotification.getAlert().show();
@@ -1478,7 +1486,7 @@ public class ProductProcessor extends Processor {
             product.setPrice(Double.parseDouble(price.getText()));
     }
 
-    private void showProductSpecialErrors(ArrayList<Notification> productNotifications) {
+    private void showProductSpecialErrors(List<Notification> productNotifications) {
         if(productNotifications.contains(Notification.EMPTY_PRODUCT_PRICE)) {
             price.setStyle(errorTextFieldStyle);
         }
