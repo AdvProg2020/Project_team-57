@@ -7,7 +7,6 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
-import server.controller.product.ProductControl;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
@@ -30,6 +29,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import server.controller.product.ProductControl;
 import server.model.existence.Account;
 import server.model.existence.Comment;
 import server.model.existence.Product;
@@ -308,7 +308,7 @@ public class ProductProcessor extends Processor {
     public void openProductMenu(Product product) {
         FXMLLoader fxmlLoader = loadThePane("ProductMenu");
         ProductProcessor productProcessor = fxmlLoader.getController();
-        productControl.addSeenToProduct(product.getID());
+        addSeenToProduct(product.getID());
         productProcessor.initProcessor(product, menuType);
         myStage.setScene(new Scene(fxmlLoader.getRoot()));
         myStage.setTitle(product.getName() + " Menu");
@@ -375,22 +375,44 @@ public class ProductProcessor extends Processor {
     private void getImages() {
         switch (((ProductProcessor)parentProcessor).menuType) {
             case VENDOR_EDIT:
-                productImageFiles = productControl.
-                        getProductImageFiles(imagePanelProduct);
+                productImageFiles = getProductImageFiles(imagePanelProduct);
                 break;
             case ADMIN:
                 if(((ProductProcessor)parentProcessor).isNonEdited)
-                    productImageFiles = productControl.
-                            getProductNonEditedImageFiles(imagePanelProduct);
+                    productImageFiles = getProductNonEditedImageFiles(imagePanelProduct);
                 else
-                    productImageFiles = productControl.
-                            getProductImageFiles(imagePanelProduct);
+                    productImageFiles = getProductImageFiles(imagePanelProduct);
                 break;
             default:
-                productImageFiles = productControl.
-                        getProductNonEditedImageFiles(imagePanelProduct);
+                productImageFiles = getProductNonEditedImageFiles(imagePanelProduct);
         }
         updateImages();
+    }
+
+    public ArrayList<File> getProductImageFiles(Product product) {
+        if(product.getStatus() == 1)
+            return getProductNonEditedImageFiles(product);
+        ArrayList<File> imageFiles = new ArrayList<>();
+        Command<String> integerCommand = new Command<>("get edit product image count", Command.HandleType.PRODUCT, product.getID());
+        Response<Integer> integerResponse = client.postAndGet(integerCommand, Response.class, (Class<Integer>)Integer.class);
+        int bound = integerResponse.getDatum();
+        for (int i = 0; i < bound; i++) {
+            Command<String> command = new Command<>("get edit product image-" + (i + 1), Command.HandleType.PICTURE_GET, product.getID());
+            imageFiles.add(client.getFile(command));
+        }
+        return imageFiles;
+    }
+
+    public ArrayList<File> getProductNonEditedImageFiles(Product product) {
+        ArrayList<File> imageFiles = new ArrayList<>();
+        Command<String> integerCommand = new Command<>("get product image count", Command.HandleType.PRODUCT, product.getID());
+        Response<Integer> integerResponse = client.postAndGet(integerCommand, Response.class, (Class<Integer>)Integer.class);
+        int bound = integerResponse.getDatum();
+        for (int i = 0; i < bound; i++) {
+            Command<String> command = new Command<>("get product image-" + (i + 1), Command.HandleType.PICTURE_GET, product.getID());
+            imageFiles.add(client.getFile(command));
+        }
+        return imageFiles;
     }
 
     private void updateImages() {

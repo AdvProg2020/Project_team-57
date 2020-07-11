@@ -13,6 +13,7 @@ import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 import notification.Notification;
 import server.model.existence.Account;
+import server.model.existence.Product;
 import server.server.Response;
 
 import javax.imageio.ImageIO;
@@ -244,6 +245,11 @@ public abstract class Processor {
     protected Image getProfileImage(String username) {
         Command<String> command = new Command<>("get user image", Command.HandleType.PICTURE_GET, username);
         return client.getImage(command);
+    }
+
+    protected void addSeenToProduct(String productID) {
+        Command<String> command = new Command<>("add seen", Command.HandleType.PRODUCT, productID);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 
 }

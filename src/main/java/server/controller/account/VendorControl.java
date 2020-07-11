@@ -55,6 +55,35 @@ public class VendorControl extends AccountControl{
         return addingProductNotifications;
     }
 
+    public ArrayList<Notification> addProduct(Product product) {
+        ArrayList<Notification> addingProductNotifications = new ArrayList<>();
+
+        try {
+            addingProductNotifications.addAll(checkProductFields(product));
+            if (addingProductNotifications.isEmpty()) {
+                while (true) {
+                    String productId = generateProductID();
+                    if (ProductTable.isIDFree(productId)) {
+                        product.setID(productId);
+                        break;
+                    }
+                }
+                if (product.isCountable())
+                    VendorTable.addCountableProduct(product, getUsername());
+                else
+                    VendorTable.addUnCountableProduct(product, getUsername());
+/*                for (File productImageFile : productImageFiles) {
+                    ProductControl.getController().addProductPicture(product.getID(), productImageFile);
+                }
+                addingProductNotifications.add(Notification.ADD_PRODUCT);*/
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            return new ArrayList<>();
+        }
+
+        return addingProductNotifications;
+    }
+
     private ArrayList<Notification> checkProductFields(Product product) throws SQLException, ClassNotFoundException {
         ArrayList<Notification> checkNotifications = new ArrayList<>();
 
@@ -98,6 +127,34 @@ public class VendorControl extends AccountControl{
                         EditingProductTable.updateUnCountableProduct(editingProduct);
                 }
                 ProductControl.getController().addEditingProductPictures(editingProduct.getID(), productImageFiles);
+                editProductNotification = Notification.EDIT_PRODUCT;
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            editProductNotification = Notification.UNKNOWN_ERROR;
+        }
+
+        return editProductNotification;
+    }
+
+    public Notification editProduct(Product currentProduct, Product editingProduct) {
+        Notification editProductNotification = null;
+
+        try {
+            editProductNotification = checkEditingProduct(currentProduct, editingProduct);
+
+            if (editProductNotification == null) {
+                editingProduct.setStatus(3);
+                editingProduct.setSellerUserName(Control.getUsername());
+                ProductTable.setProductStatus(editingProduct.getID(), 3);
+                if (EditingProductTable.isIDFree(editingProduct.getID())) {
+                    EditingProductTable.addProduct(editingProduct);
+                } else {
+                    if (editingProduct.isCountable())
+                        EditingProductTable.updateCountableProduct(editingProduct);
+                    else
+                        EditingProductTable.updateUnCountableProduct(editingProduct);
+                }
+                /*ProductControl.getController().addEditingProductPictures(editingProduct.getID(), productImageFiles);*/
                 editProductNotification = Notification.EDIT_PRODUCT;
             }
         } catch (SQLException | ClassNotFoundException e) {

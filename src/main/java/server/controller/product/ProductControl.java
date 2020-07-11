@@ -552,6 +552,26 @@ public class ProductControl extends Control {
         return null;
     }
 
+    public FileInputStream getProductImageFileInputStreamByID(String ID, int number) {
+        try {
+            String productID = doesProductHaveImage(ID) ? ID : ("" + 1);
+            return ProductTable.getProductImageInputStream(productID, number);
+        } catch (FileNotFoundException e) {
+            //:)
+        }
+        return null;
+    }
+
+    public FileInputStream getEditingProductImageFileInputStreamByID(String ID, int number) {
+        try {
+            String productID = doesProductHaveImage(ID) ? ID : ("" + 1);
+            return EditingProductTable.getEditingProductImageInputStream(productID, number);
+        } catch (FileNotFoundException e) {
+            //:)
+        }
+        return null;
+    }
+
     public Image getOffImageByID(String offID) {
         try {
         if(doesOffHaveImage(offID)) {
@@ -836,4 +856,6 @@ public class ProductControl extends Control {
         }
         return new Off();
     }
+
+
 }

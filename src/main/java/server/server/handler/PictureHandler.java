@@ -3,6 +3,7 @@ package server.server.handler;
 import client.api.Command;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import server.controller.account.AccountControl;
+import server.controller.product.ProductControl;
 import server.server.Server;
 
 import java.io.*;
@@ -12,6 +13,7 @@ import java.util.List;
 public class PictureHandler extends Handler {
     private final Command.HandleType handleType;
     private AccountControl accountControl = AccountControl.getController();
+    private ProductControl productControl = ProductControl.getController();
 
     public PictureHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input, Command.HandleType handleType) throws JsonProcessingException {
         super(outStream, inStream, server, input);
@@ -26,7 +28,7 @@ public class PictureHandler extends Handler {
                     getPicture();
                     break;
                 case PICTURE_SEND:
-                    sendPicture();
+                    savePicture();
                     break;
                 default:
                     System.out.println("Serious Error In Picture Handler");
@@ -36,7 +38,7 @@ public class PictureHandler extends Handler {
         }
     }
 
-    private void sendPicture() {
+    private void savePicture() {
         try {
             List<String> data = commandParser.parseData(Command.class, (Class<String>)String.class);
             String username = data.get(0), pictureExtension = data.get(1);
@@ -72,6 +74,20 @@ public class PictureHandler extends Handler {
             case "get user image":
                 imageInputStream = getUserImageInputStream();
                 break;
+            case "get product image-1":
+            case "get product image-2":
+            case "get product image-3":
+            case "get product image-4":
+            case "get product image-5":
+            case "get product image-6":
+                imageInputStream = getProductImageInputStream();
+            case "get edit product image-1":
+            case "get edit product image-2":
+            case "get edit product image-3":
+            case "get edit product image-4":
+            case "get edit product image-5":
+            case "get edit product image-6":
+                imageInputStream = getEditProductImageInputStream();
             default:
                 System.out.println("Serious Error In Sending ");
         }
@@ -85,6 +101,20 @@ public class PictureHandler extends Handler {
         imageInputStream.close();
         outStream.close();
         System.out.println(new Date());
+    }
+
+    private FileInputStream getEditProductImageInputStream() {
+        int imageNumber = Integer.parseInt(message.split("-")[1]);
+        return productControl.
+                getEditingProductImageFileInputStreamByID
+                        (commandParser.parseDatum(Command.class, (Class<String>)String.class), imageNumber);
+    }
+
+    private FileInputStream getProductImageInputStream() {
+        int imageNumber = Integer.parseInt(message.split("-")[1]);
+        return productControl.
+                getProductImageFileInputStreamByID
+                        (commandParser.parseDatum(Command.class, (Class<String>)String.class), imageNumber);
     }
 
     private FileInputStream getUserImageInputStream() {

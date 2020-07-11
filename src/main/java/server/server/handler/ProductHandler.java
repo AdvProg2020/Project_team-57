@@ -38,15 +38,42 @@ public class ProductHandler extends Handler {
                 return getAllProductComments();
             case "get average score":
                 return getAverageScore();
+            case "add seen":
+                return addSeenToProduct();
+            case "get product image count":
+                return getProductImageCount();
+            case "get edit product image count":
+                return getEditProductImageCount();
             default:
                 return null;
         }
     }
 
+    private String getEditProductImageCount() {
+        return
+                gson.toJson(new Response<>
+                        (Notification.PACKET_NOTIFICATION,
+                                new Integer
+                                        (productControl.getEditingProductImagesNumberByID(commandParser.parseDatum(Command.class, (Class<String>)String.class)))));
+    }
+
+    private String getProductImageCount() {
+        return
+                gson.toJson(new Response<>
+                        (Notification.PACKET_NOTIFICATION,
+                                new Integer
+                                        (productControl.getProductImagesNumberByID(commandParser.parseDatum(Command.class, (Class<String>)String.class)))));
+    }
+
+    private String addSeenToProduct() {
+        productControl.addSeenToProduct(commandParser.parseDatum(Command.class, (Class<String>)String.class));
+        return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+    }
+
     private String sendProduct(String sendType) {
         Command<Product> command = commandParser.parseToCommand(Command.class, (Class<Product>)Product.class);
 
-        ArrayList<Notification> notifications = null;
+        ArrayList<Notification> notifications = new ArrayList<>();
         switch (sendType) {
             case "add":
                 Product product = command.getDatum();
@@ -54,7 +81,7 @@ public class ProductHandler extends Handler {
                 break;
             case "edit":
                 Product currentProduct = command.getData(0), editingProduct = command.getData(1);
-                notifications = vendorControl.editProduct(currentProduct, editingProduct);
+                notifications.add(vendorControl.editProduct(currentProduct, editingProduct));
                 break;
             default:
                 System.out.println("Shit. Error In #sendProduct");
@@ -88,20 +115,6 @@ public class ProductHandler extends Handler {
         Response<String> response = new Response<>(Notification.PACKET_NOTIFICATION, averageScoreString);
         return gson.toJson(response);
     }
-
-    /*private String getEditingProduct() {
-        String productID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
-        Product editingProduct = productControl.getEditedProductByID(productID);
-        Response<Product> response = new Response<>(Notification.PACKET_NOTIFICATION, editingProduct);
-        return gson.toJson(response);
-    }
-
-    private String getProduct() {
-        String productID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
-        Product product = productControl.getProductById(productID);
-        Response<Product> response = new Response<>(Notification.PACKET_NOTIFICATION, product);
-        return gson.toJson(response);
-    }*/
 
     private String getProduct(String productType) {
         String productID = commandParser.parseDatum(Command.class, (Class<String>)String.class);

@@ -8,7 +8,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import server.server.Response;
-import server.server.Server;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public class Client {
+    private static final String CACHE_FOLDER_URL = "cache\\";
     private static int PORT = 60718;
     private static Client client = null;
     private final static String HOME = "127.0.0.1";
@@ -87,10 +87,7 @@ public class Client {
     public  <T, E, C extends Response> Response<T> postAndGet(Command<E> command, Class<C> responseType, Class<T> responseDataType){
         try {
             makeConnection();
-            command.setAuthToken(authToken);
-            String commandStr = gson.toJson(command);
-            outStream.writeUTF(commandStr);
-            outStream.flush();
+            post(command);
             String responseStr = inStream.readUTF();
             Response<T> response = gson.fromJson(responseStr,  TypeToken.getParameterized(responseType, responseDataType).getType());
             closeConnection();
@@ -105,11 +102,7 @@ public class Client {
     public <E> Image getImage(Command<E> command) {
         try {
             makeConnection();
-            command.setAuthToken(authToken);
-            String commandStr = gson.toJson(command);
-            outStream.writeUTF(commandStr);
-            outStream.flush();
-
+            post(command);
             ArrayList<Integer> integers = new ArrayList<>();
             int i;
             while ((i = inStream.read()) > -1) {
@@ -127,23 +120,64 @@ public class Client {
     public <E> void sendImage(Command<E> command, File imageFile) {
         try {
             makeConnection();
-            command.setAuthToken(authToken);
-            String commandStr = gson.toJson(command);
-            outStream.writeUTF(commandStr);
-            outStream.flush();
-
+            post(command);
             FileInputStream imageFileInputStream = new FileInputStream(imageFile);
             int i;
             while ((i = imageFileInputStream.read()) > -1) {
                 outStream.write(i);
                 outStream.flush();
             }
-
             closeConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public <C> File getFile(Command<C> command) {
+        try {
+            makeConnection();
+            post(command);
+            String extension = inStream.readUTF();
+            File file = new File(CACHE_FOLDER_URL + getFileName(extension));
+            FileOutputStream fileOutStream = new FileOutputStream(file);
+            int i;
+            while ( (i = inStream.read()) > -1) {
+                fileOutStream.write(i);
+            }
+            fileOutStream.flush();
+            fileOutStream.close();
+            closeConnection();
+            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String getFileName(String extension) {
+        String fileName = "";
+        do {
+            fileName = generateRandomFileName();
+            fileName += "." + extension;
+        }while (new File(CACHE_FOLDER_URL + fileName).exists());
+        return fileName;
+    }
+
+    private String generateRandomFileName() {
+        char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
+        StringBuilder ID = new StringBuilder("jesus");
+        for(int i = 0; i < 10; ++i)
+        {
+            ID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
+        }
+        return ID.toString();
+    }
+
+    private void post(Command command) throws IOException {
+        command.setAuthToken(authToken);
+        String commandStr = gson.toJson(command);
+        outStream.writeUTF(commandStr);
+        outStream.flush();
     }
 
     public String getAuthToken() {
