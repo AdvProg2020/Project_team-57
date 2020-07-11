@@ -355,7 +355,10 @@ public class ProfileProcessor extends Processor implements Initializable {
     }
 
     public void addMoneyMouseClicked(MouseEvent mouseEvent) {
-        Notification notification = accountControl.addMoney(additionCreditField.getText());
+//        Notification notification = accountControl.addMoney(additionCreditField.getText());
+        Command<String> command = new Command<>("add money", Command.HandleType.ACCOUNT, additionCreditField.getText());
+        Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+        Notification notification = response.getMessage();
 
         if(notification.equals(Notification.RISE_MONEY_SUCCESSFULLY)) {
             account = accountControl.getAccountByUsername(account.getUsername());
