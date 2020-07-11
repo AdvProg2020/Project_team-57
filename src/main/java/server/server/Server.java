@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import notification.Notification;
 import server.server.handler.AccountHandler;
+import server.server.handler.PictureHandler;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -52,6 +53,10 @@ public class Server {
             switch (type) {
                 case ACCOUNT:
                     new AccountHandler(outStream, inStream, this, input).start();
+                    break;
+                case PICTURE_SEND:
+                case PICTURE_GET:
+                    new PictureHandler(outStream, inStream, this, input, type).start();
                     break;
                 default:
                     outStream.writeUTF(getUnknownError());

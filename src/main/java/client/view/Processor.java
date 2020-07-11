@@ -32,47 +32,6 @@ public abstract class Processor {
     protected ArrayList<Stage> subStages = new ArrayList<>();
     protected Client client = Client.getClient();
 
-    protected static Function<BufferedImage, Image> bufferedImage2Image;
-    protected static Function<List<Integer>, Image> integerArray2Image;
-    static {
-        bufferedImage2Image = new Function<BufferedImage, Image>() {
-            @Override
-            public Image apply(BufferedImage bufferedImage) {
-                WritableImage wr = null;
-                if (bufferedImage != null) {
-                    wr = new WritableImage(bufferedImage.getWidth(), bufferedImage.getHeight());
-                    PixelWriter pw = wr.getPixelWriter();
-                    for (int x = 0; x < bufferedImage.getWidth(); x++) {
-                        for (int y = 0; y < bufferedImage.getHeight(); y++) {
-                            pw.setArgb(x, y, bufferedImage.getRGB(x, y));
-                        }
-                    }
-                }
-
-                return new ImageView(wr).getImage();
-            }
-        };
-        integerArray2Image = new Function<List<Integer>, Image>() {
-            @Override
-            public Image apply(List<Integer> integers) {
-                try {
-                    byte[] bytes = new byte[integers.size()];
-
-                    for (int i = 0; i < integers.size(); i++) {
-                        bytes[i] = integers.get(i).byteValue();
-                    }
-
-                    InputStream inputStream = new ByteArrayInputStream(bytes);
-                    return bufferedImage2Image.apply(ImageIO.read(inputStream));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        };
-    }
-
-
 
     protected static final String errorTextFieldStyle = "-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;";
 

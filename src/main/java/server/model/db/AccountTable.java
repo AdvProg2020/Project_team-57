@@ -2,10 +2,7 @@ package server.model.db;
 
 import server.model.existence.Account;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -231,6 +228,17 @@ public class AccountTable extends Database {
         String fileExtension = splitPath[splitPath.length - 1];
         File saveImage = new File("database\\Images\\Users\\" + username + "." + fileExtension);
         Files.copy(pictureFile.toPath(), saveImage.toPath());
+    }
+
+    public static FileOutputStream getProfileImageOutputStream(String username, String imageExtension) throws IOException {
+        File profileImageFile = new File("database\\Images\\Users\\" + username + "." + imageExtension);
+
+        if(!profileImageFile.exists()) {
+            System.out.println("File Doesn't Exists. #getProfileImageOutputStream");
+            profileImageFile.createNewFile();
+        }
+
+        return new FileOutputStream(profileImageFile);
     }
 
     public static void deleteProfileImage(String username) {

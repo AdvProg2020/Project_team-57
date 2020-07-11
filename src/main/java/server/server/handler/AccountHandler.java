@@ -37,20 +37,27 @@ public class AccountHandler extends Handler {
                 return isThereAdmin();
             case "does user have image":
                 return doesUserHaveImage();
-            case "get user image":
-                return getUserImage();
+            case "delete user image":
+                return deleteUserImage();
             default:
                 return null/*server.getUnknownError()*/;
         }
     }
 
-    private String getUserImage() {
+    private String deleteUserImage() {
+        String username = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+        accountControl.setAccountPicture(username, null);
+        Response response = new Response(Notification.PACKET_NOTIFICATION);
+        return gson.toJson(response);
+    }
+
+   /*private String getUserImage() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
         Integer[] userImageIntegerArray = accountControl.getProfileImageArrayByUsername(command.getData().get(0));
         Response<Integer> response = new Response<>(Notification.PACKET_NOTIFICATION, userImageIntegerArray);
         outStream.write
         return gson.toJson(response);
-    }
+    }*/
 
     private String doesUserHaveImage() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);

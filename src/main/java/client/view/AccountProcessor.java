@@ -78,7 +78,7 @@ public class AccountProcessor extends Processor{
                 addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 

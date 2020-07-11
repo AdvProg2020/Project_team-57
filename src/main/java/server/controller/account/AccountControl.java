@@ -16,10 +16,7 @@ import client.view.Main;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -353,6 +350,17 @@ public class AccountControl extends Control implements IOValidity {
         return null;
     }
 
+    public FileInputStream getUserImageInputStream(String username) {
+        try {
+            String imageInput = doesUserHaveImage(username) ? username : "1";
+            return AccountTable.getProfileImageInputStream(imageInput);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public Integer[] getProfileImageArrayByUsername(String username) {
         try {
             String imageInput = doesUserHaveImage(username) ? username : "1";
@@ -398,6 +406,25 @@ public class AccountControl extends Control implements IOValidity {
             }
         }
 
+    }
+
+    public void deleteAccountPicture(String username) {
+        if(doesUserHaveImage(username))
+            AccountTable.deleteProfileImage(username);
+    }
+
+    public FileOutputStream getAccountPictureOutputStream(String username, String pictureExtension) {
+        if(doesUserHaveImage(username)) {
+            AccountTable.deleteProfileImage(username);
+        }
+        try {
+            return AccountTable.getProfileImageOutputStream(username, pictureExtension);
+        } catch (IOException e) {
+            System.out.println("Error In #getAccountPictureOutputStream");
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     //TODO(FOR MEDIA)

@@ -4,7 +4,6 @@ import client.api.Command;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import server.controller.Control;
 import server.controller.account.AccountControl;
 import javafx.animation.*;
 import javafx.beans.value.ChangeListener;
@@ -30,7 +29,6 @@ import server.model.existence.Account;
 import notification.Notification;
 import server.server.Response;
 
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -68,7 +66,9 @@ public class ProfileProcessor extends Processor implements Initializable {
     public JFXPasswordField oldPasswordField, newPasswordField;
     public JFXButton changePasswordButton;
 
+    private boolean doesUserHavePicture;
     private File pictureFile;
+    private String pictureExtension;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -107,10 +107,10 @@ public class ProfileProcessor extends Processor implements Initializable {
         lastNameField.setText(account.getLastName());
         emailField.setText(account.getEmail());
 
-        ImagePattern imagePattern = new ImagePattern(getProfileImage()/*accountControl.getProfileImageByUsername(account.getUsername())*/);
+        ImagePattern imagePattern = new ImagePattern(getProfileImage());
         pictureCircle.setFill(imagePattern);
 
-        if(!doesUserHaveImage()) {
+        if(!(doesUserHavePicture = doesUserHaveImage())) {
             deleteImage.setDisable(true);
             deleteImage.setOpacity(0.7);
         }
@@ -152,9 +152,8 @@ public class ProfileProcessor extends Processor implements Initializable {
     }
 
     private Image getProfileImage() {
-        Command<String> command = new Command<>("get user image", Command.HandleType.ACCOUNT, account.getUsername());
-        Response<Integer> response = client.postAndGet(command, Response.class, (Class<Integer>)Integer.class);
-        return integerArray2Image.apply(response.getData());
+        Command<String> command = new Command<>("get user image", Command.HandleType.PICTURE_GET, account.getUsername());
+        return client.getImage(command);
     }
 
     private boolean doesUserHaveImage() {
@@ -249,7 +248,7 @@ public class ProfileProcessor extends Processor implements Initializable {
     private Color getButtonBackGroundColor() {
         Color color = null;
 
-        switch (Control.getType()) {
+        switch (getType()) {
             case "Admin":
                 color = Color.valueOf("#80CBC4");
                 break;
@@ -266,13 +265,19 @@ public class ProfileProcessor extends Processor implements Initializable {
 
     public void editPersonalInfoMouseClicked(MouseEvent mouseEvent) {
         //Todo
-        Alert alert = null;
-        alert = editField("FirstName", firstNameField, alert);
-        alert = editField("LastName", lastNameField, alert);
-        alert = editField("Email", emailField, alert);
-        accountControl.setAccountPicture(account.getUsername(), pictureFile);
+//        Alert alert = null;
+//        alert = editField("FirstName", firstNameField, alert);
+//        alert = editField("LastName", lastNameField, alert);
+//        alert = editField("Email", emailField, alert);
 
-        if(account.getType().equals("Vendor"))
+//        accountControl.setAccountPicture(account.getUsername(), pictureFile);
+        if(doesUserHavePicture) {
+            if(pictureFile != null) {
+                sendUserImage(account.getUsername(), pictureFile, pictureExtension);
+            }
+        } else
+            deleteUserImage(account.getUsername());
+        /*if(account.getType().equals("Vendor"))
             alert = editField("Brand", brandField, alert);
 
 
@@ -283,9 +288,20 @@ public class ProfileProcessor extends Processor implements Initializable {
             lastNameField.setText(account.getLastName());
             emailField.setText(account.getEmail());
             brandField.setText(account.getBrand());
-        }
+        }*/
 
-        alert.show();
+//        alert.show();
+        System.out.println("Yes. We Did It");
+    }
+
+    private void deleteUserImage(String username) {
+        Command<String> command = new Command<>("delete user image", Command.HandleType.ACCOUNT, username);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
+
+    private void sendUserImage(String username, File pictureFile, String pictureExtension) {
+        Command<String> command = new Command<>("send user image", Command.HandleType.PICTURE_SEND, username, pictureExtension);
+        client.sendImage(command, pictureFile);
     }
 
     private Alert editField(String fieldName, JFXTextField textField, Alert previousAlert) {
@@ -371,7 +387,9 @@ public class ProfileProcessor extends Processor implements Initializable {
                 //Todo Sending Image To Controller
                 //Todo Showing Image
 
+                doesUserHavePicture = true;
                 this.pictureFile = pictureFile;
+                this.pictureExtension = pictureChooser.getSelectedExtensionFilter().getExtensions().get(0).substring(2);
 
                 pictureCircle.setFill(new ImagePattern(image));
                 deleteImage.setDisable(false);
@@ -386,12 +404,13 @@ public class ProfileProcessor extends Processor implements Initializable {
 
     public void deleteImage(MouseEvent mouseEvent) {
         try {
-            FileInputStream imageFileInputStream = new FileInputStream("src\\main\\resources\\Images\\DefaultProfilePicture.png");
+            FileInputStream imageFileInputStream = new FileInputStream("src\\main\\resources\\" + IMAGE_FOLDER_URL + "DefaultProfilePicture.png");
             pictureCircle.setFill(new ImagePattern(new Image(imageFileInputStream)));
+            doesUserHavePicture = false;
             pictureFile = null;
             deleteImage.setDisable(true);
         } catch (FileNotFoundException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 
@@ -416,7 +435,7 @@ public class ProfileProcessor extends Processor implements Initializable {
 
         FileInputStream fileInputStream = null;
         try {
-            fileInputStream = new FileInputStream("src\\main\\resources\\Images\\ProfileInfoMenu - Camera.png");
+            fileInputStream = new FileInputStream("src\\main\\resources\\" + IMAGE_FOLDER_URL + "ProfileInfoMenu - Camera.png");
             Image image = new Image(fileInputStream);
             ImagePattern imagePattern = new ImagePattern(image);
             circle.setFill(imagePattern);
