@@ -30,4 +30,7 @@ public class Response<T> {
         return data.get(0);
     }
 
+    public void setData(List<T> data) {
+        this.data = data;
+    }
 }

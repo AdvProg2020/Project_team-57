@@ -10,6 +10,7 @@ import server.server.Response;
 import server.server.Server;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class AccountHandler extends Handler {
     private final IOControl ioControl = IOControl.getController();
@@ -52,9 +53,24 @@ public class AccountHandler extends Handler {
                 return subtractMoney();
             case "get account credit":
                 return getCredit();
+            case "modified accounts" :
+                return getModifiedAccounts();
+
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String getModifiedAccounts() {
+        Command<Account.AccountType> command = commandParser.parseToCommand(Command.class, (Class<Account.AccountType>) Account.AccountType.class);
+
+        if(accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            Response<Account> response = new Response<>(Notification.PACKET_NOTIFICATION);
+            response.setData(accountControl.getModifiedAccounts(command.getDatum(), accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getUsername()));
+            return gson.toJson(response);
+        }
+        Response<String> response = new Response<>(Notification.FUCK_YOU, "Bi Adab");
+        return gson.toJson(response);
     }
 
     private String logOut() {

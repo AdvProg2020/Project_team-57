@@ -305,10 +305,10 @@ public class AccountControl extends Control implements IOValidity {
         } else {
             ArrayList<Account> accounts = getModifiedAccounts(accountType);
             accounts.removeIf(account -> {
-                boolean result = true;
+                boolean result = false;
                 for (int i = 0; i < searchs.length; i++) {
-                    if(account.getUsername().contains(searchs[i])) {
-                        result = false;
+                    if(account.getUsername().equals(searchs[i])) {
+                        result = true;
                     }
                 }
                 return result;

@@ -188,7 +188,8 @@ public enum Notification {
     NEGATIVE_NUMBER("",null , "","" ),
     ADD_TO_CART("",null , "","" ),
     MORE_THAN_INVENTORY_UNCOUNTABLE("",null , "","" ),
-    PACKET_NOTIFICATION("", null, "", "");
+    PACKET_NOTIFICATION("", null, "", ""),
+    FUCK_YOU("Fuck You", Alert.AlertType.ERROR, "MotherFucker", "You Son Of A Bitch");
 
 
     private String message;

@@ -78,7 +78,6 @@ public class PictureHandler extends Handler {
 
         int i;
         while ((i = imageInputStream.read()) > -1) {
-//            System.out.println("i : " + i);
             outStream.write(i);
             outStream.flush();
         }

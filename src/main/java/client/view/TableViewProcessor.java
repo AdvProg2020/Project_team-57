@@ -1,5 +1,6 @@
 package client.view;
 
+import client.api.Command;
 import com.jfoenix.controls.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import server.controller.Control;
@@ -34,8 +35,10 @@ import server.model.existence.*;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 import server.model.existence.Log.ProductOfLog;
+import server.server.Response;
 
 import static server.model.existence.Account.AccountType.*;
 
@@ -291,7 +294,7 @@ public class TableViewProcessor<T> extends Processor {
             case ADMINS:
             case VENDORS:
             case CUSTOMERS:
-                tableList.addAll((ArrayList<T>)AccountControl.getController().getModifiedAccounts(tableViewType.getAccountType()));
+                tableList.addAll((ArrayList<T>)getModifiedAccounts(tableViewType.getAccountType()));
                 break;
             case DISCOUNTS:
                 tableList.addAll((ArrayList<T>)AdminControl.getController().getAllDiscounts());
@@ -328,6 +331,25 @@ public class TableViewProcessor<T> extends Processor {
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
         selectedItem = tableView.getSelectionModel().getSelectedItem();
+    }
+
+    private ArrayList<Account> getModifiedAccounts(Account.AccountType accountType) {
+/*        String type = "";
+        switch (accountType) {
+            case ADMIN:
+                type = "admin";
+                break;
+            case CUSTOMER:
+                type = "customer";
+                break;
+            case VENDOR:
+                type = "vendor";
+                break;
+        }*/
+        Command<Account.AccountType> command = new Command<>("modified accounts", Command.HandleType.ACCOUNT, accountType);
+        Response<Account> response = client.postAndGet(command, Response.class, (Class<Account>) Account.class);
+        ArrayList<Account> accounts = new ArrayList<>(response.getData());
+        return accounts;
     }
 
     //TODO(FOR CHECKBOX)
@@ -665,7 +687,7 @@ public class TableViewProcessor<T> extends Processor {
                 processor.nameLabel.setText(account.getFirstName() + " " + account.getLastName());
                 processor.typeLabel.setText(account.getType());
                 processor.imageCircle.setFill
-                        (new ImagePattern(AccountControl.getController().getProfileImageByUsername(account.getUsername())));
+                        (new ImagePattern(getProfileImage(account.getUsername())));
                 switch (account.getType()) {
                     case "Admin" :
                         processor.showProfileButton.setDisable(false);

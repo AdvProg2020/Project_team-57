@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public class Client {
-    private static int PORT = 22719;
+    private static int PORT = 60263;
     private static Client client = null;
     private final static String HOME = "127.0.0.1";
     private Socket mySocket;
@@ -133,10 +133,8 @@ public class Client {
             outStream.flush();
 
             FileInputStream imageFileInputStream = new FileInputStream(imageFile);
-            ArrayList<Integer> integers = new ArrayList<>();
             int i;
             while ((i = imageFileInputStream.read()) > -1) {
-//            System.out.println("i : " + i);
                 outStream.write(i);
                 outStream.flush();
             }

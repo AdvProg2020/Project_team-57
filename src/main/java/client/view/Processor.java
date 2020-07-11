@@ -241,4 +241,9 @@ public abstract class Processor {
         return Double.parseDouble(response.getDatum());
     }
 
+    protected Image getProfileImage(String username) {
+        Command<String> command = new Command<>("get user image", Command.HandleType.PICTURE_GET, username);
+        return client.getImage(command);
+    }
+
 }

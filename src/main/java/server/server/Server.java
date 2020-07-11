@@ -28,7 +28,7 @@ public class Server {
         try {
             serverSocket = new ServerSocket(0);
             SERVER_PORT = serverSocket.getLocalPort();
-            System.out.println(SERVER_PORT);
+            System.out.println("PORT: " + SERVER_PORT);
             mapper = new ObjectMapper();
             this.authTokens = new HashMap<>();
             gson = new GsonBuilder().setPrettyPrinting().create();
@@ -48,8 +48,6 @@ public class Server {
             String input = inStream.readUTF();
             ObjectNode objectNode = mapper.readValue(input, ObjectNode.class);
             Command.HandleType type = gson.fromJson(objectNode.get("type").asText(), Command.HandleType.class);
-
-            System.out.println("Type : " + type);
             switch (type) {
                 case ACCOUNT:
                     new AccountHandler(outStream, inStream, this, input).start();
@@ -85,21 +83,15 @@ public class Server {
 
     public void addAuth(String authToken, String username) {
         authTokens.put(authToken, username);
-
-        System.out.println(authTokens.toString());
     }
 
     public boolean removeAuth(String authToken) {
         boolean answer = authTokens.containsKey(authToken);
-
         if(authTokens.containsKey(authToken)) {
             authTokens.remove(authToken);
         } else {
             System.out.println("Shit. Error In Removing AuthToken");
         }
-
-        System.out.println(authTokens.toString());
-
         return answer;
     }
 

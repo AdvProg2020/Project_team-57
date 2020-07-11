@@ -117,7 +117,7 @@ public class ProfileProcessor extends Processor implements Initializable {
         lastNameField.setText(account.getLastName());
         emailField.setText(account.getEmail());
 
-        ImagePattern imagePattern = new ImagePattern(getProfileImage());
+        ImagePattern imagePattern = new ImagePattern(getProfileImage(account.getUsername()));
         pictureCircle.setFill(imagePattern);
 
         if(!(doesUserHavePicture = doesUserHaveImage())) {
@@ -159,11 +159,6 @@ public class ProfileProcessor extends Processor implements Initializable {
             pictureCircle.setOnMouseExited(null);
         }
 
-    }
-
-    private Image getProfileImage() {
-        Command<String> command = new Command<>("get user image", Command.HandleType.PICTURE_GET, account.getUsername());
-        return client.getImage(command);
     }
 
     private boolean doesUserHaveImage() {
