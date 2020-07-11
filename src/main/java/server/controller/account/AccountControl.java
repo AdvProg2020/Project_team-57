@@ -1,23 +1,16 @@
 package server.controller.account;
 
+import javafx.scene.image.Image;
+import notification.Notification;
 import server.controller.Control;
 import server.controller.product.ProductControl;
-import javafx.scene.image.Image;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Duration;
 import server.model.db.*;
 import server.model.existence.Account;
 import server.model.existence.Log;
 import server.model.existence.Off;
 import server.model.existence.Product;
-import notification.Notification;
-import client.view.Main;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -425,6 +418,36 @@ public class AccountControl extends Control implements IOValidity {
         }
 
         return null;
+    }
+
+    public Notification editAccount(final Account newAccount) {
+        try {
+            Account oldAccount = AccountTable.getAccountByUsername(newAccount.getUsername());
+            if (newAccount.getFirstName() != null &&
+                    !newAccount.getFirstName().isEmpty() &&
+                    !newAccount.getFirstName().equals(oldAccount.getFirstName())) {
+                AccountTable.editField(newAccount.getUsername(), "FirstName", newAccount.getFirstName());
+            }
+            if (newAccount.getLastName() != null &&
+                    !newAccount.getLastName().isEmpty() &&
+                    !newAccount.getLastName().equals(oldAccount.getLastName())) {
+                AccountTable.editField(newAccount.getUsername(), "LastName", newAccount.getLastName());
+            }
+            if (!newAccount.getEmail().equals(oldAccount.getEmail())) {
+                AccountTable.editField(newAccount.getUsername(), "Email", newAccount.getEmail() == null ? "" : newAccount.getEmail());
+            }
+            if (oldAccount.getType().equals("Vendor")) {
+                if (!oldAccount.getBrand().equals(newAccount.getBrand())) {
+                    AccountTable.editField(newAccount.getUsername(), "Brand", newAccount.getBrand() == null ? "" : newAccount.getBrand());
+                }
+            }
+            return Notification.EDIT_FIELD_SUCCESSFULLY;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
     }
 
     //TODO(FOR MEDIA)
