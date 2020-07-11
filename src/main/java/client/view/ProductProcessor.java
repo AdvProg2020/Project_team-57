@@ -1226,8 +1226,8 @@ public class ProductProcessor extends Processor {
     private void setCartCountRawText(Product product) {
         switch (menuType) {
             case CART:
-                //Here
-                Product cartProduct = customerControl.getCartProductByID(product.getID());
+//                Product cartProduct = customerControl.getCartProductByID(product.getID());
+                Product cartProduct = getProductByID(product.getID(), "cart product");
 
                 if(product.isCountable()) {
                     cartCount.setText(Integer.toString(cartProduct.getCount()));
