@@ -26,4 +26,8 @@ public class Response<T> {
         return data;
     }
 
+    public T getDatum() {
+        return data.get(0);
+    }
+
 }

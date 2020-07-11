@@ -51,13 +51,13 @@ public class AccountControl extends Control implements IOValidity {
         }
     }
 
-    public Notification changePassword(String oldPassword, String newPassword) {
+    public Notification changePassword(String username, String oldPassword, String newPassword) {
         try {
             if(oldPassword == null || oldPassword.isEmpty())
                 return Notification.EMPTY_OLD_PASSWORD;
             if(newPassword == null || newPassword.isEmpty())
                 return Notification.EMPTY_NEW_PASSWORD;
-            if(!AccountTable.isPasswordCorrect(Control.getUsername(), oldPassword))
+            if(!AccountTable.isPasswordCorrect(username, oldPassword))
                 return Notification.WRONG_OLD_PASSWORD;
             if (oldPassword.equals(newPassword))
                 return Notification.SAME_PASSWORD_ERROR;
@@ -65,7 +65,7 @@ public class AccountControl extends Control implements IOValidity {
                 return Notification.ERROR_PASSWORD_LENGTH_EDIT;
             if (!this.isPasswordValid(newPassword))
                 return Notification.ERROR_PASSWORD_FORMAT_EDIT;
-            AccountTable.editField(Control.getUsername(), "Password", newPassword);
+            AccountTable.editField(username, "Password", newPassword);
             return Notification.CHANGE_PASSWORD_SUCCESSFULLY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
@@ -130,14 +130,11 @@ public class AccountControl extends Control implements IOValidity {
         return fieldValidity;
     }
 
-    public Notification addMoney(String moneyString) {
+    public Notification addMoney(String username, double money) {
         try {
-            double money = Double.parseDouble(moneyString);
+            if(money != 0)
+                AccountTable.changeCredit(username, money);
 
-            if(money == 0)
-                return Notification.INVALID_ADDING_DOUBLE_MONEY;
-
-            AccountTable.changeCredit(Control.getUsername(), money);
             return Notification.RISE_MONEY_SUCCESSFULLY;
         } catch (NumberFormatException e) {
             return Notification.INVALID_ADDING_DOUBLE_MONEY;
@@ -146,17 +143,15 @@ public class AccountControl extends Control implements IOValidity {
         }
     }
 
-    public Notification getMoney(String moneyString) {
+    public Notification getMoney(String username, double money) {
         try {
-            double money = Double.parseDouble(moneyString);
+            if(money > 0) {
+                if (AccountTable.getCredit(username) < money)
+                    return Notification.LACK_BALANCE_ERROR;
 
-            if(money == 0)
-                return Notification.INVALID_ADDING_DOUBLE_MONEY;
+                AccountTable.changeCredit(username, -money);
+            }
 
-            if (AccountTable.getCredit(Control.getUsername()) < money)
-                return Notification.LACK_BALANCE_ERROR;
-
-            AccountTable.changeCredit(Control.getUsername(), -money);
             return Notification.GET_MONEY_SUCCESSFULLY;
         } catch (NumberFormatException e) {
             return Notification.INVALID_ADDING_DOUBLE_MONEY;
@@ -433,15 +428,13 @@ public class AccountControl extends Control implements IOValidity {
                         !newAccount.getLastName().equals(oldAccount.getLastName())) {
                     AccountTable.editField(newAccount.getUsername(), "LastName", newAccount.getLastName());
                 }
-            if (newAccount.getEmail() != null)
-                if (!newAccount.getEmail().equals(oldAccount.getEmail())) {
-                    AccountTable.editField(newAccount.getUsername(), "Email", newAccount.getEmail() == null ? "" : newAccount.getEmail());
-                }
+            if (newAccount.getEmail() == null || !newAccount.getEmail().equals(oldAccount.getEmail())) {
+                AccountTable.editField(newAccount.getUsername(), "Email", newAccount.getEmail() == null ? "" : newAccount.getEmail());
+            }
             if (oldAccount.getType().equals("Vendor")) {
-                if (newAccount.getBrand() != null)
-                    if (!oldAccount.getBrand().equals(newAccount.getBrand())) {
-                        AccountTable.editField(newAccount.getUsername(), "Brand", newAccount.getBrand() == null ? "" : newAccount.getBrand());
-                    }
+                if (newAccount.getBrand() == null || !newAccount.getBrand().equals(oldAccount.getBrand())) {
+                    AccountTable.editField(newAccount.getUsername(), "Brand", newAccount.getBrand() == null ? "" : newAccount.getBrand());
+                }
             }
             return Notification.EDIT_FIELD_SUCCESSFULLY;
         } catch (SQLException e) {
@@ -450,6 +443,19 @@ public class AccountControl extends Control implements IOValidity {
             e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;
+    }
+
+    public double getCredit(String username) {
+        try {
+            Account account = AccountTable.getAccountByUsername(username);
+            return account.getCredit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 
     //TODO(FOR MEDIA)

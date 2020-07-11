@@ -276,12 +276,6 @@ public class ProfileProcessor extends Processor implements Initializable {
     }
 
     public void editPersonalInfoMouseClicked(MouseEvent mouseEvent) {
-        //Todo
-//        Alert alert = null;
-//        alert = editField("FirstName", firstNameField, alert);
-//        alert = editField("LastName", lastNameField, alert);
-//        alert = editField("Email", emailField, alert);
-//        accountControl.setAccountPicture(account.getUsername(), pictureFile);
 
         account.setFirstName(firstNameField.getText());
         account.setLastName(lastNameField.getText());
@@ -301,12 +295,8 @@ public class ProfileProcessor extends Processor implements Initializable {
         Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
         Alert alert = response.getMessage().getAlert();
 
-        /*if(account.getType().equals("Vendor"))
-            alert = editField("Brand", brandField, alert);*/
-
-
         if(alert.getTitle().equals("Edit Successful")) {
-            account = accountControl.getAccountByUsername(account.getUsername());
+            account = getAccountByUsername(account.getUsername());
             firstNameField.setText(account.getFirstName());
             lastNameField.setText(account.getLastName());
             lastNameField.setText(account.getLastName());
@@ -361,26 +351,33 @@ public class ProfileProcessor extends Processor implements Initializable {
         Notification notification = response.getMessage();
 
         if(notification.equals(Notification.RISE_MONEY_SUCCESSFULLY)) {
-            account = accountControl.getAccountByUsername(account.getUsername());
-            currentCreditField.setText(Double.toString(account.getCredit()));
+            resetMoney();
         } else {
-            additionCreditField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
+            additionCreditField.setStyle(errorTextFieldStyle);
         }
 
         notification.getAlert().show();
     }
 
     public void subtractMoneyMouseClicked(MouseEvent mouseEvent) {
-        Notification notification = accountControl.getMoney(additionCreditField.getText());
+//        Notification notification = accountControl.getMoney(additionCreditField.getText());
+        Command<String> command = new Command<>("subtract money", Command.HandleType.ACCOUNT, additionCreditField.getText());
+        Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+        Notification notification = response.getMessage();
 
         if(notification.equals(Notification.GET_MONEY_SUCCESSFULLY)) {
-            account = accountControl.getAccountByUsername(account.getUsername());
-            currentCreditField.setText(Double.toString(account.getCredit()));
+            resetMoney();
         } else {
-            additionCreditField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
+            additionCreditField.setStyle(errorTextFieldStyle);
         }
 
         notification.getAlert().show();
+    }
+
+    public void resetMoney() {
+        double credit = getCredit(account.getUsername());
+        account.setCredit(credit);
+        currentCreditField.setText(Double.toString(credit));
     }
 
     public void textFieldMouseClicked(MouseEvent mouseEvent) {

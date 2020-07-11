@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
+import notification.Notification;
 import server.model.existence.Account;
 import server.server.Response;
 
@@ -199,6 +200,17 @@ public abstract class Processor {
         return client.getAuthToken() != null && !client.getAuthToken().isEmpty();
     }
 
+    protected void logOut() {
+        Command command = new Command("log out", Command.HandleType.ACCOUNT);
+        Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+
+        if(response.getMessage() == Notification.UNKNOWN_ERROR) {
+            System.out.println("Shit. Error IN Logging Out");
+        } else {
+            client.setAuthToken(null);
+        }
+    }
+
     protected String getType() {
         Command command = new Command("get login type", Command.HandleType.ACCOUNT);
         Response<String> response = client.postAndGet(command, Response.class, (Class<String>)String.class);
@@ -215,6 +227,18 @@ public abstract class Processor {
         Command command = new Command("get login account", Command.HandleType.ACCOUNT);
         Response<Account> response = client.postAndGet(command, Response.class, (Class<Account>)Account.class);
         return response.getData().get(0);
+    }
+
+    protected Account getAccountByUsername(String username) {
+        Command<String> command = new Command("get account by username", Command.HandleType.ACCOUNT, username);
+        Response<Account> response = client.postAndGet(command, Response.class, (Class<Account>)Account.class);
+        return response.getDatum();
+    }
+
+    protected double getCredit(String username) {
+        Command<String> command = new Command<>("get account credit", Command.HandleType.ACCOUNT, username);
+        Response<String> response = client.postAndGet(command, Response.class, (Class<String>)String.class);
+        return Double.parseDouble(response.getDatum());
     }
 
 }

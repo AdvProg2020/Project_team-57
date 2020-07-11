@@ -38,6 +38,10 @@ public class Command<T> {
         return data;
     }
 
+    public T getDatum() {
+        return data.get(0);
+    }
+
     public String getAuthToken() {
         return authToken;
     }

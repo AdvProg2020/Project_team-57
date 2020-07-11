@@ -10,8 +10,6 @@ import server.server.Response;
 import server.server.Server;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccountHandler extends Handler {
     private final IOControl ioControl = IOControl.getController();
@@ -28,12 +26,16 @@ public class AccountHandler extends Handler {
                 return register();
             case "login":
                 return login();
+            case "log out":
+                return logOut();
             case "get login type":
                 return getType();
             case "get login username" :
                 return getUsername();
             case "get login account":
                 return getLoggedInAccount();
+            case "get account by username":
+                return getAccountByUsername();
             case "is there admin":
                 return isThereAdmin();
             case "does user have image":
@@ -41,12 +43,58 @@ public class AccountHandler extends Handler {
             case "delete user image":
                 return deleteUserImage();
             case "edit account info":
-                return editAccount();
+                return editAccountInfo();
             case "change password":
                 return changePassword();
+            case "add money":
+                return addMoney();
+            case "subtract money":
+                return subtractMoney();
+            case "get account credit":
+                return getCredit();
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String logOut() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        Response response = new Response(server.removeAuth(command.getAuthToken()) ? Notification.PACKET_NOTIFICATION : Notification.UNKNOWN_ERROR);
+        return gson.toJson(response);
+    }
+
+    private String getAccountByUsername() {
+        String username = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+        Response<Account> response = new Response<>(Notification.PACKET_NOTIFICATION, accountControl.getAccountByUsername(username));
+        return gson.toJson(response);
+    }
+
+    private String getCredit() {
+        String username = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+        double credit = accountControl.getCredit(username);
+        Response<String> response = new Response<>(Notification.PACKET_NOTIFICATION, Double.toString(credit));
+        return gson.toJson(response);
+    }
+
+    private String subtractMoney() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String username = server.getUsernameByAuth(command.getAuthToken());
+        Response response = new Response(accountControl.getMoney(username, getDouble(command.getDatum())));
+        return gson.toJson(response);
+    }
+
+    private String addMoney() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String username = server.getUsernameByAuth(command.getAuthToken());
+        Response response = new Response(accountControl.addMoney(username, getDouble(command.getDatum())));
+        return gson.toJson(response);
+    }
+
+    private double getDouble(String string) {
+        if(string != null && !string.isEmpty())
+            return Double.parseDouble(string);
+
+        return 0;
     }
 
     private String changePassword() {
@@ -55,12 +103,13 @@ public class AccountHandler extends Handler {
                 oldPassword = command.getData().get(0),
                 newPassword = command.getData().get(1);
         //Todo ChangePassword
-        return null;
+        Response response = new Response(accountControl.changePassword(username, oldPassword, newPassword));
+        return gson.toJson(response);
     }
 
-    private String editAccount() {
+    private String editAccountInfo() {
         Account account = commandParser.parseDatum(Command.class, (Class<Account>)Account.class);
-        Response response = new Response(Notification.PACKET_NOTIFICATION);
+        Response response = new Response(accountControl.editAccount(account));
         return gson.toJson(response);
     }
 

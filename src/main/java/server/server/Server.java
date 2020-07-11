@@ -85,6 +85,22 @@ public class Server {
 
     public void addAuth(String authToken, String username) {
         authTokens.put(authToken, username);
+
+        System.out.println(authTokens.toString());
+    }
+
+    public boolean removeAuth(String authToken) {
+        boolean answer = authTokens.containsKey(authToken);
+
+        if(authTokens.containsKey(authToken)) {
+            authTokens.remove(authToken);
+        } else {
+            System.out.println("Shit. Error In Removing AuthToken");
+        }
+
+        System.out.println(authTokens.toString());
+
+        return answer;
     }
 
     public String makeAuth() {

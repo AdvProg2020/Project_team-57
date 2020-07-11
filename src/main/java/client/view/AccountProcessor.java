@@ -37,7 +37,7 @@ public class AccountProcessor extends Processor{
             subStages.forEach(stage -> {
                 stage.close();
             });
-            Control.logOut();
+            logOut();
             backToMainMenu();
         }
 
@@ -57,6 +57,8 @@ public class AccountProcessor extends Processor{
 
     public void showProfileMenu() {
         try {
+            loggedInAccount = getLoggedInAccount();
+
             if(loggedInAccount.getType().equals("Admin")) {
                 if (!canOpenSubStage(loggedInAccount.getUsername() + " Profile", parentProcessor))
                     return;
