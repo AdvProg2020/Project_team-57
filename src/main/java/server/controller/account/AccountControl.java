@@ -423,23 +423,25 @@ public class AccountControl extends Control implements IOValidity {
     public Notification editAccount(final Account newAccount) {
         try {
             Account oldAccount = AccountTable.getAccountByUsername(newAccount.getUsername());
-            if (newAccount.getFirstName() != null &&
-                    !newAccount.getFirstName().isEmpty() &&
-                    !newAccount.getFirstName().equals(oldAccount.getFirstName())) {
-                AccountTable.editField(newAccount.getUsername(), "FirstName", newAccount.getFirstName());
-            }
-            if (newAccount.getLastName() != null &&
-                    !newAccount.getLastName().isEmpty() &&
-                    !newAccount.getLastName().equals(oldAccount.getLastName())) {
-                AccountTable.editField(newAccount.getUsername(), "LastName", newAccount.getLastName());
-            }
-            if (!newAccount.getEmail().equals(oldAccount.getEmail())) {
-                AccountTable.editField(newAccount.getUsername(), "Email", newAccount.getEmail() == null ? "" : newAccount.getEmail());
-            }
-            if (oldAccount.getType().equals("Vendor")) {
-                if (!oldAccount.getBrand().equals(newAccount.getBrand())) {
-                    AccountTable.editField(newAccount.getUsername(), "Brand", newAccount.getBrand() == null ? "" : newAccount.getBrand());
+            if (newAccount.getFirstName() != null)
+                if (!newAccount.getFirstName().isEmpty() &&
+                        !newAccount.getFirstName().equals(oldAccount.getFirstName())) {
+                    AccountTable.editField(newAccount.getUsername(), "FirstName", newAccount.getFirstName());
                 }
+            if (newAccount.getLastName() != null)
+                if (!newAccount.getLastName().isEmpty() &&
+                        !newAccount.getLastName().equals(oldAccount.getLastName())) {
+                    AccountTable.editField(newAccount.getUsername(), "LastName", newAccount.getLastName());
+                }
+            if (newAccount.getEmail() != null)
+                if (!newAccount.getEmail().equals(oldAccount.getEmail())) {
+                    AccountTable.editField(newAccount.getUsername(), "Email", newAccount.getEmail() == null ? "" : newAccount.getEmail());
+                }
+            if (oldAccount.getType().equals("Vendor")) {
+                if (newAccount.getBrand() != null)
+                    if (!oldAccount.getBrand().equals(newAccount.getBrand())) {
+                        AccountTable.editField(newAccount.getUsername(), "Brand", newAccount.getBrand() == null ? "" : newAccount.getBrand());
+                    }
             }
             return Notification.EDIT_FIELD_SUCCESSFULLY;
         } catch (SQLException e) {
