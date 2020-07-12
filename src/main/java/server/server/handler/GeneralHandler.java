@@ -25,10 +25,41 @@ public class GeneralHandler extends Handler {
                 return initSortAndFilter();
             case "set sort":
                 return setSort();
+            case "is category in filter":
+                return isCategoryInFilter();
+            case "add category to filter":
+                return addCategoryToFilter();
+            case "add name to filter":
+                return addNameToFilter();
             default:
                 System.err.println("Serious Error In General Handler");
                 return null;
         }
+    }
+
+    private String addNameToFilter() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String relic = command.getRelic(), filterName = command.getDatum();
+        Property property = server.getPropertyByRelic(relic);
+        property.addToFilterNameList(filterName);
+        return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+    }
+
+    private String addCategoryToFilter() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String relic = command.getRelic(), categoryName = command.getDatum();
+        Property property = server.getPropertyByRelic(relic);
+        property.addToFilterCategoryList(categoryName);
+        return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+    }
+
+    private String isCategoryInFilter() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String relic = command.getRelic(), categoryName = command.getDatum();
+        Property property = server.getPropertyByRelic(relic);
+        Boolean bool = property.isThereFilteringCategoryWithName(categoryName);
+        Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, bool);
+        return gson.toJson(response);
     }
 
     private String setSort() {

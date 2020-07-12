@@ -241,13 +241,19 @@ public class ProductsProcessor extends Processor{
     }
 
     private void addCategoryToFilters(Category category) {
-        if(!server.controller.Control.getController().isThereFilteringCategoryWithName(category.getName())) {
+        if(!isThereFilteringCategoryWithName(category.getName())) {
             try {
                 loadFilterPane(category, null);
             } catch (IOException e) {
                 //:)
             }
         }
+    }
+
+    private boolean isThereFilteringCategoryWithName(String categoryName) {
+        Command<String> command = new Command<>("is category in filter", Command.HandleType.GENERAL, categoryName);
+        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+        return response.getDatum();
     }
 
     private void loadFilterPane(Category filterCategory, String filterName) throws IOException {
@@ -259,16 +265,26 @@ public class ProductsProcessor extends Processor{
             if (filterCategory == null) {
                 productsProcessor.filterName = filterName;
                 productsProcessor.filterNameLabel.setText(" " + filterName + " ");
-                server.controller.Control.getController().addToFilterNameList(filterName);
+                addToFilterNameList(filterName);
                 searchTextField.setText(null);
             } else if (filterName == null) {
                 productsProcessor.filterCategory = filterCategory;
                 productsProcessor.filterNameLabel.setText(" " + filterCategory.getName() + " ");
-                server.controller.Control.getController().addToFilterCategoryList(filterCategory.getName());
+                addToFilterCategoryList(filterCategory.getName());
             }
 
             initProductsPage();
             filteredCategoriesVBox.getChildren().add(node);
+    }
+
+    private void addToFilterNameList(String filterName) {
+        Command<String> command = new Command<>("add name to filter", Command.HandleType.GENERAL, filterName);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
+
+    private void addToFilterCategoryList(String categoryName) {
+        Command<String> command = new Command<>("add category to filter", Command.HandleType.GENERAL, categoryName);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 
     public void deleteFilterCategoryMouseClicked(MouseEvent mouseEvent) {
