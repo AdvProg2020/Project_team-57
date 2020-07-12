@@ -236,7 +236,8 @@ public class ProductsProcessor extends Processor{
     private void setPriceFilter(/*JFXTextField priceTextField*/) {
         double minPrice = fromPriceTextField.getText().isEmpty() ? 0 : Double.parseDouble(fromPriceTextField.getText());
         double maxPrice = toPriceTextField.getText().isEmpty() ? Double.MAX_VALUE : Double.parseDouble(toPriceTextField.getText());
-        server.controller.Control.getController().setPriceFilters(minPrice, maxPrice);
+        Command<Double> command = new Command<>("set price filters", Command.HandleType.GENERAL, minPrice, maxPrice);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
         initProductsPage();
     }
 
@@ -289,12 +290,22 @@ public class ProductsProcessor extends Processor{
 
     public void deleteFilterCategoryMouseClicked(MouseEvent mouseEvent) {
         if(filterCategory == null)
-            server.controller.Control.getController().removeFromFilterNameList(filterName);
+            removeFromFilterNameList(filterName);
         else if(filterName == null)
-            server.controller.Control.getController().removeFromFilterCategoryList(filterCategory.getName());
+            removeFromFilterCategoryList(filterCategory.getName());
 
         ((ProductsProcessor)parentProcessor).initProductsPage();
         ((ProductsProcessor)parentProcessor).filteredCategoriesVBox.getChildren().remove(mainFilterPane);
+    }
+
+    private void removeFromFilterNameList(String filterName) {
+        Command<String> command = new Command<>("remove name from filter", Command.HandleType.GENERAL, filterName);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
+
+    private void removeFromFilterCategoryList(String categoryName) {
+        Command<String> command = new Command<>("remove category from filter", Command.HandleType.GENERAL, categoryName);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 
     public void showCartProducts(ActionEvent actionEvent) {

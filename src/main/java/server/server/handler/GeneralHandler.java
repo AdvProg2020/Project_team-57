@@ -29,12 +29,27 @@ public class GeneralHandler extends Handler {
                 return isCategoryInFilter();
             case "add category to filter":
                 return addCategoryToFilter();
+            case "remove category from filter":
+                return removeCategoryFromFilter();
             case "add name to filter":
                 return addNameToFilter();
+            case "remove name from filter":
+                return removeNameFromFilter();
+            case "set price filters":
+                return setPriceFilters();
             default:
                 System.err.println("Serious Error In General Handler");
                 return null;
         }
+    }
+
+    private String setPriceFilters() {
+        Command<Double> command = commandParser.parseToCommand(Command.class, (Class<Double>)Double.class);
+        double minPrice = command.getData(0), maxPrice = command.getData(1);
+        String relic = command.getRelic();
+        Property property = server.getPropertyByRelic(relic);
+        property.setPriceFilters(minPrice, maxPrice);
+        return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
     }
 
     private String addNameToFilter() {
@@ -45,11 +60,27 @@ public class GeneralHandler extends Handler {
         return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
     }
 
+    private String removeNameFromFilter() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String relic = command.getRelic(), filterName = command.getDatum();
+        Property property = server.getPropertyByRelic(relic);
+        property.removeFromFilterNameList(filterName);
+        return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+    }
+
     private String addCategoryToFilter() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
         String relic = command.getRelic(), categoryName = command.getDatum();
         Property property = server.getPropertyByRelic(relic);
         property.addToFilterCategoryList(categoryName);
+        return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+    }
+
+    private String removeCategoryFromFilter() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String relic = command.getRelic(), categoryName = command.getDatum();
+        Property property = server.getPropertyByRelic(relic);
+        property.removeFromFilterCategoryList(categoryName);
         return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
     }
 
