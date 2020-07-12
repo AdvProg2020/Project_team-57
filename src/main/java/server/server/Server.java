@@ -153,7 +153,15 @@ public class Server {
         } else {
             System.err.println("Shit. Error IN Get Username");
         }
+        return "";
+    }
 
+    public Property getPropertyByRelic(String relic) {
+        if(relics.containsKey(relic)) {
+            return relics.get(relic);
+        } else {
+            System.err.println("Shit. Error IN Get Property");
+        }
         return null;
     }
 }

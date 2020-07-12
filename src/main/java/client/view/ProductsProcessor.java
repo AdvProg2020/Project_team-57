@@ -179,7 +179,8 @@ public class ProductsProcessor extends Processor{
     }
 
     private void initMainProductsMenu() {
-        productControl.initSort(); productControl.initFilter();
+        Command command = new Command("init sort and filter", Command.HandleType.GENERAL);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
         selectedSort = viewSortButton;
         selectSort();
         initCategoriesTableTreeView();
@@ -200,7 +201,7 @@ public class ProductsProcessor extends Processor{
             return row ;
         });
 
-        categoriesTableTreeView.setRoot(ProductControl.getController().getCategoryTableRoot());
+        categoriesTableTreeView.setRoot(getCategoryTableRoot());
         categoriesTableTreeView.setShowRoot(false);
         //categoriesTableTreeView.getSelectionModel().selectFirst();
     }
@@ -739,6 +740,8 @@ public class ProductsProcessor extends Processor{
     }
 
     public void setSort() {
+        Command<String> command = new Command<>("set sort", Command.HandleType.GENERAL, selectedSort.getText(), "" + !descendingSortButton.isSelected());
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
         productControl.setSort(selectedSort.getText(), !descendingSortButton.isSelected());
         initProductsPage();
     }

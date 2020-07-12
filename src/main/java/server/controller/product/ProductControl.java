@@ -690,6 +690,7 @@ public class ProductControl extends Control {
         return EditingProductTable.getEditingProductImageFilePath(productID, number) != null;
     }
 
+    @Deprecated
     public TreeItem<Category> getCategoryTableRoot() {
         try {
             TreeItem rootCategory = new TreeItem(CategoryTable.getCategoryWithName("All Products"));

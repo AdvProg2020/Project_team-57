@@ -6,6 +6,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
@@ -13,6 +14,7 @@ import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 import notification.Notification;
 import server.model.existence.Account;
+import server.model.existence.Category;
 import server.model.existence.Product;
 import server.server.Response;
 
@@ -261,6 +263,29 @@ public abstract class Processor {
     protected Response removeProductByID(String productID, String productType) {
         Command<String> command = new Command<>("remove " + productType, Command.HandleType.PRODUCT, productID);
         return client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
+
+    protected TreeItem<Category> getCategoryTableRoot() {
+        ArrayList<Category> allCategories = getAllCategoriesAsArray();
+        TreeItem<Category> rootCategory = new TreeItem<>(allCategories.get(0));
+        setSubCategories(rootCategory, allCategories.get(0).getName(), allCategories);
+        return rootCategory;
+    }
+
+    private void setSubCategories(TreeItem<Category> parentCategoryTreeItem, String parentName, ArrayList<Category> allCategories) {
+        for (Category category : allCategories) {
+            if(category.getParentCategory().equals(parentName)) {
+                TreeItem<Category> subCategoryTreeItem = new TreeItem<>(category);
+                parentCategoryTreeItem.getChildren().addAll(subCategoryTreeItem);
+                setSubCategories(subCategoryTreeItem, category.getName(), allCategories);
+            }
+        }
+    }
+
+    private ArrayList<Category> getAllCategoriesAsArray() {
+        Command command = new Command("get all categories", Command.HandleType.SALE);
+        Response<Category> categoryResponse = client.postAndGet(command, Response.class, (Class<Category>)Category.class);
+        return new ArrayList<>(categoryResponse.getData());
     }
 
 }

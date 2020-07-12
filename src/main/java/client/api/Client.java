@@ -197,7 +197,7 @@ public class Client {
     }
 
     private void post(Command command) throws IOException {
-        command.setAuthToken(authToken);
+        command.setAuthToken(authToken); command.setRelic(relic);
         String commandStr = gson.toJson(command);
         outStream.writeUTF(commandStr);
         outStream.flush();

@@ -57,29 +57,6 @@ public class CategoryProcessor extends Processor implements Initializable {
         }
     }
 
-    private TreeItem<Category> getCategoryTableRoot() {
-        ArrayList<Category> allCategories = getAllCategoriesAsArray();
-        TreeItem<Category> rootCategory = new TreeItem<>(allCategories.get(0));
-        setSubCategories(rootCategory, allCategories.get(0).getName(), allCategories);
-        return rootCategory;
-    }
-
-    private void setSubCategories(TreeItem<Category> parentCategoryTreeItem, String parentName, ArrayList<Category> allCategories) {
-        for (Category category : allCategories) {
-            if(category.getParentCategory().equals(parentName)) {
-                TreeItem<Category> subCategoryTreeItem = new TreeItem<>(category);
-                parentCategoryTreeItem.getChildren().addAll(subCategoryTreeItem);
-                setSubCategories(subCategoryTreeItem, category.getName(), allCategories);
-            }
-        }
-    }
-
-    private ArrayList<Category> getAllCategoriesAsArray() {
-        Command command = new Command("get all categories", Command.HandleType.SALE);
-        Response<Category> categoryResponse = client.postAndGet(command, Response.class, (Class<Category>)Category.class);
-        return new ArrayList<>(categoryResponse.getData());
-    }
-
     private void initCategoriesTableRow() {
         categoriesTableView.setRowFactory(tv -> {
             TreeTableRow<Category> row = new TreeTableRow<>();
