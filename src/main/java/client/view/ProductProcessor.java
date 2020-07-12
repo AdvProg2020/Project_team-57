@@ -646,7 +646,17 @@ public class ProductProcessor extends Processor {
         Command<Product> productCommand = new Command<>(sendType + " product", Command.HandleType.PRODUCT, products);
         Response<Notification> productResponse = client.postAndGet(productCommand, Response.class, (Class<Notification>)Notification.class);
 
-        //Todo Sending Image
+        if(sendType.equals("edit")) {
+            Command<String> command = new Command<>("delete editing product pictures", Command.HandleType.PRODUCT, product.getID());
+            client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+        }
+
+        for (File productImageFile : productImageFiles) {
+            String[] splitPath = productImageFile.getPath().split("\\.");
+            String fileExtension = splitPath[splitPath.length - 1];
+            Command<String> imageCommand = new Command<>(sendType + " product image", Command.HandleType.PICTURE_SEND, product.getID(), fileExtension);
+            client.sendImage(imageCommand, productImageFile);
+        }
 
         return productResponse.getData();
     }

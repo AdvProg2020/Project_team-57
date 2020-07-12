@@ -40,18 +40,24 @@ public class PictureHandler extends Handler {
 
     private void savePicture() {
         try {
-            List<String> data = commandParser.parseData(Command.class, (Class<String>)String.class);
-            String username = data.get(0), pictureExtension = data.get(1);
             FileOutputStream pictureOutputStream = null;
 
             switch (message) {
                 case "send user image":
+                    List<String> data = commandParser.parseData(Command.class, (Class<String>)String.class);
+                    String username = data.get(0), pictureExtension = data.get(1);
                     pictureOutputStream = accountControl.getAccountPictureOutputStream(username, pictureExtension);
                     break;
                     //Todo
+                case "add product image":
+                    pictureOutputStream = getProductImageOutputStream("add");
+                    break;
+                case "edit product image":
+                    pictureOutputStream = getProductImageOutputStream("edit");
+                    break;
                 default:
-                    System.out.println("Error In #sendPicture");
-                    System.out.println("Message : " + message);
+                    System.err.println("Error In #sendPicture");
+                    System.err.println("Message : " + message);
             }
 
             int i;
@@ -65,6 +71,21 @@ public class PictureHandler extends Handler {
             e.printStackTrace();
         }
 
+    }
+
+    private FileOutputStream getProductImageOutputStream(String edit) {
+        List<String> data = commandParser.parseData(Command.class, (Class<String>)String.class);
+        String productID = data.get(0), fileExtension = data.get(1);
+
+        switch (edit) {
+            case "add":
+                return productControl.getProductPictureOutputStream(productID, fileExtension);
+            case "edit":
+                return productControl.getEditingProductPictureOutputStream(productID, fileExtension);
+            default:
+                System.err.println("Error In #getProductImageOutputStream");
+                return null;
+        }
     }
 
     private void getPicture() throws IOException {
@@ -81,6 +102,7 @@ public class PictureHandler extends Handler {
             case "get product image-5":
             case "get product image-6":
                 imageInputStream = getProductImageInputStream();
+                break;
             case "get edit product image-1":
             case "get edit product image-2":
             case "get edit product image-3":
@@ -88,8 +110,9 @@ public class PictureHandler extends Handler {
             case "get edit product image-5":
             case "get edit product image-6":
                 imageInputStream = getEditProductImageInputStream();
+                break;
             default:
-                System.out.println("Serious Error In Sending ");
+                System.err.println("Serious Error In Sending ");
         }
 
         int i;

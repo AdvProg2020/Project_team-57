@@ -31,6 +31,7 @@ public class ProductHandler extends Handler {
         switch (message) {
             case "add product":
             case "edit product":
+                System.err.println("1");
                 return sendProduct(message.substring(0, message.length() - 8));
             case "get product":
             case "get editing product":
@@ -48,9 +49,18 @@ public class ProductHandler extends Handler {
                 return getEditProductImageCount();
             case "get vendor products":
                 return getVendorProducts();
+            case "delete editing product pictures":
+                return deleteEditingProductPictures();
             default:
                 return null;
         }
+    }
+
+    private String deleteEditingProductPictures() {
+        String productID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+        productControl.deleteEditingProductPictures(productID);
+        Response response = new Response(Notification.PACKET_NOTIFICATION);
+        return gson.toJson(response);
     }
 
     private String getVendorProducts() {
@@ -88,15 +98,18 @@ public class ProductHandler extends Handler {
     }
 
     private String sendProduct(String sendType) {
+        System.err.println("sendType : " + sendType);
         Command<Product> command = commandParser.parseToCommand(Command.class, (Class<Product>)Product.class);
 
         ArrayList<Notification> notifications = new ArrayList<>();
         switch (sendType) {
             case "add":
+                System.err.println("2");
                 Product product = command.getDatum();
                 notifications = vendorControl.addProduct(product);
                 break;
             case "edit":
+                System.err.println("2");
                 Product currentProduct = command.getData(0), editingProduct = command.getData(1);
                 notifications.add(vendorControl.editProduct(currentProduct, editingProduct));
                 break;
@@ -105,7 +118,9 @@ public class ProductHandler extends Handler {
                 return null;
         }
 
+        System.err.println("Length 2 : " + notifications.size());
         Notification[] notificationsArray = notifications.toArray(new Notification[0]);
+        System.err.println("Length : " + notificationsArray.length);
         Response<Notification> response = new Response<>(Notification.PACKET_NOTIFICATION, notificationsArray);
         return gson.toJson(response);
     }

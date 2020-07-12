@@ -2,10 +2,7 @@ package server.model.db;
 
 import server.model.existence.Product;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -240,6 +237,18 @@ public class EditingProductTable extends Database{
         for(String s: entries){
             File currentFile = new File(tempFolder.getPath(),s);
             currentFile.delete();
+        }
+    }
+
+    public static FileOutputStream getEditingProductImageOutputStream(String productID, String fileExtension, int number) throws IOException {
+        String fileName = "database\\Images\\EditingProducts\\" + productID + "\\" + number + "." + fileExtension;
+        File pictureFile = new File(fileName);
+        if(!pictureFile.exists()) {
+            pictureFile.createNewFile();
+            return new FileOutputStream(pictureFile);
+        } else {
+            System.out.println("Error IN #getEditingProductImageOutputStream");
+            return null;
         }
     }
 }

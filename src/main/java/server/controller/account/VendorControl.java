@@ -72,10 +72,8 @@ public class VendorControl extends AccountControl{
                     VendorTable.addCountableProduct(product, getUsername());
                 else
                     VendorTable.addUnCountableProduct(product, getUsername());
-/*                for (File productImageFile : productImageFiles) {
-                    ProductControl.getController().addProductPicture(product.getID(), productImageFile);
-                }
-                addingProductNotifications.add(Notification.ADD_PRODUCT);*/
+
+                addingProductNotifications.add(Notification.ADD_PRODUCT);
             }
         } catch (SQLException | ClassNotFoundException e) {
             return new ArrayList<>();

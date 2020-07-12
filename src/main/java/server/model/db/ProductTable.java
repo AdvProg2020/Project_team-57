@@ -387,5 +387,17 @@ public class ProductTable extends Database {
         preparedStatement.setString(1, username);
         preparedStatement.execute();
     }
+
+    public static FileOutputStream getProductImageOutputStream(String productID, String fileExtension, int number) throws IOException {
+        String fileName = "database\\Images\\Products\\" + productID + "\\" + number + "." + fileExtension;
+        File pictureFile = new File(fileName);
+        if (!pictureFile.exists()) {
+            pictureFile.createNewFile();
+            return new FileOutputStream(pictureFile);
+        } else {
+            System.out.println("Error IN #getProductImageOutputStream");
+            return null;
+        }
+    }
 }
 

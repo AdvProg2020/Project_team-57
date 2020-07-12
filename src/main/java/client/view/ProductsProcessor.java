@@ -317,7 +317,7 @@ public class ProductsProcessor extends Processor{
                 allProducts = productControl.getAllShowingProducts();
                 break;
             case VENDOR_PRODUCTS:
-                allProducts = new ArrayList<>(client.postAndGet(new Command("get vendor products", Command.HandleType.PRODUCT), Response.class, (Class<Account>)Account.class).getData());
+                allProducts = new ArrayList<>(client.postAndGet(new Command("get vendor products", Command.HandleType.PRODUCT), Response.class, (Class<Product>)Product.class).getData());
                 break;
             case CUSTOMER_CART:
                 if(server.controller.Control.getType() != null && server.controller.Control.getType().equals("Customer") && server.controller.Control.isLoggedIn())

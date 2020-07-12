@@ -10,10 +10,7 @@ import server.model.existence.Off;
 import server.model.existence.Product;
 import notification.Notification;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -724,6 +721,17 @@ public class ProductControl extends Control {
         }
     }
 
+    public FileOutputStream getProductPictureOutputStream(String productID, String fileExtension) {
+        try {
+//            ProductTable.addImage(productID, getProductImagesNumberByID(productID) + 1, pictureFile);
+            return ProductTable.getProductImageOutputStream(productID, fileExtension, getProductImagesNumberByID(productID) + 1);
+        } catch (IOException e) {
+            //:)
+        }
+
+        return null;
+    }
+
     public boolean doesEditingProductHaveImage(String ID) {
         return EditingProductTable.getEditingProductImageFilePath(ID, 1) != null;
     }
@@ -745,6 +753,31 @@ public class ProductControl extends Control {
             //:)
         }
     }
+
+    public void deleteEditingProductPictures(String productID) {
+        try {
+            if(doesEditingProductHaveImage(productID)) {
+                int board = getEditingProductImagesNumberByID(productID);
+                for(int i = 0; i < board; ++i) {
+                    EditingProductTable.deleteImage(productID, (i + 1));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public FileOutputStream getEditingProductPictureOutputStream(String productID, String fileExtension) {
+        try {
+            return EditingProductTable.getEditingProductImageOutputStream(productID, fileExtension, getEditingProductImagesNumberByID(productID) + 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
 
     public Image getEditingProductImage(String ID, int number) {
         try {
