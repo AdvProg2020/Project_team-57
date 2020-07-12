@@ -274,7 +274,7 @@ public abstract class Processor {
 
     private void setSubCategories(TreeItem<Category> parentCategoryTreeItem, String parentName, ArrayList<Category> allCategories) {
         for (Category category : allCategories) {
-            if(category.getParentCategory().equals(parentName)) {
+            if(category.getParentCategory() != null && category.getParentCategory().equals(parentName)) {
                 TreeItem<Category> subCategoryTreeItem = new TreeItem<>(category);
                 parentCategoryTreeItem.getChildren().addAll(subCategoryTreeItem);
                 setSubCategories(subCategoryTreeItem, category.getName(), allCategories);

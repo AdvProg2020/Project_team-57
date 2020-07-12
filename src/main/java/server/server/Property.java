@@ -8,6 +8,14 @@ public class Property {
     private Filter filter;
     private Sort sort;
 
+    public Filter getFilter() {
+        return filter;
+    }
+
+    public Sort getSort() {
+        return sort;
+    }
+
     public ArrayList<String> getCurrentCategories() {
         return filter.getFilterCategories();
     }
@@ -51,16 +59,8 @@ public class Property {
         return filter.getFilterNames();
     }
 
-    public double getStartPeriod() {
-        return filter.getMinPrice();
-    }
-
-    public double getFinishPeriod() {
-        return filter.getMaxPrice();
-    }
-
     //START INNER CLASS
-    protected static class Filter{
+    public static class Filter{
         ArrayList<String> filterCategories;
         ArrayList<String> filterNames;
         double minPrice, maxPrice;
@@ -179,7 +179,7 @@ public class Property {
     }
 
     //START INNER CLASS
-    protected static class Sort
+    public static class Sort
     {
         public enum SortType {
             VIEW("View"), NAME("Name"), TIME("Time"), SCORE("Score");

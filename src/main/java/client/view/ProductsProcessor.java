@@ -342,7 +342,7 @@ public class ProductsProcessor extends Processor{
     public void initProductsPage() {
         switch (menuType) {
             case MAIN_PRODUCTS:
-                allProducts = productControl.getAllShowingProducts();
+                allProducts = new ArrayList<>(client.postAndGet(new Command("get all showing products", Command.HandleType.PRODUCT), Response.class, (Class<Product>)Product.class).getData());
                 break;
             case VENDOR_PRODUCTS:
                 allProducts = new ArrayList<>(client.postAndGet(new Command("get vendor products", Command.HandleType.PRODUCT), Response.class, (Class<Product>)Product.class).getData());
@@ -769,7 +769,6 @@ public class ProductsProcessor extends Processor{
     public void setSort() {
         Command<String> command = new Command<>("set sort", Command.HandleType.GENERAL, selectedSort.getText(), "" + !descendingSortButton.isSelected());
         client.postAndGet(command, Response.class, (Class<Object>)Object.class);
-        productControl.setSort(selectedSort.getText(), !descendingSortButton.isSelected());
         initProductsPage();
     }
 
@@ -788,7 +787,7 @@ public class ProductsProcessor extends Processor{
 
         if(searchFieldText == null || searchFieldText.isEmpty()) {
             searchTextField.requestFocus();
-        } else if(!server.controller.Control.getController().isThereFilteringNameWithName(searchFieldText)) {
+        } else if(!isThereFilteringNameWithName(searchFieldText)) {
             try {
                 loadFilterPane(null, searchTextField.getText());
             } catch (IOException e) {
@@ -796,6 +795,12 @@ public class ProductsProcessor extends Processor{
             }
         }
 
+    }
+
+    private boolean isThereFilteringNameWithName(String filterName) {
+        Command<String> command = new Command<>("is name in filter", Command.HandleType.GENERAL, filterName);
+        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+        return response.getDatum();
     }
 
     public void addNewProduct(MouseEvent mouseEvent) {

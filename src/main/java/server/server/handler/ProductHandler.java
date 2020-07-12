@@ -8,6 +8,7 @@ import server.controller.account.AdminControl;
 import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
 import server.controller.product.ProductControl;
+import server.model.existence.Account;
 import server.model.existence.Comment;
 import server.model.existence.Product;
 import server.server.Response;
@@ -64,10 +65,19 @@ public class ProductHandler extends Handler {
                 return modifyEditingProductApprove();
             case "modify product approve":
                 return modifyProductApprove();
+            case "get all showing products":
+                return getAllShowingProducts();
             default:
                 System.err.println("Serious Error In Product Handler");
                 return null;
         }
+    }
+
+    private String getAllShowingProducts() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        Response<Product> response = new Response<>(Notification.PACKET_NOTIFICATION);
+        response.setData(productControl.getAllShowingProducts(server.getPropertyByRelic(command.getRelic())));
+        return gson.toJson(response);
     }
 
     private String removeProduct(String productType) {

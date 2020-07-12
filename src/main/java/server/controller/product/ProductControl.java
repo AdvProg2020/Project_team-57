@@ -9,6 +9,8 @@ import server.model.existence.Comment;
 import server.model.existence.Off;
 import server.model.existence.Product;
 import notification.Notification;
+import server.server.Property;
+import server.server.Property.*;
 
 import java.io.*;
 import java.sql.SQLException;
@@ -229,12 +231,12 @@ public class ProductControl extends Control {
         return Notification.UNKNOWN_ERROR;
     }
 
-    public ArrayList<Product> getAllShowingProducts() {
+    public ArrayList<Product> getAllShowingProducts(Property property) {
         try {
             OffTable.removeOutDatedOffs();
-            ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts());
-            filterProductsWithPrice(showingProducts);
-            sortProducts(showingProducts);
+            ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts(property.getFilter()));
+            filterProductsWithPrice(showingProducts, property.getFilter());
+            sortProducts(showingProducts, property.getSort());
             return showingProducts;
         } catch (SQLException e) {
             //:)
@@ -244,9 +246,8 @@ public class ProductControl extends Control {
         return new ArrayList<>();
     }
 
-    private ArrayList<String> filterProducts() throws SQLException, ClassNotFoundException {
+    private ArrayList<String> filterProducts(Filter filter) throws SQLException, ClassNotFoundException {
         ArrayList<String> filteredProductIds = new ArrayList<>();
-        Control.Filter filter = Control.getFilter();
         if (filter.getFilterCategories().size() != 0) {
             for (String category : filter.getFilterCategories()) {
                 for (String productId : filterOnCategory(category)) {
@@ -272,10 +273,10 @@ public class ProductControl extends Control {
         return filteredProductIds;
     }
 
-    private void filterProductsWithPrice(ArrayList<Product> products) {
+    private void filterProductsWithPrice(ArrayList<Product> products, Filter filter) {
         for (int i = 0; i < products.size(); i++) {
             double productPrice = getProductPriceForVendor(products.get(i));
-            if(!(productPrice <= getFinishPeriod() && productPrice >= getStartPeriod())) {
+            if(!(productPrice <= filter.getMaxPrice() && productPrice >= filter.getMinPrice())) {
                 products.remove(products.get(i));
                 i--;
             }
@@ -309,23 +310,23 @@ public class ProductControl extends Control {
         return products;
     }
 
-    private void sortProducts(ArrayList<Product> products)
+    private void sortProducts(ArrayList<Product> products, Sort sort)
     {
-        if(Control.getSort().getSortType() == Sort.SortType.VIEW && Control.getSort().isAscending())
+        if(sort.getSortType() == Sort.SortType.VIEW && sort.isAscending())
             Collections.sort(products, new Sorting.ViewSortAscending());
-        else if(Control.getSort().getSortType() == Sort.SortType.VIEW && !Control.getSort().isAscending())
+        else if(sort.getSortType() == Sort.SortType.VIEW && !sort.isAscending())
             Collections.sort(products, new Sorting.ViewSortDescending());
-        else if(Control.getSort().getSortType() == Sort.SortType.NAME && Control.getSort().isAscending())
+        else if(sort.getSortType() == Sort.SortType.NAME && sort.isAscending())
             Collections.sort(products, new Sorting.NameSortAscending());
-        else if(Control.getSort().getSortType() == Sort.SortType.NAME && !Control.getSort().isAscending())
+        else if(sort.getSortType() == Sort.SortType.NAME && !sort.isAscending())
             Collections.sort(products, new Sorting.NameSortDescending());
-        else if(Control.getSort().getSortType() == Sort.SortType.TIME && Control.getSort().isAscending())
+        else if(sort.getSortType() == Sort.SortType.TIME && sort.isAscending())
             Collections.sort(products, new Sorting.TimeSortAscending());
-        else if(Control.getSort().getSortType() == Sort.SortType.TIME && !Control.getSort().isAscending())
+        else if(sort.getSortType() == Sort.SortType.TIME && !sort.isAscending())
             Collections.sort(products, new Sorting.TimeSortDescending());
-        else if(Control.getSort().getSortType() == Sort.SortType.SCORE && Control.getSort().isAscending())
+        else if(sort.getSortType() == Sort.SortType.SCORE && sort.isAscending())
             Collections.sort(products, new Sorting.ScoreSortAscending());
-        else if(Control.getSort().getSortType() == Sort.SortType.SCORE && !Control.getSort().isAscending())
+        else if(sort.getSortType() == Sort.SortType.SCORE && !sort.isAscending())
             Collections.sort(products, new Sorting.ScoreSortDescending());
     }
 

@@ -31,6 +31,8 @@ public class GeneralHandler extends Handler {
                 return addCategoryToFilter();
             case "remove category from filter":
                 return removeCategoryFromFilter();
+            case "is name in filter":
+                return isNameInFilter();
             case "add name to filter":
                 return addNameToFilter();
             case "remove name from filter":
@@ -50,6 +52,15 @@ public class GeneralHandler extends Handler {
         Property property = server.getPropertyByRelic(relic);
         property.setPriceFilters(minPrice, maxPrice);
         return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+    }
+
+    private String isNameInFilter() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String relic = command.getRelic(), filterName = command.getDatum();
+        Property property = server.getPropertyByRelic(relic);
+        Boolean bool = property.isThereFilteringNameWithName(filterName);
+        Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, bool);
+        return gson.toJson(response);
     }
 
     private String addNameToFilter() {
@@ -110,7 +121,6 @@ public class GeneralHandler extends Handler {
     private String getRelic() {
         String relic = server.makeRelic(); server.addRelic(relic);
         Response<String> response = new Response<>(Notification.PACKET_NOTIFICATION, relic);
-        System.err.println(response.getDatum());
         return gson.toJson(response);
     }
 }

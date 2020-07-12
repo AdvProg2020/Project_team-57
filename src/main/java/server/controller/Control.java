@@ -13,7 +13,7 @@ public class Control {
     private static String username;
     private static String type;
 
-    private static Filter filter;
+    /*private static Filter filter;
     private static Sort sort;
 
     public ArrayList<String> getCurrentCategories() {
@@ -223,7 +223,7 @@ public class Control {
             this.sortType = sortType;
         }
     }
-    //END INNER CLASS
+    //END INNER CLASS*/
 
     public static Control getController(){
         if (control == null){
@@ -256,13 +256,13 @@ public class Control {
         Control.type = type;
     }
 
-    public static Filter getFilter() {
+/*    public static Filter getFilter() {
         return filter;
     }
 
     public static Sort getSort() {
         return sort;
-    }
+    }*/
 
     public boolean isThereProductInOff(String productID) {
         try {

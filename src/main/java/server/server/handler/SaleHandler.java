@@ -69,12 +69,8 @@ public class SaleHandler extends Handler {
     }
 
     private String getAllCategories() {
-        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
-        if(accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
-            Response<Category> response = new Response<>(Notification.PACKET_NOTIFICATION);
-            response.setData(adminControl.getAllCategories());
-            return gson.toJson(response);
-        }
-        return gson.toJson(HACK_RESPONSE);
+        Response<Category> response = new Response<>(Notification.PACKET_NOTIFICATION);
+        response.setData(adminControl.getAllCategories());
+        return gson.toJson(response);
     }
 }
