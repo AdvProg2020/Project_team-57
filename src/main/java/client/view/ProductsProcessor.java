@@ -327,7 +327,7 @@ public class ProductsProcessor extends Processor{
                 purchaseButton.setDisable(allProducts.size() == 0);
                 break;
             case ADMIN_PRODUCT_REQUESTS:
-                allProducts = AdminControl.getController().getAllNotApprovedProducts();
+                allProducts = new ArrayList<>(client.postAndGet(new Command("get not approved products", Command.HandleType.PRODUCT), Response.class, (Class<Product>)Product.class).getData());
                 break;
             case VENDOR_ADD_OFF_PRODUCTS:
                 allProducts = VendorControl.getController().getNonOffProducts();
@@ -816,10 +816,14 @@ public class ProductsProcessor extends Processor{
         ArrayList<Notification> results = new ArrayList<>();
         AdminControl adminControl = AdminControl.getController();
         for (String productID : productsApprovalMap.keySet()) {
-            if(productControl.getProductById(productID).getStatus() == 3) {
-                results.add(adminControl.modifyEditingProductApprove(productID, productsApprovalMap.get(productID).isSelected()));
+            Command<String> statusCommand = new Command<>("get product status", Command.HandleType.PRODUCT, productID);
+            Response<Integer> statusResponse = client.postAndGet(statusCommand, Response.class, (Class<Integer>)Integer.class);
+            if(statusResponse.getDatum().intValue() == 3) {
+                Command<String> command = new Command<>("modify editing product approve", Command.HandleType.PRODUCT, productID, "" + productsApprovalMap.get(productID).isSelected());
+                results.add(client.postAndGet(command, Response.class, (Class<Object>)Object.class).getMessage());
             } else {
-                results.add(adminControl.modifyProductApprove(productID, productsApprovalMap.get(productID).isSelected()));
+                Command<String> command = new Command<>("modify product approve", Command.HandleType.PRODUCT, productID, "" + productsApprovalMap.get(productID).isSelected());
+                results.add(client.postAndGet(command, Response.class, (Class<Object>)Object.class).getMessage());
             }
         }
         showManageProductRequestsResult(results);

@@ -4,9 +4,11 @@ import client.api.Command;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import notification.Notification;
 import server.controller.account.AccountControl;
+import server.controller.account.AdminControl;
 import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
 import server.controller.product.ProductControl;
+import server.model.existence.Account;
 import server.model.existence.Comment;
 import server.model.existence.Product;
 import server.server.Response;
@@ -21,6 +23,7 @@ public class ProductHandler extends Handler {
     private final VendorControl vendorControl = VendorControl.getController();
     private final CustomerControl customerControl = CustomerControl.getController();
     private final AccountControl accountControl = AccountControl.getController();
+    private final AdminControl adminControl = AdminControl.getController();
 
     public ProductHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
         super(outStream, inStream, server, input);
@@ -51,9 +54,46 @@ public class ProductHandler extends Handler {
                 return getVendorProducts();
             case "delete editing product pictures":
                 return deleteEditingProductPictures();
+            case "get not approved products":
+                return getNotApprovedProducts();
+            case "get product status":
+                return getProductStatus();
+            case "modify editing product approve":
+                return modifyEditingProductApprove();
+            case "modify product approve":
+                return modifyProductApprove();
             default:
                 return null;
         }
+    }
+
+    private String modifyProductApprove() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        Response response = new Response(adminControl.modifyProductApprove(command.getData(0), command.getData(1).equals("true")));
+        return gson.toJson(response);
+    }
+
+    private String modifyEditingProductApprove() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        Response response = new Response(adminControl.modifyEditingProductApprove(command.getData(0), command.getData(1).equals("true")));
+        return gson.toJson(response);
+    }
+
+    private String getProductStatus() {
+        return
+                gson.toJson(new Response<>
+                        (Notification.PACKET_NOTIFICATION,
+                                new Integer(productControl.getProductById(commandParser.parseDatum(Command.class, (Class<String>)String.class)).getStatus())));
+    }
+
+    private String getNotApprovedProducts() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if(accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            Response<Product> response = new Response<>(Notification.PACKET_NOTIFICATION);
+            response.setData(adminControl.getAllNotApprovedProducts());
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String deleteEditingProductPictures() {
