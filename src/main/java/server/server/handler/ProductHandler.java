@@ -65,6 +65,7 @@ public class ProductHandler extends Handler {
             case "modify product approve":
                 return modifyProductApprove();
             default:
+                System.err.println("Serious Error In Product Handler");
                 return null;
         }
     }

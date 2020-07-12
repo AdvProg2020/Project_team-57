@@ -7,15 +7,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import notification.Notification;
-import server.server.handler.AccountHandler;
-import server.server.handler.PictureHandler;
-import server.server.handler.ProductHandler;
-import server.server.handler.SaleHandler;
+import server.server.handler.*;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -25,6 +21,7 @@ public class Server {
     private ObjectMapper mapper;
     private Gson gson;
     private HashMap<String, String> authTokens;
+    private HashMap<String, Property> relics;
 
     public Server() {
         try {
@@ -33,6 +30,7 @@ public class Server {
             System.out.println("PORT: " + SERVER_PORT);
             mapper = new ObjectMapper();
             this.authTokens = new HashMap<>();
+            this.relics = new HashMap<>();
             gson = new GsonBuilder().setPrettyPrinting().create();
             run();
         } catch (IOException e) {
@@ -41,33 +39,46 @@ public class Server {
     }
 
     private void run() throws IOException {
+        final Server server = this;
         while (true) {
             System.out.println("Server Listening...");
             Socket clientSocket = serverSocket.accept();
-            System.out.println("Client Accepted");
-            DataInputStream inStream = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
-            DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(clientSocket.getOutputStream()));
-            String input = inStream.readUTF();
-            ObjectNode objectNode = mapper.readValue(input, ObjectNode.class);
-            Command.HandleType type = gson.fromJson(objectNode.get("type").asText(), Command.HandleType.class);
-            switch (type) {
-                case ACCOUNT:
-                    new AccountHandler(outStream, inStream, this, input).start();
-                    break;
-                case SALE:
-                    new SaleHandler(outStream, inStream, this, input).start();
-                    break;
-                case PRODUCT:
-                    new ProductHandler(outStream, inStream, this, input).start();
-                    break;
-                case PICTURE_SEND:
-                case PICTURE_GET:
-                    new PictureHandler(outStream, inStream, this, input, type).start();
-                    break;
-                default:
-                    outStream.writeUTF(getUnknownError());
-                    outStream.flush();
-            }
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        System.out.println("Client Accepted");
+                        DataInputStream inStream = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
+                        DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(clientSocket.getOutputStream()));
+                        String input = inStream.readUTF();
+                        ObjectNode objectNode = mapper.readValue(input, ObjectNode.class);
+                        Command.HandleType type = gson.fromJson(objectNode.get("type").asText(), Command.HandleType.class);
+                        switch (type) {
+                            case GENERAL:
+                                new GeneralHandler(outStream, inStream, server, input).start();
+                                break;
+                            case ACCOUNT:
+                                new AccountHandler(outStream, inStream, server, input).start();
+                                break;
+                            case SALE:
+                                new SaleHandler(outStream, inStream, server, input).start();
+                                break;
+                            case PRODUCT:
+                                new ProductHandler(outStream, inStream, server, input).start();
+                                break;
+                            case PICTURE_SEND:
+                            case PICTURE_GET:
+                                new PictureHandler(outStream, inStream, server, input, type).start();
+                                break;
+                            default:
+                                outStream.writeUTF(getUnknownError());
+                                outStream.flush();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
         }
     }
 
@@ -106,12 +117,24 @@ public class Server {
     public String makeAuth() {
         String auth;
         do {
-            auth = generateRandomAuth();
+            auth = generateRandomString();
         } while (authTokens.containsKey(auth));
         return auth;
     }
 
-    public String generateRandomAuth (){
+    public void addRelic(String relic) {
+        relics.put(relic, new Property());
+    }
+
+    public String makeRelic() {
+        String relic;
+        do {
+            relic = generateRandomString();
+        }while (relics.containsKey(relic));
+        return relic;
+    }
+
+    public String generateRandomString(){
         StringBuilder ID = new StringBuilder();
         for(int i = 0; i < 12; ++i) {
             int x = (((int) (Math.random() * 1000000)) % 75) + 48;

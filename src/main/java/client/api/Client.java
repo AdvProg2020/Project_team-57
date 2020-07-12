@@ -19,13 +19,14 @@ import java.util.function.Function;
 
 public class Client {
     private static final String CACHE_FOLDER_URL = "cache\\";
-    private static int PORT = 52281;
+    private static int PORT = 53485;
     private static Client client = null;
     private final static String HOME = "127.0.0.1";
     private Socket mySocket;
     private DataOutputStream outStream;
     private DataInputStream inStream;
     private String authToken;
+    private String relic;
     private Gson gson;
 
     protected static Function<BufferedImage, Image> bufferedImage2Image;
@@ -81,6 +82,11 @@ public class Client {
     }
 
     private Client() throws IOException {
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
+        Command command = new Command("get relic", Command.HandleType.GENERAL);
+        Response<String> response = postAndGet(command, Response.class, (Class<String>)String.class);
+        this.relic = response.getDatum();
+
         File cacheDirectory = new File(CACHE_FOLDER_URL);
         if(cacheDirectory.exists()) {
             String[] entries = cacheDirectory.list();
@@ -91,8 +97,6 @@ public class Client {
         } else {
             cacheDirectory.mkdir();
         }
-
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
     public  <T, E, C extends Response> Response<T> postAndGet(Command<E> command, Class<C> responseType, Class<T> responseDataType){

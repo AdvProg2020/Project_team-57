@@ -6,11 +6,12 @@ import java.util.List;
 public class Command<T> {
 
     public static enum HandleType {
-        ACCOUNT, PICTURE_SEND, PICTURE_GET, PRODUCT, SALE
+        ACCOUNT, PICTURE_SEND, PICTURE_GET, PRODUCT, GENERAL, SALE
     }
 
     private HandleType type;
     private String authToken;
+    private String relic;
     private String message;
     private List<T> data;
 
@@ -56,5 +57,9 @@ public class Command<T> {
 
     public HandleType getType() {
         return type;
+    }
+
+    public String getRelic() {
+        return relic;
     }
 }

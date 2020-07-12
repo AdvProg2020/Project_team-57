@@ -35,6 +35,7 @@ public class SaleHandler extends Handler {
             case "edit category field-features":
                 return editCategory();
             default:
+                System.err.println("Serious Error In Sale Handler");
                 return null;
         }
     }
