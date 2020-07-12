@@ -474,16 +474,6 @@ public class ProductsProcessor extends Processor{
         return productPane;
     }
 
-    private void setProductStatusIcon(ProductsProcessor paneProcessor, Product product) {
-        if (!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
-            paneProcessor.availableImage.setImage(new Image(IMAGE_FOLDER_URL + "Icons\\ProductsMenu\\unavailable.png"));
-            if(product.getStatus() != 1)
-                paneProcessor.availableLabel.setText(product.getTheStatus());
-            else
-                paneProcessor.availableLabel.setText("Out Of Stock");
-        }
-    }
-
     private Pane getVendorOffProductPane(int productNumberInPage) throws IOException {
         Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPaneOff.fxml"));
@@ -572,22 +562,19 @@ public class ProductsProcessor extends Processor{
         return productPane;
     }
 
-    private void setProductPanePrice(Pane productPane, ProductsProcessor paneProcessor, Product product) {
-        if (productControl.isThereProductInOff(product.getID())) {
-            paneProcessor.oldPriceLabel.setText(getSmoothDoubleFormat(product.getPrice()) + "$");
-            paneProcessor.oldPriceLabel.getStylesheets().addAll(Main.class.getResource(
-                    "Strikethrough.css"
-            ).toExternalForm());
-            //paneProcessor.oldPriceLabel.setStyle("-fx-strikethrough: true;");
-            paneProcessor.newPriceLabel.setText
-                    (getSmoothDoubleFormat((product.getPrice() * (1 - (productControl.getOffByProductID(product.getID()).getOffPercent() / 100.0)))) + "$");
-        } else {
-            productPane.getChildren().removeAll(paneProcessor.newPriceLabel, paneProcessor.inOffImage);
-            paneProcessor.oldPriceLabel.setText(getSmoothDoubleFormat(product.getPrice()) + "$");
+    private void setProductStatusIcon(ProductsProcessor paneProcessor, Product product) {
+        if (!(product.getStatus() == 1 && (product.getCount() > 0 || product.getAmount() > 0))) {
+            paneProcessor.availableImage.setImage(new Image(IMAGE_FOLDER_URL + "Icons\\ProductsMenu\\unavailable.png"));
+            if(product.getStatus() != 1)
+                paneProcessor.availableLabel.setText(product.getTheStatus());
+            else
+                paneProcessor.availableLabel.setText("Out Of Stock");
         }
     }
 
     private void setProductPaneImage(Pane productPane, ProductsProcessor paneProcessor, Product product) {
+        Command<String> productImageCommand = new Command<>("get product image-1", Command.HandleType.PICTURE_GET, product.getID());
+        Command<String> editingProductImageCommand = new Command<>("get edit product image-1", Command.HandleType.PICTURE_GET, product.getID());
         switch (menuType) {
             case VENDOR_PRODUCTS:
             case ADMIN_PRODUCT_REQUESTS:
@@ -595,13 +582,13 @@ public class ProductsProcessor extends Processor{
             case VENDOR_OFF_PRODUCTS:
             case VENDOR_OFF_PRODUCTS_UNAPPROVED:
                 if(product.getStatus() != 3) {
-                    paneProcessor.productImage.setFill(new ImagePattern(productControl.getProductImageByID(product.getID(), 1)));
+                    paneProcessor.productImage.setFill(new ImagePattern(client.getImage(productImageCommand)));
                 } else {
-                    paneProcessor.productImage.setFill(new ImagePattern(productControl.getEditingProductImage(product.getID(), 1)));
+                    paneProcessor.productImage.setFill(new ImagePattern(client.getImage(editingProductImageCommand)));
                 }
                 break;
             default:
-                paneProcessor.productImage.setFill(new ImagePattern(productControl.getProductImageByID(product.getID(), 1)));
+                paneProcessor.productImage.setFill(new ImagePattern(client.getImage(productImageCommand)));
                 if(!(product.getCount() > 0 || product.getAmount() > 0)) {
                     ImageView imageView = new ImageView(new Image(IMAGE_FOLDER_URL + "Icons\\ProductsMenu\\sold out.png"));
                     imageView.setFitWidth(paneProcessor.productImage.getWidth());
@@ -610,6 +597,21 @@ public class ProductsProcessor extends Processor{
                     productPane.getChildren().add(imageView);
                 }
                 break;
+        }
+    }
+
+    private void setProductPanePrice(Pane productPane, ProductsProcessor paneProcessor, Product product) {
+        if (product.isOnSale()) {
+            paneProcessor.oldPriceLabel.setText(getSmoothDoubleFormat(product.getPrice()) + "$");
+            paneProcessor.oldPriceLabel.getStylesheets().addAll(Main.class.getResource(
+                    "Strikethrough.css"
+            ).toExternalForm());
+            //paneProcessor.oldPriceLabel.setStyle("-fx-strikethrough: true;");
+            paneProcessor.newPriceLabel.setText
+                    (getSmoothDoubleFormat(product.getOffPrice()) + "$");
+        } else {
+            productPane.getChildren().removeAll(paneProcessor.newPriceLabel, paneProcessor.inOffImage);
+            paneProcessor.oldPriceLabel.setText(getSmoothDoubleFormat(product.getPrice()) + "$");
         }
     }
 
