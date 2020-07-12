@@ -26,7 +26,8 @@ public class VendorControl extends AccountControl{
         return vendorControl;
     }
 
-    public ArrayList<Notification> addProduct(Product product, ArrayList<File> productImageFiles) {
+    @Deprecated
+    public ArrayList<Notification> oldAddProduct(Product product, ArrayList<File> productImageFiles) {
         ArrayList<Notification> addingProductNotifications = new ArrayList<>();
 
         try {
@@ -55,16 +56,15 @@ public class VendorControl extends AccountControl{
         return addingProductNotifications;
     }
 
-    public ArrayList<Notification> addProduct(Product product) {
-        ArrayList<Notification> addingProductNotifications = new ArrayList<>();
-
+    public String addProduct(Product product, ArrayList<Notification> addingProductNotifications) {
         try {
             addingProductNotifications.addAll(checkProductFields(product));
             if (addingProductNotifications.isEmpty()) {
+                String productID = null;
                 while (true) {
-                    String productId = generateProductID();
-                    if (ProductTable.isIDFree(productId)) {
-                        product.setID(productId);
+                    productID = generateProductID();
+                    if (ProductTable.isIDFree(productID)) {
+                        product.setID(productID);
                         break;
                     }
                 }
@@ -74,12 +74,13 @@ public class VendorControl extends AccountControl{
                     VendorTable.addUnCountableProduct(product, getUsername());
 
                 addingProductNotifications.add(Notification.ADD_PRODUCT);
+                return productID;
             }
         } catch (SQLException | ClassNotFoundException e) {
-            return new ArrayList<>();
+            return null;
         }
 
-        return addingProductNotifications;
+        return null;
     }
 
     private ArrayList<Notification> checkProductFields(Product product) throws SQLException, ClassNotFoundException {

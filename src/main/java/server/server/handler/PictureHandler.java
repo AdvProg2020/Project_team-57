@@ -93,6 +93,8 @@ public class PictureHandler extends Handler {
 
         switch (message) {
             case "get user image":
+                outStream.writeUTF("Yeah, Bitch");
+                outStream.flush();
                 imageInputStream = getUserImageInputStream();
                 break;
             case "get product image-1":
@@ -101,6 +103,7 @@ public class PictureHandler extends Handler {
             case "get product image-4":
             case "get product image-5":
             case "get product image-6":
+                sendExtension("product");
                 imageInputStream = getProductImageInputStream();
                 break;
             case "get edit product image-1":
@@ -109,6 +112,7 @@ public class PictureHandler extends Handler {
             case "get edit product image-4":
             case "get edit product image-5":
             case "get edit product image-6":
+                sendExtension("editing product");
                 imageInputStream = getEditProductImageInputStream();
                 break;
             default:
@@ -124,6 +128,27 @@ public class PictureHandler extends Handler {
         imageInputStream.close();
         outStream.close();
         System.out.println(new Date());
+    }
+
+    private void sendExtension(String sendType) throws IOException {
+        int imageNumber = Integer.parseInt(message.split("-")[1]);
+        String productID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+
+        String productExtension = null;
+        switch (sendType) {
+            case "product":
+                productExtension = productControl.getProductImageExtensionByNumber(productID, imageNumber);
+                break;
+            case "editing product":
+                productExtension = productControl.getEditingProductImageExtensionByNumber(productID, imageNumber);
+                break;
+            default:
+                System.err.println("Error In #sendExtension");
+                return;
+        }
+
+        outStream.writeUTF(productExtension);
+        outStream.flush();
     }
 
     private FileInputStream getEditProductImageInputStream() {

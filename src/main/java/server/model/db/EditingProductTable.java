@@ -241,6 +241,8 @@ public class EditingProductTable extends Database{
     }
 
     public static FileOutputStream getEditingProductImageOutputStream(String productID, String fileExtension, int number) throws IOException {
+        String folderFileName = "database\\Images\\EditingProducts\\" + productID;
+        new File(folderFileName).mkdirs();
         String fileName = "database\\Images\\EditingProducts\\" + productID + "\\" + number + "." + fileExtension;
         File pictureFile = new File(fileName);
         if(!pictureFile.exists()) {
@@ -250,5 +252,19 @@ public class EditingProductTable extends Database{
             System.out.println("Error IN #getEditingProductImageOutputStream");
             return null;
         }
+    }
+
+    public static String getEditingProductImageFileExtension(String productID, int number) {
+        System.out.println("product ID : " + productID);
+        System.out.println("number : " + number);
+        String fileName = "database\\Images\\EditingProducts\\" + productID + "\\" + number;
+        String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
+        for (String validImageExtension : validImageExtensions) {
+            String filePath = fileName + "." + validImageExtension;
+            if(new File(filePath).exists())
+                return validImageExtension;
+        }
+
+        return "png";
     }
 }

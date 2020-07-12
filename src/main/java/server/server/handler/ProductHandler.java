@@ -8,7 +8,6 @@ import server.controller.account.AdminControl;
 import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
 import server.controller.product.ProductControl;
-import server.model.existence.Account;
 import server.model.existence.Comment;
 import server.model.existence.Product;
 import server.server.Response;
@@ -141,12 +140,13 @@ public class ProductHandler extends Handler {
         System.err.println("sendType : " + sendType);
         Command<Product> command = commandParser.parseToCommand(Command.class, (Class<Product>)Product.class);
 
+        String productID = null;
         ArrayList<Notification> notifications = new ArrayList<>();
         switch (sendType) {
             case "add":
                 System.err.println("2");
                 Product product = command.getDatum();
-                notifications = vendorControl.addProduct(product);
+                productID = vendorControl.addProduct(product, notifications);
                 break;
             case "edit":
                 System.err.println("2");
@@ -162,6 +162,7 @@ public class ProductHandler extends Handler {
         Notification[] notificationsArray = notifications.toArray(new Notification[0]);
         System.err.println("Length : " + notificationsArray.length);
         Response<Notification> response = new Response<>(Notification.PACKET_NOTIFICATION, notificationsArray);
+        response.setAdditionalString(productID);
         return gson.toJson(response);
     }
 

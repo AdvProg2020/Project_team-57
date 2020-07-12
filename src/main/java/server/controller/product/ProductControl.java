@@ -726,7 +726,7 @@ public class ProductControl extends Control {
 //            ProductTable.addImage(productID, getProductImagesNumberByID(productID) + 1, pictureFile);
             return ProductTable.getProductImageOutputStream(productID, fileExtension, getProductImagesNumberByID(productID) + 1);
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
 
         return null;
@@ -890,5 +890,11 @@ public class ProductControl extends Control {
         return new Off();
     }
 
+    public String getProductImageExtensionByNumber(String productID, int imageNumber) {
+        return ProductTable.getProductImageFileExtension(productID, imageNumber);
+    }
 
+    public String getEditingProductImageExtensionByNumber(String productID, int imageNumber) {
+        return EditingProductTable.getEditingProductImageFileExtension(productID, imageNumber);
+    }
 }

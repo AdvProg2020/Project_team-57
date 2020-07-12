@@ -8,6 +8,7 @@ import java.util.List;
 public class Response<T> {
     private Notification message;
     private List<T> data;
+    private String additionalString;
 
     @SafeVarargs
     public Response(Notification message, T... data) {
@@ -37,4 +38,17 @@ public class Response<T> {
     public void setData(List<T> data) {
         this.data = data;
     }
+
+    public void setMessage(Notification message) {
+        this.message = message;
+    }
+
+    public String getAdditionalString() {
+        return additionalString;
+    }
+
+    public void setAdditionalString(String additionalString) {
+        this.additionalString = additionalString;
+    }
+
 }

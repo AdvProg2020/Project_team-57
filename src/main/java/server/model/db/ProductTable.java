@@ -313,6 +313,20 @@ public class ProductTable extends Database {
         return null;
     }
 
+    public static String getProductImageFileExtension(String productID, int number) {
+        System.out.println("product ID : " + productID);
+        System.out.println("number : " + number);
+        String fileName = "database\\Images\\Products\\" + productID + "\\" + number;
+        String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
+        for (String validImageExtension : validImageExtensions) {
+            String filePath = fileName + "." + validImageExtension;
+            if(new File(filePath).exists())
+                return validImageExtension;
+        }
+
+        return "png";
+    }
+
     public static FileInputStream getProductImageInputStream(String ID, int number) throws FileNotFoundException {
         return new FileInputStream(getProductImageFilePath(ID, number));
     }
@@ -389,9 +403,12 @@ public class ProductTable extends Database {
     }
 
     public static FileOutputStream getProductImageOutputStream(String productID, String fileExtension, int number) throws IOException {
+        String folderFileName = "database\\Images\\Products\\" + productID;
+        new File(folderFileName).mkdirs();
         String fileName = "database\\Images\\Products\\" + productID + "\\" + number + "." + fileExtension;
         File pictureFile = new File(fileName);
         if (!pictureFile.exists()) {
+
             pictureFile.createNewFile();
             return new FileOutputStream(pictureFile);
         } else {

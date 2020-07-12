@@ -407,7 +407,11 @@ public class ProductProcessor extends Processor {
         ArrayList<File> imageFiles = new ArrayList<>();
         Command<String> integerCommand = new Command<>("get product image count", Command.HandleType.PRODUCT, product.getID());
         Response<Integer> integerResponse = client.postAndGet(integerCommand, Response.class, (Class<Integer>)Integer.class);
+        System.out.println("Product Name : " + product.getName());
+        System.out.println("Product : " + product.getID());
         int bound = integerResponse.getDatum();
+        System.out.println("Bound : " + bound);
+
         for (int i = 0; i < bound; i++) {
             Command<String> command = new Command<>("get product image-" + (i + 1), Command.HandleType.PICTURE_GET, product.getID());
             imageFiles.add(client.getFile(command));
@@ -649,6 +653,9 @@ public class ProductProcessor extends Processor {
         if(sendType.equals("edit")) {
             Command<String> command = new Command<>("delete editing product pictures", Command.HandleType.PRODUCT, product.getID());
             client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+        } else {
+            if(productResponse.getData().size() != 0 && productResponse.getDatum() == Notification.ADD_PRODUCT)
+                product.setID(productResponse.getAdditionalString());
         }
 
         for (File productImageFile : productImageFiles) {

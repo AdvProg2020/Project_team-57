@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 public class Client {
     private static final String CACHE_FOLDER_URL = "cache\\";
-    private static int PORT = 50840;
+    private static int PORT = 4027;
     private static Client client = null;
     private final static String HOME = "127.0.0.1";
     private Socket mySocket;
@@ -81,6 +81,17 @@ public class Client {
     }
 
     private Client() throws IOException {
+        File cacheDirectory = new File(CACHE_FOLDER_URL);
+        if(cacheDirectory.exists()) {
+            String[] entries = cacheDirectory.list();
+            for(String s: entries){
+                File currentFile = new File(cacheDirectory.getPath(),s);
+                currentFile.delete();
+            }
+        } else {
+            cacheDirectory.mkdir();
+        }
+
         this.gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
@@ -103,6 +114,10 @@ public class Client {
         try {
             makeConnection();
             post(command);
+
+            //For Tof Zani, Bitch
+            inStream.readUTF();
+
             ArrayList<Integer> integers = new ArrayList<>();
             int i;
             while ((i = inStream.read()) > -1) {
@@ -138,7 +153,10 @@ public class Client {
             makeConnection();
             post(command);
             String extension = inStream.readUTF();
+
+            new File(CACHE_FOLDER_URL).mkdir();
             File file = new File(CACHE_FOLDER_URL + getFileName(extension));
+            file.createNewFile();
             FileOutputStream fileOutStream = new FileOutputStream(file);
             int i;
             while ( (i = inStream.read()) > -1) {
