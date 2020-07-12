@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 public class Client {
     private static final String CACHE_FOLDER_URL = "cache\\";
-    private static int PORT = 4027;
+    private static int PORT = 52281;
     private static Client client = null;
     private final static String HOME = "127.0.0.1";
     private Socket mySocket;
@@ -183,7 +183,8 @@ public class Client {
 
     private String generateRandomFileName() {
         char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
-        StringBuilder ID = new StringBuilder("jesus");
+        //THE TWO POPES
+        StringBuilder ID = new StringBuilder(Math.random() <= 0.5 ? ("jesus") : ("moses"));
         for(int i = 0; i < 10; ++i)
         {
             ID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);

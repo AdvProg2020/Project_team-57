@@ -314,8 +314,6 @@ public class ProductTable extends Database {
     }
 
     public static String getProductImageFileExtension(String productID, int number) {
-        System.out.println("product ID : " + productID);
-        System.out.println("number : " + number);
         String fileName = "database\\Images\\Products\\" + productID + "\\" + number;
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {
@@ -412,7 +410,7 @@ public class ProductTable extends Database {
             pictureFile.createNewFile();
             return new FileOutputStream(pictureFile);
         } else {
-            System.out.println("Error IN #getProductImageOutputStream");
+            System.err.println("Error IN #getProductImageOutputStream");
             return null;
         }
     }

@@ -305,7 +305,7 @@ public class AdminControl extends AccountControl{
         if(newDiscount.getMaxDiscount() == 0)
             newDiscount.setMaxDiscount(oldDiscount.getMaxDiscount());
         if(newDiscount.getStartDate() == null)
-            System.out.println("Shit. Empty StartDate In Setting New Discount's Empty Fields");
+            System.err.println("Shit. Empty StartDate In Setting New Discount's Empty Fields");
         if(newDiscount.getFinishDate() == null)
             newDiscount.setFinishDate(oldDiscount.getFinishDate());
 

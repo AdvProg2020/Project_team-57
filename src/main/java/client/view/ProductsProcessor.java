@@ -510,7 +510,7 @@ public class ProductsProcessor extends Processor{
                     ProductProcessor processor = fxmlLoader.getController();
                     processor.setParentProcessor(paneProcessor.parentProcessor);
                     processor.setNonEdited(true);
-                    processor.initProcessor(productControl.getProductById(product.getID()), ProductProcessor.ProductMenuType.ADMIN);
+                    processor.initProcessor(getProductByID(product.getID(), "product"), ProductProcessor.ProductMenuType.ADMIN);
                     Stage stage = new Stage();
                     stage.setScene(new Scene(root));
                     stage.setTitle(product.getName() + " Previous Menu");

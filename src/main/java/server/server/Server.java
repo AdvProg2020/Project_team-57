@@ -98,7 +98,7 @@ public class Server {
         if(authTokens.containsKey(authToken)) {
             authTokens.remove(authToken);
         } else {
-            System.out.println("Shit. Error In Removing AuthToken");
+            System.err.println("Shit. Error In Removing AuthToken");
         }
         return answer;
     }
@@ -128,7 +128,7 @@ public class Server {
         if(authTokens.containsKey(auth)) {
             return authTokens.get(auth);
         } else {
-            System.out.println("Shit. Error IN Get Username");
+            System.err.println("Shit. Error IN Get Username");
         }
 
         return null;

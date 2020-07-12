@@ -293,7 +293,6 @@ public class ProfileProcessor extends Processor {
         }
 
         alert.show();
-        System.out.println("Yes. We Did It");
     }
 
     private void deleteUserImage(String username) {

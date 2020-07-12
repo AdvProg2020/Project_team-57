@@ -234,7 +234,7 @@ public class AccountTable extends Database {
         File profileImageFile = new File("database\\Images\\Users\\" + username + "." + imageExtension);
 
         if(!profileImageFile.exists()) {
-            System.out.println("File Doesn't Exists. #getProfileImageOutputStream");
+            System.err.println("File Doesn't Exists. #getProfileImageOutputStream");
             profileImageFile.createNewFile();
         }
 

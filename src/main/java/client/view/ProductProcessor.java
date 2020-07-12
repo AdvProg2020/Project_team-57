@@ -407,11 +407,7 @@ public class ProductProcessor extends Processor {
         ArrayList<File> imageFiles = new ArrayList<>();
         Command<String> integerCommand = new Command<>("get product image count", Command.HandleType.PRODUCT, product.getID());
         Response<Integer> integerResponse = client.postAndGet(integerCommand, Response.class, (Class<Integer>)Integer.class);
-        System.out.println("Product Name : " + product.getName());
-        System.out.println("Product : " + product.getID());
         int bound = integerResponse.getDatum();
-        System.out.println("Bound : " + bound);
-
         for (int i = 0; i < bound; i++) {
             Command<String> command = new Command<>("get product image-" + (i + 1), Command.HandleType.PICTURE_GET, product.getID());
             imageFiles.add(client.getFile(command));
@@ -1552,12 +1548,6 @@ public class ProductProcessor extends Processor {
         return null;
     }
     //Sepehr's Section
-
-    private Product getProductByID(String ID, String productType) {
-        Command<String> command = new Command<>("get " + productType, Command.HandleType.PRODUCT, ID);
-        Response<Product> response = client.postAndGet(command, Response.class, (Class<Product>)Product.class);
-        return response.getDatum();
-    }
 
     private double getAverageScore(String productID) {
         Command<String> command = new Command<>("get average score", Command.HandleType.PRODUCT, productID);

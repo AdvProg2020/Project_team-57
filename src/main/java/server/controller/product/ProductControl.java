@@ -77,6 +77,7 @@ public class ProductControl extends Control {
         this.listicOffID = listicOffID;
     }
 
+    @Deprecated
     public void setProductOffPrice(Product product) throws SQLException, ClassNotFoundException {
         if(OffTable.isThereProductInOff(product.getID())) {
             product.setOnSale(true);
@@ -89,7 +90,7 @@ public class ProductControl extends Control {
     public Product getProductById(String productId) {
         try {
             Product product = ProductTable.getProductByID(productId);
-            setProductOffPrice(product);
+/*            setProductOffPrice(product);*/
             return product;
         } catch (Exception e) {
             return new Product();
@@ -205,7 +206,7 @@ public class ProductControl extends Control {
             else
                 product = EditingProductTable.getEditingProductWithID(ID);
 
-            setProductOffPrice(product);
+            /*setProductOffPrice(product);*/
             return product;
         } catch (SQLException e) {
             //:)
@@ -561,7 +562,7 @@ public class ProductControl extends Control {
 
     public FileInputStream getEditingProductImageFileInputStreamByID(String ID, int number) {
         try {
-            String productID = doesProductHaveImage(ID) ? ID : ("" + 1);
+            String productID = doesEditingProductHaveImage(ID) ? ID : ("" + 1);
             return EditingProductTable.getEditingProductImageInputStream(productID, number);
         } catch (FileNotFoundException e) {
             //:)

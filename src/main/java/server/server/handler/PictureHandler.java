@@ -31,7 +31,7 @@ public class PictureHandler extends Handler {
                     savePicture();
                     break;
                 default:
-                    System.out.println("Serious Error In Picture Handler");
+                    System.err.println("Serious Error In Picture Handler");
             }
         } catch (IOException e) {
             e.printStackTrace();

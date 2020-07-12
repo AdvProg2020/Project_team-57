@@ -190,7 +190,6 @@ public class AccountHandler extends Handler {
     }
 
     private String register() {
-        System.out.println("Fuck");
         Account account = commandParser.parseDatum(Command.class, (Class<Account>)Account.class);
         Response response = new Response(ioControl.register(account));
         return gson.toJson(response);

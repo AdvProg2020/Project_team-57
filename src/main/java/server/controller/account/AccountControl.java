@@ -408,7 +408,7 @@ public class AccountControl extends Control implements IOValidity {
         try {
             return AccountTable.getProfileImageOutputStream(username, pictureExtension);
         } catch (IOException e) {
-            System.out.println("Error In #getAccountPictureOutputStream");
+            System.err.println("Error In #getAccountPictureOutputStream");
             e.printStackTrace();
         }
 

@@ -88,7 +88,6 @@ public class WelcomeProcessor extends Processor implements Initializable {
 
                 switch (loggedInAccount.getType()) {
                     case "Admin" :
-                        System.out.println("1");
                         initAdminMenu();
                         break;
                     case "Vendor" :
@@ -102,7 +101,6 @@ public class WelcomeProcessor extends Processor implements Initializable {
                         Main.setScene(loggedInAccount.getUsername() + " Menu", root);
                         break;
                 }
-                System.out.println("Tamoom Shod");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -295,10 +293,8 @@ public class WelcomeProcessor extends Processor implements Initializable {
         if(isNormal) {
             Command command = new Command("is there admin", Command.HandleType.ACCOUNT);
             Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
-            System.out.println(response.getData().get(0));
             if(!response.getData().get(0)) {
                 if(accountTypeComboBox.getSelectionModel().isSelected(0)) {
-                    System.out.println("HERE");
                     return "Admin";
                 }
                 else if(accountTypeComboBox.getSelectionModel().isSelected(1))

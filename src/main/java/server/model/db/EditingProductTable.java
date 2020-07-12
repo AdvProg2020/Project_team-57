@@ -249,14 +249,12 @@ public class EditingProductTable extends Database{
             pictureFile.createNewFile();
             return new FileOutputStream(pictureFile);
         } else {
-            System.out.println("Error IN #getEditingProductImageOutputStream");
+            System.err.println("Error IN #getEditingProductImageOutputStream");
             return null;
         }
     }
 
     public static String getEditingProductImageFileExtension(String productID, int number) {
-        System.out.println("product ID : " + productID);
-        System.out.println("number : " + number);
         String fileName = "database\\Images\\EditingProducts\\" + productID + "\\" + number;
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {

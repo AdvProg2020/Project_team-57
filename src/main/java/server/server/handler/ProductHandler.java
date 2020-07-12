@@ -33,7 +33,6 @@ public class ProductHandler extends Handler {
         switch (message) {
             case "add product":
             case "edit product":
-                System.err.println("1");
                 return sendProduct(message.substring(0, message.length() - 8));
             case "get product":
             case "get editing product":
@@ -137,30 +136,25 @@ public class ProductHandler extends Handler {
     }
 
     private String sendProduct(String sendType) {
-        System.err.println("sendType : " + sendType);
         Command<Product> command = commandParser.parseToCommand(Command.class, (Class<Product>)Product.class);
 
         String productID = null;
         ArrayList<Notification> notifications = new ArrayList<>();
         switch (sendType) {
             case "add":
-                System.err.println("2");
                 Product product = command.getDatum();
                 productID = vendorControl.addProduct(product, notifications);
                 break;
             case "edit":
-                System.err.println("2");
                 Product currentProduct = command.getData(0), editingProduct = command.getData(1);
                 notifications.add(vendorControl.editProduct(currentProduct, editingProduct));
                 break;
             default:
-                System.out.println("Shit. Error In #sendProduct");
+                System.err.println("Shit. Error In #sendProduct");
                 return null;
         }
 
-        System.err.println("Length 2 : " + notifications.size());
         Notification[] notificationsArray = notifications.toArray(new Notification[0]);
-        System.err.println("Length : " + notificationsArray.length);
         Response<Notification> response = new Response<>(Notification.PACKET_NOTIFICATION, notificationsArray);
         response.setAdditionalString(productID);
         return gson.toJson(response);
@@ -204,7 +198,7 @@ public class ProductHandler extends Handler {
                 product = customerControl.getCartProductByID(productID);
                 break;
             default:
-                System.out.println("Shit. Error In Getting Product");
+                System.err.println("Shit. Error In Getting Product");
                 return null;
         }
 

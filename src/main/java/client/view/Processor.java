@@ -206,7 +206,7 @@ public abstract class Processor {
         Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
 
         if(response.getMessage() == Notification.UNKNOWN_ERROR) {
-            System.out.println("Shit. Error IN Logging Out");
+            System.err.println("Shit. Error IN Logging Out");
         } else {
             client.setAuthToken(null);
         }
@@ -250,6 +250,12 @@ public abstract class Processor {
     protected void addSeenToProduct(String productID) {
         Command<String> command = new Command<>("add seen", Command.HandleType.PRODUCT, productID);
         client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
+
+    protected Product getProductByID(String ID, String productType) {
+        Command<String> command = new Command<>("get " + productType, Command.HandleType.PRODUCT, ID);
+        Response<Product> response = client.postAndGet(command, Response.class, (Class<Product>)Product.class);
+        return response.getDatum();
     }
 
 }
