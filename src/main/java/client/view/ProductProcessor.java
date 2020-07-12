@@ -681,7 +681,8 @@ public class ProductProcessor extends Processor {
 
 
     public void removeProduct() {
-        Alert alert = productControl.removeProductById(product.getID()).getAlert();
+//        Alert alert = productControl.removeProductById(product.getID()).getAlert();
+        Alert alert = removeProductByID(product.getID(), "product").getMessage().getAlert();
         Optional<ButtonType> optionalButtonType = alert.showAndWait();
         if(optionalButtonType.get() == ButtonType.OK) {
             ProductProcessor imageProcessor = subProcessors.get(0);

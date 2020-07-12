@@ -97,7 +97,7 @@ public class ProductControl extends Control {
         }
     }
 
-    public Notification removeProductById(String productId) {
+    public synchronized Notification removeProductById(String productId) {
         try {
             ProductTable.removeProductByID(productId);
             if (!EditingProductTable.isIDFree(productId))

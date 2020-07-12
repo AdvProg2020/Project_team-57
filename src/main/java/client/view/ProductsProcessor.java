@@ -461,7 +461,7 @@ public class ProductsProcessor extends Processor{
         paneProcessor.removeFromCartButton.setOnAction(event -> {
             Optional<ButtonType> buttonType = new Alert(Alert.AlertType.CONFIRMATION, "Do You Really Want To Delete This Great Product From You Cart?", YES, NO).showAndWait();
             if(buttonType.get() == YES) {
-                CustomerControl.getController().removeProductFromCartByID(product.getID()).getAlert().show();
+                CustomerControl.getController().removeProductFromCartByID(username, product.getID()).getAlert().show();
                 initProductsPage();
                 initTotalPricePart();
             }

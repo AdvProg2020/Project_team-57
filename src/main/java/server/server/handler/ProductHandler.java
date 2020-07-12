@@ -38,6 +38,10 @@ public class ProductHandler extends Handler {
             case "get editing product":
             case "get cart product":
                 return getProduct(message.substring(4));
+            case "remove product":
+            case "remove edit product":
+            case "remove cart product":
+                return removeProduct(message.substring(7));
             case "get product comments":
                 return getAllProductComments();
             case "get average score":
@@ -63,6 +67,32 @@ public class ProductHandler extends Handler {
             default:
                 return null;
         }
+    }
+
+    private String removeProduct(String productType) {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String productID = command.getDatum();
+
+        Notification notification = null;
+        switch (productType) {
+            case "product":
+                notification = productControl.removeProductById(productID);
+                break;
+            case "edit product":
+                notification = productControl.removeEditingProductById(productID);
+                break;
+            case "cart product":
+                String username = server.getUsernameByAuth(command.getAuthToken());
+                //Todo Cart
+//                notification = customerControl.removeProductFromCartByID(username, productID);
+                break;
+            default:
+                System.err.println("Error In #removeProduct");
+                return null;
+        }
+
+        Response response = new Response(notification);
+        return gson.toJson(response);
     }
 
     private String modifyProductApprove() {

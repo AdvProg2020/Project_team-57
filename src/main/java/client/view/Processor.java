@@ -258,4 +258,9 @@ public abstract class Processor {
         return response.getDatum();
     }
 
+    protected Response removeProductByID(String productID, String productType) {
+        Command<String> command = new Command<>("remove " + productType, Command.HandleType.PRODUCT, productID);
+        return client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
+
 }
