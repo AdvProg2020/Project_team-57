@@ -47,7 +47,7 @@ public class CategoryProcessor extends Processor implements Initializable {
             initCategoriesTableRow();
             categoriesTableView.setRoot(getCategoryTableRoot());
 
-            if (super.getType().equals("Admin")) {
+            if (!super.getType().equals("Admin")) {
                 mainPane.getChildren().remove(addCategoryButton);
                 mainPane.getChildren().remove(editCategoryButton);
                 mainPane.getChildren().remove(deleteCategoryButton);
