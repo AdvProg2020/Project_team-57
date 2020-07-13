@@ -55,6 +55,8 @@ public class PictureHandler extends Handler {
                 case "edit product image":
                     pictureOutputStream = getProductImageOutputStream("edit");
                     break;
+                case "send off image":
+
                 default:
                     System.err.println("Error In #sendPicture");
                     System.err.println("Message : " + message);
@@ -115,6 +117,12 @@ public class PictureHandler extends Handler {
                 sendExtension("editing product");
                 imageInputStream = getEditProductImageInputStream();
                 break;
+            case "get off image":
+                sendExtension("off");
+                imageInputStream = getOffImageInputStream();
+            case "get editing off image":
+                sendExtension("editing off");
+                imageInputStream = getEditingOffImageInputStream();
             default:
                 System.err.println("Serious Error In Sending ");
         }
@@ -130,24 +138,44 @@ public class PictureHandler extends Handler {
         System.out.println(new Date());
     }
 
-    private void sendExtension(String sendType) throws IOException {
-        int imageNumber = Integer.parseInt(message.split("-")[1]);
-        String productID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+    private FileInputStream getEditingOffImageInputStream() {
+        return productControl.
+                getEditingOffImageFileInputStreamByID
+                        (commandParser.parseDatum(Command.class, (Class<String>)String.class));    }
 
-        String productExtension = null;
+    private FileInputStream getOffImageInputStream() {
+        return productControl.
+                getOffImageFileInputStreamByID
+                        (commandParser.parseDatum(Command.class, (Class<String>)String.class));
+    }
+
+    private void sendExtension(String sendType) throws IOException {
+        int imageNumber;
+        String ID;
+        String extension = null;
         switch (sendType) {
             case "product":
-                productExtension = productControl.getProductImageExtensionByNumber(productID, imageNumber);
+                imageNumber = Integer.parseInt(message.split("-")[1]);
+                ID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+                extension = productControl.getProductImageExtensionByNumber(ID, imageNumber);
                 break;
             case "editing product":
-                productExtension = productControl.getEditingProductImageExtensionByNumber(productID, imageNumber);
+                imageNumber = Integer.parseInt(message.split("-")[1]);
+                ID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+                extension = productControl.getEditingProductImageExtensionByNumber(ID, imageNumber);
                 break;
+            case "off" :
+                ID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+                extension = productControl.getOffImageExtensionByID(ID);
+            case "editing off":
+                ID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+                extension = productControl.getEditingOffImageExtensionByID(ID);
             default:
                 System.err.println("Error In #sendExtension");
                 return;
         }
 
-        outStream.writeUTF(productExtension);
+        outStream.writeUTF(extension);
         outStream.flush();
     }
 

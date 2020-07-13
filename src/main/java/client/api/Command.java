@@ -66,4 +66,5 @@ public class Command<T> {
     public void setRelic(String relic) {
         this.relic = relic;
     }
+
 }

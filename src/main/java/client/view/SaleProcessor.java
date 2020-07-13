@@ -40,8 +40,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SaleProcessor extends Processor implements Initializable {
-    private static AdminControl adminControl = AdminControl.getController();
-    private static ProductControl productControl = ProductControl.getController();
+/*    private static AdminControl adminControl = AdminControl.getController();
+    private static ProductControl productControl = ProductControl.getController();*/
 
     //DiscountProcess
     public Label discountCodeLabel;
@@ -252,12 +252,20 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     public void getOffImageFile() {
-        if(productControl.isOffEditing(off.getOffID()) && !isPreviousOff) {
-            offImageFile = productControl.getEditingOffImageFileByID(off.getOffID());
-            isDefaultPicture = !productControl.doesEditingOffHaveImage(off.getOffID());
+        Command<String> command = new Command<String>("is off edit", Command.HandleType.SALE, (off.getOffID() == null ? "" : off.getOffID()));
+        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+        if(response.getDatum() && !isPreviousOff) {
+            command = new Command<>("get editing off image", Command.HandleType.PICTURE_GET, (off.getOffID() == null ? "" : off.getOffID()));
+            offImageFile = client.getFile(command);
+            command = new Command<String>("does editing off have image", Command.HandleType.SALE, (off.getOffID() == null ? "" : off.getOffID()));
+            response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+            isDefaultPicture = response.getDatum();
         } else {
-            offImageFile = productControl.getOffImageFileByID(off.getOffID());
-            isDefaultPicture = !productControl.doesOffHaveImage(off.getOffID());
+            command = new Command<>("get off image", Command.HandleType.PICTURE_GET, (off.getOffID() == null ? "" : off.getOffID()));
+            offImageFile = client.getFile(command);
+            command = new Command<String>("does off have image", Command.HandleType.SALE, (off.getOffID() == null ? "" : off.getOffID()));
+            response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+            isDefaultPicture = response.getDatum();
         }
 
         /*Image image = (off != null && off.getOffID() != null && off.getOffID().length() != 0 ?
@@ -485,7 +493,11 @@ public class SaleProcessor extends Processor implements Initializable {
         }
         File imageFile = (isDefaultPicture ? null : offImageFile);
         if(!isEditing) {
-            Notification resultNotification = VendorControl.getController().addOff(off, imageFile);
+            Command<Off> command = new Command<>("add off", Command.HandleType.SALE, off);
+            Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+            Notification resultNotification = response.getMessage();
+            Command<String> extensionCommand = new Command<>("send off image", Command.HandleType.PICTURE_SEND, off.getOffID(), client.file2Extension.apply(imageFile));
+            client.sendImage(extensionCommand, imageFile);
             if (resultNotification == Notification.ADD_OFF && this.parentProcessor instanceof TableViewProcessor) {
                 ((TableViewProcessor) parentProcessor).updateTable();
                 ((TableViewProcessor) parentProcessor).updateSelectedItem();
@@ -568,7 +580,8 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     public void deleteImage(MouseEvent mouseEvent) {
-        ((SaleProcessor)parentProcessor).offImageFile = productControl.getOffImageFileByID("1");
+        Command<String> command = new Command<>("get off image", Command.HandleType.PICTURE_GET, "1");
+        ((SaleProcessor)parentProcessor).offImageFile = client.getFile(command);
         ((SaleProcessor)parentProcessor).isDefaultPicture = true;
         updateImageRectangle();
     }

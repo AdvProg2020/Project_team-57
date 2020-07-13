@@ -619,12 +619,22 @@ public class ProductControl extends Control {
         return null;
     }
 
+    @Deprecated
     public File getOffImageFileByID(String offID) {
         if(doesOffHaveImage(offID)) {
             return new File(OffTable.getOffImageFilePath(offID));
         } else
             return new File(OffTable.getOffImageFilePath("1"));
 
+    }
+
+    public FileInputStream getOffImageFileInputStreamByID(String offID) {
+        try {
+            return OffTable.getOffImageInputStream((doesOffHaveImage(offID) ? offID : "1"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public boolean doesOffHaveImage(String offID) {
@@ -876,6 +886,7 @@ public class ProductControl extends Control {
         return false;
     }
 
+    @Deprecated
     public File getEditingOffImageFileByID(String offID) {
         if(doesEditingOffHaveImage(offID)) {
             return new File(OffTable.getEditingOffImageFilePath(offID));
@@ -883,6 +894,17 @@ public class ProductControl extends Control {
             return new File(OffTable.getOffImageFilePath("1"));
     }
 
+    public FileInputStream getEditingOffImageFileInputStreamByID(String offID) {
+        try {
+            if(doesEditingOffHaveImage(offID)) {
+                return OffTable.getEditingOffImageInputStream(offID);
+            } else
+                return OffTable.getOffImageInputStream("1");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public Off getEditingOffByID(String offID) {
         try {
@@ -902,4 +924,13 @@ public class ProductControl extends Control {
     public String getEditingProductImageExtensionByNumber(String productID, int imageNumber) {
         return EditingProductTable.getEditingProductImageFileExtension(productID, imageNumber);
     }
+
+    public String getOffImageExtensionByID(String ID) {
+        return OffTable.getOffImageExtensionByID(ID);
+    }
+
+    public String getEditingOffImageExtensionByID(String ID) {
+        return OffTable.getEditingOffImageExtensionByID(ID);
+    }
+
 }

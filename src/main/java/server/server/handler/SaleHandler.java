@@ -5,9 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import notification.Notification;
 import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
+import server.controller.account.VendorControl;
 import server.controller.product.ProductControl;
 import server.model.existence.Category;
 import server.model.existence.Discount;
+import server.model.existence.Off;
 import server.server.Property;
 import server.server.Response;
 import server.server.Server;
@@ -18,6 +20,7 @@ import java.io.DataOutputStream;
 public class SaleHandler extends Handler {
     AccountControl accountControl = AccountControl.getController();
     ProductControl productControl = ProductControl.getController();
+    VendorControl vendorControl = VendorControl.getController();
     AdminControl adminControl = AdminControl.getController();
     public SaleHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
         super(outStream, inStream, server, input);
@@ -40,10 +43,45 @@ public class SaleHandler extends Handler {
                 return getAllDiscounts();
             case "delete discount":
                 return deleteDiscount();
+            case "is off edit":
+                return isOffEdit();
+            case "does off have image":
+                return doesOffHaveImage();
+            case"add off":
+                return addOff();
             default:
                 System.err.println("Serious Error In Sale Handler");
                 return null;
         }
+    }
+
+    private String addOff() {
+        Command<Off> command = commandParser.parseToCommand(Command.class, (Class<Off>)Off.class);
+        if(canChangeOff(command.getDatum().getOffID(), command.getAuthToken())) {
+            Response response = new Response(vendorControl.addOff(command.getDatum(), server.getUsernameByAuth(command.getAuthToken())));
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String doesOffHaveImage() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        if(canChangeOff(command.getDatum(), command.getAuthToken())) {
+            Boolean bool = productControl.doesOffHaveImage(command.getDatum());
+            Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, bool);
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String isOffEdit() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        if(canChangeOff(command.getDatum(), command.getAuthToken())) {
+            Boolean bool = productControl.isOffEditing(command.getDatum());
+            Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, bool);
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String deleteDiscount() {

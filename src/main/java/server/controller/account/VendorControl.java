@@ -224,6 +224,7 @@ public class VendorControl extends AccountControl{
         return new ArrayList<>();
     }
 
+    @Deprecated
     public Notification addOff(Off off, File offImageFile){
        if (off.getOffName() == null)
            return Notification.UNCOMPLETED_OFF_NAME;
@@ -250,6 +251,33 @@ public class VendorControl extends AccountControl{
        } catch (ClassNotFoundException e) {
            return Notification.UNKNOWN_ERROR;
        }
+    }
+
+    public Notification addOff(Off off, String username){
+        if (off.getOffName() == null)
+            return Notification.UNCOMPLETED_OFF_NAME;
+        if (off.getFinishDate() == null)
+            return Notification.NOT_SET_FINISH_DATE;
+        if (off.getOffPercent() <= 0 || off.getOffPercent() >= 100)
+            return Notification.OUT_BOUND_OF_PERCENT;
+        if(off.getProductIDs() == null || off.getProductIDs().size() == 0)
+            return Notification.EMPTY_OFF_PRODUCTS;
+        if(off.getStartDate().compareTo(off.getFinishDate()) > -1)
+            return Notification.START_DATE_AFTER_FINISH_DATE;
+        off.setVendorUsername(username);
+        try {
+            do {
+                off.setOffID(setOffID());
+            } while (OffTable.isThereOffWithID(off.getOffID()));
+            off.setStatus(2);
+
+            OffTable.addOff(off);
+            return Notification.ADD_OFF;
+        } catch (SQLException e) {
+            return Notification.UNKNOWN_ERROR;
+        } catch (ClassNotFoundException e) {
+            return Notification.UNKNOWN_ERROR;
+        }
     }
 
     private String setOffID(){

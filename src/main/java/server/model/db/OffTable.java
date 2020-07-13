@@ -379,4 +379,26 @@ public class OffTable extends Database{
             }
         }
     }
+
+    public static String getOffImageExtensionByID(String offID) {
+        String fileName = "database\\Images\\Offs\\" + offID;
+        String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
+        for (String validImageExtension : validImageExtensions) {
+            String filePath = fileName + "." + validImageExtension;
+            if(new File(filePath).exists())
+                return validImageExtension;
+        }
+        return "png";
+    }
+
+    public static String getEditingOffImageExtensionByID(String offID) {
+        String fileName = "database\\Images\\EditingOffs\\" + offID;
+        String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
+        for (String validImageExtension : validImageExtensions) {
+            String filePath = fileName + "." + validImageExtension;
+            if(new File(filePath).exists())
+                return validImageExtension;
+        }
+        return "png";
+    }
 }
