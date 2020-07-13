@@ -425,10 +425,10 @@ public class ProductControl extends Control {
         return 0;
     }
 
-    public Notification setScore(Comment comment){
+    public Notification setScore(Comment comment, String username){
         try {
-            if (ProductTable.didScore(Control.getUsername(), comment.getProductID())){
-                ProductTable.updateScore(Control.getUsername(), comment.getProductID(), comment.getScore());
+            if (ProductTable.didScore(username, comment.getProductID())){
+                ProductTable.updateScore(username, comment.getProductID(), comment.getScore());
                 ProductTable.updateProductsAvgScore(comment.getProductID());
                 return Notification.UPDATE_SCORE;
             }
@@ -436,7 +436,8 @@ public class ProductControl extends Control {
             ProductTable.updateProductsAvgScore(comment.getProductID());
             return Notification.SET_SCORE;
         } catch (SQLException | ClassNotFoundException e) {
-            //:)
+            System.err.println("Error In #setScore");
+            e.printStackTrace();
         }
 
         return Notification.UNKNOWN_ERROR;
@@ -458,9 +459,9 @@ public class ProductControl extends Control {
         return 1;
     }
 
-    public Notification addComment(Comment comment) {
+    public Notification addComment(Comment comment, String username) {
         comment.setStatus(2);
-        comment.setCustomerUsername(Control.getUsername());
+        comment.setCustomerUsername(username);
         String commentID;
 
         try {
@@ -472,11 +473,12 @@ public class ProductControl extends Control {
 
             //Todo Approving Score Haminjori Nemishe Score Gozasht. Bas Taeid Beshe
             if(comment.getScore() != 0)
-                setScore(comment);
+                setScore(comment, username);
 
             return Notification.ADD_COMMENT;
         } catch (SQLException | ClassNotFoundException e){
-            //:)
+            System.err.println("Error In #addComment");
+            e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;
     }
@@ -491,7 +493,7 @@ public class ProductControl extends Control {
         return commentID.toString();
     }
 
-    public ArrayList<Comment> getAllProductComments(String productId) {
+    public ArrayList<Comment> getAllProductComments(String productId, String username, String type) {
         ArrayList<Comment> productComments = new ArrayList<>();
 
         try {
@@ -500,20 +502,20 @@ public class ProductControl extends Control {
                 productComments.add(comment);
             }
 
-            if(Control.getType() != null && Control.getType().equals("Customer")) {
-                for (Comment comment : ProductTable.getAllLoggedInUserComment(Control.getUsername(), productId)) {
+            if(type != null && type.equals("Customer")) {
+                for (Comment comment : ProductTable.getAllLoggedInUserComment(username, productId)) {
                     comment.setScore(getScore(comment));
                     productComments.add(comment);
                 }
             }
-            if(Control.isLoggedIn()) {
+            if(username != null && !username.isEmpty()) {
                 for (Comment productComment : productComments) {
-                    if (Control.getUsername().equals(productComment.getCustomerUsername()))
+                    if (username.equals(productComment.getCustomerUsername()))
                         productComment.setCustomerUsername("**You**");
                 }
             }
         } catch (SQLException | ClassNotFoundException e) {
-            //:)
+            e.printStackTrace();
         }
 
         return productComments;

@@ -46,6 +46,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentMap;
 
 public class ProductProcessor extends Processor {
 
@@ -1100,12 +1101,17 @@ public class ProductProcessor extends Processor {
             comment.setContent(commentContent.getText());
             comment.setScore((int) commentScore.getRating());
 
-            productControl.addComment(comment);
+            addTheComment(comment);
 
             //Todo Check If It Works Without The ProductType Or Not
             ((ProductProcessor) parentProcessor).initCommentsThroughThePane();
             //Todo Showing Alert Or Not
         }
+    }
+
+    private void addTheComment(Comment comment) {
+        Command<Comment> command = new Command<>("add comment", Command.HandleType.PRODUCT, comment);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 
     //SpecialInfoPane

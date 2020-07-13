@@ -37,7 +37,10 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentMap;
+
 import server.model.existence.Log.ProductOfLog;
 import server.server.Response;
 
@@ -320,7 +323,7 @@ public class TableViewProcessor<T> extends Processor {
                 tableList.addAll((ArrayList<T>)getAllCustomersForDiscount());
                 break;
             case ADMIN_COMMENTS:
-                tableList.addAll((ArrayList<T>)AdminControl.getController().getAllUnApprovedComments());
+                tableList.addAll((ArrayList<T>)getAllUnApprovedComments());
                 break;
             case ADMIN_OFFS:
                 tableList.addAll((ArrayList<T>)AdminControl.getController().getAllUnApprovedOffs());
@@ -347,6 +350,12 @@ public class TableViewProcessor<T> extends Processor {
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
         selectedItem = tableView.getSelectionModel().getSelectedItem();
+    }
+
+    private List<Comment> getAllUnApprovedComments() {
+        Command command = new Command("get all unapproved comments", Command.HandleType.PRODUCT);
+        Response<Comment> response = client.postAndGet(command, Response.class, (Class<Comment>)Comment.class);
+        return response.getData();
     }
 
     private ArrayList<Account> getAllCustomersForDiscount() {
@@ -662,7 +671,7 @@ public class TableViewProcessor<T> extends Processor {
             }
             return root;
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
         return null;
     }
@@ -1014,7 +1023,7 @@ public class TableViewProcessor<T> extends Processor {
 
     public void showCommenterProfile(MouseEvent mouseEvent) {
         try {
-            Account commenterAccount = AccountControl.getController().getAccountByUsername(((Comment)(((TableViewProcessor)parentProcessor).selectedItem)).getCustomerUsername());
+            Account commenterAccount = getAccountByUsername(((Comment)(((TableViewProcessor)parentProcessor).selectedItem)).getCustomerUsername());
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileMenu.fxml"));
             Parent root = loader.load();
             ProfileProcessor profileProcessor = loader.getController();
@@ -1027,7 +1036,7 @@ public class TableViewProcessor<T> extends Processor {
             parentProcessor.parentProcessor.addSubStage(newStage);
             newStage.show();
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 
@@ -1037,7 +1046,7 @@ public class TableViewProcessor<T> extends Processor {
             Parent root = loader.load();
             ProductProcessor productProcessor = loader.getController();
             productProcessor.setParentProcessor(parentProcessor);
-            Product product = ProductControl.getController().getProductById(((Comment)(((TableViewProcessor)parentProcessor).selectedItem)).getProductID());
+            Product product = getProductByID(((Comment)(((TableViewProcessor)parentProcessor).selectedItem)).getProductID(),"product");
             productProcessor.initProcessor(product, ProductProcessor.ProductMenuType.ADMIN);
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -1048,7 +1057,7 @@ public class TableViewProcessor<T> extends Processor {
             stage.getIcons().add(new Image(Main.class.getResourceAsStream("Product Icon.png")));
             stage.show();
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 
@@ -1066,13 +1075,18 @@ public class TableViewProcessor<T> extends Processor {
         Optional<ButtonType> buttonType = new Alert
                 (Alert.AlertType.CONFIRMATION, alertStr, ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
-            AdminControl.getController().modifyCommentApproval(selectedComment.getCommentID(), approve);
+            modifyTheCommentApproval(selectedComment.getCommentID(), approve);
             if(((TableViewProcessor<T>) parentProcessor).tableViewPane != null) {
                 ((TableViewProcessor<T>) parentProcessor).mainBorderPane.setCenter(((TableViewProcessor<T>) parentProcessor).tableViewPane);
                 ((TableViewProcessor) parentProcessor).updateTable();
                 ((TableViewProcessor) parentProcessor).updateSelectedItem();
             }
         }
+    }
+
+    private void modifyTheCommentApproval(String commentID, boolean approve) {
+        Command<String> command = new Command<>("modify comment approval", Command.HandleType.PRODUCT, commentID, Boolean.toString(approve));
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 
     public void showComment(ActionEvent actionEvent) {
@@ -1092,7 +1106,7 @@ public class TableViewProcessor<T> extends Processor {
             });
             ((TableViewProcessor<T>) parentProcessor).mainBorderPane.setCenter(root);
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 

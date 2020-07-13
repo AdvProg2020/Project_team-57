@@ -431,10 +431,9 @@ public class AdminControl extends AccountControl{
     public ArrayList<Comment> getAllUnApprovedComments() {
         try {
             return ProductTable.getAllUnApprovedComments();
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error In #getAllUnApprovedComments");
+            e.printStackTrace();
         }
         return new ArrayList<>();
     }
@@ -447,10 +446,8 @@ public class AdminControl extends AccountControl{
             }
             ProductTable.modifyCommentApproval(commentID, 3);
             return Notification.DECLINE_COMMENT;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;
     }

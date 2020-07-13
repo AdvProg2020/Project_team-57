@@ -2,6 +2,7 @@ package server.server.handler;
 
 import client.api.Command;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.gson.internal.$Gson$Preconditions;
 import notification.Notification;
 import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
@@ -45,6 +46,12 @@ public class ProductHandler extends Handler {
                 return removeProduct(message.substring(7));
             case "get product comments":
                 return getAllProductComments();
+            case "get all unapproved comments":
+                return getAllUnapprovedComments();
+            case "modify comment approval":
+                return modifyCommentApproval();
+            case "add comment":
+                return addComment();
             case "get average score":
                 return getAverageScore();
             case "add seen":
@@ -73,10 +80,11 @@ public class ProductHandler extends Handler {
         }
     }
 
-    private String getAllShowingProducts() {
-        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
-        Response<Product> response = new Response<>(Notification.PACKET_NOTIFICATION);
-        response.setData(productControl.getAllShowingProducts(server.getPropertyByRelic(command.getRelic())));
+    private String modifyCommentApproval() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String commentID = command.getData(0);
+        boolean approve = command.getData(1).equals("true");
+        Response response = new Response(adminControl.modifyCommentApproval(commentID, approve));
         return gson.toJson(response);
     }
 
@@ -201,20 +209,43 @@ public class ProductHandler extends Handler {
         return gson.toJson(response);
     }
 
-    private String getAllProductComments() {
-        String productID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
-        ArrayList<Comment> commentsArrayList = productControl.getAllProductComments(productID);
-        Response<Comment> response = new Response<>(Notification.PACKET_NOTIFICATION,
-                getCommentArrayFromArrayList(commentsArrayList));
+    private String getAllShowingProducts() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        Response<Product> response = new Response<>(Notification.PACKET_NOTIFICATION);
+        response.setData(productControl.getAllShowingProducts(server.getPropertyByRelic(command.getRelic())));
         return gson.toJson(response);
     }
 
-    private Comment[] getCommentArrayFromArrayList(ArrayList<Comment> commentArrayList) {
-        Comment[] commentsArray = new Comment[commentArrayList.size()];
-        for (int i = 0; i < commentArrayList.size(); i++) {
-            commentsArray[i] = commentArrayList.get(i);
+    private String getAllProductComments() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String username = "", type = "", productID = command.getDatum();
+        if(command.getAuthToken() == null || command.getAuthToken().isEmpty()) {
+            username = server.getUsernameByAuth(command.getAuthToken());
+            type = accountControl.getAccountByUsername(username).getType();
         }
-        return commentsArray;
+
+        ArrayList<Comment> commentsArrayList = productControl.getAllProductComments(productID, username, type);
+        Response<Comment> response = new Response<>(Notification.PACKET_NOTIFICATION, commentsArrayList.toArray(new Comment[0]));
+        return gson.toJson(response);
+    }
+
+    private String getAllUnapprovedComments() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            Response<Comment> response = new Response<>(Notification.PACKET_NOTIFICATION, adminControl.getAllUnApprovedComments().toArray(new Comment[0]));
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String addComment() {
+        Command<Comment> command = commandParser.parseToCommand(Command.class, (Class<Comment>) Comment.class);
+
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            Response response = new Response(productControl.addComment(command.getDatum(), server.getUsernameByAuth(command.getAuthToken())));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String getAverageScore() {
