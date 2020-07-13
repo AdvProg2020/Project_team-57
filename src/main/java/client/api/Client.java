@@ -31,6 +31,8 @@ public class Client {
 
     protected static Function<BufferedImage, Image> bufferedImage2Image;
     protected static Function<List<Integer>, Image> integerArray2Image;
+    public static Function<File, String> file2Extension;
+
     static {
         bufferedImage2Image = new Function<BufferedImage, Image>() {
             @Override
@@ -49,6 +51,7 @@ public class Client {
                 return new ImageView(wr).getImage();
             }
         };
+
         integerArray2Image = new Function<List<Integer>, Image>() {
             @Override
             public Image apply(List<Integer> integers) {
@@ -67,6 +70,8 @@ public class Client {
                 return null;
             }
         };
+
+        file2Extension = (file) -> file.getPath().split("\\.")[file.getPath().split("\\.").length - 1];
     }
 
 

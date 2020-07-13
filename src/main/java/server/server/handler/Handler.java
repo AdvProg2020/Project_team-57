@@ -6,6 +6,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import notification.Notification;
+import server.controller.account.AccountControl;
+import server.controller.account.VendorControl;
+import server.model.existence.Account;
+import server.model.existence.Off;
 import server.server.Response;
 import server.server.Server;
 
@@ -53,4 +57,19 @@ public abstract class Handler extends Thread{
 
     abstract protected String handle() throws InterruptedException;
 
+    protected boolean canChangeOff(String offID, String auth){
+        if(!server.getAuthTokens().containsKey(auth)) {
+            Account account = AccountControl.getController().getAccountByUsername(server.getUsernameByAuth(auth));
+            if(account.getType().equals("Admin"))
+                return true;
+            else if(account.getType().equals("Vendor")) {
+                if(offID == null || offID.equals(""))
+                    return true;
+                Off off = VendorControl.getController().getOffByID(offID);
+                if(off.getVendorUsername().equals(account.getUsername()))
+                    return true;
+            }
+        }
+        return false;
+    }
 }
