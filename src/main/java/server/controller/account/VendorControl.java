@@ -212,10 +212,10 @@ public class VendorControl extends AccountControl{
         return false;
     }
 
-    public ArrayList<Off> getAllOffs() {
+    public ArrayList<Off> getAllOffs(String usernameByAuth) {
         try {
             OffTable.removeOutDatedOffs();
-            return OffTable.getVendorOffs(Control.getUsername());
+            return OffTable.getVendorOffs(usernameByAuth);
         } catch (SQLException e) {
             //:)
         } catch (ClassNotFoundException e) {

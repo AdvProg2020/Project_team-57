@@ -40,9 +40,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SaleProcessor extends Processor implements Initializable {
-/*    private static AdminControl adminControl = AdminControl.getController();
-    private static ProductControl productControl = ProductControl.getController();*/
-
     //DiscountProcess
     public Label discountCodeLabel;
     public Label maxDiscountLabel;
@@ -252,27 +249,21 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     public void getOffImageFile() {
-        Command<String> command = new Command<String>("is off edit", Command.HandleType.SALE, (off.getOffID() == null ? "" : off.getOffID()));
+        Command<String> command = new Command<>("is off edit", Command.HandleType.SALE, (off.getOffID() == null ? "" : off.getOffID()));
         Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
         if(response.getDatum() && !isPreviousOff) {
             command = new Command<>("get editing off image", Command.HandleType.PICTURE_GET, (off.getOffID() == null ? "" : off.getOffID()));
             offImageFile = client.getFile(command);
-            command = new Command<String>("does editing off have image", Command.HandleType.SALE, (off.getOffID() == null ? "" : off.getOffID()));
+            command = new Command<>("does editing off have image", Command.HandleType.SALE, (off.getOffID() == null ? "" : off.getOffID()));
             response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
             isDefaultPicture = response.getDatum();
         } else {
             command = new Command<>("get off image", Command.HandleType.PICTURE_GET, (off.getOffID() == null ? "" : off.getOffID()));
             offImageFile = client.getFile(command);
-            command = new Command<String>("does off have image", Command.HandleType.SALE, (off.getOffID() == null ? "" : off.getOffID()));
+            command = new Command<>("does off have image", Command.HandleType.SALE, (off.getOffID() == null ? "" : off.getOffID()));
             response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
             isDefaultPicture = response.getDatum();
         }
-
-        /*Image image = (off != null && off.getOffID() != null && off.getOffID().length() != 0 ?
-                productControl.getOffImageByID(off.getOffID()) : productControl.getOffImageByID("1"));
-        offImageRectangle.setFill(new ImagePattern(image));
-        if(off == null || off.getOffID() != null || off.getOffID().length() == 0 || productControl.doesOffHaveImage(off.getOffID()))
-            offImageRectangle.setStrokeWidth(0);*/
     }
 
     private void setDateFieldsFromDate(JFXDatePicker datePicker, JFXTimePicker timePicker, Date date) {

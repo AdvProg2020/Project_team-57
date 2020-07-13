@@ -51,10 +51,37 @@ public class SaleHandler extends Handler {
                 return addOff();
             case "edit off":
                 return editOff();
+            case "get vendor offs":
+                return getVendorOffs();
+            case "delete off":
+                return deleteOff();
+            case "get edit off":
+                return getEditOff();
             default:
                 System.err.println("Serious Error In Sale Handler");
                 return null;
         }
+    }
+
+    private String getEditOff() {
+        return gson.toJson(new Response<Off>
+                (Notification.PACKET_NOTIFICATION,
+                        productControl.getEditingOffByID(commandParser.parseDatum(Command.class, (Class<String>)String.class))));
+    }
+
+    private String deleteOff() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        if(canChangeOff(command.getDatum(), command.getAuthToken())) {
+            return gson.toJson(new Response(adminControl.modifyOffApprove(command.getDatum(), false)));
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String getVendorOffs() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        Response<Off> response = new Response<>(Notification.PACKET_NOTIFICATION);
+        response.setData(vendorControl.getAllOffs(server.getUsernameByAuth(command.getAuthToken())));
+        return gson.toJson(response);
     }
 
     private String editOff() {

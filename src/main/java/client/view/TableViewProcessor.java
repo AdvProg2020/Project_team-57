@@ -329,7 +329,7 @@ public class TableViewProcessor<T> extends Processor {
                 tableList.addAll((ArrayList<T>)AdminControl.getController().getAllUnApprovedOffs());
                 break;
             case VENDOR_OFFS:
-                tableList.addAll((ArrayList<T>) VendorControl.getController().getAllOffs());
+                tableList.addAll((ArrayList<T>) getAllOffs());
                 break;
             case LOGS:
                 if(Control.getType().equals("Vendor"))
@@ -352,10 +352,16 @@ public class TableViewProcessor<T> extends Processor {
         selectedItem = tableView.getSelectionModel().getSelectedItem();
     }
 
-    private List<Comment> getAllUnApprovedComments() {
+    private ArrayList<Off> getAllOffs() {
+        Command command = new Command("get vendor offs", Command.HandleType.SALE);
+        Response<Off> response = client.postAndGet(command, Response.class, (Class<Comment>)Comment.class);
+        return new ArrayList<>(response.getData());
+    }
+
+    private ArrayList<Comment> getAllUnApprovedComments() {
         Command command = new Command("get all unapproved comments", Command.HandleType.PRODUCT);
         Response<Comment> response = client.postAndGet(command, Response.class, (Class<Comment>)Comment.class);
-        return response.getData();
+        return new ArrayList<>(response.getData());
     }
 
     private ArrayList<Account> getAllCustomersForDiscount() {
@@ -1120,8 +1126,9 @@ public class TableViewProcessor<T> extends Processor {
         Off off = (Off) ((TableViewProcessor)parentProcessor).tableView.getSelectionModel().getSelectedItem();
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
         try {
-            if(ProductControl.getController().isOffEditing(off.getOffID()))
-                off = ProductControl.getController().getEditingOffByID(off.getOffID());
+
+            if(isOffEditing(off.getOffID()))
+                off = getEditingOffByID(off.getOffID());
             Parent root = loader.load();
             SaleProcessor processor = loader.getController();
             processor.setParentProcessor(this.parentProcessor);
@@ -1141,6 +1148,18 @@ public class TableViewProcessor<T> extends Processor {
         }
     }
 
+    private Off getEditingOffByID(String offID) {
+        Command<String> command = new Command<>("get edit off", Command.HandleType.SALE, offID);
+        Response<Off> response = client.postAndGet(command, Response.class, (Class<Off>)Off.class);
+        return response.getDatum();
+    }
+
+    private boolean isOffEditing(String offID) {
+        Command<String> command = new Command<>("is off edit", Command.HandleType.SALE, offID);
+        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+        return response.getDatum();
+    }
+
     public void approveOff(ActionEvent actionEvent) {
         Off selectedOff = (Off) ((TableViewProcessor)parentProcessor).selectedItem;
         Optional<ButtonType> buttonType = new Alert
@@ -1157,7 +1176,9 @@ public class TableViewProcessor<T> extends Processor {
         Optional<ButtonType> buttonType = new Alert
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Delete " + selectedOff.getOffName() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
-            AdminControl.getController().modifyOffApprove(selectedOff.getOffID(), false);
+            Command<String> command = new Command<>("delete off", Command.HandleType.SALE, selectedOff.getOffID());
+            client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+            //AdminControl.getController().modifyOffApprove(selectedOff.getOffID(), false);
         }
         ((TableViewProcessor)parentProcessor).updateTable();
         ((TableViewProcessor)parentProcessor).updateSelectedItem();
