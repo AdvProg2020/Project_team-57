@@ -326,7 +326,7 @@ public class TableViewProcessor<T> extends Processor {
                 tableList.addAll((ArrayList<T>)getAllUnApprovedComments());
                 break;
             case ADMIN_OFFS:
-                tableList.addAll((ArrayList<T>)AdminControl.getController().getAllUnApprovedOffs());
+                tableList.addAll((ArrayList<T>)getAllUnApprovedOffs());
                 break;
             case VENDOR_OFFS:
                 tableList.addAll((ArrayList<T>) getAllOffs());
@@ -350,6 +350,15 @@ public class TableViewProcessor<T> extends Processor {
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
         selectedItem = tableView.getSelectionModel().getSelectedItem();
+    }
+
+    private ArrayList<Off> getAllUnApprovedOffs() {
+        ArrayList<Off> offs = new ArrayList<>();
+
+        Command command = new Command("get all unapproved offs", Command.HandleType.SALE);
+        Response<Off> response = client.postAndGet(command, Response.class, (Class<Off>)Off.class);
+        offs.addAll(response.getData());
+        return offs;
     }
 
     private ArrayList<Off> getAllOffs() {

@@ -16,6 +16,8 @@ import server.server.Server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SaleHandler extends Handler {
     AccountControl accountControl = AccountControl.getController();
@@ -52,7 +54,9 @@ public class SaleHandler extends Handler {
             case "edit off":
                 return editOff();
             case "get vendor offs":
-                return getVendorOffs();
+                return getOffs("vendor offs");
+            case "get all unapproved offs":
+                return getOffs("all unapproved offs");
             case "delete off":
                 return deleteOff();
             case "get edit off":
@@ -116,10 +120,24 @@ public class SaleHandler extends Handler {
         return gson.toJson(HACK_RESPONSE);
     }
 
-    private String getVendorOffs() {
+    private String getOffs(String offsType) {
         Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
         Response<Off> response = new Response<>(Notification.PACKET_NOTIFICATION);
-        response.setData(vendorControl.getAllOffs(server.getUsernameByAuth(command.getAuthToken())));
+
+        List<Off> offs = null;
+        switch (offsType) {
+            case "vendor offs":
+                offs = vendorControl.getAllOffs(server.getUsernameByAuth(command.getAuthToken()));
+                break;
+            case "all unapproved offs":
+                offs = adminControl.getAllUnApprovedOffs();
+                break;
+            default:
+                System.err.println("Error IN #getOffs");
+                offs = new ArrayList<>();
+        }
+        response.setData(offs);
+
         return gson.toJson(response);
     }
 
