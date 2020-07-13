@@ -44,6 +44,8 @@ public class ProductHandler extends Handler {
             case "remove edit product":
             case "remove cart product":
                 return removeProduct(message.substring(7));
+            case "is product purchased by customer":
+                return isProductPurchasedByCustomer();
             case "get product comments":
                 return getAllProductComments();
             case "get all unapproved comments":
@@ -78,6 +80,14 @@ public class ProductHandler extends Handler {
                 System.err.println("Serious Error In Product Handler");
                 return null;
         }
+    }
+
+    private String isProductPurchasedByCustomer() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String productID = command.getData(0), customerUsername = command.getData(1);
+        Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION,
+                customerControl.isProductPurchasedByCustomer(productID, customerUsername));
+        return gson.toJson(response);
     }
 
     private String modifyCommentApproval() {

@@ -1068,7 +1068,7 @@ public class ProductProcessor extends Processor {
                 comment = productComment;
                 setStringFields(commentTitle, 16);
                 setStringFields(commentContent, 100);
-                if(!customerControl.isProductPurchasedByCustomer(product.getID(), getUsername())) {
+                if(!isProductPurchasedByCustomer(product.getID(), getUsername())) {
                     commentPane.getChildren().remove(commentScore);
                 }
                 break;

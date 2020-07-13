@@ -513,10 +513,8 @@ public class CustomerControl extends AccountControl{
     public boolean isProductPurchasedByCustomer(String productID, String customerUsername) {
         try {
             return LogTable.isProductPurchasedByCustomer(productID, customerUsername);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return false;
     }

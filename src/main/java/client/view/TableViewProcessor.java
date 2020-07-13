@@ -1098,7 +1098,7 @@ public class TableViewProcessor<T> extends Processor {
             processor.commentTitleField.setText(comment.getTitle());
             processor.commentContentArea.setText(comment.getContent());
             processor.commenterBoughtCheckBox.setSelected
-                    (CustomerControl.getController().isProductPurchasedByCustomer(comment.getProductID(), comment.getCustomerUsername()));
+                    (isProductPurchasedByCustomer(comment.getProductID(), comment.getCustomerUsername()));
             processor.showCommentBackButton.setOnMouseClicked(event -> {
                 ((TableViewProcessor) parentProcessor).mainBorderPane.setCenter(((TableViewProcessor) parentProcessor).tableViewPane);
                 ((TableViewProcessor) parentProcessor).updateTable();

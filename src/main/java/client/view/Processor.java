@@ -265,6 +265,12 @@ public abstract class Processor {
         return client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 
+    protected boolean isProductPurchasedByCustomer(String productID, String customerUsername) {
+        Command<String> command = new Command<>("is product purchased by customer", Command.HandleType.PRODUCT, productID, customerUsername);
+        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+        return response.getDatum();
+    }
+
     protected TreeItem<Category> getCategoryTableRoot() {
         ArrayList<Category> allCategories = getAllCategoriesAsArray();
         TreeItem<Category> rootCategory = new TreeItem<>(allCategories.get(0));
