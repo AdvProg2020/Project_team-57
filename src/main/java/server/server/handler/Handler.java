@@ -58,7 +58,7 @@ public abstract class Handler extends Thread{
     abstract protected String handle() throws InterruptedException;
 
     protected boolean canChangeOff(String offID, String auth){
-        if(!server.getAuthTokens().containsKey(auth)) {
+        if(server.getAuthTokens().containsKey(auth)) {
             Account account = AccountControl.getController().getAccountByUsername(server.getUsernameByAuth(auth));
             if(account.getType().equals("Admin"))
                 return true;

@@ -29,8 +29,6 @@ public class OffsProcessor implements Initializable {
     private static final long ONE_MINUTE_MILLIS = 60000;
     private static final long ONE_SECOND_MILLIS = 1000;
 
-
-
     private final CustomerControl customerControl = CustomerControl.getController();
     private final ProductControl productControl = ProductControl.getController();
     private final ArrayList<Off> offs = new ArrayList<>(customerControl.getAllShowingOffs());

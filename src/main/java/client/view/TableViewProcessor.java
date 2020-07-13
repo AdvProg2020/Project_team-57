@@ -604,6 +604,13 @@ public class TableViewProcessor<T> extends Processor {
             Pane root = loader.load();
             TableViewProcessor processor = loader.getController();
             processor.setParentProcessor(this);
+            Stop[] stops = new Stop[] {
+                    new Stop(0, Color.valueOf("#360033")),
+                    new Stop(1, Color.valueOf("#127183"))
+            };
+            LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+            BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
+            processor.optionPane.setBackground(new Background(backgroundFill));
             if(selectedItem != null) {
                 Off off = (Off)selectedItem;
                 processor.editOffButton.setDisable(false);
@@ -613,7 +620,7 @@ public class TableViewProcessor<T> extends Processor {
                 return root;
             } else {
                 processor.offImageRectangle.setStrokeWidth(0);
-                processor.offImageRectangle.setFill(new ImagePattern(ProductControl.getController().getOffImageByID("")));
+                processor.offImageRectangle.setFill(new ImagePattern(client.getImage(getOffImageCommand("", false))));
                 processor.terminateOptions();
             }
             return root;
@@ -1176,8 +1183,8 @@ public class TableViewProcessor<T> extends Processor {
         Off off = (Off) ((TableViewProcessor)parentProcessor).selectedItem;
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
         try {
-            if(ProductControl.getController().isOffEditing(off.getOffID()))
-                off = ProductControl.getController().getEditingOffByID(off.getOffID());
+            if(isOffEditing(off.getOffID()))
+                off = getEditingOffByID(off.getOffID());
             Parent root = loader.load();
             SaleProcessor processor = loader.getController();
             processor.setParentProcessor(this.parentProcessor);

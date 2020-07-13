@@ -184,7 +184,7 @@ public class SaleProcessor extends Processor implements Initializable {
                 setDateFieldsFromDate(offStartDatePicker, offStartTimePicker, mainOff.getStartDate());
             if(mainOff.getFinishDate() != null)
                 setDateFieldsFromDate(offFinishDatePicker, offFinishTimePicker, mainOff.getFinishDate());
-            if(Control.getType().equals("Admin")) {
+            if(getType().equals("Admin")) {
                 setAdminOffInfoFields(mainOff);
             } else {
                 setVendorOffInfoFields(mainOff);
@@ -448,16 +448,17 @@ public class SaleProcessor extends Processor implements Initializable {
                 offProductsPane.setStyle("-fx-background-color: #3498DB;   -fx-background-radius: 0 10 10 0;");
                 ProductsProcessor processor = loader.getController();
                 processor.setParentProcessor(this);
-                if (Control.getType() != null && (Control.getType().equals("Vendor")) && !isEditing && off.getStatus() != 2)
+                String type = getType();
+                if (type != null && (type.equals("Vendor")) && !isEditing && off.getStatus() != 2)
                     processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_ADD_OFF_PRODUCTS);
-                else if(Control.getType() != null && (Control.getType().equals("Vendor")) && isEditing && off.getStatus() != 2) {
+                else if(type != null && (type.equals("Vendor")) && isEditing && off.getStatus() != 2) {
                     processor.setSelectedOff(off);
                     processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_OFF_PRODUCTS);
-                } else if(Control.getType() != null && (Control.getType().equals("Vendor")) && isEditing && off.getStatus() == 2) {
+                } else if(type != null && (type.equals("Vendor")) && isEditing && off.getStatus() == 2) {
                     processor.setSelectedOff(off);
                     processor.initProcessor(ProductsProcessor.ProductsMenuType.VENDOR_OFF_PRODUCTS_UNAPPROVED);
                 }
-                else if (Control.getType() != null && (Control.getType().equals("Admin"))) {
+                else if (type != null && (type.equals("Admin"))) {
                     processor.setSelectedOff(off);
                     processor.initProcessor(ProductsProcessor.ProductsMenuType.ADMIN_OFF_PRODUCTS);
                 }
@@ -477,8 +478,9 @@ public class SaleProcessor extends Processor implements Initializable {
         File imageFile = (isDefaultPicture ? null : offImageFile);
         if(!isEditing) {
             Command<Off> command = new Command<>("add off", Command.HandleType.SALE, off);
-            Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+            Response<String> response = client.postAndGet(command, Response.class, (Class<String>)String.class);
             Notification resultNotification = response.getMessage();
+            off.setOffID(response.getDatum());
             Command<String> extensionCommand = new Command<>("send off image", Command.HandleType.PICTURE_SEND, off.getOffID(), client.file2Extension.apply(imageFile));
             client.sendImage(extensionCommand, imageFile);
             if (resultNotification == Notification.ADD_OFF && this.parentProcessor instanceof TableViewProcessor) {
@@ -493,7 +495,6 @@ public class SaleProcessor extends Processor implements Initializable {
             Notification resultNotification = response.getMessage();
             Command<String> extensionCommand = new Command<>("send editing off image", Command.HandleType.PICTURE_SEND, off.getOffID(), client.file2Extension.apply(imageFile));
             client.sendImage(extensionCommand, imageFile);
-//            Notification resultNotification = VendorControl.getController().editOff(off, imageFile);
             if (resultNotification == Notification.EDIT_OFF) {
                 ((TableViewProcessor) parentProcessor).updateTable();
                 ((TableViewProcessor) parentProcessor).updateSelectedItem();

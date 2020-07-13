@@ -358,7 +358,7 @@ public class ProductsProcessor extends Processor{
                 allProducts = new ArrayList<>(client.postAndGet(new Command("get not approved products", Command.HandleType.PRODUCT), Response.class, (Class<Product>)Product.class).getData());
                 break;
             case VENDOR_ADD_OFF_PRODUCTS:
-                allProducts = VendorControl.getController().getNonOffProducts();
+                allProducts = new ArrayList<>(client.postAndGet(new Command("get non off products", Command.HandleType.SALE), Response.class, (Class<Product>)Product.class).getData());
                 break;
             case VENDOR_OFF_PRODUCTS_UNAPPROVED:
             case ADMIN_OFF_PRODUCTS:
@@ -366,7 +366,6 @@ public class ProductsProcessor extends Processor{
                     return;
                 allProducts = ProductControl.getController().getAllOffProductsByOffID(selectedOff);
                 break;
-
             case VENDOR_OFF_PRODUCTS:
                 if(!isThereOff(selectedOff))
                     return;

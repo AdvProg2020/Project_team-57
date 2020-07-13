@@ -10,6 +10,7 @@ import server.controller.product.ProductControl;
 import server.model.existence.Category;
 import server.model.existence.Discount;
 import server.model.existence.Off;
+import server.model.existence.Product;
 import server.server.Property;
 import server.server.Response;
 import server.server.Server;
@@ -57,10 +58,19 @@ public class SaleHandler extends Handler {
                 return deleteOff();
             case "get edit off":
                 return getEditOff();
+            case "get non off products":
+                return getNonOffProducts();
             default:
                 System.err.println("Serious Error In Sale Handler");
                 return null;
         }
+    }
+
+    private String getNonOffProducts() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        Response<Product> response = new Response<>(Notification.PACKET_NOTIFICATION);
+        response.setData(vendorControl.getNonOffProducts(server.getUsernameByAuth(command.getAuthToken())));
+        return gson.toJson(response);
     }
 
     private String getEditOff() {
@@ -94,9 +104,11 @@ public class SaleHandler extends Handler {
     }
 
     private String addOff() {
+        System.err.println("Hadeaghal ta inja oomad");
         Command<Off> command = commandParser.parseToCommand(Command.class, (Class<Off>)Off.class);
         if(canChangeOff(command.getDatum().getOffID(), command.getAuthToken())) {
-            Response response = new Response(vendorControl.addOff(command.getDatum(), server.getUsernameByAuth(command.getAuthToken())));
+            Off off = command.getDatum();
+            Response<String> response = new Response<>(vendorControl.addOff(off, server.getUsernameByAuth(command.getAuthToken())), off.getOffID());
             return gson.toJson(response);
         }
         return gson.toJson(HACK_RESPONSE);

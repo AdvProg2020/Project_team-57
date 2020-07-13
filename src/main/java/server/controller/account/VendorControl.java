@@ -290,7 +290,7 @@ public class VendorControl extends AccountControl{
         return offID.toString();
     }
 
-    public ArrayList<Product> getNonOffProducts(String... exceptions) {
+    public ArrayList<Product> getNonOffProducts(String username, String... exceptions) {
         ArrayList<Product> nonOffProducts = new ArrayList<>();
         try {
             OffTable.removeOutDatedOffs();

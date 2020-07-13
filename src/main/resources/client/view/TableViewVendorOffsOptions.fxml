@@ -6,11 +6,11 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="230.0" style="-fx-background-color: #e0f2f1;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.TableViewProcessor">
+<Pane fx:id="optionPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="230.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.TableViewProcessor">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="41.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutX="189.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="41.0" />
-      <Label fx:id="offNameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="252.0" prefWidth="210.0" text="Off Name">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2f999f" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="41.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#2f999f" height="10.0" layoutX="189.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="41.0" />
+      <Label fx:id="offNameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="252.0" prefWidth="210.0" text="Off Name" textFill="WHITE">
          <font>
             <Font name="Calibri" size="17.0" />
          </font>
@@ -25,7 +25,7 @@
             <Font size="14.0" />
          </font>
       </JFXButton>
-      <Rectangle fx:id="offImageRectangle" arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="150.0" layoutX="40.0" layoutY="88.0" stroke="#4db6ac" strokeType="INSIDE" width="150.0" />
+      <Rectangle fx:id="offImageRectangle" arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="150.0" layoutX="40.0" layoutY="88.0" stroke="#2f999f" strokeType="INSIDE" width="150.0" />
       <JFXButton fx:id="addNewOffButton" buttonType="RAISED" layoutX="22.0" layoutY="569.0" onAction="#addNewOff" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="30.0" prefWidth="187.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Add New Off">
          <font>
             <Font size="14.0" />
