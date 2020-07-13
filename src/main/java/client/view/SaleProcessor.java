@@ -40,8 +40,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SaleProcessor extends Processor implements Initializable {
-/*    private static AdminControl adminControl = AdminControl.getController();
-    private static ProductControl productControl = ProductControl.getController();*/
+    private static AdminControl adminControl = AdminControl.getController();
+    private static ProductControl productControl = ProductControl.getController();
 
     //DiscountProcess
     public Label discountCodeLabel;
