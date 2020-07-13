@@ -118,7 +118,7 @@ public class SaleProcessor extends Processor implements Initializable {
         Discount mainDiscount = ((SaleProcessor) parentProcessor).discount;
 
         if(mainDiscount == null) {
-            ((SaleProcessor) parentProcessor).discount = new Discount();
+            System.err.println("Shit Error In Sale Processor");
         } else {
             discountCodeTextField.setText(mainDiscount.getCode());
 
@@ -398,7 +398,8 @@ public class SaleProcessor extends Processor implements Initializable {
 
     public void setDiscount(Discount discount) {
         this.discount = discount;
-
+        Command<Discount> command = new Command<>("add discount to property", Command.HandleType.GENERAL, discount);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
         //Todo Jesus
 //        setFields();
     }

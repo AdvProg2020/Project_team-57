@@ -7,6 +7,8 @@ import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
 import server.controller.product.ProductControl;
 import server.model.existence.Category;
+import server.model.existence.Discount;
+import server.server.Property;
 import server.server.Response;
 import server.server.Server;
 
@@ -34,10 +36,36 @@ public class SaleHandler extends Handler {
             case "edit category field-parent name":
             case "edit category field-features":
                 return editCategory();
+            case "get all discounts":
+                return getAllDiscounts();
+            case "delete discount":
+                return deleteDiscount();
             default:
                 System.err.println("Serious Error In Sale Handler");
                 return null;
         }
+    }
+
+    private String deleteDiscount() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")){
+            Response<Discount> response = new Response<>(Notification.PACKET_NOTIFICATION);
+            AdminControl.getController().removeDiscountByID(command.getDatum());
+            server.getPropertyByRelic(command.getRelic()).removeDiscountFromHashMapByDiscountID(command.getDatum());
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
+
+    }
+
+    private String getAllDiscounts() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")){
+            Response<Discount> response = new Response<>(Notification.PACKET_NOTIFICATION);
+            response.setData(adminControl.getAllDiscounts());
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String editCategory() {

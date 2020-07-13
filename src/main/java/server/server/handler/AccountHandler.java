@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import notification.Notification;
 import server.controller.IOControl;
 import server.controller.account.AccountControl;
+import server.controller.account.AdminControl;
 import server.model.existence.Account;
 import server.server.Response;
 import server.server.Server;
@@ -14,6 +15,7 @@ import java.io.*;
 public class AccountHandler extends Handler {
     private final IOControl ioControl = IOControl.getController();
     private final AccountControl accountControl = AccountControl.getController();
+    private final AdminControl adminControl = AdminControl.getController();
 
     public AccountHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
         super(outStream, inStream, server, input);
@@ -54,15 +56,29 @@ public class AccountHandler extends Handler {
                 return getCredit();
             case "modified accounts" :
                 return getModifiedAccounts();
-
+            case "get all customers with search":
+                return getAllCustomersWithSearch();
+            case "get all customers":
+                return getAllCustomers();
             default:
                 return null/*server.getUnknownError()*/;
         }
     }
 
+    private String getAllCustomers() {
+        Response<Account> response = new Response<>(Notification.PACKET_NOTIFICATION);
+        response.setData(adminControl.getModifiedAccounts(Account.AccountType.CUSTOMER));
+        return gson.toJson(response);
+    }
+
+    private String getAllCustomersWithSearch() {
+        Response<Account> response = new Response<>(Notification.PACKET_NOTIFICATION);
+        response.setData(adminControl.getModifiedAccounts(Account.AccountType.CUSTOMER, commandParser.parseDatum(Command.class, (Class<String>)String.class)));
+        return gson.toJson(response);
+    }
+
     private String getModifiedAccounts() {
         Command<Account.AccountType> command = commandParser.parseToCommand(Command.class, (Class<Account.AccountType>) Account.AccountType.class);
-
         if(accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
             Response<Account> response = new Response<>(Notification.PACKET_NOTIFICATION);
             response.setData(accountControl.getModifiedAccounts(command.getDatum(), accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getUsername()));

@@ -50,6 +50,8 @@ public class GeneralHandler extends Handler {
                 return initDiscountAddedUsers();
             case "get discount added users":
                 return discountAddedUsers();
+            case "add discount to property":
+                return addDiscountToProperty();
             case "remove discount from property":
                 return removeDiscountFromProperty();
             case "add customer to discount":
@@ -64,21 +66,36 @@ public class GeneralHandler extends Handler {
         }
     }
 
+    private String addDiscountToProperty() {
+        Command<Discount> command = commandParser.parseToCommand(Command.class, (Class<Discount>)Discount.class);
+        Property property = server.getPropertyByRelic(command.getRelic());
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")){
+            property.addDiscountToHashMap(command.getDatum());
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
     private String removeDiscountFromProperty() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
         Property property = server.getPropertyByRelic(command.getRelic());
-        property.removeDiscountFromHashMapByDiscountID(command.getDatum());
-        Response response = new Response(Notification.PACKET_NOTIFICATION);
-        return gson.toJson(response);
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")){
+            property.removeDiscountFromHashMapByDiscountID(command.getDatum());
+            Response response = new Response(Notification.PACKET_NOTIFICATION);
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String addDiscount() {
         Command<Discount> command = commandParser.parseToCommand(Command.class, (Class<Discount>)Discount.class);
         Property property = server.getPropertyByRelic(command.getRelic());
         Discount discount = command.getDatum();
-
-        Response response = new Response(adminControl.addAddedDiscount(discount, getDiscountAddedUsers(discount.getID(), property)));
-        return gson.toJson(response);
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")){
+            Response response = new Response(adminControl.addAddedDiscount(discount, getDiscountAddedUsers(discount.getID(), property)));
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String deleteCustomerFromDiscount() {

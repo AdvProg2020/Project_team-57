@@ -312,11 +312,12 @@ public class TableViewProcessor<T> extends Processor {
                 tableList.addAll((ArrayList<T>)getModifiedAccounts(tableViewType.getAccountType()));
                 break;
             case DISCOUNTS:
-                tableList.addAll((ArrayList<T>)AdminControl.getController().getAllDiscounts());
+                tableList.addAll((ArrayList<T>)getAllDiscounts());
                 break;
             case DISCOUNT_CUSTOMERS:
                 //TODO(FOR CHECKBOX)
-                tableList.addAll((ArrayList<T>)((SaleProcessor)parentProcessor).getDiscountAddedUsers());
+
+                tableList.addAll((ArrayList<T>)getAllCustomersForDiscount());
                 break;
             case ADMIN_COMMENTS:
                 tableList.addAll((ArrayList<T>)AdminControl.getController().getAllUnApprovedComments());
@@ -346,6 +347,25 @@ public class TableViewProcessor<T> extends Processor {
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
         selectedItem = tableView.getSelectionModel().getSelectedItem();
+    }
+
+    private ArrayList<Account> getAllCustomersForDiscount() {
+        ArrayList<Account> customers = new ArrayList<>();
+        Command<String> command;
+        if(searchedUsername != null && searchedUsername.length() > 0) {
+            command = new Command<>("get all customers with search", Command.HandleType.ACCOUNT, searchedUsername);
+        } else {
+            command = new Command<>("get all customers", Command.HandleType.ACCOUNT);
+        }
+        Response<Account> response = client.postAndGet(command, Response.class, (Class<Account>)Account.class);
+        customers.addAll(response.getData());
+        return customers;
+    }
+
+    private ArrayList<Discount> getAllDiscounts() {
+        Command command = new Command("get all discounts", Command.HandleType.SALE);
+        Response<Discount> response = client.postAndGet(command, Response.class, (Class<Discount>)Discount.class);
+        return new ArrayList<>(response.getData());
     }
 
     private ArrayList<Account> getModifiedAccounts(Account.AccountType accountType) {
@@ -931,7 +951,6 @@ public class TableViewProcessor<T> extends Processor {
             SaleProcessor processor = loader.getController();
             processor.setDiscount(discount);
             processor.discountInfoMouseClicked(null);
-            AdminControl.getController().addDiscountToHashMap(processor.getDiscount());
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             newStage.setTitle("Show Discount " + discount.getID());
@@ -951,7 +970,8 @@ public class TableViewProcessor<T> extends Processor {
         Optional<ButtonType> buttonType = new Alert
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Delete " + selectedDiscount.getCode() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
-            AdminControl.getController().removeDiscountByID(selectedDiscount.getID());
+            Command<String> command = new Command<>("delete discount", Command.HandleType.SALE, selectedDiscount.getID());
+            client.postAndGet(command, Response.class, (Class<Object>)Object.class);
             ((TableViewProcessor) parentProcessor).updateTable();
             ((TableViewProcessor) parentProcessor).updateSelectedItem();
         }
@@ -963,8 +983,8 @@ public class TableViewProcessor<T> extends Processor {
             try {
                 Parent root = loader.load();
                 SaleProcessor processor = loader.getController();
+                processor.setDiscount(new Discount());
                 processor.discountInfoMouseClicked(null);
-                AdminControl.getController().addDiscountToHashMap(processor.getDiscount());
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
                 newStage.setTitle("Add New Discount");
