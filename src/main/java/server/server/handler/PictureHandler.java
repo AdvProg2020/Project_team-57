@@ -139,9 +139,11 @@ public class PictureHandler extends Handler {
             case "get off image":
                 sendExtension("off");
                 imageInputStream = getOffImageInputStream();
+                break;
             case "get editing off image":
                 sendExtension("editing off");
                 imageInputStream = getEditingOffImageInputStream();
+                break;
             default:
                 System.err.println("Serious Error In Sending ");
         }
@@ -186,9 +188,11 @@ public class PictureHandler extends Handler {
             case "off" :
                 ID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
                 extension = productControl.getOffImageExtensionByID(ID);
+                break;
             case "editing off":
                 ID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
                 extension = productControl.getEditingOffImageExtensionByID(ID);
+                break;
             default:
                 System.err.println("Error In #sendExtension");
                 return;

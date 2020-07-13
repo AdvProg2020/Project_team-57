@@ -294,4 +294,20 @@ public abstract class Processor {
         return new ArrayList<>(categoryResponse.getData());
     }
 
+    protected boolean isOffEditing(String offID) {
+        Command<String> command = new Command<>("is off edit", Command.HandleType.SALE, (offID == null ? "" : offID));
+        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+        return response.getDatum();
+    }
+
+    protected Command<String> getOffImageCommand(String offID, boolean isEditing) {
+        Command<String> command = new Command<>((isEditing ? "get editing off image" : "get off image"), Command.HandleType.PICTURE_GET, (offID == null ? "" : offID));
+        return command;
+    }
+
+    protected boolean doesOffHaveImage(String offID, boolean isEditing) {
+        Command<String> command = new Command<>((isEditing ? "does editing off have image" : "does off have image"), Command.HandleType.SALE, (offID == null ? "" : offID));
+        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+        return response.getDatum();
+    }
 }

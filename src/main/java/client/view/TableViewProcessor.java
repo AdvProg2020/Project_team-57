@@ -354,7 +354,7 @@ public class TableViewProcessor<T> extends Processor {
 
     private ArrayList<Off> getAllOffs() {
         Command command = new Command("get vendor offs", Command.HandleType.SALE);
-        Response<Off> response = client.postAndGet(command, Response.class, (Class<Comment>)Comment.class);
+        Response<Off> response = client.postAndGet(command, Response.class, (Class<Off>)Off.class);
         return new ArrayList<>(response.getData());
     }
 
@@ -859,16 +859,10 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private void setOffPicture(Rectangle offImageRectangle, Off off) {
-        if(!ProductControl.getController().isOffEditing(off.getOffID())) {
-            if(!ProductControl.getController().doesOffHaveImage(off.getOffID()))
-                offImageRectangle.setStrokeWidth(0);
-            offImageRectangle.setFill(new ImagePattern(ProductControl.getController().getOffImageByID(off.getOffID())));
-        }
-        else {
-            if(!ProductControl.getController().doesEditingOffHaveImage(off.getOffID()))
-                offImageRectangle.setStrokeWidth(0);
-            offImageRectangle.setFill(new ImagePattern(ProductControl.getController().getEditingOffImageByID(off.getOffID())));
-        }
+        boolean isEditing = isOffEditing(off.getOffID());
+        if(!doesOffHaveImage(off.getOffID(), isEditing))
+            offImageRectangle.setStrokeWidth(0);
+        offImageRectangle.setFill(new ImagePattern(client.getImage(getOffImageCommand(off.getOffID(), isEditing))));
     }
 
     //Graphics
@@ -1151,12 +1145,6 @@ public class TableViewProcessor<T> extends Processor {
     private Off getEditingOffByID(String offID) {
         Command<String> command = new Command<>("get edit off", Command.HandleType.SALE, offID);
         Response<Off> response = client.postAndGet(command, Response.class, (Class<Off>)Off.class);
-        return response.getDatum();
-    }
-
-    private boolean isOffEditing(String offID) {
-        Command<String> command = new Command<>("is off edit", Command.HandleType.SALE, offID);
-        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
         return response.getDatum();
     }
 

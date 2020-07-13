@@ -249,20 +249,12 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     public void getOffImageFile() {
-        Command<String> command = new Command<>("is off edit", Command.HandleType.SALE, (off.getOffID() == null ? "" : off.getOffID()));
-        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
-        if(response.getDatum() && !isPreviousOff) {
-            command = new Command<>("get editing off image", Command.HandleType.PICTURE_GET, (off.getOffID() == null ? "" : off.getOffID()));
-            offImageFile = client.getFile(command);
-            command = new Command<>("does editing off have image", Command.HandleType.SALE, (off.getOffID() == null ? "" : off.getOffID()));
-            response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
-            isDefaultPicture = response.getDatum();
+        if(isOffEditing(off.getOffID()) && !isPreviousOff) {
+            offImageFile = client.getFile(getOffImageCommand(off.getOffID(), true));
+            isDefaultPicture = doesOffHaveImage(off.getOffID(), true);
         } else {
-            command = new Command<>("get off image", Command.HandleType.PICTURE_GET, (off.getOffID() == null ? "" : off.getOffID()));
-            offImageFile = client.getFile(command);
-            command = new Command<>("does off have image", Command.HandleType.SALE, (off.getOffID() == null ? "" : off.getOffID()));
-            response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
-            isDefaultPicture = response.getDatum();
+            offImageFile = client.getFile(getOffImageCommand(off.getOffID(), false));
+            isDefaultPicture = doesOffHaveImage(off.getOffID(), false);
         }
     }
 
