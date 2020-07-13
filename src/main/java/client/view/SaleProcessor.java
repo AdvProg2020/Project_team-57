@@ -251,10 +251,10 @@ public class SaleProcessor extends Processor implements Initializable {
     public void getOffImageFile() {
         if(isOffEditing(off.getOffID()) && !isPreviousOff) {
             offImageFile = client.getFile(getOffImageCommand(off.getOffID(), true));
-            isDefaultPicture = doesOffHaveImage(off.getOffID(), true);
+            isDefaultPicture = !doesOffHaveImage(off.getOffID(), true);
         } else {
             offImageFile = client.getFile(getOffImageCommand(off.getOffID(), false));
-            isDefaultPicture = doesOffHaveImage(off.getOffID(), false);
+            isDefaultPicture = !doesOffHaveImage(off.getOffID(), false);
         }
     }
 

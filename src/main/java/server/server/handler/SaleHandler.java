@@ -11,7 +11,6 @@ import server.model.existence.Category;
 import server.model.existence.Discount;
 import server.model.existence.Off;
 import server.model.existence.Product;
-import server.server.Property;
 import server.server.Response;
 import server.server.Server;
 
@@ -59,17 +58,47 @@ public class SaleHandler extends Handler {
             case "get edit off":
                 return getEditOff();
             case "get non off products":
-                return getNonOffProducts();
+                return getNonOffProducts(false);
+            case "is there off":
+                return isThereOff();
+            case "get off":
+                return getOff();
+            case "get non off products with exceptions":
+                return getNonOffProducts(true);
+            case "get off products":
+                return getOffProducts();
             default:
                 System.err.println("Serious Error In Sale Handler");
                 return null;
         }
     }
 
-    private String getNonOffProducts() {
-        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+    private String getOffProducts() {
+        return gson.toJson(
+                new Response<Product>(Notification.PACKET_NOTIFICATION,
+                        productControl.getAllOffProductsByOffID
+                                (commandParser.parseDatum(Command.class, (Class<String>)String.class)).toArray(new Product[0])));
+    }
+
+    private String getOff() {
+        return gson.toJson(new Response<Off>
+                (Notification.PACKET_NOTIFICATION,
+                        productControl.getOffByID(commandParser.parseDatum(Command.class, (Class<String>)String.class))));
+    }
+
+    private String isThereOff() {
+        return gson.toJson(
+                new Response<>(Notification.PACKET_NOTIFICATION,
+                        productControl.isThereOffWithID(commandParser.parseDatum(Command.class, (Class<String>)String.class))));
+    }
+
+    private String getNonOffProducts(boolean hasException) {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
         Response<Product> response = new Response<>(Notification.PACKET_NOTIFICATION);
-        response.setData(vendorControl.getNonOffProducts(server.getUsernameByAuth(command.getAuthToken())));
+        if(hasException) {
+            response.setData(vendorControl.getNonOffProducts(server.getUsernameByAuth(command.getAuthToken()), command.getDatum()));
+        } else
+            response.setData(vendorControl.getNonOffProducts(server.getUsernameByAuth(command.getAuthToken())));
         return gson.toJson(response);
     }
 

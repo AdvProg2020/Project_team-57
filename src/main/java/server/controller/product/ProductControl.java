@@ -848,9 +848,9 @@ public class ProductControl extends Control {
         return imageFiles;
     }
 
-    public ArrayList<Product> getAllOffProductsByOffID(Off off) {
+    public ArrayList<Product> getAllOffProductsByOffID(String offID) {
         try {
-            return convertIDsToProducts(off.getProductIDs());
+            return convertIDsToProducts(OffTable.getSpecificOff(offID).getProductIDs());
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

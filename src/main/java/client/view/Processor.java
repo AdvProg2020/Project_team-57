@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import notification.Notification;
 import server.model.existence.Account;
 import server.model.existence.Category;
+import server.model.existence.Off;
 import server.model.existence.Product;
 import server.server.Response;
 
@@ -257,6 +258,12 @@ public abstract class Processor {
     protected Product getProductByID(String ID, String productType) {
         Command<String> command = new Command<>("get " + productType, Command.HandleType.PRODUCT, ID);
         Response<Product> response = client.postAndGet(command, Response.class, (Class<Product>)Product.class);
+        return response.getDatum();
+    }
+
+    protected Off getOffByID(String ID, String offType) {
+        Command<String> command = new Command<>("get " + offType, Command.HandleType.SALE, ID);
+        Response<Off> response = client.postAndGet(command, Response.class, (Class<Off>)Off.class);
         return response.getDatum();
     }
 

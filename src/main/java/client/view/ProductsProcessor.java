@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
+import static client.api.Command.HandleType.SALE;
 import static javafx.scene.control.ButtonType.NO;
 import static javafx.scene.control.ButtonType.YES;
 
@@ -358,18 +359,18 @@ public class ProductsProcessor extends Processor{
                 allProducts = new ArrayList<>(client.postAndGet(new Command("get not approved products", Command.HandleType.PRODUCT), Response.class, (Class<Product>)Product.class).getData());
                 break;
             case VENDOR_ADD_OFF_PRODUCTS:
-                allProducts = new ArrayList<>(client.postAndGet(new Command("get non off products", Command.HandleType.SALE), Response.class, (Class<Product>)Product.class).getData());
+                allProducts = new ArrayList<>(client.postAndGet(new Command<String>("get non off products", SALE), Response.class, (Class<Product>)Product.class).getData());
                 break;
             case VENDOR_OFF_PRODUCTS_UNAPPROVED:
             case ADMIN_OFF_PRODUCTS:
                 if(!isThereOff(selectedOff))
                     return;
-                allProducts = ProductControl.getController().getAllOffProductsByOffID(selectedOff);
+                allProducts = new ArrayList<>(client.postAndGet(new Command<String>("get off products", SALE, selectedOff.getOffID()), Response.class, (Class<Product>)Product.class).getData());
                 break;
             case VENDOR_OFF_PRODUCTS:
                 if(!isThereOff(selectedOff))
                     return;
-                allProducts = VendorControl.getController().getNonOffProducts(selectedOff.getOffID());
+                allProducts = new ArrayList<>(client.postAndGet(new Command<String>("get non off products with exceptions", SALE, selectedOff.getOffID()), Response.class, (Class<Product>)Product.class).getData());
                 break;
             case PRODUCT_COMPARING_PRODUCTS:
                 allProducts = productControl.getAllComparingProducts();
@@ -380,8 +381,10 @@ public class ProductsProcessor extends Processor{
     }
 
     private boolean isThereOff(Off selectedOff) {
-        if(productControl.isThereOffWithID(selectedOff.getOffID())) {
-            selectedOff = productControl.getOffByID(selectedOff.getOffID());
+        Command<String> command = new Command<>("is there off", SALE, selectedOff.getOffID());
+        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+        if(response.getDatum()) {
+            selectedOff = getOffByID(selectedOff.getOffID(), "off");
             return true;
         }
         else {
