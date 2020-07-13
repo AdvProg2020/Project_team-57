@@ -558,4 +558,28 @@ public class VendorControl extends AccountControl{
         }
     }
 
+    public Notification editOff(Off off) {
+        if (off.getOffName() == null)
+            return Notification.UNCOMPLETED_OFF_NAME;
+        if (off.getFinishDate() == null)
+            return Notification.NOT_SET_FINISH_DATE;
+        if (off.getOffPercent() <= 0 || off.getOffPercent() >= 100)
+            return Notification.OUT_BOUND_OF_PERCENT;
+        if(off.getProductIDs() == null || off.getProductIDs().size() == 0)
+            return Notification.EMPTY_OFF_PRODUCTS;
+        if(off.getStartDate().compareTo(off.getFinishDate()) > -1)
+            return Notification.START_DATE_AFTER_FINISH_DATE;
+        try {
+            off.setStatus(3);
+            OffTable.changeOffStatus(off.getOffID(), 3);
+            if(ProductControl.getController().isOffEditing(off.getOffID())) {
+                OffTable.removeEditingOff(off.getOffID());
+            }
+            OffTable.addEditingOff(off);
+            return Notification.EDIT_OFF;
+        } catch (SQLException | ClassNotFoundException e) {
+            return Notification.UNKNOWN_ERROR;
+        }
+    }
+
 }

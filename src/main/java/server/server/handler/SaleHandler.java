@@ -58,7 +58,12 @@ public class SaleHandler extends Handler {
     }
 
     private String editOff() {
-        Command<Off>
+        Command<Off> command = commandParser.parseToCommand(Command.class, (Class<Off>)Off.class);
+        if(canChangeOff(command.getDatum().getOffID(), command.getAuthToken())) {
+            Response response = new Response(vendorControl.editOff(command.getDatum()));
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String addOff() {
