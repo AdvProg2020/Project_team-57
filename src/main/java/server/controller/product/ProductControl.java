@@ -848,9 +848,9 @@ public class ProductControl extends Control {
         return imageFiles;
     }
 
-    public ArrayList<Product> getAllOffProductsByOffID(String offID) {
+    public ArrayList<Product> getAllOffProductsByOffID(String offID, boolean isEditing) {
         try {
-            return convertIDsToProducts(OffTable.getSpecificOff(offID).getProductIDs());
+            return convertIDsToProducts((!isEditing ? OffTable.getSpecificOff(offID).getProductIDs() : OffTable.getSpecificEditingOff(offID).getProductIDs()));
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

@@ -365,7 +365,7 @@ public class ProductsProcessor extends Processor{
             case ADMIN_OFF_PRODUCTS:
                 if(!isThereOff(selectedOff))
                     return;
-                allProducts = new ArrayList<>(client.postAndGet(new Command<String>("get off products", SALE, selectedOff.getOffID()), Response.class, (Class<Product>)Product.class).getData());
+                allProducts = new ArrayList<>(client.postAndGet(new Command<String>("get off products", SALE, selectedOff.getOffID(), "" + (selectedOff.getStatus() == 3)), Response.class, (Class<Product>)Product.class).getData());
                 break;
             case VENDOR_OFF_PRODUCTS:
                 if(!isThereOff(selectedOff))

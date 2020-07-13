@@ -86,10 +86,11 @@ public class SaleHandler extends Handler {
     }
 
     private String getOffProducts() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
         return gson.toJson(
                 new Response<Product>(Notification.PACKET_NOTIFICATION,
                         productControl.getAllOffProductsByOffID
-                                (commandParser.parseDatum(Command.class, (Class<String>)String.class)).toArray(new Product[0])));
+                                (command.getData(0), command.getData(1).equals("true")).toArray(new Product[0])));
     }
 
     private String getOff() {

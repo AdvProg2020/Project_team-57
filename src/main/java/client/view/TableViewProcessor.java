@@ -1269,6 +1269,7 @@ public class TableViewProcessor<T> extends Processor {
             Parent root = loader.load();
             SaleProcessor processor = loader.getController();
             processor.setParentProcessor(this.parentProcessor);
+            off.setStatus(1);
             processor.setOff(off);
             processor.setPreviousOff(true);
             processor.getOffImageFile();
