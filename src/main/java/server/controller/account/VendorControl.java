@@ -528,6 +528,7 @@ public class VendorControl extends AccountControl{
         return new ArrayList<>();
     }
 
+    @Deprecated
     public Notification editOff(Off off, File offImageFile) {
         if (off.getOffName() == null)
             return Notification.UNCOMPLETED_OFF_NAME;
@@ -552,9 +553,7 @@ public class VendorControl extends AccountControl{
             }
             OffTable.addEditingOff(off);
             return Notification.EDIT_OFF;
-        } catch (SQLException e) {
-            return Notification.UNKNOWN_ERROR;
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
     }

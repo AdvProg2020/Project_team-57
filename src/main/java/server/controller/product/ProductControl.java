@@ -747,6 +747,16 @@ public class ProductControl extends Control {
         return null;
     }
 
+    public FileOutputStream getOffPictureOutputStream(String offID, String fileExtension) {
+        try {
+            return OffTable.getOffImageOutputStream(offID, fileExtension);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public boolean doesEditingProductHaveImage(String ID) {
         return EditingProductTable.getEditingProductImageFilePath(ID, 1) != null;
     }
@@ -792,8 +802,6 @@ public class ProductControl extends Control {
         return null;
     }
 
-
-
     public Image getEditingProductImage(String ID, int number) {
         try {
             if(doesEditingProductHaveImage(ID)) {
@@ -806,10 +814,8 @@ public class ProductControl extends Control {
             Image image = new Image(fileInputStream);
             fileInputStream.close();
             return image;
-        } catch (FileNotFoundException e) {
-            //:)
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
         return null;
     }
@@ -845,10 +851,8 @@ public class ProductControl extends Control {
     public ArrayList<Product> getAllOffProductsByOffID(Off off) {
         try {
             return convertIDsToProducts(off.getProductIDs());
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return new ArrayList<>();
     }
@@ -856,10 +860,8 @@ public class ProductControl extends Control {
     public Off getOffByID(String offID) {
         try {
             return OffTable.getSpecificOff(offID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return new Off();
     }
@@ -867,10 +869,8 @@ public class ProductControl extends Control {
     public boolean isThereOffWithID(String offID) {
         try {
             return OffTable.isThereOffWithID(offID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -878,10 +878,8 @@ public class ProductControl extends Control {
     public boolean isOffEditing(String offID) {
         try {
             return OffTable.isThereEditingOffWithID(offID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -909,10 +907,8 @@ public class ProductControl extends Control {
     public Off getEditingOffByID(String offID) {
         try {
             return OffTable.getSpecificEditingOff(offID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return new Off();
     }
@@ -931,6 +927,15 @@ public class ProductControl extends Control {
 
     public String getEditingOffImageExtensionByID(String ID) {
         return OffTable.getEditingOffImageExtensionByID(ID);
+    }
+
+    public FileOutputStream getEditingOffPictureOutputStream(String offID, String fileExtension) {
+        try {
+            return OffTable.getEditingOffImageOutputStream(offID, fileExtension);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

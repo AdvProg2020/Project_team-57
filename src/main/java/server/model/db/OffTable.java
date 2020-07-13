@@ -2,10 +2,7 @@ package server.model.db;
 
 import server.model.existence.Off;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -401,4 +398,28 @@ public class OffTable extends Database{
         }
         return "png";
     }
+
+    public static FileOutputStream getOffImageOutputStream(String offID, String fileExtension) throws IOException {
+        String fileName = "database\\Images\\Offs\\" + offID + "." + fileExtension;
+        File pictureFile = new File(fileName);
+        if (!pictureFile.exists()) {
+            pictureFile.createNewFile();
+            return new FileOutputStream(pictureFile);
+        } else {
+            System.err.println("Error IN #getOffImageOutputStream");
+            return null;
+        }
+    }
+
+    public static FileOutputStream getEditingOffImageOutputStream(String offID, String fileExtension) throws IOException {
+        String fileName = "database\\Images\\EditingOffs\\" + offID + "." + fileExtension;
+        File pictureFile = new File(fileName);
+        if (pictureFile.exists()) {
+            pictureFile.delete();
+        } else {
+            pictureFile.createNewFile();
+        }
+        return new FileOutputStream(pictureFile);
+    }
+
 }

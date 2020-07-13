@@ -49,10 +49,16 @@ public class SaleHandler extends Handler {
                 return doesOffHaveImage();
             case"add off":
                 return addOff();
+            case "edit off":
+                return editOff();
             default:
                 System.err.println("Serious Error In Sale Handler");
                 return null;
         }
+    }
+
+    private String editOff() {
+        Command<Off>
     }
 
     private String addOff() {

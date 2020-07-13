@@ -56,7 +56,11 @@ public class PictureHandler extends Handler {
                     pictureOutputStream = getProductImageOutputStream("edit");
                     break;
                 case "send off image":
-
+                    pictureOutputStream = getOffImageOutputStream("add");
+                    break;
+                case "send editing off image":
+                    pictureOutputStream = getOffImageOutputStream("edit");
+                    break;
                 default:
                     System.err.println("Error In #sendPicture");
                     System.err.println("Message : " + message);
@@ -73,6 +77,21 @@ public class PictureHandler extends Handler {
             e.printStackTrace();
         }
 
+    }
+
+    private FileOutputStream getOffImageOutputStream(String type) {
+        List<String> data = commandParser.parseData(Command.class, (Class<String>)String.class);
+        String offID = data.get(0), fileExtension = data.get(1);
+
+        switch (type) {
+            case "add":
+                return productControl.getOffPictureOutputStream(offID, fileExtension);
+            case "edit":
+                return productControl.getEditingOffPictureOutputStream(offID, fileExtension);
+            default:
+                System.err.println("Error In #getProductImageOutputStream");
+                return null;
+        }
     }
 
     private FileOutputStream getProductImageOutputStream(String edit) {

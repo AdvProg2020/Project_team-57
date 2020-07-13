@@ -505,7 +505,12 @@ public class SaleProcessor extends Processor implements Initializable {
             }
             resultNotification.getAlert().show();
         } else {
-            Notification resultNotification = VendorControl.getController().editOff(off, imageFile);
+            Command<Off> command = new Command<>("edit off", Command.HandleType.SALE, off);
+            Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+            Notification resultNotification = response.getMessage();
+            Command<String> extensionCommand = new Command<>("send editing off image", Command.HandleType.PICTURE_SEND, off.getOffID(), client.file2Extension.apply(imageFile));
+            client.sendImage(extensionCommand, imageFile);
+//            Notification resultNotification = VendorControl.getController().editOff(off, imageFile);
             if (resultNotification == Notification.EDIT_OFF) {
                 ((TableViewProcessor) parentProcessor).updateTable();
                 ((TableViewProcessor) parentProcessor).updateSelectedItem();
