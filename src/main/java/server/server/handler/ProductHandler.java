@@ -229,7 +229,7 @@ public class ProductHandler extends Handler {
     private String getAllProductComments() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
         String username = "", type = "", productID = command.getDatum();
-        if(command.getAuthToken() == null || command.getAuthToken().isEmpty()) {
+        if(command.getAuthToken() != null && !command.getAuthToken().isEmpty()) {
             username = server.getUsernameByAuth(command.getAuthToken());
             type = accountControl.getAccountByUsername(username).getType();
         }
