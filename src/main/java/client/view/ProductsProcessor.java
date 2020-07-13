@@ -659,11 +659,12 @@ public class ProductsProcessor extends Processor{
                     break;
                 case ADMIN_OFF_PRODUCTS:
                 case MAIN_PRODUCTS:
-                    if(server.controller.Control.getType() != null && server.controller.Control.getType().equals("Admin")){
+                    String type = getType();
+                    if(type != null && type.equals("Admin")){
                         productMenuType = ProductProcessor.ProductMenuType.ADMIN;
-                    } else if(server.controller.Control.getType() != null && server.controller.Control.getType().equals("Customer")) {
+                    } else if(type != null && type.equals("Customer")) {
                         productMenuType = ProductProcessor.ProductMenuType.PRODUCTS_CUSTOMER;
-                    } else if(server.controller.Control.getType() != null && server.controller.Control.getType().equals("Vendor"))
+                    } else if(type != null && type.equals("Vendor"))
                         productMenuType = ProductProcessor.ProductMenuType.PRODUCTS_VENDOR;
                     else
                         productMenuType = ProductProcessor.ProductMenuType.PRODUCTS;
@@ -700,7 +701,7 @@ public class ProductsProcessor extends Processor{
                 stage.getIcons().add(new Image(Main.class.getResourceAsStream("Product Icon.png")));
                 stage.show();
             } catch (IOException e) {
-                //:)
+                e.printStackTrace();
             }
         });
     }

@@ -48,8 +48,10 @@ public class SaleHandler extends Handler {
             case "is off edit":
                 return isOffEdit();
             case "does off have image":
-                return doesOffHaveImage();
-            case"add off":
+                return doesOffHaveImage(false);
+            case "does editing off have image":
+                return doesOffHaveImage(true);
+            case "add off":
                 return addOff();
             case "edit off":
                 return editOff();
@@ -58,7 +60,13 @@ public class SaleHandler extends Handler {
             case "get all unapproved offs":
                 return getOffs("all unapproved offs");
             case "delete off":
-                return deleteOff();
+                return modifyOffApprove(false);
+            case "approve off":
+                return modifyOffApprove(true);
+            case "approve editing off":
+                return modifyEditingOffApprove(true);
+            case "unapprove editing off":
+                return modifyEditingOffApprove(false);
             case "get edit off":
                 return getEditOff();
             case "get non off products":
@@ -112,10 +120,18 @@ public class SaleHandler extends Handler {
                         productControl.getEditingOffByID(commandParser.parseDatum(Command.class, (Class<String>)String.class))));
     }
 
-    private String deleteOff() {
+    private String modifyOffApprove(boolean isApproved) {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
-        if(canChangeOff(command.getDatum(), command.getAuthToken())) {
-            return gson.toJson(new Response(adminControl.modifyOffApprove(command.getDatum(), false)));
+        if(accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            return gson.toJson(new Response(adminControl.modifyOffApprove(command.getDatum(), isApproved)));
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String modifyEditingOffApprove(boolean isApproved) {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        if(accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            return gson.toJson(new Response(adminControl.modifyOffEditingApprove(command.getDatum(), isApproved)));
         }
         return gson.toJson(HACK_RESPONSE);
     }
@@ -161,10 +177,10 @@ public class SaleHandler extends Handler {
         return gson.toJson(HACK_RESPONSE);
     }
 
-    private String doesOffHaveImage() {
+    private String doesOffHaveImage(boolean isEditing) {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
         if(canChangeOff(command.getDatum(), command.getAuthToken())) {
-            Boolean bool = productControl.doesOffHaveImage(command.getDatum());
+            Boolean bool = !isEditing ? productControl.doesOffHaveImage(command.getDatum()) : productControl.doesEditingOffHaveImage(command.getDatum());
             Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, bool);
             return gson.toJson(response);
         }

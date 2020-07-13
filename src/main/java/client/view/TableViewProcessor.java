@@ -1,5 +1,6 @@
 package client.view;
 
+import client.api.Client;
 import client.api.Command;
 import com.jfoenix.controls.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
@@ -1169,7 +1170,7 @@ public class TableViewProcessor<T> extends Processor {
         Optional<ButtonType> buttonType = new Alert
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Approve " + selectedOff.getOffName() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
-            AdminControl.getController().modifyOffApprove(selectedOff.getOffID(), true);
+            client.postAndGet(new Command<String>("approve off", Command.HandleType.SALE, selectedOff.getOffID()), Response.class, (Class<Object>)Object.class);
         }
         ((TableViewProcessor)parentProcessor).updateTable();
         ((TableViewProcessor)parentProcessor).updateSelectedItem();
@@ -1241,7 +1242,8 @@ public class TableViewProcessor<T> extends Processor {
         Optional<ButtonType> buttonType = new Alert
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Approve " + selectedOff.getOffName() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
-            AdminControl.getController().modifyOffEditingApprove(selectedOff.getOffID(), true);
+            client.postAndGet(new Command<String>("approve editing off", Command.HandleType.SALE, selectedOff.getOffID()), Response.class, (Class<Object>)Object.class);
+//            AdminControl.getController().modifyOffEditingApprove(selectedOff.getOffID(), true);
         }
         ((TableViewProcessor)parentProcessor).updateTable();
         ((TableViewProcessor)parentProcessor).updateSelectedItem();
@@ -1252,7 +1254,8 @@ public class TableViewProcessor<T> extends Processor {
         Optional<ButtonType> buttonType = new Alert
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Unapprove " + selectedOff.getOffName() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
-            AdminControl.getController().modifyOffEditingApprove(selectedOff.getOffID(), false);
+            client.postAndGet(new Command<String>("unapprove editing off", Command.HandleType.SALE, selectedOff.getOffID()), Response.class, (Class<Object>)Object.class);
+//            AdminControl.getController().modifyOffEditingApprove(selectedOff.getOffID(), false);
         }
         ((TableViewProcessor)parentProcessor).updateTable();
         ((TableViewProcessor)parentProcessor).updateSelectedItem();
@@ -1262,7 +1265,7 @@ public class TableViewProcessor<T> extends Processor {
         Off off = (Off) ((TableViewProcessor)parentProcessor).selectedItem;
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffMenu.fxml"));
         try {
-            off = ProductControl.getController().getOffByID(off.getOffID());
+            off = getOffByID(off.getOffID(), "off");
             Parent root = loader.load();
             SaleProcessor processor = loader.getController();
             processor.setParentProcessor(this.parentProcessor);
@@ -1279,7 +1282,7 @@ public class TableViewProcessor<T> extends Processor {
             newStage.getIcons().add(new Image(Main.class.getResourceAsStream("Offs Icon.png")));
             newStage.show();
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 

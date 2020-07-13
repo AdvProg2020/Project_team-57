@@ -204,7 +204,8 @@ public class SaleProcessor extends Processor implements Initializable {
         offFinishDatePicker.setOpacity(0.99);
         offFinishTimePicker.setDisable(true);
         offFinishTimePicker.setOpacity(0.99);
-        offInfoMainPane.getChildren().remove(saveOffChangeButton);
+        offInfoMainPane.getChildren().removeAll(saveOffChangeButton, deleteImageButton);
+        offImageRectangle.setMouseTransparent(true);
         ((SaleProcessor)parentProcessor).optionsVbox.getChildren().remove(((SaleProcessor)parentProcessor).addOffButton);
     }
 
@@ -249,13 +250,9 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     public void getOffImageFile() {
-        if(isOffEditing(off.getOffID()) && !isPreviousOff) {
-            offImageFile = client.getFile(getOffImageCommand(off.getOffID(), true));
-            isDefaultPicture = !doesOffHaveImage(off.getOffID(), true);
-        } else {
-            offImageFile = client.getFile(getOffImageCommand(off.getOffID(), false));
-            isDefaultPicture = !doesOffHaveImage(off.getOffID(), false);
-        }
+        boolean determiner = isOffEditing(off.getOffID()) && !isPreviousOff;
+        offImageFile = client.getFile(getOffImageCommand(off.getOffID(), determiner));
+        isDefaultPicture = !doesOffHaveImage(off.getOffID(), determiner);
     }
 
     private void setDateFieldsFromDate(JFXDatePicker datePicker, JFXTimePicker timePicker, Date date) {
@@ -425,7 +422,7 @@ public class SaleProcessor extends Processor implements Initializable {
     //OffMethods
     public void offInfoPaneMouseClick(MouseEvent mouseEvent) {
         try {
-            if(offMainPane.getCenter() == null || !offMainPane.getCenter().getId().equals("offInfoMainPane")){
+            if(offMainPane.getCenter() == null || !offMainPane.getCenter().getId().equals("offInfoMainPane")) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("OffMenuInfo.fxml"));
                 offMainPane.setCenter(loader.load());
                 offProductsPane.setStyle("");
@@ -435,7 +432,7 @@ public class SaleProcessor extends Processor implements Initializable {
                 saleProcessor.setOffFields();
             }
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 
