@@ -123,13 +123,13 @@ public class SaleProcessor extends Processor implements Initializable {
             discountCodeTextField.setText(mainDiscount.getCode());
 
             if(mainDiscount.getDiscountPercent() != 0)
-                discountPercentTextField.setText(Double.toString(mainDiscount.getDiscountPercent()));
+                discountPercentTextField.setText(getSmoothDoubleFormat(mainDiscount.getDiscountPercent()));
 
             if(mainDiscount.getMaxRepetition() != 0)
                 maxRepetitionTextField.setText(Integer.toString(mainDiscount.getMaxRepetition()));
 
             if(mainDiscount.getMaxDiscount() != 0)
-                maxDiscountTextField.setText(Double.toString(mainDiscount.getMaxDiscount()));
+                maxDiscountTextField.setText(getSmoothDoubleFormat(mainDiscount.getMaxDiscount()));
 
             if(mainDiscount.getStartDate() != null) {
                 setDateFieldsFromDate(startDatePicker, startTimePicker, mainDiscount.getStartDate());
@@ -140,7 +140,7 @@ public class SaleProcessor extends Processor implements Initializable {
             if(mainDiscount.getFinishDate() != null)
                 setDateFieldsFromDate(finishDatePicker, finishTimePicker, mainDiscount.getFinishDate());
 
-            if(Control.getType().equals("Admin")) {
+            if(super.getType().equals("Admin")) {
                 if(mainDiscount.getID() != null) {
                     startDatePicker.setEditable(false);
                     startTimePicker.setEditable(false);
@@ -285,7 +285,7 @@ public class SaleProcessor extends Processor implements Initializable {
             processor.initProcessor(TableViewProcessor.TableViewType.DISCOUNT_CUSTOMERS);
             discountMainPane.setCenter(root);
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 
@@ -302,28 +302,37 @@ public class SaleProcessor extends Processor implements Initializable {
                 saleProcessor.setDiscountFields();
             }
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 
     public void AddDiscountMouseClicked(MouseEvent mouseEvent) {
         //Todo Setting Notifications
-        Notification notification = adminControl.addAddedDiscount(discount);
+        Notification notification = addDiscount(discount);
 
         Optional<ButtonType> optionalButtonType = notification.getAlert().showAndWait();
 
         if(optionalButtonType.get() == ButtonType.OK) {
             if(notification == Notification.ADD_DISCOUNT || notification == Notification.EDIT_DISCOUNT) {
                 //Todo Check
-                for (Discount discount : adminControl.getAllDiscounts()) {
-                    System.out.println(discount.getCode());
-                }
-
+                removeDiscountFromProperty(discount.getID());
                 updateParentTable();
                 this.myStage.close();
             } else
                 discountInfoMouseClicked(null);
         }
+    }
+
+    private void removeDiscountFromProperty(String discountID) {
+        discountID = discountID == null ? "" : discountID;
+        Command<String> command = new Command<>("remove discount from property", Command.HandleType.GENERAL, discountID);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
+
+    private Notification addDiscount(Discount discount) {
+        discount.setID(discount.getID() == null ? "" : discount.getID());
+        Command<Discount> command = new Command<>("add discount", Command.HandleType.GENERAL, discount);
+        return client.postAndGet(command, Response.class, (Class<Object>)Object.class).getMessage();
     }
 
     public void saveChangesMouseClicked(MouseEvent mouseEvent) {
@@ -400,7 +409,7 @@ public class SaleProcessor extends Processor implements Initializable {
         if (!myStage.getTitle().equals("Add New Off")) {
             myStage.setOnCloseRequest(event -> {
                 parentProcessor.removeSubStage(myStage);
-                adminControl.removeDiscountFromHashMap(discount);
+                removeDiscountFromProperty(discount.getID());
             });
         } /*else {
             myStage.setOnCloseRequest(event -> {

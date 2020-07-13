@@ -25,9 +25,25 @@ public class Property {
         }
     }
 
-    public void removeDiscountFromHashMap(Discount discount) {
-        if(discount != null && discountsAddedUsers != null)
-            discountsAddedUsers.remove(discount);
+    public void removeDiscountFromHashMapByDiscountID(String discountID) {
+        if(discountsAddedUsers != null) {
+            if(discountID == null || discountID.isEmpty()) {
+                for (Discount discount : discountsAddedUsers.keySet()) {
+                    if(discount.getID() == null || discount.getID().isEmpty()) {
+                        discountsAddedUsers.remove(discount);
+                        return;
+                    }
+                }
+            } else {
+                for (Discount discount : discountsAddedUsers.keySet()) {
+                    if(discount.getID() != null && discount.getID().equals(discountID)) {
+                        discountsAddedUsers.remove(discount);
+                        return;
+                    }
+                }
+            }
+
+        }
     }
 
     public HashMap<Discount, ArrayList<String>> getDiscountsAddedUsers() {

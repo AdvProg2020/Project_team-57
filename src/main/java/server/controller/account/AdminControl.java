@@ -285,10 +285,9 @@ public class AdminControl extends AccountControl{
 
             discount.setID(ID);
             DiscountTable.addDiscount(discount);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            System.err.println("Error In #addDiscount");
         }
         return notification;
     }
@@ -479,15 +478,15 @@ public class AdminControl extends AccountControl{
         }
     }
 
-    public Notification addAddedDiscount(Discount discount) {
+    public Notification addAddedDiscount(Discount discount, ArrayList<String> discountsAddedUsers) {
         discount.setCustomersWithRepetition(new HashMap<>());
 
         if(discount.getID() == null || discount.getID().isEmpty()) {
-            for (String addedUser : discountsAddedUsers.get(discount)) {
+            for (String addedUser : discountsAddedUsers) {
                 discount.addCustomerWithRepetition(addedUser, 0);
             }
         } else {
-            for (String addedUser : discountsAddedUsers.get(discount)) {
+            for (String addedUser : discountsAddedUsers) {
                 if(!discount.isCustomerInDiscount(addedUser)) {
                     discount.addCustomerWithRepetition(addedUser, 0);
                 }

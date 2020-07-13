@@ -4,6 +4,7 @@ import client.api.Command;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import notification.Notification;
 import server.controller.account.AccountControl;
+import server.controller.account.AdminControl;
 import server.model.existence.Account;
 import server.model.existence.Discount;
 import server.server.Property;
@@ -15,7 +16,8 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 
 public class GeneralHandler extends Handler {
-    AccountControl accountControl = AccountControl.getController();
+    private final AccountControl accountControl = AccountControl.getController();
+    private final AdminControl adminControl = AdminControl.getController();
 
     public GeneralHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
         super(outStream, inStream, server, input);
@@ -48,14 +50,35 @@ public class GeneralHandler extends Handler {
                 return initDiscountAddedUsers();
             case "get discount added users":
                 return discountAddedUsers();
+            case "remove discount from property":
+                return removeDiscountFromProperty();
             case "add customer to discount":
                 return addCustomerToDiscount();
             case "delete customer from discount":
                 return deleteCustomerFromDiscount();
+            case "add discount":
+                return addDiscount();
             default:
                 System.err.println("Serious Error In General Handler");
                 return null;
         }
+    }
+
+    private String removeDiscountFromProperty() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        Property property = server.getPropertyByRelic(command.getRelic());
+        property.removeDiscountFromHashMapByDiscountID(command.getDatum());
+        Response response = new Response(Notification.PACKET_NOTIFICATION);
+        return gson.toJson(response);
+    }
+
+    private String addDiscount() {
+        Command<Discount> command = commandParser.parseToCommand(Command.class, (Class<Discount>)Discount.class);
+        Property property = server.getPropertyByRelic(command.getRelic());
+        Discount discount = command.getDatum();
+
+        Response response = new Response(adminControl.addAddedDiscount(discount, getDiscountAddedUsers(discount.getID(), property)));
+        return gson.toJson(response);
     }
 
     private String deleteCustomerFromDiscount() {
@@ -105,7 +128,7 @@ public class GeneralHandler extends Handler {
             }
         } else {
             for (Discount discount : property.getDiscountsAddedUsers().keySet()) {
-                if(discount.getID().equals(discountID)) {
+                if(discount.getID() != null && discount.getID().equals(discountID)) {
                     return property.getDiscountsAddedUsers().get(discount);
                 }
             }
