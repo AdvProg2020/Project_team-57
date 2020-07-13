@@ -3,14 +3,19 @@ package server.server.handler;
 import client.api.Command;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import notification.Notification;
+import server.controller.account.AccountControl;
+import server.model.existence.Account;
+import server.model.existence.Discount;
 import server.server.Property;
 import server.server.Response;
 import server.server.Server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.util.ArrayList;
 
 public class GeneralHandler extends Handler {
+    AccountControl accountControl = AccountControl.getController();
 
     public GeneralHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
         super(outStream, inStream, server, input);
@@ -39,10 +44,83 @@ public class GeneralHandler extends Handler {
                 return removeNameFromFilter();
             case "set price filters":
                 return setPriceFilters();
+            case "create discount added users":
+                return initDiscountAddedUsers();
+            case "get discount added users":
+                return discountAddedUsers();
+            case "add customer to discount":
+                return addCustomerToDiscount();
+            case "delete customer from discount":
+                return deleteCustomerFromDiscount();
             default:
                 System.err.println("Serious Error In General Handler");
                 return null;
         }
+    }
+
+    private String deleteCustomerFromDiscount() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        Property property = server.getPropertyByRelic(command.getRelic());
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")){
+            ArrayList<String> accounts = getDiscountAddedUsers(command.getData(0), property);
+            if (accounts.contains(command.getData(1))) {
+                accounts.remove(command.getData(1));
+            }
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String addCustomerToDiscount() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        Property property = server.getPropertyByRelic(command.getRelic());
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")){
+            ArrayList<String> accounts = getDiscountAddedUsers(command.getData(0), property);
+            if (!accounts.contains(command.getData(1))) {
+                accounts.add(command.getData(1));
+            }
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String discountAddedUsers() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        Property property = server.getPropertyByRelic(command.getRelic());
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")){
+            ArrayList<Account> accounts = accountControl.convertUsernameToAccounts(getDiscountAddedUsers(command.getDatum(), property));
+            Response<Account> response = new Response<>(Notification.PACKET_NOTIFICATION);
+            response.setData(accounts);
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private ArrayList<String> getDiscountAddedUsers(String discountID, Property property) {
+        if(discountID == null || discountID.equals("")){
+            for (Discount discount : property.getDiscountsAddedUsers().keySet()) {
+                if(discount.getID() == null || discount.getID().equals("")) {
+                    return property.getDiscountsAddedUsers().get(discount);
+                }
+            }
+        } else {
+            for (Discount discount : property.getDiscountsAddedUsers().keySet()) {
+                if(discount.getID().equals(discountID)) {
+                    return property.getDiscountsAddedUsers().get(discount);
+                }
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    private String initDiscountAddedUsers() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        Property property = server.getPropertyByRelic(command.getRelic());
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")){
+            property.createDiscountAddedUsers();
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String setPriceFilters() {

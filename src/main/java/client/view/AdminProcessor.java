@@ -1,5 +1,6 @@
 package client.view;
 
+import client.api.Command;
 import com.jfoenix.controls.JFXButton;
 import server.controller.account.AdminControl;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import server.model.existence.Account;
 import server.model.existence.Comment;
 import server.model.existence.Discount;
 import server.model.existence.Off;
+import server.server.Response;
 
 import java.io.IOException;
 import java.net.URL;
@@ -57,7 +59,8 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             loader.setController(this);
             mainPane.setCenter(subRoot);
             //TODO(???)
-            AdminControl.getController().createDiscountAddedUsers();
+            client.postAndGet(new Command("create discount added users", Command.HandleType.GENERAL), Response.class, (Class<Object>)Object.class);
+            //AdminControl.getController().createDiscountAddedUsers();
             //TODO(FOR MEDIA)
             //initMusicPlayer();
         }

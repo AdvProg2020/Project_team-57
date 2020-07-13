@@ -1,10 +1,58 @@
 package server.server;
 
 import notification.Notification;
+import server.model.existence.Discount;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Property {
+
+    //admin add discount
+    private HashMap<Discount, ArrayList<String>> discountsAddedUsers;
+
+    public void createDiscountAddedUsers() {
+        this.discountsAddedUsers = new HashMap<>();
+    }
+
+    public void addDiscountToHashMap(Discount discount) {
+        if(discount.getCustomersWithRepetition().isEmpty())
+            discountsAddedUsers.put(discount, new ArrayList<>());
+        else {
+            ArrayList<String> users = new ArrayList<>();
+            users.addAll(discount.getCustomersWithRepetition().keySet());
+            discountsAddedUsers.put(discount, users);
+        }
+    }
+
+    public void removeDiscountFromHashMap(Discount discount) {
+        if(discount != null && discountsAddedUsers != null)
+            discountsAddedUsers.remove(discount);
+    }
+
+    public HashMap<Discount, ArrayList<String>> getDiscountsAddedUsers() {
+        return discountsAddedUsers;
+    }
+
+    public void addUserToDiscountAddedUsers(Discount discount, String userName) {
+        if(discountsAddedUsers.containsKey(discount) && !discountsAddedUsers.get(discount).contains(userName)) {
+            discountsAddedUsers.get(discount).add(userName);
+        }
+    }
+
+    public void removeUserFromDiscountAddedUsers(Discount discount, String userName) {
+        if(discountsAddedUsers.containsKey(discount) && discountsAddedUsers.get(discount).contains(userName)) {
+            discountsAddedUsers.get(discount).remove(userName);
+        }
+    }
+
+    public boolean isUserAddedInDiscount(Discount discount, String userName) {
+        if(discountsAddedUsers.containsKey(discount))
+            return discountsAddedUsers.get(discount).contains(userName);
+        return false;
+    }
+
+    //filter and sorting
     private Filter filter;
     private Sort sort;
 

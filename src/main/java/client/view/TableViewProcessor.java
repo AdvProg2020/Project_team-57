@@ -3,6 +3,7 @@ package client.view;
 import client.api.Command;
 import com.jfoenix.controls.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import javafx.scene.input.MouseButton;
 import server.controller.Control;
 import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
@@ -141,14 +142,29 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private void setTableViewModifiedFeatures() {
-        if(tableViewType != TableViewType.DISCOUNT_CUSTOMERS) {
-            this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-                if (newSelection != null) {
-                    selectedItem = newSelection;
-                    updateSelectedItem();
-                }
+        this.tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                selectedItem = newSelection;
+                updateSelectedItem();
+            }
+        });
+
+        if(tableViewType == TableViewType.DISCOUNT_CUSTOMERS) {
+            tableView.setRowFactory(tv -> {
+                TableRow<T> row = new TableRow<>();
+                row.setOnMouseClicked(event -> {
+                    if (event.getClickCount() == 2 ) {
+                        selectedItem = row.getItem();
+                        Account account = (Account)selectedItem;
+                        ((SaleProcessor)parentProcessor).addUserToDiscount(account.getUsername());
+                        updateSelectedItem();
+                        updateTable();
+                    }
+                });
+                return row;
             });
         }
+
         this.tableView.widthProperty().addListener(new ChangeListener<Number>()
         {
             @Override
@@ -178,7 +194,7 @@ public class TableViewProcessor<T> extends Processor {
                 break;
             case DISCOUNT_CUSTOMERS:
                 //TODO(FOR CHECKBOX)
-                /*initDiscountCustomersColumns();*/
+                initDiscountCustomersColumns();
                 break;
             case ADMIN_COMMENTS:
                 initAdminCommentsColumns();
@@ -250,11 +266,10 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private void initDiscountCustomersColumns() {
-        TableColumn<T, String> usernameColumn = makeColumn("Username", "username", 0.26);
-        TableColumn<T, String> firstNameColumn = makeColumn("First Name", "firstName", 0.30);
-        TableColumn<T, String> lastNameColumn = makeColumn("Last Name", "lastName", 0.31);
-        TableColumn<T, JFXCheckBox> isAdded = makeColumn("Added", "checkBox", .10);
-        tableView.getColumns().addAll(usernameColumn, firstNameColumn, lastNameColumn, isAdded);
+        TableColumn<T, String> usernameColumn = makeColumn("Username", "username", 0.30);
+        TableColumn<T, String> firstNameColumn = makeColumn("First Name", "firstName", 0.32);
+        TableColumn<T, String> lastNameColumn = makeColumn("Last Name", "lastName", 0.33);
+        tableView.getColumns().addAll(usernameColumn, firstNameColumn, lastNameColumn);
     }
 
     private void initDiscountColumns() {
@@ -301,7 +316,7 @@ public class TableViewProcessor<T> extends Processor {
                 break;
             case DISCOUNT_CUSTOMERS:
                 //TODO(FOR CHECKBOX)
-                //tableList.addAll(getAllCustomersForDiscount());
+                tableList.addAll((ArrayList<T>)((SaleProcessor)parentProcessor).getDiscountAddedUsers());
                 break;
             case ADMIN_COMMENTS:
                 tableList.addAll((ArrayList<T>)AdminControl.getController().getAllUnApprovedComments());
@@ -399,7 +414,7 @@ public class TableViewProcessor<T> extends Processor {
                 break;
             case DISCOUNT_CUSTOMERS:
                 //TODO(FOR CHECKBOX)
-                //mainBorderPane.setLeft(initDiscountCustomersOptions());
+                mainBorderPane.setLeft(initDiscountCustomersOptions());
                 break;
             case ADMIN_COMMENTS:
                 mainBorderPane.setLeft(initAdminCommentsOptions());
@@ -633,15 +648,35 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     //TODO(FOR CHECKBOX)
-/*    private Pane initDiscountCustomersOptions() {
-        tableView.getSelectionModel().clearSelection();
+    private Pane initDiscountCustomersOptions() {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewDiscountCustomersOption.fxml"));
         try {
             Pane root = loader.load();
             TableViewProcessor processor = loader.getController();
             processor.setParentProcessor(this);
+            processor.discountCustomersListView.setCellFactory(param -> {
+                ListCell<String> listCell = new ListCell<String>() {
+                    @Override
+                    protected void updateItem(String string, boolean empty) {
+                        super.updateItem(string, empty);
+                        if(!empty)
+                            setText(string);
+                    }
+                };
+                listCell.setOnMouseClicked(event -> {
+                    if(event.getClickCount() == 2 && event.getButton().equals(MouseButton.PRIMARY) && listCell.getItem() != null) {
+                        String selectedCustomer = ((ListCell<String>)event.getSource()).getItem();
+                        if(selectedCustomer != null) {
+                            ((SaleProcessor)parentProcessor).removeUserFromDiscount(selectedCustomer);
+                            updateSelectedItem();
+                            updateTable();
+                        }
+                    }
+                });
+                return listCell;
+            });
             processor.discountCustomersListView.getItems().addAll
-                    (((SaleProcessor)parentProcessor).getDiscountAddedUsers());
+                    (((SaleProcessor)parentProcessor).getDiscountAddedUsernames());
             processor.discountAddedUsersCountLabel.setText("" + processor.discountCustomersListView.getItems().size());
             processor.discountCustomerSearchField.setText
                     ((searchedUsername == null ? "" : searchedUsername));
@@ -650,7 +685,7 @@ public class TableViewProcessor<T> extends Processor {
             //:)
         }
         return null;
-    }*/
+    }
 
     private Pane initDiscountOptions() {
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewDiscountOptions.fxml"));

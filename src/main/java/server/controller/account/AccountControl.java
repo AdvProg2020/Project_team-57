@@ -458,6 +458,14 @@ public class AccountControl extends Control implements IOValidity {
         return 0;
     }
 
+    public ArrayList<Account> convertUsernameToAccounts(ArrayList<String> usernames) {
+        ArrayList<Account> accounts = new ArrayList<>();
+        for (String username : usernames) {
+            accounts.add(getAccountByUsername(username));
+        }
+        return accounts;
+    }
+
     //TODO(FOR MEDIA)
     /*public static class Audio {
         private static ArrayList<Audio> adminAudios;

@@ -1,5 +1,6 @@
 package client.view;
 
+import client.api.Command;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTimePicker;
@@ -21,9 +22,11 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import server.model.existence.Account;
 import server.model.existence.Discount;
 import server.model.existence.Off;
 import notification.Notification;
+import server.server.Response;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,8 +40,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SaleProcessor extends Processor implements Initializable {
-    private static AdminControl adminControl = AdminControl.getController();
-    private static ProductControl productControl = ProductControl.getController();
+/*    private static AdminControl adminControl = AdminControl.getController();
+    private static ProductControl productControl = ProductControl.getController();*/
 
     //DiscountProcess
     public Label discountCodeLabel;
@@ -358,20 +361,30 @@ public class SaleProcessor extends Processor implements Initializable {
         return textField.getText() == null || textField.getText().isEmpty();
     }
 
-    public ArrayList<String> getDiscountAddedUsers() {
-        return adminControl.getDiscountsAddedUsers().get(discount);
+    public ArrayList<Account> getDiscountAddedUsers() {
+        Command<String>command = new Command("get discount added users", Command.HandleType.GENERAL, (discount.getID() == null ? "" : discount.getID()));
+        Response<Account> response = client.postAndGet(command, Response.class, (Class<Account>)Account.class);
+        return new ArrayList<>(response.getData());
     }
 
-    public boolean isAccountAddedInDiscount(String userName) {
-        return adminControl.isUserAddedInDiscount(discount, userName);
+    public ArrayList<String> getDiscountAddedUsernames() {
+        Command<String>command = new Command("get discount added users", Command.HandleType.GENERAL, (discount.getID() == null ? "" : discount.getID()));
+        Response<Account> response = client.postAndGet(command, Response.class, (Class<Account>)Account.class);
+        ArrayList<String> usernames = new ArrayList<>();
+        for (Account account : response.getData()) {
+            usernames.add(account.getUsername());
+        }
+        return usernames;
     }
 
-    public void addUserToDiscount(String userName) {
-        adminControl.addUserToDiscountAddedUsers(discount, userName);
+    public void addUserToDiscount(String username) {
+        Command<String> command = new Command<>("add customer to discount", Command.HandleType.GENERAL, (discount.getID() == null ? "" : discount.getID()), username);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 
-    public void removeUserFromDiscount(String userName) {
-        adminControl.removeUserFromDiscountAddedUsers(discount, userName);
+    public void removeUserFromDiscount(String username) {
+        Command<String> command = new Command<>("delete customer from discount", Command.HandleType.GENERAL, (discount.getID() == null ? "" : discount.getID()), username);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 
     public void setDiscount(Discount discount) {
