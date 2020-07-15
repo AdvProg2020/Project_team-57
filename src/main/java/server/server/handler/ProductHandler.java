@@ -92,10 +92,31 @@ public class ProductHandler extends Handler {
                 return getTotalPriceWithoutDiscount();
             case "get comparing product":
                 return getComparingProduct();
+            case "get cart size":
+                return getCartSize();
+            case "purchase":
+                return purchase();
             default:
                 System.err.println("Serious Error In Product Handler");
                 return null;
         }
+    }
+
+    private String purchase() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if (!server.getAuthTokens().containsKey(command.getAuthToken()) || accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            return gson.toJson(new Response(customerControl.purchase(server.getUsernameByAuth(command.getAuthToken()), server.getPropertyByRelic(command.getRelic()))));
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String getCartSize() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if (!server.getAuthTokens().containsKey(command.getAuthToken()) || accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            Response<Integer> response = new Response<>(Notification.PACKET_NOTIFICATION, new Integer(customerControl.getAllCartProducts(server.getUsernameByAuth(command.getAuthToken())).size()));
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String getComparingProduct() {

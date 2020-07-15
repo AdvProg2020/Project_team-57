@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import notification.Notification;
 import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
+import server.controller.account.CustomerControl;
 import server.controller.product.ProductControl;
 import server.model.existence.Account;
 import server.model.existence.Discount;
@@ -21,6 +22,7 @@ public class GeneralHandler extends Handler {
     private final AccountControl accountControl = AccountControl.getController();
     private final AdminControl adminControl = AdminControl.getController();
     private final ProductControl productControl = ProductControl.getController();
+    private final CustomerControl customerControl = CustomerControl.getController();
 
     public GeneralHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
         super(outStream, inStream, server, input);
@@ -69,10 +71,34 @@ public class GeneralHandler extends Handler {
                 return setComparingProducts(2);
             case "get all comparing products":
                 return getAllComparingProducts();
+            case "set has discount":
+                return setHasDiscount();
+            case "set discount for purchase":
+                return setDiscountForPurchase();
             default:
                 System.err.println("Serious Error In General Handler");
                 return null;
         }
+    }
+
+    private String setDiscountForPurchase() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            Property property = server.getPropertyByRelic(command.getRelic());
+            property.setDiscount(customerControl.getCustomerDiscountByID(command.getDatum()));
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String setHasDiscount() {
+        Command<Boolean> command = commandParser.parseToCommand(Command.class, (Class<Boolean>)Boolean.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            Property property = server.getPropertyByRelic(command.getRelic());
+            property.setHasDiscount(command.getDatum());
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String getAllComparingProducts() {

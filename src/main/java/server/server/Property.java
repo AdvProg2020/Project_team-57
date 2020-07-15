@@ -10,6 +10,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Property {
+    //Discount For Purchase
+    private boolean hasDiscount = false;
+    private Discount discount = null;
+
+    public boolean hasDiscount() {
+        return hasDiscount;
+    }
+
+    public void setHasDiscount(boolean hasDiscount) {
+        this.hasDiscount = hasDiscount;
+    }
+
+    public Discount getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
+    }
+
     //Comparing Products
     private String currentProduct;
     private Product[] comparingProducts = new Product[2];

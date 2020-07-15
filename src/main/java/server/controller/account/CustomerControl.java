@@ -5,6 +5,7 @@ import server.controller.IOControl;
 import server.model.db.*;
 import server.model.existence.*;
 import notification.Notification;
+import server.server.Property;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -13,8 +14,6 @@ import java.util.HashMap;
 
 public class CustomerControl extends AccountControl{
     private static CustomerControl customerControl = null;
-    private boolean hasDiscount = false;
-    private Discount discount = null;
 
     public static CustomerControl getController() {
         if (customerControl == null)
@@ -239,10 +238,10 @@ public class CustomerControl extends AccountControl{
         return Notification.UNKNOWN_ERROR;
     }
 
-    public ArrayList<Discount> getDiscounts() {
+    public ArrayList<Discount> getDiscounts(String username) {
         try {
             DiscountTable.removeOutDatedDiscounts();
-            return DiscountTable.getCustomerDiscountCodes(Control.getUsername());
+            return DiscountTable.getCustomerDiscountCodes(username);
         } catch (SQLException e) {
             //:)
         } catch (ClassNotFoundException e) {
@@ -265,11 +264,11 @@ public class CustomerControl extends AccountControl{
     }
 
     //-------------------------------------------------PURCHASE-------------------------------------------------//
-    public Notification purchase()
+    public Notification purchase(String username, Property property)
     {
         try {
             double initPrice = 0; double offPrice = 0; double finalPrice;
-            for (Product product : CartTable.getAllCartWithUsername(Control.getUsername())) {
+            for (Product product : CartTable.getAllCartWithUsername(username)) {
                 if(product.getStatus() != 1)
                     return Notification.UNAVAILABLE_CART_PRODUCT;
                 if(product.isCountable()) {
@@ -291,8 +290,8 @@ public class CustomerControl extends AccountControl{
                 initPrice += product.getPrice() * product.getAmount();
                 initPrice += product.getPrice() * product.getCount();
             }
-            finalPrice = calculateFinalPrice(hasDiscount, discount, offPrice);
-            return affordability(initPrice, offPrice, finalPrice);
+            finalPrice = calculateFinalPrice(property.hasDiscount(), property.getDiscount(), offPrice);
+            return affordability(initPrice, offPrice, finalPrice, property);
 
         } catch (SQLException e) {
             //:)
@@ -302,20 +301,20 @@ public class CustomerControl extends AccountControl{
         return Notification.UNKNOWN_ERROR;
     }
 
-    private Notification affordability(double initPrice, double offPrice, double finalPrice) {
+    private Notification affordability(double initPrice, double offPrice, double finalPrice, Property property) {
         try {
             Account customer = AccountTable.getAccountByUsername(Control.getUsername());
             if(finalPrice > customer.getCredit())
                 return Notification.CANT_AFFORD_CART;
             AccountTable.changeCredit(customer.getUsername(),((-1) * finalPrice));
             giveCreditToVendors(customer.getUsername());
-            int giftState = createLog(customer);
-            if(hasDiscount) {
-                DiscountTable.addRepetitionToDiscount(discount, customer.getUsername());
+            int giftState = createLog(customer, property);
+            if(property.hasDiscount()) {
+                DiscountTable.addRepetitionToDiscount(property.getDiscount(), customer.getUsername());
             }
             reduceProductFromStock(customer.getUsername());
             CartTable.deleteCustomerCart(customer.getUsername());
-            hasDiscount = false;
+            property.setHasDiscount(false);
             switch (giftState)
             {
                 case 1 :
@@ -378,21 +377,7 @@ public class CustomerControl extends AccountControl{
         return offPrice - discount.getMaxDiscount();
     }
 
-    public void setDiscount(String discountID) {
-        try {
-            this.discount = DiscountTable.getDiscountByID(discountID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-    }
-
-    public void setHasDiscount(boolean hasDiscount) {
-        this.hasDiscount = hasDiscount;
-    }
-
-    private int createLog(Account customer) throws SQLException, ClassNotFoundException {
+    private int createLog(Account customer, Property property) throws SQLException, ClassNotFoundException {
         Log log = new Log();
         String logID = "";
         do {
@@ -401,8 +386,8 @@ public class CustomerControl extends AccountControl{
 
         log.setLogID(logID);
         log.setCustomerUsername(customer.getUsername());
-        if(hasDiscount)
-            log.setDiscountPercent(discount.getDiscountPercent());
+        if(property.hasDiscount())
+            log.setDiscountPercent(property.getDiscount().getDiscountPercent());
         else
             log.setDiscountPercent(0);
 
@@ -415,19 +400,19 @@ public class CustomerControl extends AccountControl{
         }
 
         log.setAllProducts(logProducts);
-        int state = checkGift(log);
+        int state = checkGift(customer.getUsername(), log);
         LogTable.addLog(log);
         return state;
     }
 
-    private int checkGift(Log log) {
+    private int checkGift(String username, Log log) {
         AdminControl adminControl = AdminControl.getController();
         if(log.getCustomerFinalPrice() >= 85000)
         {
             Discount discount = new Discount();
             discount.setCode("Super Code");
             HashMap<String, Integer> customer = new HashMap<>();
-            customer.put(Control.getUsername(), 0);
+            customer.put(username, 0);
             discount.setCustomersWithRepetition(customer);
             discount.setMaxRepetition(1);
             discount.setDiscountPercent(85);
@@ -443,7 +428,7 @@ public class CustomerControl extends AccountControl{
             Discount discount = new Discount();
             discount.setCode("Good Customer");
             HashMap<String, Integer> customer = new HashMap<>();
-            customer.put(Control.getUsername(), 0);
+            customer.put(username, 0);
             discount.setCustomersWithRepetition(customer);
             discount.setMaxRepetition(1);
             discount.setDiscountPercent(15);
@@ -471,10 +456,8 @@ public class CustomerControl extends AccountControl{
     public Discount getCustomerDiscountByID(String discountID) {
         try {
             return DiscountTable.getDiscountByID(discountID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return new Discount();
     }
@@ -482,9 +465,7 @@ public class CustomerControl extends AccountControl{
     public ArrayList<Log> getAllLogs() {
         try {
             return LogTable.getAllCustomerLogs(Control.getUsername());
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();

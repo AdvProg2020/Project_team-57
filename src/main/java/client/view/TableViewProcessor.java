@@ -342,7 +342,7 @@ public class TableViewProcessor<T> extends Processor {
                 tableList.addAll((ArrayList<T>) selectedLog.getAllProducts());
                 break;
             case CUSTOMER_DISCOUNTS:
-                tableList.addAll((ArrayList<T>) CustomerControl.getController().getDiscounts());
+                tableList.addAll((ArrayList<T>) getDiscounts());
                 break;
             case PRODUCT_BUYERS:
                 tableList.addAll((ArrayList<T>) VendorControl.getController().getProductBuyers());
@@ -351,6 +351,12 @@ public class TableViewProcessor<T> extends Processor {
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
         selectedItem = tableView.getSelectionModel().getSelectedItem();
+    }
+
+    private ArrayList<Discount> getDiscounts() {
+        Command command = new Command("get customer discounts", Command.HandleType.SALE);
+        Response<Discount> response = client.postAndGet(command, Response.class, (Class<Discount>)Discount.class);
+        return new ArrayList<>(response.getData());
     }
 
     private ArrayList<Off> getAllUnApprovedOffs() {
@@ -514,8 +520,9 @@ public class TableViewProcessor<T> extends Processor {
             if(selectedItem != null) {
                 Discount discount = (Discount)selectedItem;
                 processor.showDiscountCustomerButton.setDisable(false);
-                processor.usedDiscountLabel.setText("" + discount.getCustomersWithRepetition().get(Control.getUsername()));
-                processor.repetitionLeftLabel.setText("" + (discount.getMaxRepetition() - discount.getCustomersWithRepetition().get(Control.getUsername())));
+                String username = getUsername();
+                processor.usedDiscountLabel.setText("" + discount.getCustomersWithRepetition().get(username));
+                processor.repetitionLeftLabel.setText("" + (discount.getMaxRepetition() - discount.getCustomersWithRepetition().get(username)));
             }
             return root;
         } catch (IOException e) {

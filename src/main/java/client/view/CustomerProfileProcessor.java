@@ -1,5 +1,6 @@
 package client.view;
 
+import client.api.Command;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
@@ -20,6 +21,7 @@ import javafx.stage.Stage;
 import server.model.existence.Account;
 import server.model.existence.Log;
 import notification.Notification;
+import server.server.Response;
 
 import java.io.IOException;
 import java.net.URL;
@@ -149,11 +151,17 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
 
     private void doThePurchase() {
         //TODO(???)
-        Notification notification = CustomerControl.getController().purchase();
+
+        Notification notification = purchaseAndGetResult()/*CustomerControl.getController().purchase()*/;
         Optional<ButtonType> buttonType = notification.getAlert().showAndWait();
 
         if(buttonType.get() == ButtonType.OK)
             backToCart(null);
+    }
+
+    private Notification purchaseAndGetResult() {
+        Command command = new Command("purchase", Command.HandleType.PRODUCT);
+        return client.postAndGet(command, Response.class, (Class<Object>)Object.class).getMessage();
     }
 
     private boolean areFieldsOk() {

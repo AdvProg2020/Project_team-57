@@ -934,7 +934,8 @@ public class ProductsProcessor extends Processor{
     //Purchase Part
     public void purchaseProducts(MouseEvent mouseEvent) {
         try {
-            if(server.controller.Control.isLoggedIn() && server.controller.Control.getType() != null && server.controller.Control.getType().equals("Customer"))
+            String type = getType();
+            if(isLoggedIn() && type != null && type.equals("Customer"))
                 purchase();
             else
                 openSignInMenu();
@@ -960,16 +961,13 @@ public class ProductsProcessor extends Processor{
 
     private void purchase() throws IOException {
         CustomerControl customerControl = CustomerControl.getController();
-        if (customerControl.getAllCartProducts().size() == 0) {
+
+        if (getCartSize() == 0) {
             new Alert(Alert.AlertType.ERROR, "Your Cart Is Empty. At Some Products First Dude :/").show();
             return;
         }
-        customerControl.setHasDiscount(selectedListCell != null);
-
-        if (selectedListCell == null)
-            customerControl.setDiscount(null);
-        else
-            customerControl.setDiscount(selectedListCell.getItem().getID());
+        setHasDiscount(selectedListCell != null);
+        setDiscount((selectedListCell == null ? null : selectedListCell.getItem().getID()));
 
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Purchase.fxml"));
         Parent root = fxmlLoader.load();
@@ -978,6 +976,21 @@ public class ProductsProcessor extends Processor{
         customerProfileProcessor.setMyStage(myStage);
         myStage.setScene(new Scene(root));
         myStage.setTitle("Purchase Menu");
+    }
+
+    private void setDiscount(String discountID) {
+        Command<String> command = new Command<>("set discount for purchase", GENERAL, discountID);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
+
+    private void setHasDiscount(boolean hasDiscount) {
+        Command<Boolean> command = new Command<>("set has discount", GENERAL, hasDiscount);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
+
+    private int getCartSize() {
+        Response<Integer> response = client.postAndGet(new Command("get cart size", PRODUCT), Response.class, (Class<Integer>)Integer.class);
+        return response.getDatum().intValue();
     }
 
     //Discount Part
