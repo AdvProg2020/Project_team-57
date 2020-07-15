@@ -7,8 +7,6 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
 import server.controller.account.AdminControl;
 import server.controller.account.CustomerControl;
-import server.controller.account.VendorControl;
-import server.controller.product.ProductControl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -37,7 +35,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 import static client.api.Command.HandleType.*;
@@ -113,7 +110,6 @@ public class ProductsProcessor extends Processor{
     private int pageNumber = 0;
     private int productFieldsNumber;
     private int pageLim;
-    private ProductControl productControl = ProductControl.getController();
     private Off selectedOff;
 
     //Discount Part
@@ -311,16 +307,18 @@ public class ProductsProcessor extends Processor{
     }
 
     public void showCartProducts(ActionEvent actionEvent) {
-        if(server.controller.Control.getType() != null && !server.controller.Control.getType().equals("Customer")) {
+        String type = getType();
+        if(type != null && !type.equals("Customer")) {
             new Alert(Alert.AlertType.ERROR, "Sorry. Only Customers Can Use This Option Of The Market!").show();
             return;
         }
-        if(canOpenSubStage(server.controller.Control.getUsername() + " Cart", this))
+        if(canOpenSubStage(((isLoggedIn() ? getUsername() : "Your")+ " Cart"), this))
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerCartProducts.fxml"));
                 Parent root = loader.load();
                 ProductsProcessor processor = loader.getController();
-                if(!(server.controller.Control.getType() != null && server.controller.Control.getType().equals("Customer")))
+                type = getType();
+                if(!(type != null && type.equals("Customer")))
                     processor.userProductsOptionPane.getChildren().
                         removeAll(processor.discountCodesListView, processor.useDiscountCodeToggleButton);
                 processor.parentProcessor = this;
@@ -328,7 +326,7 @@ public class ProductsProcessor extends Processor{
                 Stage stage = new Stage();
                 stage.getIcons().add(new Image(IMAGE_FOLDER_URL + "Icons\\cart (2).png"));
 
-                stage.setTitle((server.controller.Control.isLoggedIn() ? server.controller.Control.getUsername() : "Your")+ " Cart");
+                stage.setTitle((isLoggedIn() ? getUsername() : "Your")+ " Cart");
                 stage.setScene(new Scene(root));
                 stage.setResizable(false);
                 this.subStages.add(stage);
@@ -336,7 +334,7 @@ public class ProductsProcessor extends Processor{
                 stage.getIcons().add(new Image(Main.class.getResourceAsStream("cartCustomer.png")));
                 stage.show();
             } catch (IOException e) {
-                //:)
+                e.printStackTrace();
             }
     }
 
@@ -693,7 +691,7 @@ public class ProductsProcessor extends Processor{
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));
             try {
                 if(menuType == ProductsMenuType.MAIN_PRODUCTS) {
-                    productControl.addSeenToProduct(product.getID());
+                    addSeenToProduct(product.getID());
                 }
                 Parent root = loader.load();
                 ProductProcessor processor = loader.getController();
@@ -716,18 +714,26 @@ public class ProductsProcessor extends Processor{
 
     private void startComparing(Product product, ProductsProcessor parentProcessor) {
         try {
-            productControl.setSecondComparingProduct(product.getID());
+            setComparingProduct(product.getID(), 2);
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ComparingProductsMenu.fxml"));
             Parent root = loader.load();
             ProductProcessor processor = loader.getController();
-            processor.initComparingProcessor(productControl.getComparingProducts()[0], productControl.getComparingProducts()[1]);
-            myStage.setTitle("Compare " + productControl.getComparingProducts()[0].getName() + " And " + productControl.getComparingProducts()[1].getName());
+            Product firstComparingProduct = getComparingProduct(1);
+            Product secondComparingProduct = getComparingProduct(2);
+            processor.initComparingProcessor(firstComparingProduct, secondComparingProduct);
+            myStage.setTitle("Compare " + firstComparingProduct.getName() + " And " + secondComparingProduct.getName());
             myStage.setScene(new Scene(root));
             processor.setMyStage(myStage);
             processor.setParentProcessor(parentProcessor.parentProcessor);
         } catch (IOException e) {
             //:)
         }
+    }
+
+    private Product getComparingProduct(int number) {
+        Command<Integer> command = new Command<>("get comparing product", PRODUCT, number);
+        Response<Product> response = client.postAndGet(command, Response.class, (Class<Product>) Product.class);
+        return response.getDatum();
     }
 
     public void changePage(MouseEvent mouseEvent) {
@@ -860,7 +866,6 @@ public class ProductsProcessor extends Processor{
 
     public void saveChangesForAdminProductRequests(MouseEvent mouseEvent) {
         ArrayList<Notification> results = new ArrayList<>();
-        AdminControl adminControl = AdminControl.getController();
         for (String productID : productsApprovalMap.keySet()) {
             Command<String> statusCommand = new Command<>("get product status", Command.HandleType.PRODUCT, productID);
             Response<Integer> statusResponse = client.postAndGet(statusCommand, Response.class, (Class<Integer>)Integer.class);
@@ -1020,7 +1025,13 @@ public class ProductsProcessor extends Processor{
         //Todo Check
         discountCodesListView.setDisable(false);
         ObservableList<Discount> customerDiscounts = discountCodesListView.getItems();
-        customerDiscounts.addAll(CustomerControl.getController().getAllAvailableCustomerDisCounts());
+        customerDiscounts.addAll(getAllAvailableCustomerDisCounts());
+    }
+
+    private ArrayList<Discount> getAllAvailableCustomerDisCounts() {
+        Command command = new Command("get all customer available discounts", SALE);
+        Response<Discount> response = client.postAndGet(command, Response.class, (Class<Discount>)Discount.class);
+        return new ArrayList<>(response.getData());
     }
 
     private void removeDiscountListViewCells() {
@@ -1051,7 +1062,7 @@ public class ProductsProcessor extends Processor{
 
     private void setDiscountPriceArrow() {
         try {
-            FileInputStream imageFileInputStream = new FileInputStream("src\\main\\resources\\Images\\Icons\\ProductsMenu\\Arrow Cart.png");
+            FileInputStream imageFileInputStream = new FileInputStream("src\\main\\resources\\" + IMAGE_FOLDER_URL + "Icons\\ProductsMenu\\Arrow Cart.png");
             ImageView priceArrow = new ImageView(new Image(imageFileInputStream));
             priceArrow.setFitWidth(20.0);
             priceArrow.setFitHeight(20.0);
@@ -1063,7 +1074,7 @@ public class ProductsProcessor extends Processor{
             this.priceArrow = priceArrow;
             imageFileInputStream.close();
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 
@@ -1090,6 +1101,9 @@ public class ProductsProcessor extends Processor{
         Response<Double> response = client.postAndGet(command, Response.class, (Class<Double>)Double.class);
 //        double totalPrice = CustomerControl.getController().getTotalPriceWithoutDiscount();
         totalPriceLabel.setText(getSmoothDoubleFormat(response.getDatum()));
+        if(selectedListCell != null) {
+            showDiscountEffect(selectedListCell.getItem());
+        }
     }
 
 }

@@ -11,6 +11,7 @@ import server.controller.account.VendorControl;
 import server.controller.product.ProductControl;
 import server.model.existence.Comment;
 import server.model.existence.Product;
+import server.server.Property;
 import server.server.Response;
 import server.server.Server;
 
@@ -89,10 +90,19 @@ public class ProductHandler extends Handler {
                 return removeProductFromCart();
             case "get total price without discount":
                 return getTotalPriceWithoutDiscount();
+            case "get comparing product":
+                return getComparingProduct();
             default:
                 System.err.println("Serious Error In Product Handler");
                 return null;
         }
+    }
+
+    private String getComparingProduct() {
+        Command<Integer> command = commandParser.parseToCommand(Command.class, (Class<Integer>)Integer.class);
+        Property property = server.getPropertyByRelic(command.getRelic());
+        Response<Product> response = new Response<>(Notification.PACKET_NOTIFICATION, property.getComparingProducts(command.getDatum() - 1));
+        return gson.toJson(response);
     }
 
     private String getAllCartProducts(boolean isTemp) {

@@ -89,10 +89,23 @@ public class SaleHandler extends Handler {
                 return setOffListic();
             case "set listic off":
                 return setListicOffID();
+            case "get all customer available discounts":
+                return getCustomerAvailableDiscounts();
             default:
                 System.err.println("Serious Error In Sale Handler");
                 return null;
         }
+    }
+
+    private String getCustomerAvailableDiscounts() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")){
+            Response<Discount> response =
+                    new Response<>(Notification.PACKET_NOTIFICATION,
+                            customerControl.getAllAvailableCustomerDisCounts(server.getUsernameByAuth(command.getAuthToken())).toArray(new Discount[0]));
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String setListicOffID() {

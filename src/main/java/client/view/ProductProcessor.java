@@ -1047,7 +1047,6 @@ public class ProductProcessor extends Processor {
     private List<Comment> getAllProductComments(String productID) {
         Command<String> command = new Command<>("get product comments", Command.HandleType.PRODUCT, productID);
         Response<Comment> response = client.postAndGet(command, Response.class, (Class<Comment>)Comment.class);
-        System.err.println("Size : " + response.getData().size());
         return response.getData();
     }
 

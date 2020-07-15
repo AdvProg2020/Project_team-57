@@ -562,12 +562,11 @@ public class CustomerControl extends AccountControl{
         return 0;
     }
 
-    public ArrayList<Discount> getAllAvailableCustomerDisCounts() {
+    public ArrayList<Discount> getAllAvailableCustomerDisCounts(String username) {
         try {
             ArrayList<Discount> availableDiscounts = new ArrayList<>();
-
-            for (Discount customerDiscountCode : DiscountTable.getCustomerDiscountCodes(getUsername())) {
-                if(customerDiscountCode.canCustomerUseThisDiscount(getUsername())) {
+            for (Discount customerDiscountCode : DiscountTable.getCustomerDiscountCodes(username)) {
+                if(customerDiscountCode.canCustomerUseThisDiscount(username)) {
                     availableDiscounts.add(customerDiscountCode);
                 }
             }

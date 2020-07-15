@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 public class Client {
     private static final String CACHE_FOLDER_URL = "cache\\";
-    private static int PORT = 29851;
+    private static int PORT = 64566;
     private static Client client = null;
     private final static String HOME = "127.0.0.1";
     private Socket mySocket;
