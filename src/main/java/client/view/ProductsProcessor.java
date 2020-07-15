@@ -382,12 +382,6 @@ public class ProductsProcessor extends Processor{
         initCertainProductsPage(productsScrollPane);
     }
 
-    private List<Product> getAllComparingProducts() {
-        Command command = new Command("get all comparing products", GENERAL);
-        Response<Product> response = client.postAndGet(command, Response.class, (Class<Product>)Product.class);
-        return response.getData();
-    }
-
     private boolean isThereOff(Off selectedOff) {
         Command<String> command = new Command<>("is there off", SALE, selectedOff.getOffID());
         Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);

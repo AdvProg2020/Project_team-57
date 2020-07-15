@@ -227,8 +227,8 @@ public class ProductProcessor extends Processor {
             case PRODUCTS_VENDOR:
             case ADMIN:
             case PRODUCTS:
-                productControl.setFirstComparingProduct(product.getID());
-                similarProducts = productControl.getAllComparingProducts();
+                setComparingProduct(product.getID(), 1);
+                similarProducts = new ArrayList<>(getAllComparingProducts());
                 if(similarProducts.isEmpty()) {
                     downBorderPane.getChildren().remove(similarProductsPane);
                 } else {
@@ -292,7 +292,7 @@ public class ProductProcessor extends Processor {
 
     private void initSimilarProductPane(Product product) {
         this.product = product;
-        productImage.setFill(new ImagePattern(productControl.getProductImageByID(product.getID(), 1)));
+        productImage.setFill(new ImagePattern(getProductImageByID(product.getID(), 1, "product")));
         productNameLabel.setText(product.getName());
 
         if(product.isOnSale()) {
@@ -1442,7 +1442,7 @@ public class ProductProcessor extends Processor {
                 }
 
             } catch (FileNotFoundException e) {
-                //:)
+                e.printStackTrace();
             }
 
             imageView.setImage(new Image(fileInputStream));

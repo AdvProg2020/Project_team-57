@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static client.api.Command.HandleType.GENERAL;
+
 public abstract class Processor {
     protected final String IMAGE_FOLDER_URL = "client\\Images\\";
     protected Stage myStage;
@@ -261,6 +263,11 @@ public abstract class Processor {
         return response.getDatum();
     }
 
+    protected Image getProductImageByID(String productID, int imageNumber, String productType) {
+        Command<String> productImageCommand = new Command<>("get " + productType + " image-1", Command.HandleType.PICTURE_GET, productID);
+        return client.getImage(productImageCommand);
+    }
+
     protected Off getOffByID(String ID, String offType) {
         Command<String> command = new Command<>("get " + offType, Command.HandleType.SALE, ID);
         Response<Off> response = client.postAndGet(command, Response.class, (Class<Off>)Off.class);
@@ -326,5 +333,11 @@ public abstract class Processor {
     protected void setComparingProduct(String productID, int i) {
         Command<String> command = new Command<>("set " + (i == 1 ? "first" : "second") + " comparing product", Command.HandleType.GENERAL, productID);
         client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
+
+    protected List<Product> getAllComparingProducts() {
+        Command command = new Command("get all comparing products", GENERAL);
+        Response<Product> response = client.postAndGet(command, Response.class, (Class<Product>)Product.class);
+        return response.getData();
     }
 }
