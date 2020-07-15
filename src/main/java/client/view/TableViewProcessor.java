@@ -1,16 +1,11 @@
 package client.view;
 
-import client.api.Client;
 import client.api.Command;
 import com.jfoenix.controls.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.input.MouseButton;
 import notification.Notification;
-import server.controller.Control;
 import server.controller.account.AccountControl;
-import server.controller.account.AdminControl;
-import server.controller.account.CustomerControl;
-import server.controller.account.VendorControl;
 import server.controller.product.ProductControl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -34,18 +29,12 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import server.model.existence.*;
-
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentMap;
-
 import server.model.existence.Log.ProductOfLog;
 import server.server.Response;
-
 import static server.model.existence.Account.AccountType.*;
 
 public class TableViewProcessor<T> extends Processor {
@@ -425,41 +414,6 @@ public class TableViewProcessor<T> extends Processor {
         ArrayList<Account> accounts = new ArrayList<>(response.getData());
         return accounts;
     }
-
-    //TODO(FOR CHECKBOX)
-/*    private ArrayList<T> getAllCustomersForDiscount() {
-        ArrayList<Account> customers = new ArrayList<>();
-        if(searchedUsername != null && searchedUsername.length() > 0) {
-            customers = AccountControl.getController().getModifiedAccounts(CUSTOMER, searchedUsername);
-        } else
-            customers = AccountControl.getController().getModifiedAccounts(CUSTOMER);
-
-        customers.forEach(customer -> {
-            customer.getCheckBox().setOnAction(event -> {
-                SaleProcessor processor = ((SaleProcessor)parentProcessor);
-                if(customer.getCheckBox().isSelected()) {
-                    if(!processor.isAccountAddedInDiscount(customer.getUsername())) {
-                        processor.addUserToDiscount(customer.getUsername());
-                        this.updateSelectedItem();
-                    }
-                } else {
-                    if(processor.isAccountAddedInDiscount(customer.getUsername())) {
-                        processor.removeUserFromDiscount(customer.getUsername());
-                        this.updateSelectedItem();
-                    }
-                }
-            });
-            for (String discountAddedUser : ((SaleProcessor) parentProcessor).getDiscountAddedUsers()) {
-                if(customer.getUsername().equals(discountAddedUser)) {
-                    customer.getCheckBox().setSelected(true);
-                }
-            }
-            customer.getCheckBox().setOnMouseEntered(event -> simpleButtonOnMouse(event));
-            customer.getCheckBox().setOnMouseExited(event -> simpleButtonOutMouse(event));
-        });
-
-        return (ArrayList<T>) customers;
-    }*/
 
     private void initOptions() {
         switch (tableViewType) {
@@ -953,6 +907,11 @@ public class TableViewProcessor<T> extends Processor {
         }
         ((TableViewProcessor)parentProcessor).updateTable();
         ((TableViewProcessor)parentProcessor).updateSelectedItem();
+    }
+
+    private Notification deleteUserWithUsername(String username) {
+        Command<String> command = new Command<>("delete user", Command.HandleType.ACCOUNT, username);
+        return client.postAndGet(command, Response.class, (Class<Object>)Object.class).getMessage();
     }
 
     public void approveUser(ActionEvent actionEvent) {

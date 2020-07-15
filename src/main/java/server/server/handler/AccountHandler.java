@@ -73,14 +73,24 @@ public class AccountHandler extends Handler {
                 return getAllLogs("Customer");
             case "get product buyers":
                 return getProductBuyers();
+            case "delete user":
+                return deleteUser();
             default:
                 return null/*server.getUnknownError()*/;
         }
     }
 
+    private String deleteUser() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            return gson.toJson(new Response(accountControl.deleteUserWithUsername(command.getDatum())));
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
     private String modifyUserApprove() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
-        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Vendor")) {
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
             String username = command.getData(0), isApproved = command.getData(1);
             return gson.toJson(new Response(accountControl.modifyApprove(username, (isApproved.equals("true") ? 1 : 0))));
         }
