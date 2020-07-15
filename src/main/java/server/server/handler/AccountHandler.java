@@ -61,6 +61,8 @@ public class AccountHandler extends Handler {
                 return getCredit();
             case "modified accounts" :
                 return getModifiedAccounts();
+            case "modify user approve":
+                return modifyUserApprove();
             case "get all customers with search":
                 return getAllCustomersWithSearch();
             case "get all customers":
@@ -69,9 +71,30 @@ public class AccountHandler extends Handler {
                 return getAllLogs("Vendor");
             case "get customer logs":
                 return getAllLogs("Customer");
+            case "get product buyers":
+                return getProductBuyers();
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String modifyUserApprove() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Vendor")) {
+            String username = command.getData(0), isApproved = command.getData(1);
+            return gson.toJson(new Response(accountControl.modifyApprove(username, (isApproved.equals("true") ? 1 : 0))));
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String getProductBuyers() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Vendor")) {
+            Response<Account> response = new Response<>(Notification.PACKET_NOTIFICATION);
+            response.setData(vendorControl.getProductBuyers(server.getPropertyByRelic(command.getRelic()).getProductIDForBuyers()));
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String getAllLogs(String type) {

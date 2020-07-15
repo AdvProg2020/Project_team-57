@@ -10,6 +10,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Property {
+    //For Product Buyers
+    private String productIDForBuyers;
+
+    public String getProductIDForBuyers() {
+        return productIDForBuyers;
+    }
+
+    public void setProductIDForBuyers(String productIDForBuyers) {
+        this.productIDForBuyers = productIDForBuyers;
+    }
+
+
     //Discount For Purchase
     private boolean hasDiscount = false;
     private Discount discount = null;

@@ -1484,7 +1484,7 @@ public class ProductProcessor extends Processor {
 
     public void showBuyers() {
         try {
-            vendorControl.setCurrentProduct(product.getID());
+            setCurrentProduct(product.getID());
             FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
             Parent root = loader.load();
             TableViewProcessor<Account> tableViewProcessor = loader.getController();
@@ -1501,6 +1501,11 @@ public class ProductProcessor extends Processor {
         } catch (IOException e) {
             //:)
         }
+    }
+
+    private void setCurrentProduct(String productID) {
+        Command<String> command = new Command<>("set product for buyers", Command.HandleType.GENERAL, productID);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 
     public void removeProductMouseClicked(MouseEvent mouseEvent) {

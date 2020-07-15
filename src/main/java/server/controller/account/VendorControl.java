@@ -16,8 +16,6 @@ import java.util.ArrayList;
 
 public class VendorControl extends AccountControl{
     private static VendorControl vendorControl = null;
-    private String currentProduct;
-
 
     public static VendorControl getController() {
         if (vendorControl == null)
@@ -461,10 +459,10 @@ public class VendorControl extends AccountControl{
         return new Log();
     }
 
-    public ArrayList<Account> getProductBuyers() {
+    public ArrayList<Account> getProductBuyers(String productID) {
         ArrayList<Account> customers = new ArrayList<>();
         try {
-            for (String account : LogTable.getAllCustomerUsernamesForProduct(currentProduct)) {
+            for (String account : LogTable.getAllCustomerUsernamesForProduct(productID)) {
                 customers.add(AccountTable.getAccountByUsername(account));
             }
         } catch (SQLException e) {
@@ -475,17 +473,9 @@ public class VendorControl extends AccountControl{
         return customers;
     }
 
-    public String getCurrentProduct() {
-        return currentProduct;
-    }
-
-    public void setCurrentProduct(String currentProduct) {
-        this.currentProduct = currentProduct;
-    }
-
-    public double getMaxSale() {
+    public double getMaxSale(String productID) {
         try {
-            return LogTable.getMaxSaleByID(currentProduct);
+            return LogTable.getMaxSaleByID(productID);
         } catch (SQLException e) {
             //:)
         } catch (ClassNotFoundException e) {
@@ -494,9 +484,9 @@ public class VendorControl extends AccountControl{
         return 0;
     }
 
-    public int getMaxCountOfSale() {
+    public int getMaxCountOfSale(String productID) {
         try {
-            return LogTable.getMaxCountOfSaleByProductID(currentProduct);
+            return LogTable.getMaxCountOfSaleByProductID(productID);
         } catch (SQLException e) {
             //:)
         } catch (ClassNotFoundException e) {
@@ -505,9 +495,9 @@ public class VendorControl extends AccountControl{
         return 0;
     }
 
-    public double getMaxAmountOfSale() {
+    public double getMaxAmountOfSale(String productID) {
         try {
-            return LogTable.getMaxAmountOfSaleByProductID(currentProduct);
+            return LogTable.getMaxAmountOfSaleByProductID(productID);
         } catch (SQLException e) {
             //:)
         } catch (ClassNotFoundException e) {

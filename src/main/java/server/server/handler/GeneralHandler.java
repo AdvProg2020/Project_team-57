@@ -75,10 +75,22 @@ public class GeneralHandler extends Handler {
                 return setHasDiscount();
             case "set discount for purchase":
                 return setDiscountForPurchase();
+            case "set product for buyers":
+                return setProductForBuyers();
             default:
                 System.err.println("Serious Error In General Handler");
                 return null;
         }
+    }
+
+    private String setProductForBuyers() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            Property property = server.getPropertyByRelic(command.getRelic());
+            property.setProductIDForBuyers(command.getDatum());
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String setDiscountForPurchase() {

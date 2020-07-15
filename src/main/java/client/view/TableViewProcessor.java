@@ -5,6 +5,7 @@ import client.api.Command;
 import com.jfoenix.controls.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.input.MouseButton;
+import notification.Notification;
 import server.controller.Control;
 import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
@@ -340,12 +341,18 @@ public class TableViewProcessor<T> extends Processor {
                 tableList.addAll((ArrayList<T>) getDiscounts());
                 break;
             case PRODUCT_BUYERS:
-                tableList.addAll((ArrayList<T>) VendorControl.getController().getProductBuyers());
+                tableList.addAll((ArrayList<T>) getProductBuyers());
                 break;
         }
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
         selectedItem = tableView.getSelectionModel().getSelectedItem();
+    }
+
+    private ArrayList<Account> getProductBuyers() {
+        Command command = new Command("get product buyers", Command.HandleType.ACCOUNT);
+        Response<Account> response = client.postAndGet(command, Response.class, (Class<Account>)Account.class);
+        return new ArrayList<>(response.getData());
     }
 
     private ArrayList<Log> getAllLogs(String type) {
@@ -502,7 +509,7 @@ public class TableViewProcessor<T> extends Processor {
                 Account account = (Account)selectedItem;
                 processor.nameLabel.setText(account.getFirstName() + " " + account.getLastName());
                 processor.imageCircle.setFill
-                        (new ImagePattern(AccountControl.getController().getProfileImageByUsername(account.getUsername())));
+                        (new ImagePattern(getProfileImage(account.getUsername())));
                 processor.showProfileButton.setDisable(false);
             }
             return root;
@@ -538,7 +545,8 @@ public class TableViewProcessor<T> extends Processor {
             Pane root = loader.load();
             TableViewProcessor processor = loader.getController();
             processor.setParentProcessor(this);
-            if(Control.getType() != null && Control.getType().equals("Vendor")) {
+            String type = getType();
+            if(type != null && type.equals("Vendor")) {
                 Stop[] stops = new Stop[] {
                         new Stop(0, Color.valueOf("#360033")),
                         new Stop(1, Color.valueOf("#127183"))
@@ -552,10 +560,11 @@ public class TableViewProcessor<T> extends Processor {
             if(selectedItem != null) {
                 ProductOfLog productOfLog = (ProductOfLog) selectedItem;
                 processor.productInitialPriceField.setText(getSmoothDoubleFormat(productOfLog.getInitPrice()) + " $");
-                if(Control.getType() != null) {
-                    processor.productFinalPriceField.setText((Control.getType().equals("Vendor")) ?
+                type = getType();
+                if(type != null) {
+                    processor.productFinalPriceField.setText((type.equals("Vendor")) ?
                             "" + productOfLog.getOffPrice() + " $" : "" + (productOfLog.getOffPrice() * (1 - (selectedLog.getDiscountPercent()/100.0))) + " $");
-                    if(Control.getType().equals("Vendor")) {
+                    if(type.equals("Vendor")) {
                         processor.invoicePane.getChildren().removeAll(processor.discountPercentLabel, processor.vendorUsernameLabel,
                                 processor.vendorUsernameField, processor.discountPercentField);
                     } else {
@@ -940,7 +949,7 @@ public class TableViewProcessor<T> extends Processor {
         Optional<ButtonType> buttonType = new Alert
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Delete " + selectedAccount.getUsername() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
-            AdminControl.getController().deleteUserWithUsername(selectedAccount.getUsername()).getAlert().show();
+            deleteUserWithUsername(selectedAccount.getUsername()).getAlert().show();
         }
         ((TableViewProcessor)parentProcessor).updateTable();
         ((TableViewProcessor)parentProcessor).updateSelectedItem();
@@ -951,10 +960,15 @@ public class TableViewProcessor<T> extends Processor {
         Optional<ButtonType> buttonType = new Alert
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Approve " + selectedAccount.getUsername() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
-            AccountControl.getController().modifyApprove(selectedAccount.getUsername(), 1).getAlert().show();
+            modifyUserApprove(selectedAccount.getUsername(), true).getAlert().show();
         }
         ((TableViewProcessor)parentProcessor).updateTable();
         ((TableViewProcessor)parentProcessor).updateSelectedItem();
+    }
+
+    public Notification modifyUserApprove(String username, boolean isApproved) {
+        Command<String> command = new Command<>("modify user approve", Command.HandleType.ACCOUNT, username, Boolean.toString(isApproved));
+        return client.postAndGet(command, Response.class, (Class<Object>)Object.class).getMessage();
     }
 
     public void addNewAdmin(ActionEvent actionEvent) {
