@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 
+import static client.api.Command.HandleType.PRODUCT;
 import static client.api.Command.HandleType.SALE;
 import static javafx.scene.control.ButtonType.NO;
 import static javafx.scene.control.ButtonType.YES;
@@ -1078,8 +1079,10 @@ public class ProductsProcessor extends Processor{
 
     //Price Part
     protected void initTotalPricePart() {
-        double totalPrice = CustomerControl.getController().getTotalPriceWithoutDiscount();
-        totalPriceLabel.setText(getSmoothDoubleFormat(totalPrice));
+        Command command = new Command("get total price without discount", PRODUCT);
+        Response<Double> response = client.postAndGet(command, Response.class, (Class<Double>)Double.class);
+//        double totalPrice = CustomerControl.getController().getTotalPriceWithoutDiscount();
+        totalPriceLabel.setText(getSmoothDoubleFormat(response.getDatum()));
     }
 
 

@@ -704,9 +704,9 @@ public class ProductProcessor extends Processor {
 
     private void addToCart(String count) {
         if(product.isCountable()) {
-            customerControl.addToCartCountable(product.getID(), Integer.parseInt(count));
+            addToCartCountable(product.getID(), count);
         } else {
-            customerControl.addToCartUnCountable(product.getID(), Double.parseDouble(count));
+            addToCartUnCountable(product.getID(), count);
         }
 
         if(menuType == ProductMenuType.CART) {
@@ -717,6 +717,16 @@ public class ProductProcessor extends Processor {
         alert.setTitle("Congratulations, Buyer!!!");
         alert.setHeaderText("Yeah");
         alert.show();
+    }
+
+    private void addToCartUnCountable(String productID, String amountString) {
+        Command<String> command = new Command<>("add to cart uncountable", Command.HandleType.PRODUCT, productID, amountString);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
+
+    private void addToCartCountable(String productID, String countString) {
+        Command<String> command = new Command<>("add to cart countable", Command.HandleType.PRODUCT, productID, countString);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 
     //GeneralInfoPane

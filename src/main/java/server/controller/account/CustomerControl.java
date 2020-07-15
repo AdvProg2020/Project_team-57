@@ -36,48 +36,44 @@ public class CustomerControl extends AccountControl{
         return new ArrayList<>();
     }
 
-    public Notification addToCartCountable(/*String username, */String id, int count){
+    public Notification addToCartCountable(String username, String productID, int count){
         try {
-            if (ProductTable.getProductByID(id).getCount() < count)
+            if (ProductTable.getProductByID(productID).getCount() < count)
                 return Notification.MORE_THAN_INVENTORY_COUNTABLE;
             if (count <= 0)
                 return Notification.NEGATIVE_NUMBER;
-            if(CartTable.isThereCartProductForUsername(getUserNameForCart(), id)) {
-                CartTable.deleteCartProduct(getUserNameForCart(), id);
+            if(CartTable.isThereCartProductForUsername(getUserNameForCart(username), productID)) {
+                CartTable.deleteCartProduct(getUserNameForCart(username), productID);
             }
-            CartTable.addToCartCountable(getUserNameForCart(), id, count);
+            CartTable.addToCartCountable(getUserNameForCart(username), productID, count);
             return Notification.ADD_TO_CART;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;
     }
 
-    public Notification addToCartUnCountable(/*String username, */String id, double amount){
+    public Notification addToCartUnCountable(String username, String productID, double amount){
         try {
-            if (ProductTable.getProductByID(id).getAmount() < amount)
+            if (ProductTable.getProductByID(productID).getAmount() < amount)
                 return Notification.MORE_THAN_INVENTORY_UNCOUNTABLE;
             if (amount <= 0)
                 return Notification.NEGATIVE_NUMBER;
-            if(CartTable.isThereCartProductForUsername(getUserNameForCart(), id)) {
-                CartTable.deleteCartProduct(getUserNameForCart(), id);
+            if(CartTable.isThereCartProductForUsername(getUserNameForCart(username), productID)) {
+                CartTable.deleteCartProduct(getUserNameForCart(username), productID);
             }
-            CartTable.addToCartUnCountable(getUserNameForCart(), id, amount);
+            CartTable.addToCartUnCountable(getUserNameForCart(username), productID, amount);
             return Notification.ADD_TO_CART;
-        } catch (SQLException e) {
-            return Notification.UNKNOWN_ERROR;
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
     }
 
-    private String getUserNameForCart() {
-        if(Control.getType() != null && !Control.getType().equals("Customer")) {
-            //:)
-        } else if(Control.isLoggedIn()) {
-            return Control.getUsername();
+    private String getUserNameForCart(String username) {
+//        if(Control.getType() != null && !Control.getType().equals("Customer")) {
+//            :)
+        if(username != null && !username.isEmpty()) {
+            return username;
         } else {
             return "temp";
         }

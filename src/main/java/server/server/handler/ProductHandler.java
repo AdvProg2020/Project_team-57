@@ -2,14 +2,12 @@ package server.server.handler;
 
 import client.api.Command;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.internal.$Gson$Preconditions;
 import notification.Notification;
 import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
 import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
 import server.controller.product.ProductControl;
-import server.model.existence.Account;
 import server.model.existence.Comment;
 import server.model.existence.Product;
 import server.server.Response;
@@ -76,10 +74,33 @@ public class ProductHandler extends Handler {
                 return modifyProductApprove();
             case "get all showing products":
                 return getAllShowingProducts();
+            case "add to cart countable":
+                return addToCart(true);
+            case "add to cart uncountable":
+                return addToCart(false);
             default:
                 System.err.println("Serious Error In Product Handler");
                 return null;
         }
+    }
+
+    private String addToCart(boolean isCountable) {
+        //Sepanta's Code
+//        drfhgiiyitrrrhuurrjjfjiio9ouyygtvghk,nhgffwwwwhfjjttvvhjjj
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        if (!server.getAuthTokens().containsKey(command.getAuthToken()) || accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            String productID = command.getData(0), quantityString = command.getData(1);
+            String username = server.getAuthTokens().containsKey(command.getAuthToken()) ? server.getUsernameByAuth(command.getAuthToken()) : "";
+
+            Notification notification = null;
+            if(isCountable) {
+                notification = customerControl.addToCartCountable(username, productID, Integer.parseInt(quantityString));
+            } else {
+                notification = customerControl.addToCartUnCountable(username, productID, Double.parseDouble(quantityString));
+            }
+            return gson.toJson(new Response(notification));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String isProductPurchasedByCustomer() {
