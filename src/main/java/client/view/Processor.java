@@ -317,4 +317,9 @@ public abstract class Processor {
         Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
         return response.getDatum();
     }
+
+    protected void setOffListic(boolean isOffListic) {
+        Command<Boolean> command = new Command<>("is off listic", Command.HandleType.SALE, isOffListic);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
 }

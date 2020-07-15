@@ -1,5 +1,6 @@
 package client.view;
 
+import client.api.Command;
 import com.jfoenix.controls.JFXButton;
 import server.controller.account.CustomerControl;
 import server.controller.product.ProductControl;
@@ -16,12 +17,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import server.model.existence.Off;
+import server.server.Response;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class OffsProcessor implements Initializable {
+public class OffsProcessor extends Processor implements Initializable {
     private static final int PRODUCTS_NUMBER_PER_PAGE = 6;
     private static final long ONE_MONTH_MILLIS = (long) 2.628e+9;
     private static final long ONE_DAY_MILLIS = (long) 8.64e+7;
@@ -29,17 +32,16 @@ public class OffsProcessor implements Initializable {
     private static final long ONE_MINUTE_MILLIS = 60000;
     private static final long ONE_SECOND_MILLIS = 1000;
 
-    private final CustomerControl customerControl = CustomerControl.getController();
-    private final ProductControl productControl = ProductControl.getController();
-    private final ArrayList<Off> offs = new ArrayList<>(customerControl.getAllShowingOffs());
-    private final ArrayList<Long> timeSeconds = new ArrayList<>();
+/*    private final CustomerControl customerControl = CustomerControl.getController();
+    private final ProductControl productControl = ProductControl.getController();*/
+    private ArrayList<Off> offs/* = new ArrayList<>(customerControl.getAllShowingOffs())*/;
     public Label secondLabel;
     public Label minuteLabel;
     public Label hourLabel;
     public Label dayLabel;
     private int currentPage = 1;
-    private final int productsNumber = offs.size();
-    private final int numberOfPages = (((int)Math.ceil(((double)productsNumber)/PRODUCTS_NUMBER_PER_PAGE)));
+    private int productsNumber/* = offs.size()*/;
+    private int numberOfPages/* = (((int)Math.ceil(((double)productsNumber)/PRODUCTS_NUMBER_PER_PAGE)))*/;
     /**
      * OffPane.fxml
      */
@@ -81,9 +83,18 @@ public class OffsProcessor implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (location.toString().contains("OffList.fxml")) {
+            offs = getAllShowingOffs();
+            productsNumber = offs.size();
+            numberOfPages = (((int)Math.ceil(((double)productsNumber)/PRODUCTS_NUMBER_PER_PAGE)));
             initPageNumberGraphic();
             initGridPaneGraphic();
         }
+    }
+
+    private ArrayList<Off> getAllShowingOffs() {
+        Command command = new Command("get all showing offs", Command.HandleType.SALE);
+        Response<Off> response = client.postAndGet(command, Response.class, (Class<Off>)Off.class);
+        return new ArrayList<>(response.getData());
     }
 
     private void initGridPaneGraphic() {
@@ -104,7 +115,7 @@ public class OffsProcessor implements Initializable {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("OffPane.fxml"));
             Pane offPane = loader.load();
             OffsProcessor processor = loader.getController();
-            processor.offImage.setFill(new ImagePattern(productControl.getOffImageByID(off.getOffID())));
+            processor.offImage.setFill(new ImagePattern(client.getImage(getOffImageCommand(off.getOffID(), false))));
             processor.offPercent.setText(off.getOffPercent() + "%");
             processor.offName.setStyle("-fx-font-family: Calibri; -fx-text-fill: #330939; -fx-font-size: 18px;");
             processor.offPercent.setStyle("-fx-font-family: Calibri; -fx-text-fill: #330939; -fx-font-size: 18px;");
@@ -119,8 +130,8 @@ public class OffsProcessor implements Initializable {
                 offPane.setStyle("-fx-cursor: inherit; -fx-background-color: white; -fx-background-radius: 10px");
             });
             offPane.setOnMouseClicked(event -> {
-                productControl.setOffListic(true);
-                productControl.setListicOffID(off.getOffID());
+                setOffListic(true);
+                setListicOffID(off.getOffID());
                 try {
                     Parent root;
                     Main.getStage().getIcons().remove(0);
@@ -160,6 +171,11 @@ public class OffsProcessor implements Initializable {
             //:)
         }
         return new Pane();
+    }
+
+    private void setListicOffID(String offID) {
+        Command<String> command = new Command<>("set listic off", Command.HandleType.SALE, offID);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 
     private void updateTimeShow(OffsProcessor processor, AnimationTimer animationTimer) {

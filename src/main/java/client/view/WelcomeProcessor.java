@@ -139,7 +139,8 @@ public class WelcomeProcessor extends Processor implements Initializable {
     }
 
     public void openProductsMenu(ActionEvent actionEvent) {
-        ProductControl.getController().setOffListic(false);
+        /*ProductControl.getController().setOffListic(false);*/
+        setOffListic(false);
         try {
             Parent root;
             Main.getStage().getIcons().remove(0);

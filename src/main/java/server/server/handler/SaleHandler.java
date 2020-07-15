@@ -5,12 +5,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import notification.Notification;
 import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
+import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
 import server.controller.product.ProductControl;
 import server.model.existence.Category;
 import server.model.existence.Discount;
 import server.model.existence.Off;
 import server.model.existence.Product;
+import server.server.Property;
 import server.server.Response;
 import server.server.Server;
 
@@ -24,6 +26,8 @@ public class SaleHandler extends Handler {
     ProductControl productControl = ProductControl.getController();
     VendorControl vendorControl = VendorControl.getController();
     AdminControl adminControl = AdminControl.getController();
+    CustomerControl customerControl = CustomerControl.getController();
+
     public SaleHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
         super(outStream, inStream, server, input);
     }
@@ -79,10 +83,35 @@ public class SaleHandler extends Handler {
                 return getNonOffProducts(true);
             case "get off products":
                 return getOffProducts();
+            case "get all showing offs":
+                return getAllShowingOffs();
+            case "is off listic":
+                return setOffListic();
+            case "set listic off":
+                return setListicOffID();
             default:
                 System.err.println("Serious Error In Sale Handler");
                 return null;
         }
+    }
+
+    private String setListicOffID() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        Property property = server.getPropertyByRelic(command.getRelic());
+        property.setListicOffID(command.getDatum());
+        return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+    }
+
+    private String setOffListic() {
+        Command<Boolean> command = commandParser.parseToCommand(Command.class, (Class<Boolean>)Boolean.class);
+        Property property = server.getPropertyByRelic(command.getRelic());
+        property.setOffListic(command.getDatum());
+        return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+    }
+
+    private String getAllShowingOffs() {
+        return gson.toJson(new Response<Off>
+                (Notification.PACKET_NOTIFICATION, customerControl.getAllShowingOffs().toArray(new Off[0])));
     }
 
     private String getOffProducts() {
