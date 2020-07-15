@@ -234,7 +234,7 @@ public class ProductControl extends Control {
     public ArrayList<Product> getAllShowingProducts(Property property) {
         try {
             OffTable.removeOutDatedOffs();
-            ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts(property.getFilter()));
+            ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts(property));
             filterProductsWithPrice(showingProducts, property.getFilter());
             sortProducts(showingProducts, property.getSort());
             return showingProducts;
@@ -246,8 +246,9 @@ public class ProductControl extends Control {
         return new ArrayList<>();
     }
 
-    private ArrayList<String> filterProducts(Filter filter) throws SQLException, ClassNotFoundException {
+    private ArrayList<String> filterProducts(Property property) throws SQLException, ClassNotFoundException {
         ArrayList<String> filteredProductIds = new ArrayList<>();
+        Filter filter = property.getFilter();
         if (filter.getFilterCategories().size() != 0) {
             for (String category : filter.getFilterCategories()) {
                 for (String productId : filterOnCategory(category)) {
@@ -256,13 +257,13 @@ public class ProductControl extends Control {
                 }
             }
         } else {
-            if(!isOffListic) {
+            if(!property.isOffListic()) {
                 for (Product product : ProductTable.getAllShowingProducts()) {
                     filteredProductIds.add(product.getID());
                 }
             } else {
                 for (Product product : ProductTable.getAllShowingProducts()) {
-                    if (OffTable.isThereProductInSpecificOff(listicOffID, product.getID()))
+                    if (OffTable.isThereProductInSpecificOff(property.getListicOffID(), product.getID()))
                         filteredProductIds.add(product.getID());
                 }
             }

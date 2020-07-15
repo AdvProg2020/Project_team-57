@@ -7,6 +7,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Property {
+    //See Off Products
+    private boolean isOffListic;
+    private String listicOffID;
+
+    public boolean isOffListic() {
+        return isOffListic;
+    }
+
+    public String getListicOffID() {
+        return listicOffID;
+    }
+
+    public void setOffListic(boolean offListic) {
+        isOffListic = offListic;
+    }
+
+    public void setListicOffID(String listicOffID) {
+        this.listicOffID = listicOffID;
+    }
 
     //admin add discount
     private HashMap<Discount, ArrayList<String>> discountsAddedUsers;
