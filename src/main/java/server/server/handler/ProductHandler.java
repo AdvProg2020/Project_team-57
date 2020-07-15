@@ -2,6 +2,7 @@ package server.server.handler;
 
 import client.api.Command;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sun.xml.internal.ws.policy.EffectiveAlternativeSelector;
 import notification.Notification;
 import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
@@ -15,7 +16,9 @@ import server.server.Server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductHandler extends Handler {
     private final ProductControl productControl = ProductControl.getController();
@@ -74,14 +77,59 @@ public class ProductHandler extends Handler {
                 return modifyProductApprove();
             case "get all showing products":
                 return getAllShowingProducts();
+            case "get customer cart products":
+                return getAllCartProducts(false);
+            case "get temp cart products":
+                return getAllCartProducts(true);
             case "add to cart countable":
                 return addToCart(true);
             case "add to cart uncountable":
                 return addToCart(false);
+            case "remove product from cart":
+                return removeProductFromCart();
+            case "get total price without discount":
+                return getTotalPriceWithoutDiscount();
             default:
                 System.err.println("Serious Error In Product Handler");
                 return null;
         }
+    }
+
+    private String getAllCartProducts(boolean isTemp) {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>) Object.class);
+        if (!server.getAuthTokens().containsKey(command.getAuthToken()) || accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            List<Product> productList = null;
+            if(isTemp) {
+                productList = customerControl.getTempCartProducts();
+            } else {
+                productList = customerControl.getAllCartProducts(server.getUsernameByAuth(command.getAuthToken()));
+            }
+            Response<Product> response = new Response<>(Notification.PACKET_NOTIFICATION);
+            response.setData(productList);
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String removeProductFromCart() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        if (!server.getAuthTokens().containsKey(command.getAuthToken()) || accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            String username = server.getAuthTokens().containsKey(command.getAuthToken()) ? server.getUsernameByAuth(command.getAuthToken()) : "";
+            String productID = command.getDatum();
+            Response<Double> response = new Response<>(customerControl.removeProductFromCartByID(username, productID));
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String getTotalPriceWithoutDiscount() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>) Object.class);
+        if (!server.getAuthTokens().containsKey(command.getAuthToken()) || accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            String username = server.getAuthTokens().containsKey(command.getAuthToken()) ? server.getUsernameByAuth(command.getAuthToken()) : "";
+            Response<Double> response = new Response<>(Notification.PACKET_NOTIFICATION, customerControl.getTotalPriceWithoutDiscount(username));
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String addToCart(boolean isCountable) {

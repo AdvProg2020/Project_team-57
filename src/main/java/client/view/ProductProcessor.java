@@ -1513,7 +1513,7 @@ public class ProductProcessor extends Processor {
     }
 
     private void openComparingProductsMenu() {
-        productControl.setFirstComparingProduct(product.getID());
+        setComparingProduct(product.getID(), 1);
         Stage stage = new Stage();
         stage.setTitle("Comparable Products");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ProductsMenuComparableProducts.fxml"));
@@ -1530,7 +1530,7 @@ public class ProductProcessor extends Processor {
             stage.getIcons().add(new Image(Main.class.getResourceAsStream("Compare 1.png")));
             stage.show();
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 

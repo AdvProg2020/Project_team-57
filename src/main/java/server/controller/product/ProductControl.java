@@ -19,11 +19,8 @@ import java.util.Collections;
 
 public class ProductControl extends Control {
     private static ProductControl productControl = null;
-    private boolean isOffListic;
-    private String listicOffID;
     private String currentProduct;
     private Product[] comparingProducts = new Product[2];
-
 
     public String getCurrentProduct() {
         return currentProduct;
@@ -61,22 +58,6 @@ public class ProductControl extends Control {
         } catch (ClassNotFoundException e) {
             //:)
         }
-    }
-
-    public boolean isOffListic() {
-        return isOffListic;
-    }
-
-    public void setOffListic(boolean offListic) {
-        isOffListic = offListic;
-    }
-
-    public String getListicOffID() {
-        return listicOffID;
-    }
-
-    public void setListicOffID(String listicOffID) {
-        this.listicOffID = listicOffID;
     }
 
     @Deprecated
@@ -251,7 +232,7 @@ public class ProductControl extends Control {
         Filter filter = property.getFilter();
         if (filter.getFilterCategories().size() != 0) {
             for (String category : filter.getFilterCategories()) {
-                for (String productId : filterOnCategory(category)) {
+                for (String productId : filterOnCategory(category, property)) {
                     if (!filteredProductIds.contains(productId))
                         filteredProductIds.add(productId);
                 }
@@ -331,26 +312,26 @@ public class ProductControl extends Control {
             Collections.sort(products, new Sorting.ScoreSortDescending());
     }
 
-    private ArrayList<String> filterOnCategory(String category) throws SQLException, ClassNotFoundException {
+    private ArrayList<String> filterOnCategory(String category, Property property) throws SQLException, ClassNotFoundException {
         if (!CategoryTable.isThereSubCategories(category) &&
                 !ProductTable.isThereProductWithSpecificCategory(category)) {
             return new ArrayList<>();
         }
         ArrayList<String> productIds = new ArrayList<>();
-        if(!isOffListic) {
+        if(!property.isOffListic()) {
             for (Product product : ProductTable.getProductsWithCategory(category)) {
                 if (product.getStatus() != 2)
                     productIds.add(product.getID());
             }
         } else {
             for (Product product : ProductTable.getProductsWithCategory(category)) {
-                if (product.getStatus() != 2 && OffTable.isThereProductInSpecificOff(listicOffID, product.getID()))
+                if (product.getStatus() != 2 && OffTable.isThereProductInSpecificOff(property.getListicOffID(), product.getID()))
                     productIds.add(product.getID());
             }
         }
 
         for (Category subCategory : CategoryTable.getSubCategories(category)) {
-            productIds.addAll(filterOnCategory(subCategory.getName()));
+            productIds.addAll(filterOnCategory(subCategory.getName(), property));
         }
         return productIds;
     }
@@ -401,15 +382,32 @@ public class ProductControl extends Control {
             while (CategoryTable.getParentCategory(firstProductCategory) != null &&
                     !CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
                 firstProductCategory = CategoryTable.getParentCategory(firstProductCategory);
-            ArrayList<Product> comparableProducts = convertIDsToProducts(filterOnCategory(firstProductCategory));
+//            ArrayList<Product> comparableProducts = convertIDsToProducts(filterOnCategory(firstProductCategory, property));
+            ArrayList<Product> comparableProducts = new ArrayList<>();
             comparableProducts.removeIf(product -> {
                return product.getID().equals(comparingProducts[0].getID()) ;
             });
             return comparableProducts;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    public ArrayList <Product> getAllComparingProducts(Property property) {
+        try {
+            OffTable.removeOutDatedOffs();
+            String firstProductCategory = ProductTable.getProductByID(property.getComparingProducts(0).getID()).getCategory();
+            while (CategoryTable.getParentCategory(firstProductCategory) != null &&
+                    !CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
+                firstProductCategory = CategoryTable.getParentCategory(firstProductCategory);
+            ArrayList<Product> comparableProducts = convertIDsToProducts(filterOnCategory(firstProductCategory, property));
+            comparableProducts.removeIf(product -> {
+                return product.getID().equals(property.getComparingProducts(0).getID()) ;
+            });
+            return comparableProducts;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return new ArrayList<>();
     }

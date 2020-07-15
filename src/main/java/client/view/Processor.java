@@ -322,4 +322,9 @@ public abstract class Processor {
         Command<Boolean> command = new Command<>("is off listic", Command.HandleType.SALE, isOffListic);
         client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
+
+    protected void setComparingProduct(String productID, int i) {
+        Command<String> command = new Command<>("set " + (i == 1 ? "first" : "second") + " comparing product", Command.HandleType.GENERAL, productID);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
 }

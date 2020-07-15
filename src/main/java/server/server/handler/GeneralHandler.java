@@ -5,8 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import notification.Notification;
 import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
+import server.controller.product.ProductControl;
 import server.model.existence.Account;
 import server.model.existence.Discount;
+import server.model.existence.Product;
 import server.server.Property;
 import server.server.Response;
 import server.server.Server;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 public class GeneralHandler extends Handler {
     private final AccountControl accountControl = AccountControl.getController();
     private final AdminControl adminControl = AdminControl.getController();
+    private final ProductControl productControl = ProductControl.getController();
 
     public GeneralHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
         super(outStream, inStream, server, input);
@@ -60,10 +63,41 @@ public class GeneralHandler extends Handler {
                 return deleteCustomerFromDiscount();
             case "add discount":
                 return addDiscount();
+            case "set first comparing product":
+                return setComparingProducts(1);
+            case "set second comparing product":
+                return setComparingProducts(2);
+            case "get all comparing products":
+                return getAllComparingProducts();
             default:
                 System.err.println("Serious Error In General Handler");
                 return null;
         }
+    }
+
+    private String getAllComparingProducts() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        Property property = server.getPropertyByRelic(command.getRelic());
+        Response<Product> response = new Response<>(Notification.PACKET_NOTIFICATION);
+        response.setData(productControl.getAllComparingProducts(property));
+        return gson.toJson(response);
+    }
+
+    private String setComparingProducts(int i) {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        Property property = server.getPropertyByRelic(command.getRelic());
+        String productID = command.getDatum();
+
+        switch (i) {
+            case 1:
+                property.setFirstComparingProduct(productID);
+                break;
+            case 2:
+                property.setSecondComparingProduct(productID);
+                break;
+        }
+
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String addDiscountToProperty() {

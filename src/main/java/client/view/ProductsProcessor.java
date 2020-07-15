@@ -37,10 +37,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
-import static client.api.Command.HandleType.PRODUCT;
-import static client.api.Command.HandleType.SALE;
+import static client.api.Command.HandleType.*;
 import static javafx.scene.control.ButtonType.NO;
 import static javafx.scene.control.ButtonType.YES;
 
@@ -350,10 +350,11 @@ public class ProductsProcessor extends Processor{
                 allProducts = new ArrayList<>(client.postAndGet(new Command("get vendor products", Command.HandleType.PRODUCT), Response.class, (Class<Product>)Product.class).getData());
                 break;
             case CUSTOMER_CART:
-                if(server.controller.Control.getType() != null && server.controller.Control.getType().equals("Customer") && server.controller.Control.isLoggedIn())
-                    allProducts = CustomerControl.getController().getAllCartProducts();
+                String type = getType();
+                if(type != null && type.equals("Customer") && isLoggedIn())
+                    allProducts = new ArrayList<>(client.postAndGet(new Command("get customer cart products", PRODUCT), Response.class, (Class<Product>)Product.class).getData());
                 else
-                    allProducts = CustomerControl.getController().getTempCartProducts();
+                    allProducts = new ArrayList<>(client.postAndGet(new Command("get temp cart products", PRODUCT), Response.class, (Class<Product>)Product.class).getData());
                 purchaseButton.setDisable(allProducts.size() == 0);
                 break;
             case ADMIN_PRODUCT_REQUESTS:
@@ -374,11 +375,17 @@ public class ProductsProcessor extends Processor{
                 allProducts = new ArrayList<>(client.postAndGet(new Command<String>("get non off products with exceptions", SALE, selectedOff.getOffID()), Response.class, (Class<Product>)Product.class).getData());
                 break;
             case PRODUCT_COMPARING_PRODUCTS:
-                allProducts = productControl.getAllComparingProducts();
+                allProducts = new ArrayList<>(getAllComparingProducts());
                 break;
 
         }
         initCertainProductsPage(productsScrollPane);
+    }
+
+    private List<Product> getAllComparingProducts() {
+        Command command = new Command("get all comparing products", GENERAL);
+        Response<Product> response = client.postAndGet(command, Response.class, (Class<Product>)Product.class);
+        return response.getData();
     }
 
     private boolean isThereOff(Off selectedOff) {
@@ -415,7 +422,7 @@ public class ProductsProcessor extends Processor{
             scrollPane.setContent(borderPane);
             scrollPane.setVvalue(0);
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 
@@ -492,7 +499,7 @@ public class ProductsProcessor extends Processor{
         paneProcessor.removeFromCartButton.setOnAction(event -> {
             Optional<ButtonType> buttonType = new Alert(Alert.AlertType.CONFIRMATION, "Do You Really Want To Delete This Great Product From You Cart?", YES, NO).showAndWait();
             if(buttonType.get() == YES) {
-                CustomerControl.getController().removeProductFromCartByID(product.getID()).getAlert().show();
+                removeProductFromCartByID(product.getID()).getAlert().show();
                 initProductsPage();
                 initTotalPricePart();
             }
@@ -503,6 +510,12 @@ public class ProductsProcessor extends Processor{
         setProductPanePrice(productPane, paneProcessor, product);
         setProductPaneOnMouseClick(productPane, product, this);
         return productPane;
+    }
+
+    private Notification removeProductFromCartByID(String productID) {
+        Command<String> command = new Command<>("remove product from cart", PRODUCT, productID);
+        Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+        return response.getMessage();
     }
 
     private Pane getVendorOffProductPane(int productNumberInPage) throws IOException {
@@ -1084,6 +1097,5 @@ public class ProductsProcessor extends Processor{
 //        double totalPrice = CustomerControl.getController().getTotalPriceWithoutDiscount();
         totalPriceLabel.setText(getSmoothDoubleFormat(response.getDatum()));
     }
-
 
 }

@@ -1,12 +1,58 @@
 package server.server;
 
 import notification.Notification;
+import server.model.db.ProductTable;
 import server.model.existence.Discount;
+import server.model.existence.Product;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Property {
+    //Comparing Products
+    private String currentProduct;
+    private Product[] comparingProducts = new Product[2];
+
+    public String getCurrentProduct() {
+        return currentProduct;
+    }
+
+    public void setCurrentProduct(String currentProduct) {
+        this.currentProduct = currentProduct;
+    }
+
+    public Product[] getComparingProducts() {
+        return comparingProducts;
+    }
+
+    public Product getComparingProducts(int i) {
+        return comparingProducts[i];
+    }
+
+    public void setComparingProducts(Product[] comparingProducts) {
+        this.comparingProducts = comparingProducts;
+    }
+
+    public void setFirstComparingProduct(String productID)
+    {
+        try {
+            this.comparingProducts[0] = ProductTable.getProductByID(productID);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setSecondComparingProduct(String productID)
+    {
+        try {
+            this.comparingProducts[1] = ProductTable.getProductByID(productID);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     //See Off Products
     private boolean isOffListic;
     private String listicOffID;
