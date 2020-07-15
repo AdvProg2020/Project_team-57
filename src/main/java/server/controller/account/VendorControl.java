@@ -413,9 +413,9 @@ public class VendorControl extends AccountControl{
         return Notification.UNKNOWN_ERROR;
     }*/
 
-    public ArrayList<Log> getAllVendorLogs() {
+    public ArrayList<Log> getAllVendorLogs(String username) {
         try {
-            return LogTable.getAllVendorLogs(Control.getUsername());
+            return LogTable.getAllVendorLogs(username);
         } catch (SQLException e) {
             //:)
         } catch (ClassNotFoundException e) {

@@ -6,7 +6,10 @@ import notification.Notification;
 import server.controller.IOControl;
 import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
+import server.controller.account.CustomerControl;
+import server.controller.account.VendorControl;
 import server.model.existence.Account;
+import server.model.existence.Log;
 import server.server.Response;
 import server.server.Server;
 
@@ -16,6 +19,8 @@ public class AccountHandler extends Handler {
     private final IOControl ioControl = IOControl.getController();
     private final AccountControl accountControl = AccountControl.getController();
     private final AdminControl adminControl = AdminControl.getController();
+    private final VendorControl vendorControl = VendorControl.getController();
+    private final CustomerControl customerControl = CustomerControl.getController();
 
     public AccountHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
         super(outStream, inStream, server, input);
@@ -60,9 +65,26 @@ public class AccountHandler extends Handler {
                 return getAllCustomersWithSearch();
             case "get all customers":
                 return getAllCustomers();
+            case "get vendor logs":
+                return getAllLogs("Vendor");
+            case "get customer logs":
+                return getAllLogs("Customer");
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String getAllLogs(String type) {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals(type)) {
+            return gson.toJson(new Response<Log>
+                    (Notification.PACKET_NOTIFICATION,
+                            (type.equalsIgnoreCase("vendor") ?
+                            vendorControl.getAllVendorLogs(server.getUsernameByAuth(command.getAuthToken())).toArray(new Log[0])
+                            :
+                            customerControl.getAllLogs(server.getUsernameByAuth(command.getAuthToken())).toArray(new Log[0]))));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String getAllCustomers() {

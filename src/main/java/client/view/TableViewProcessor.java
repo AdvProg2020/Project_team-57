@@ -319,8 +319,6 @@ public class TableViewProcessor<T> extends Processor {
                 tableList.addAll((ArrayList<T>)getAllDiscounts());
                 break;
             case DISCOUNT_CUSTOMERS:
-                //TODO(FOR CHECKBOX)
-
                 tableList.addAll((ArrayList<T>)getAllCustomersForDiscount());
                 break;
             case ADMIN_COMMENTS:
@@ -333,10 +331,7 @@ public class TableViewProcessor<T> extends Processor {
                 tableList.addAll((ArrayList<T>) getAllOffs());
                 break;
             case LOGS:
-                if(Control.getType().equals("Vendor"))
-                    tableList.addAll((ArrayList<T>) VendorControl.getController().getAllVendorLogs());
-                else
-                    tableList.addAll((ArrayList<T>) CustomerControl.getController().getAllLogs());
+                tableList.addAll((ArrayList<T>) getAllLogs(getType()));
                 break;
             case PRODUCTS_OF_LOG:
                 tableList.addAll((ArrayList<T>) selectedLog.getAllProducts());
@@ -351,6 +346,12 @@ public class TableViewProcessor<T> extends Processor {
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
         selectedItem = tableView.getSelectionModel().getSelectedItem();
+    }
+
+    private ArrayList<Log> getAllLogs(String type) {
+        Command command = new Command((type.equals("Vendor") ? "get vendor logs" : "get customer logs"), Command.HandleType.ACCOUNT);
+        Response<Log> response = client.postAndGet(command, Response.class, (Class<Log>)Log.class);
+        return new ArrayList<>(response.getData());
     }
 
     private ArrayList<Discount> getDiscounts() {
@@ -581,7 +582,8 @@ public class TableViewProcessor<T> extends Processor {
             Pane root = loader.load();
             TableViewProcessor processor = loader.getController();
             processor.setParentProcessor(this);
-            if(Control.getType() != null && Control.getType().equals("Vendor")) {
+            String type = getType();
+            if(type != null && type.equals("Vendor")) {
                 Stop[] stops = new Stop[] {
                         new Stop(0, Color.valueOf("#360033")),
                         new Stop(1, Color.valueOf("#127183"))
@@ -600,8 +602,9 @@ public class TableViewProcessor<T> extends Processor {
                 java.util.Date date = new java.util.Date(log.getDate().getTime());
                 processor.logDateLabel.setText(date.toString());
                 processor.logInitialPrice.setText(getSmoothDoubleFormat(log.getInitialPrice()) + " $");
-                if(Control.getType() != null) {
-                    processor.logFinalPrice.setText((Control.getType().equals("Vendor")) ?
+                type = getType();
+                if(type != null) {
+                    processor.logFinalPrice.setText((type.equals("Vendor")) ?
                             "" + log.getVendorFinalPrice() + " $" : "" + log.getCustomerFinalPrice() + " $");
                 }
                 processor.logOffPercent.setText(getSmoothDoubleFormat(((1.0 - (log.getVendorFinalPrice()/log.getInitialPrice())) * 100)) +" %");

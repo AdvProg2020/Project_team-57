@@ -462,9 +462,9 @@ public class CustomerControl extends AccountControl{
         return new Discount();
     }
 
-    public ArrayList<Log> getAllLogs() {
+    public ArrayList<Log> getAllLogs(String username) {
         try {
-            return LogTable.getAllCustomerLogs(Control.getUsername());
+            return LogTable.getAllCustomerLogs(username);
         } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
