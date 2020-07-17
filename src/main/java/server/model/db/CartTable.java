@@ -7,8 +7,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class CartTable extends Database{
-    public static void addToCartCountable(String username, String id, int count) throws SQLException, ClassNotFoundException {
+public class CartTable extends Database {
+    public static CartTable getInstance() {
+        return new CartTable();
+    }
+
+    public void addToCartCountable(String username, String id, int count) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Carts (ID, CustomerUsername, Count) VALUES(?, ?, ?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, id);
@@ -17,7 +21,7 @@ public class CartTable extends Database{
         preparedStatement.execute();
     }
 
-    public static void addToCartUnCountable(String username, String id, double amount) throws SQLException, ClassNotFoundException {
+    public void addToCartUnCountable(String username, String id, double amount) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Carts (ID, CustomerUsername, Amount) VALUES(?, ?, ?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, id);
@@ -26,7 +30,7 @@ public class CartTable extends Database{
         preparedStatement.execute();
     }
 
-    public static void addTempToUsername(String customerUsername) throws SQLException, ClassNotFoundException {
+    public void addTempToUsername(String customerUsername) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Carts WHERE CustomerUsername = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, "temp");
@@ -46,14 +50,14 @@ public class CartTable extends Database{
         }
     }
 
-    public static void removeTemp() throws SQLException, ClassNotFoundException {
+    public void removeTemp() throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Carts WHERE CustomerUsername = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, "temp");
         preparedStatement.execute();
     }
 
-    public static ArrayList<Product> getAllCartWithUsername(String customerUsername) throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> getAllCartWithUsername(String customerUsername) throws SQLException, ClassNotFoundException {
         ArrayList<Product> cartProducts = new ArrayList<>();
         String command = "SELECT * FROM Carts WHERE CustomerUsername = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -61,7 +65,7 @@ public class CartTable extends Database{
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next())
         {
-            Product product = ProductTable.getProductByID(resultSet.getString("ID"));
+            Product product = ProductTable.getInstance().getProductByID(resultSet.getString("ID"));
             if(product.isCountable())
                 product.setCount(resultSet.getInt("Count"));
             else
@@ -71,13 +75,13 @@ public class CartTable extends Database{
         return cartProducts;
     }
 
-    public static Product getCartProductByID(String customerUsername, String ID) throws SQLException, ClassNotFoundException {
+    public Product getCartProductByID(String customerUsername, String ID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Carts WHERE CustomerUsername = ? AND ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, customerUsername);
         preparedStatement.setString(2, ID);
         ResultSet resultSet = preparedStatement.executeQuery();
-        Product product = ProductTable.getProductByID(ID);
+        Product product = ProductTable.getInstance().getProductByID(ID);
         if(product.isCountable())
             product.setCount(resultSet.getInt("Count"));
         else
@@ -85,7 +89,7 @@ public class CartTable extends Database{
         return product;
     }
 
-    public static void modifyCartProductCounts(String username, String productID, int input) throws SQLException, ClassNotFoundException {
+    public void modifyCartProductCounts(String username, String productID, int input) throws SQLException, ClassNotFoundException {
         int firstCount = getCartProductByID(username, productID).getCount();
         String command = "UPDATE Carts SET Count = ? Where CustomerUsername = ? AND ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -95,7 +99,7 @@ public class CartTable extends Database{
         preparedStatement.execute();
     }
 
-    public static void modifyCartProductAmount(String username, String productID, double input) throws SQLException, ClassNotFoundException {
+    public void modifyCartProductAmount(String username, String productID, double input) throws SQLException, ClassNotFoundException {
         double firstAmount = getCartProductByID(username, productID).getAmount();
         String command = "UPDATE Carts SET Amount = ? Where CustomerUsername = ? AND ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -105,7 +109,7 @@ public class CartTable extends Database{
         preparedStatement.execute();
     }
 
-    public static boolean isThereCartProductForUsername(String username, String productID) throws SQLException, ClassNotFoundException {
+    public boolean isThereCartProductForUsername(String username, String productID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Carts WHERE CustomerUserName = ? And ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
@@ -113,7 +117,7 @@ public class CartTable extends Database{
         return preparedStatement.executeQuery().next();
     }
 
-    public static void deleteCartProduct(String username, String id) throws SQLException, ClassNotFoundException {
+    public void deleteCartProduct(String username, String id) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Carts WHERE CustomerUsername = ? And ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
@@ -121,21 +125,21 @@ public class CartTable extends Database{
         preparedStatement.execute();
     }
 
-    public static void deleteCustomerCart(String username) throws SQLException, ClassNotFoundException {
+    public void deleteCustomerCart(String username) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Carts WHERE CustomerUsername = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
         preparedStatement.execute();
     }
 
-    public static void deleteProductFromCarts(String productId) throws SQLException, ClassNotFoundException {
+    public void deleteProductFromCarts(String productId) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Carts WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productId);
         preparedStatement.execute();
     }
 
-    public static void removeAllCustomerCartProducts(String username) throws SQLException, ClassNotFoundException {
+    public void removeAllCustomerCartProducts(String username) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Carts WHERE CustomerUsername = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);

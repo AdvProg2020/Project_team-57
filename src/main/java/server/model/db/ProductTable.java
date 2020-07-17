@@ -12,7 +12,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ProductTable extends Database {
-    public static ArrayList<Product> getAllProducts() throws SQLException, ClassNotFoundException {
+    public static ProductTable getInstance() {
+        return new ProductTable();
+    }
+
+    public ArrayList<Product> getAllProducts() throws SQLException, ClassNotFoundException {
         String queryTask = "SELECT * FROM Products;";
         PreparedStatement preparedStatement = getConnection().prepareStatement(queryTask);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -24,7 +28,7 @@ public class ProductTable extends Database {
         return allProducts;
     }
 
-    public static Product getProductByID(String ID) throws SQLException, ClassNotFoundException {
+    public Product getProductByID(String ID) throws SQLException, ClassNotFoundException {
         String queryTask = "SELECT * FROM Products WHERE ID = ?;";
         PreparedStatement preparedStatement = getConnection().prepareStatement(queryTask);
         preparedStatement.setString(1, ID);
@@ -32,14 +36,14 @@ public class ProductTable extends Database {
         return product;
     }
 
-    public static void removeProductByID(String ID) throws SQLException, ClassNotFoundException {
+    public void removeProductByID(String ID) throws SQLException, ClassNotFoundException {
         String task = "DELETE FROM Products WHERE ID = ?;";
         PreparedStatement preparedStatement = getConnection().prepareStatement(task);
         preparedStatement.setString(1, ID);
         preparedStatement.execute();
     }
 
-    public static boolean isIDFree(String productId) throws SQLException, ClassNotFoundException
+    public boolean isIDFree(String productId) throws SQLException, ClassNotFoundException
     {
         String command = "SELECT * FROM Products WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -47,7 +51,7 @@ public class ProductTable extends Database {
         return !(preparedStatement.executeQuery().next());
     }
 
-    public static void setProductStatus(String ID, int status) throws SQLException, ClassNotFoundException {
+    public void setProductStatus(String ID, int status) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Products SET Status = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, status);
@@ -55,7 +59,7 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
-    public static ArrayList<Product> getAllUnApprovedProducts() throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> getAllUnApprovedProducts() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Products WHERE Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, 2);
@@ -67,7 +71,7 @@ public class ProductTable extends Database {
         return products;
     }
 
-    public static ArrayList<Product> getAllShowingProducts() throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> getAllShowingProducts() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Products WHERE Status = ? OR Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, 1);
@@ -80,7 +84,7 @@ public class ProductTable extends Database {
         return products;
     }
 
-    public static void setProductApprovalDate(String productId) throws SQLException, ClassNotFoundException {
+    public void setProductApprovalDate(String productId) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Products SET ApprovalDate = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDate(1, new Date(System.currentTimeMillis()));
@@ -88,7 +92,7 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
-    public static ArrayList<Product> getProductsWithCategory(String categoryName) throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> getProductsWithCategory(String categoryName) throws SQLException, ClassNotFoundException {
         ArrayList<Product> products = new ArrayList<>();
         String command = "SELECT * FROM Products WHERE Category = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -99,7 +103,7 @@ public class ProductTable extends Database {
         return products;
     }
 
-    public static void changeProductCategoryByID(String ID, String category) throws SQLException, ClassNotFoundException {
+    public void changeProductCategoryByID(String ID, String category) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Products SET Category = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, category);
@@ -107,21 +111,21 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
-    public static boolean isThereProductWithSpecificCategory(String categoryName) throws SQLException, ClassNotFoundException {
+    public boolean isThereProductWithSpecificCategory(String categoryName) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Products WHERE Category = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, categoryName);
         return preparedStatement.executeQuery().next();
     }
 
-    public static void addSeenToProductWithID(String productID) throws SQLException, ClassNotFoundException {
-        int firstSeen = ProductTable.getProductByID(productID).getSeen();
+    public void addSeenToProductWithID(String productID) throws SQLException, ClassNotFoundException {
+        int firstSeen = ProductTable.getInstance().getProductByID(productID).getSeen();
         String command = "UPDATE Products SET Seen = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, (firstSeen + 1));
         preparedStatement.setString(2, productID);
         preparedStatement.execute();
-        if(!EditingProductTable.isIDFree(productID))
+        if(!EditingProductTable.getInstance().isIDFree(productID))
         {
             command = "UPDATE EditingProducts SET Seen = ? WHERE ID = ?";
             preparedStatement = getConnection().prepareStatement(command);
@@ -131,7 +135,7 @@ public class ProductTable extends Database {
         }
     }
 
-    public static String getVendorName(String productID) throws SQLException, ClassNotFoundException {
+    public String getVendorName(String productID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Products WHERE ProductID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
@@ -140,8 +144,8 @@ public class ProductTable extends Database {
         return resultSet.getString("SellerUsername");
     }
 
-    public static void reduceProductAmount(String productID, double amount) throws SQLException, ClassNotFoundException {
-        double firstAmount = ProductTable.getProductByID(productID).getAmount();
+    public void reduceProductAmount(String productID, double amount) throws SQLException, ClassNotFoundException {
+        double firstAmount = ProductTable.getInstance().getProductByID(productID).getAmount();
         String command = "UPDATE Products SET Amount = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDouble(1, firstAmount - amount);
@@ -149,8 +153,8 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
-    public static void reduceProductCount(String productID, int count) throws SQLException, ClassNotFoundException {
-        int firstCount = ProductTable.getProductByID(productID).getCount();
+    public void reduceProductCount(String productID, int count) throws SQLException, ClassNotFoundException {
+        int firstCount = ProductTable.getInstance().getProductByID(productID).getCount();
         String command = "UPDATE Products SET Count = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, firstCount - count);
@@ -158,7 +162,7 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
-    public static ArrayList<Integer> getAllScores(String productID) throws SQLException, ClassNotFoundException {
+    public ArrayList<Integer> getAllScores(String productID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Scores WHERE ProductID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
@@ -170,7 +174,7 @@ public class ProductTable extends Database {
         return allScores;
     }
 
-    public static boolean didScore(String username, String productID) throws SQLException, ClassNotFoundException {
+    public boolean didScore(String username, String productID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Scores WHERE CustomerUsername = ? AND ProductID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
@@ -178,7 +182,7 @@ public class ProductTable extends Database {
         return preparedStatement.executeQuery().next();
     }
 
-    public static int getScore(String username, String productID) throws SQLException, ClassNotFoundException {
+    public int getScore(String username, String productID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Scores WHERE CustomerUsername = ? AND ProductID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
@@ -186,7 +190,7 @@ public class ProductTable extends Database {
         return preparedStatement.executeQuery().getInt("Score");
     }
 
-    public static void updateScore(String username, String productID, int score) throws SQLException, ClassNotFoundException {
+    public void updateScore(String username, String productID, int score) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Scores SET Score = ? WHERE CustomerUsername = ? AND ProductID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, score);
@@ -195,7 +199,7 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
-    public static void setScore(String username, String productID, int score) throws SQLException, ClassNotFoundException {
+    public void setScore(String username, String productID, int score) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Scores(ProductID, CustomerUsername, Score) VALUES(?,?,?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
@@ -204,14 +208,14 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
-    public static void deleteProductFromScores(String productID) throws SQLException, ClassNotFoundException {
+    public void deleteProductFromScores(String productID) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Scores WHERE ProductID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
         preparedStatement.execute();
     }
 
-    public static void updateProductsAvgScore(String productID) throws SQLException, ClassNotFoundException {
+    public void updateProductsAvgScore(String productID) throws SQLException, ClassNotFoundException {
         double avgSc = 0;
         int size = 0;
         for (Integer score : getAllScores(productID)) {
@@ -226,7 +230,7 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
-    public static void addComment(Comment comment) throws SQLException, ClassNotFoundException {
+    public void addComment(Comment comment) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Comments(CommentID, ProductID, Title, Content, Status, CustomerUsername)" +
                 " VALUES(?,?,?,?,?,?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -239,14 +243,14 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
-    public static boolean isThereCommentByID(String commentID) throws SQLException, ClassNotFoundException {
+    public boolean isThereCommentByID(String commentID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Comments WHERE CommentID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, commentID);
         return preparedStatement.executeQuery().next();
     }
 
-    public static ArrayList<Comment> getAllUnApprovedComments() throws SQLException, ClassNotFoundException {
+    public ArrayList<Comment> getAllUnApprovedComments() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Comments WHERE Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, 2);
@@ -258,7 +262,7 @@ public class ProductTable extends Database {
         return allUnApprovedComments;
     }
 
-    public static void modifyCommentApproval(String commentID, int status) throws SQLException, ClassNotFoundException {
+    public void modifyCommentApproval(String commentID, int status) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Comments SET Status = ? WHERE CommentID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, status);
@@ -266,7 +270,7 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
-    public static ArrayList<Comment> getAllLoggedInUserComment(String username, String currentProduct) throws SQLException, ClassNotFoundException {
+    public ArrayList<Comment> getAllLoggedInUserComment(String username, String currentProduct) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Comments WHERE ProductID = ? AND CustomerUsername = ? AND (Status = ? OR Status = ?) ";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, currentProduct);
@@ -281,7 +285,7 @@ public class ProductTable extends Database {
         return comments;
     }
 
-    public static ArrayList<Comment> getAllApprovedCommentsOnThisProduct(String currentProduct) throws SQLException, ClassNotFoundException {
+    public ArrayList<Comment> getAllApprovedCommentsOnThisProduct(String currentProduct) throws SQLException, ClassNotFoundException {
         String comment = "SELECT * FROM Comments WHERE ProductID = ? AND Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(comment);
         preparedStatement.setString(1, currentProduct);
@@ -294,7 +298,7 @@ public class ProductTable extends Database {
         return comments;
     }
 
-    public static Comment getCommentByID(String commentID) throws SQLException, ClassNotFoundException {
+    public Comment getCommentByID(String commentID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Comments WHERE CommentID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1,commentID);
@@ -302,7 +306,7 @@ public class ProductTable extends Database {
     }
 
 
-    public static String getProductImageFilePath(String productID, int number) {
+    public String getProductImageFilePath(String productID, int number) {
         String fileName = "database\\Images\\Products\\" + productID + "\\" + number;
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {
@@ -313,7 +317,7 @@ public class ProductTable extends Database {
         return null;
     }
 
-    public static String getProductImageFileExtension(String productID, int number) {
+    public String getProductImageFileExtension(String productID, int number) {
         String fileName = "database\\Images\\Products\\" + productID + "\\" + number;
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {
@@ -325,11 +329,11 @@ public class ProductTable extends Database {
         return "png";
     }
 
-    public static FileInputStream getProductImageInputStream(String ID, int number) throws FileNotFoundException {
+    public FileInputStream getProductImageInputStream(String ID, int number) throws FileNotFoundException {
         return new FileInputStream(getProductImageFilePath(ID, number));
     }
 
-    public static void addImage(String productID, int productNumber, File pictureFile) throws IOException {
+    public void addImage(String productID, int productNumber, File pictureFile) throws IOException {
         File productFolder = new File("database\\Images\\Products\\" + productID );
         if(!productFolder.exists())
             productFolder.mkdir();
@@ -339,12 +343,12 @@ public class ProductTable extends Database {
         Files.copy(pictureFile.toPath(), saveImage.toPath());
     }
 
-    public static void deleteImage(String productID, int imageNumber) throws IOException {
+    public void deleteImage(String productID, int imageNumber) throws IOException {
         File deletingImage = new File(String.valueOf(getProductImageFilePath(productID, imageNumber)));
         deletingImage.delete();
     }
 
-    public static void reNumProductImage(String productID, int firstNumber, int secondNumber) {
+    public void reNumProductImage(String productID, int firstNumber, int secondNumber) {
         File imageFile = new File(getProductImageFilePath(productID, firstNumber));
         File newImageFile =
                 new File("database\\Images\\Products\\" + productID + "\\" + secondNumber +
@@ -352,7 +356,7 @@ public class ProductTable extends Database {
         imageFile.renameTo(newImageFile);
     }
 
-    public static ArrayList<Product> getAllNotApprovedProducts() throws SQLException, ClassNotFoundException {
+    public ArrayList<Product> getAllNotApprovedProducts() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Products WHERE Status = ? OR Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, 2);
@@ -363,19 +367,19 @@ public class ProductTable extends Database {
             if(resultSet.getInt("Status") == 2)
                 products.add(new Product(resultSet));
             else
-                products.add(EditingProductTable.getEditingProductWithID(resultSet.getString("ID")));
+                products.add(EditingProductTable.getInstance().getEditingProductWithID(resultSet.getString("ID")));
         }
         return products;
     }
 
-    public static void removeAllProductComments(String productId) throws SQLException, ClassNotFoundException {
+    public void removeAllProductComments(String productId) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Carts WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productId);
         preparedStatement.execute();
     }
 
-    public static void removeAllProductImages(String productID) {
+    public void removeAllProductImages(String productID) {
         File productFolder = new File("database\\Images\\Products\\" + productID);
         productFolder.mkdir();
         File tempFolder = new File("database\\Images\\Products\\" + productID);
@@ -386,21 +390,21 @@ public class ProductTable extends Database {
         }
     }
 
-    public static void removeAllUserComments(String username) throws SQLException, ClassNotFoundException {
+    public void removeAllUserComments(String username) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Comments WHERE CustomerUsername = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
         preparedStatement.execute();
     }
 
-    public static void removeAllUserScores(String username) throws SQLException, ClassNotFoundException {
+    public void removeAllUserScores(String username) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Scores WHERE CustomerUsername = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
         preparedStatement.execute();
     }
 
-    public static FileOutputStream getProductImageOutputStream(String productID, String fileExtension, int number) throws IOException {
+    public FileOutputStream getProductImageOutputStream(String productID, String fileExtension, int number) throws IOException {
         String folderFileName = "database\\Images\\Products\\" + productID;
         new File(folderFileName).mkdirs();
         String fileName = "database\\Images\\Products\\" + productID + "\\" + number + "." + fileExtension;

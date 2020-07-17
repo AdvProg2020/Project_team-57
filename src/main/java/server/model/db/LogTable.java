@@ -8,14 +8,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class LogTable extends Database {
-        public static Log getCustomerLogByID(String logID) throws SQLException, ClassNotFoundException {
+        public static LogTable getInstance() {
+                return new LogTable();
+        }
+
+        public Log getCustomerLogByID(String logID) throws SQLException, ClassNotFoundException {
                 String command = "SELECT * FROM Logs WHERE LogID = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
                 preparedStatement.setString(1, logID);
                 return new Log(preparedStatement.executeQuery());
         }
 
-        public static void addLog(Log log) throws SQLException, ClassNotFoundException {
+        public void addLog(Log log) throws SQLException, ClassNotFoundException {
                 String command = "INSERT INTO Logs(ProductId, CustomerUsername, Count, Amount, InitPrice, OffPrice," +
                         "Date, DiscountPercent, Status, LogID, IsCountable, VendorUsername) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -36,7 +40,7 @@ public class LogTable extends Database {
                 }
         }
 
-        public static ArrayList<Log> getAllCustomerLogs(String username) throws SQLException, ClassNotFoundException {
+        public ArrayList<Log> getAllCustomerLogs(String username) throws SQLException, ClassNotFoundException {
                 String command = "SELECT DISTINCT LogID FROM Logs WHERE CustomerUsername = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
                 preparedStatement.setString(1, username);
@@ -48,7 +52,7 @@ public class LogTable extends Database {
                 return allLogs;
         }
 
-        public static ArrayList<Log> getAllVendorLogs(String username) throws SQLException, ClassNotFoundException {
+        public ArrayList<Log> getAllVendorLogs(String username) throws SQLException, ClassNotFoundException {
                 String command = "SELECT DISTINCT LogID FROM Logs WHERE VendorUsername = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
                 preparedStatement.setString(1, username);
@@ -60,7 +64,7 @@ public class LogTable extends Database {
                 return allLogs;
         }
 
-        public static Log getVendorLogByID(String logID, String vendorUsername) throws SQLException, ClassNotFoundException {
+        public Log getVendorLogByID(String logID, String vendorUsername) throws SQLException, ClassNotFoundException {
                 String command = "SELECT * FROM Logs WHERE LogID = ? AND VendorUsername = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
                 preparedStatement.setString(1, logID);
@@ -68,14 +72,14 @@ public class LogTable extends Database {
                 return new Log(preparedStatement.executeQuery());
         }
 
-        public static boolean isThereLogWithID(String logID) throws SQLException, ClassNotFoundException {
+        public boolean isThereLogWithID(String logID) throws SQLException, ClassNotFoundException {
                 String command = "SELECT * FROM Logs WHERE LogID = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
                 preparedStatement.setString(1, logID);
                 return preparedStatement.executeQuery().next();
         }
 
-    public static boolean isProductPurchasedByCustomer(String productID, String customerUsername) throws SQLException, ClassNotFoundException {
+    public boolean isProductPurchasedByCustomer(String productID, String customerUsername) throws SQLException, ClassNotFoundException {
             String command = "SELECT * FROM Logs WHERE CustomerUsername = ? And ProductID = ?";
             PreparedStatement preparedStatement = getConnection().prepareStatement(command);
             preparedStatement.setString(1, customerUsername);
@@ -83,7 +87,7 @@ public class LogTable extends Database {
             return preparedStatement.executeQuery().next();
     }
 
-    public static ArrayList<String> getAllCustomerUsernamesForProduct(String currentProduct) throws SQLException, ClassNotFoundException {
+    public ArrayList<String> getAllCustomerUsernamesForProduct(String currentProduct) throws SQLException, ClassNotFoundException {
                 String command = "SELECT DISTINCT CustomerUsername FROM Logs WHERE ProductID = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
                 preparedStatement.setString(1, currentProduct);
@@ -95,7 +99,7 @@ public class LogTable extends Database {
                 return accounts;
         }
 
-    public static double getMaxSaleByID(String productID) throws SQLException, ClassNotFoundException {
+    public double getMaxSaleByID(String productID) throws SQLException, ClassNotFoundException {
             String command = "SELECT * FROM Logs WHERE ProductID = ?";
             PreparedStatement preparedStatement = getConnection().prepareStatement(command);
             preparedStatement.setString(1, productID);
@@ -110,7 +114,7 @@ public class LogTable extends Database {
             return maxSale;
     }
 
-        public static int getMaxCountOfSaleByProductID(String productID) throws SQLException, ClassNotFoundException {
+        public int getMaxCountOfSaleByProductID(String productID) throws SQLException, ClassNotFoundException {
                 String command = "SELECT Count FROM Logs WHERE ProductID = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
                 preparedStatement.setString(1, productID);
@@ -123,7 +127,7 @@ public class LogTable extends Database {
                 return maxCount;
         }
 
-        public static double getMaxAmountOfSaleByProductID(String productID) throws SQLException, ClassNotFoundException {
+        public double getMaxAmountOfSaleByProductID(String productID) throws SQLException, ClassNotFoundException {
                 String command = "SELECT Amount FROM Logs WHERE ProductID = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
                 preparedStatement.setString(1, productID);

@@ -22,25 +22,26 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Product> getAllCartProducts(String username){
         try {
-            DiscountTable.removeOutDatedDiscounts();
-            OffTable.removeOutDatedOffs();
-            return CartTable.getAllCartWithUsername(username);
+            DiscountTable.getInstance().removeOutDatedDiscounts();
+            OffTable.getInstance().removeOutDatedOffs();
+            return CartTable.getInstance().getAllCartWithUsername(username);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return new ArrayList<>();
     }
 
-    public Notification addToCartCountable(String username, String productID, int count){
+    public Notification addToCartCountable(String username, String productID, int count) {
         try {
-            if (ProductTable.getProductByID(productID).getCount() < count)
+            if (ProductTable.getInstance().getProductByID(productID).getCount() < count)
                 return Notification.MORE_THAN_INVENTORY_COUNTABLE;
             if (count <= 0)
                 return Notification.NEGATIVE_NUMBER;
-            if(CartTable.isThereCartProductForUsername(getUserNameForCart(username), productID)) {
-                CartTable.deleteCartProduct(getUserNameForCart(username), productID);
+            CartTable cartTable = CartTable.getInstance();
+            if(cartTable.isThereCartProductForUsername(getUserNameForCart(username), productID)) {
+                cartTable.deleteCartProduct(getUserNameForCart(username), productID);
             }
-            CartTable.addToCartCountable(getUserNameForCart(username), productID, count);
+            cartTable.addToCartCountable(getUserNameForCart(username), productID, count);
             return Notification.ADD_TO_CART;
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -48,16 +49,17 @@ public class CustomerControl extends AccountControl{
         return Notification.UNKNOWN_ERROR;
     }
 
-    public Notification addToCartUnCountable(String username, String productID, double amount){
+    public Notification addToCartUnCountable(String username, String productID, double amount) {
         try {
-            if (ProductTable.getProductByID(productID).getAmount() < amount)
+            if (ProductTable.getInstance().getProductByID(productID).getAmount() < amount)
                 return Notification.MORE_THAN_INVENTORY_UNCOUNTABLE;
             if (amount <= 0)
                 return Notification.NEGATIVE_NUMBER;
-            if(CartTable.isThereCartProductForUsername(getUserNameForCart(username), productID)) {
-                CartTable.deleteCartProduct(getUserNameForCart(username), productID);
+            CartTable cartTable = CartTable.getInstance();
+            if(cartTable.isThereCartProductForUsername(getUserNameForCart(username), productID)) {
+                cartTable.deleteCartProduct(getUserNameForCart(username), productID);
             }
-            CartTable.addToCartUnCountable(getUserNameForCart(username), productID, amount);
+            cartTable.addToCartUnCountable(getUserNameForCart(username), productID, amount);
             return Notification.ADD_TO_CART;
         } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
@@ -65,20 +67,16 @@ public class CustomerControl extends AccountControl{
     }
 
     private String getUserNameForCart(String username) {
-//        if(Control.getType() != null && !Control.getType().equals("Customer")) {
-//            :)
         if(username != null && !username.isEmpty()) {
             return username;
         } else {
             return "temp";
         }
-
-//        return null;
     }
 
     public Product getCartProductByID(String ID, String username) {
         try {
-            return CartTable.getCartProductByID(getUserNameForCart(username), ID);
+            return CartTable.getInstance().getCartProductByID(getUserNameForCart(username), ID);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -87,9 +85,10 @@ public class CustomerControl extends AccountControl{
 
     public Notification removeProductFromCartByID(String username, String productID) {
         try {
-            if(CartTable.isThereCartProductForUsername(getUserNameForCart(username), productID))
+            CartTable cartTable = CartTable.getInstance();
+            if(cartTable.isThereCartProductForUsername(getUserNameForCart(username), productID))
             {
-                CartTable.deleteCartProduct(getUserNameForCart(username), productID);
+                cartTable.deleteCartProduct(getUserNameForCart(username), productID);
                 return Notification.CART_PRODUCT_REMOVED;
             }
             return Notification.NOT_YOUR_CART_PRODUCT;
@@ -101,11 +100,10 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Discount> getDiscounts(String username) {
         try {
-            DiscountTable.removeOutDatedDiscounts();
-            return DiscountTable.getCustomerDiscountCodes(username);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            DiscountTable discountTable = DiscountTable.getInstance();
+            discountTable.removeOutDatedDiscounts();
+            return discountTable.getCustomerDiscountCodes(username);
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
@@ -113,36 +111,40 @@ public class CustomerControl extends AccountControl{
 
 
     public ArrayList<Off> getAllShowingOffs() {
-        try {
-            OffTable.removeOutDatedOffs();
-            return OffTable.getAllShowingOffs();
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        synchronized (AdminControl.offLock1) {
+            try {
+                OffTable offTable = OffTable.getInstance();
+                offTable.removeOutDatedOffs();
+                return offTable.getAllShowingOffs();
+            } catch (SQLException | ClassNotFoundException e) {
+                //:)
+            }
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
     }
 
     //-------------------------------------------------PURCHASE-------------------------------------------------//
     public Notification purchase(String username, Property property)
     {
         try {
+            ProductTable productTable = ProductTable.getInstance();
+            OffTable offTable = OffTable.getInstance();
+
             double initPrice = 0; double offPrice = 0; double finalPrice;
-            for (Product product : CartTable.getAllCartWithUsername(username)) {
+            for (Product product : CartTable.getInstance().getAllCartWithUsername(username)) {
                 if(product.getStatus() != 1)
                     return Notification.UNAVAILABLE_CART_PRODUCT;
                 if(product.isCountable()) {
-                    if(product.getCount() > ProductTable.getProductByID(product.getID()).getCount())
+                    if(product.getCount() > productTable.getProductByID(product.getID()).getCount())
                         return Notification.CART_PRODUCT_OUT_OF_STOCK;
                 } else {
-                    if(product.getAmount() > ProductTable.getProductByID(product.getID()).getAmount())
+                    if(product.getAmount() > productTable.getProductByID(product.getID()).getAmount())
                         return Notification.CART_PRODUCT_OUT_OF_STOCK;
                 }
-                if(OffTable.isThereProductInOff(product.getID())) {
-                    offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100))
+                if(offTable.isThereProductInOff(product.getID())) {
+                    offPrice += (1 - (offTable.getOffByProductID(product.getID()).getOffPercent()/100))
                             * product.getPrice() * product.getCount();
-                    offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100))
+                    offPrice += (1 - (offTable.getOffByProductID(product.getID()).getOffPercent()/100))
                             * product.getPrice() * product.getAmount();
                 } else {
                     offPrice += product.getPrice() * product.getAmount();
@@ -154,27 +156,27 @@ public class CustomerControl extends AccountControl{
             finalPrice = calculateFinalPrice(property.hasDiscount(), property.getDiscount(), offPrice);
             return affordability(initPrice, offPrice, finalPrice, username, property);
 
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
+
         return Notification.UNKNOWN_ERROR;
     }
 
     private Notification affordability(double initPrice, double offPrice, double finalPrice, String username, Property property) {
         try {
-            Account customer = AccountTable.getAccountByUsername(username);
+            AccountTable accountTable = AccountTable.getInstance();
+            Account customer = accountTable.getAccountByUsername(username);
             if(finalPrice > customer.getCredit())
                 return Notification.CANT_AFFORD_CART;
-            AccountTable.changeCredit(customer.getUsername(),((-1) * finalPrice));
+            accountTable.changeCredit(customer.getUsername(),((-1) * finalPrice));
             giveCreditToVendors(customer.getUsername());
             int giftState = createLog(customer, property);
             if(property.hasDiscount()) {
-                DiscountTable.addRepetitionToDiscount(property.getDiscount(), customer.getUsername());
+                DiscountTable.getInstance().addRepetitionToDiscount(property.getDiscount(), customer.getUsername());
             }
             reduceProductFromStock(customer.getUsername());
-            CartTable.deleteCustomerCart(customer.getUsername());
+            CartTable.getInstance().deleteCustomerCart(customer.getUsername());
             property.setHasDiscount(false);
             switch (giftState)
             {
@@ -185,9 +187,7 @@ public class CustomerControl extends AccountControl{
                 default:
                     return Notification.PURCHASED_SUCCESSFULLY;
             }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return Notification.UNKNOWN_ERROR;
@@ -195,35 +195,32 @@ public class CustomerControl extends AccountControl{
 
     private void reduceProductFromStock(String username) {
         try {
-            for (Product product : CartTable.getAllCartWithUsername(username)) {
+            for (Product product : CartTable.getInstance().getAllCartWithUsername(username)) {
                 if(product.isCountable())
-                    ProductTable.reduceProductCount(product.getID(), product.getCount());
+                    ProductTable.getInstance().reduceProductCount(product.getID(), product.getCount());
                 else
-                    ProductTable.reduceProductAmount(product.getID(), product.getAmount());
+                    ProductTable.getInstance().reduceProductAmount(product.getID(), product.getAmount());
             }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
     }
 
     private void giveCreditToVendors(String customerUsername) {
         try {
-            for (Product product : CartTable.getAllCartWithUsername(customerUsername)) {
+            for (Product product : CartTable.getInstance().getAllCartWithUsername(customerUsername)) {
                 double price = 0;
-                if(OffTable.isThereProductInOff(product.getID())) {
-                    price += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100)) * product.getPrice() * product.getAmount();
-                    price += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100)) * product.getPrice() * product.getCount();
+                OffTable offTable = OffTable.getInstance();
+                if(offTable.isThereProductInOff(product.getID())) {
+                    price += (1 - (offTable.getOffByProductID(product.getID()).getOffPercent()/100)) * product.getPrice() * product.getAmount();
+                    price += (1 - (offTable.getOffByProductID(product.getID()).getOffPercent()/100)) * product.getPrice() * product.getCount();
                 } else {
                     price += product.getPrice() * product.getCount();
                     price += product.getPrice() * product.getAmount();
                 }
-                AccountTable.changeCredit(product.getSellerUserName(), price);
+                AccountTable.getInstance().changeCredit(product.getSellerUserName(), price);
             }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
     }
@@ -243,7 +240,7 @@ public class CustomerControl extends AccountControl{
         String logID = "";
         do {
             logID = generateLogID();
-        } while (LogTable.isThereLogWithID(logID));
+        } while (LogTable.getInstance().isThereLogWithID(logID));
 
         log.setLogID(logID);
         log.setCustomerUsername(customer.getUsername());
@@ -256,13 +253,13 @@ public class CustomerControl extends AccountControl{
         log.setDate(new Date(System.currentTimeMillis()));
 
         ArrayList<Log.ProductOfLog> logProducts = new ArrayList<>();
-        for (Product product : CartTable.getAllCartWithUsername(customer.getUsername())) {
+        for (Product product : CartTable.getInstance().getAllCartWithUsername(customer.getUsername())) {
             logProducts.add(new Log.ProductOfLog(product));
         }
 
         log.setAllProducts(logProducts);
         int state = checkGift(customer.getUsername(), log);
-        LogTable.addLog(log);
+        LogTable.getInstance().addLog(log);
         return state;
     }
 
@@ -316,7 +313,7 @@ public class CustomerControl extends AccountControl{
 
     public Discount getCustomerDiscountByID(String discountID) {
         try {
-            return DiscountTable.getDiscountByID(discountID);
+            return DiscountTable.getInstance().getDiscountByID(discountID);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -325,27 +322,16 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Log> getAllLogs(String username) {
         try {
-            return LogTable.getAllCustomerLogs(username);
+            return LogTable.getInstance().getAllCustomerLogs(username);
         } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
     }
 
-    public Log getCurrentLog(){
-        try {
-            return LogTable.getCustomerLogByID(getCurrentLogID());
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return new Log();
-    }
-
     public boolean isProductPurchasedByCustomer(String productID, String customerUsername) {
         try {
-            return LogTable.isProductPurchasedByCustomer(productID, customerUsername);
+            return LogTable.getInstance().isProductPurchasedByCustomer(productID, customerUsername);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -355,11 +341,12 @@ public class CustomerControl extends AccountControl{
     public double getTotalPriceWithoutDiscount(String username) {
         double offPrice = 0;
         try {
-            for (Product product : CartTable.getAllCartWithUsername(getUserNameForCart(username))) {
-                if (OffTable.isThereProductInOff(product.getID())) {
-                    offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent() / 100))
+            OffTable offTable = OffTable.getInstance();
+            for (Product product : CartTable.getInstance().getAllCartWithUsername(getUserNameForCart(username))) {
+                if (offTable.isThereProductInOff(product.getID())) {
+                    offPrice += (1 - (offTable.getOffByProductID(product.getID()).getOffPercent() / 100))
                             * product.getPrice() * product.getCount();
-                    offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent() / 100))
+                    offPrice += (1 - (offTable.getOffByProductID(product.getID()).getOffPercent() / 100))
                             * product.getPrice() * product.getAmount();
                 } else {
                     offPrice += product.getPrice() * product.getAmount();
@@ -376,7 +363,7 @@ public class CustomerControl extends AccountControl{
     public ArrayList<Discount> getAllAvailableCustomerDisCounts(String username) {
         try {
             ArrayList<Discount> availableDiscounts = new ArrayList<>();
-            for (Discount customerDiscountCode : DiscountTable.getCustomerDiscountCodes(username)) {
+            for (Discount customerDiscountCode : DiscountTable.getInstance().getCustomerDiscountCodes(username)) {
                 if(customerDiscountCode.canCustomerUseThisDiscount(username)) {
                     availableDiscounts.add(customerDiscountCode);
                 }
@@ -392,8 +379,8 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Product> getTempCartProducts() {
         try {
-            OffTable.removeOutDatedOffs();
-            return CartTable.getAllCartWithUsername("temp");
+            OffTable.getInstance().removeOutDatedOffs();
+            return CartTable.getInstance().getAllCartWithUsername("temp");
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

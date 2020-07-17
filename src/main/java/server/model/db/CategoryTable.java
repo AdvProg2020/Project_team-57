@@ -8,21 +8,25 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CategoryTable extends Database {
-    public static boolean isThereCategoryWithName(String name) throws SQLException, ClassNotFoundException {
+    public static CategoryTable getInstance() {
+        return new CategoryTable();
+    }
+
+    public boolean isThereCategoryWithName(String name) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Categories WHERE Name = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, name);
         return preparedStatement.executeQuery().next();
     }
 
-    public static Category getCategoryWithName(String categoryName) throws SQLException, ClassNotFoundException {
+    public Category getCategoryWithName(String categoryName) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Categories WHERE Name = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, categoryName);
         return new Category(preparedStatement.executeQuery());
     }
 
-    public static ArrayList<Category> getSubCategories(String parentCategoryName) throws SQLException, ClassNotFoundException {
+    public ArrayList<Category> getSubCategories(String parentCategoryName) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Categories WHERE ParentCategory = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, parentCategoryName);
@@ -34,7 +38,7 @@ public class CategoryTable extends Database {
         return allSubcategories;
     }
 
-    public static void addCategory(Category category) throws SQLException, ClassNotFoundException {
+    public void addCategory(Category category) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Categories(Name, Features, ParentCategory) VALUES(?, ?, ?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, category.getName());
@@ -43,7 +47,7 @@ public class CategoryTable extends Database {
         preparedStatement.execute();
     }
 
-    public static void setCategoryParentName(String category, String newParentName) throws SQLException, ClassNotFoundException {
+    public void setCategoryParentName(String category, String newParentName) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Categories SET ParentCategory = ? WHERE Name = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, newParentName);
@@ -51,14 +55,14 @@ public class CategoryTable extends Database {
         preparedStatement.execute();
     }
 
-    public static void removeCategoryWithName(String categoryName) throws SQLException, ClassNotFoundException {
+    public void removeCategoryWithName(String categoryName) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Categories WHERE Name = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, categoryName);
         preparedStatement.execute();
     }
 
-    public static ArrayList<Category> getAllCategories() throws SQLException, ClassNotFoundException {
+    public ArrayList<Category> getAllCategories() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Categories";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         ArrayList<Category> allCategories = new ArrayList<>();
@@ -69,7 +73,7 @@ public class CategoryTable extends Database {
         return allCategories;
     }
 
-    public static void changeCategoryName(String initialName, String newName) throws SQLException, ClassNotFoundException {
+    public void changeCategoryName(String initialName, String newName) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Categories SET Name = ? WHERE Name = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, newName);
@@ -77,7 +81,7 @@ public class CategoryTable extends Database {
         preparedStatement.execute();
     }
 
-    public static void changeCategoryFeatures(String categoryName, String newFeatures) throws SQLException, ClassNotFoundException {
+    public void changeCategoryFeatures(String categoryName, String newFeatures) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Categories SET Features = ? WHERE Name = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, newFeatures);
@@ -85,14 +89,14 @@ public class CategoryTable extends Database {
         preparedStatement.execute();
     }
 
-    public static boolean isThereSubCategories(String categoryName) throws SQLException, ClassNotFoundException {
+    public boolean isThereSubCategories(String categoryName) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Categories WHERE ParentCategory = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, categoryName);
         return preparedStatement.executeQuery().next();
     }
 
-    public static String getParentCategory(String category) throws SQLException, ClassNotFoundException {
+    public String getParentCategory(String category) throws SQLException, ClassNotFoundException {
         String command = "SELECT ParentCategory FROM Categories WHERE Name = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, category);

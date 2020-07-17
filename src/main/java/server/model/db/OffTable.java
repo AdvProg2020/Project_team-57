@@ -10,8 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class OffTable extends Database{
-    public static void addOff(Off off) throws SQLException, ClassNotFoundException {
+public class OffTable extends Database {
+    public static OffTable getInstance() {
+        return new OffTable();
+    }
+
+    public void addOff(Off off) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Offs(OffID, OffName, ProductID, Status, StartDate, FinishDate, OffPercent, " +
                 "VendorUsername) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -28,14 +32,14 @@ public class OffTable extends Database{
         }
     }
 
-    public static Off getSpecificOff(String offID) throws SQLException, ClassNotFoundException {
+    public Off getSpecificOff(String offID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Offs WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, offID);
         return Off.makeOffByID(preparedStatement.executeQuery());
     }
 
-    public static ArrayList<Off> getVendorOffs(String username) throws SQLException, ClassNotFoundException {
+    public ArrayList<Off> getVendorOffs(String username) throws SQLException, ClassNotFoundException {
         ArrayList<Off> offs = new ArrayList<>();
         String command = "SELECT DISTINCT OffID FROM Offs WHERE VendorUsername = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -52,7 +56,7 @@ public class OffTable extends Database{
         return offs;
     }
 
-    public static void editOffName(Off off, String newOffName) throws SQLException, ClassNotFoundException {
+    public void editOffName(Off off, String newOffName) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Offs SET OffName = ? WHERE OffIDs = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, newOffName);
@@ -60,7 +64,7 @@ public class OffTable extends Database{
         preparedStatement.execute();
     }
 
-    public static Date getStartDate(String offID) throws SQLException, ClassNotFoundException {
+    public Date getStartDate(String offID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Offs WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, offID);
@@ -69,7 +73,7 @@ public class OffTable extends Database{
         return resultSet.getDate("StartDate");
     }
 
-    public static Date getFinishDate(String offID) throws SQLException, ClassNotFoundException {
+    public Date getFinishDate(String offID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Offs WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, offID);
@@ -78,7 +82,7 @@ public class OffTable extends Database{
         return resultSet.getDate("FinishDate");
     }
 
-    public static double getOffPercentByProductID(String productID) throws SQLException, ClassNotFoundException {
+    public double getOffPercentByProductID(String productID) throws SQLException, ClassNotFoundException {
         String command = "SELECT OffPercent FROM Offs WHERE ProductID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
@@ -86,7 +90,7 @@ public class OffTable extends Database{
         return resultSet.getDouble("OffPercent");
     }
 
-    public static void editFinishDate(String offID, Date newFinishDate) throws SQLException, ClassNotFoundException {
+    public void editFinishDate(String offID, Date newFinishDate) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Offs SET FinishDate = ? WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDate(1, newFinishDate);
@@ -94,7 +98,7 @@ public class OffTable extends Database{
         preparedStatement.execute();
     }
 
-    public static void editOffPercent(String offID, double percent) throws SQLException, ClassNotFoundException {
+    public void editOffPercent(String offID, double percent) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Offs SET OffPercent = ? WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDouble(1, percent);
@@ -102,7 +106,7 @@ public class OffTable extends Database{
         preparedStatement.execute();
     }
 
-    public static boolean isThereProductInOff(String productID) throws SQLException, ClassNotFoundException {
+    public boolean isThereProductInOff(String productID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Offs WHERE ProductID = ? AND Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
@@ -110,14 +114,14 @@ public class OffTable extends Database{
         return preparedStatement.executeQuery().next();
     }
 
-    public static boolean isThereProductInOffIgnoreStatus(String productID) throws SQLException, ClassNotFoundException {
+    public boolean isThereProductInOffIgnoreStatus(String productID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Offs WHERE ProductID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
         return preparedStatement.executeQuery().next();
     }
 
-    public static ArrayList<Off> getAllUnApprovedOffs() throws SQLException, ClassNotFoundException {
+    public ArrayList<Off> getAllUnApprovedOffs() throws SQLException, ClassNotFoundException {
         String command = "SELECT DISTINCT OffID FROM Offs WHERE Status = ? OR Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, 2);
@@ -125,7 +129,7 @@ public class OffTable extends Database{
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Off> unApprovedOffs = new ArrayList<>();
         while (resultSet.next()) {
-            if(!OffTable.isThereEditingOffWithID(resultSet.getString("OffID")))
+            if(!OffTable.getInstance().isThereEditingOffWithID(resultSet.getString("OffID")))
                 unApprovedOffs.add(getSpecificOff(resultSet.getString("OffID")));
             else
                 unApprovedOffs.add(getSpecificEditingOff(resultSet.getString("OffID")));
@@ -133,14 +137,14 @@ public class OffTable extends Database{
         return unApprovedOffs;
     }
 
-    public static void removeOffByID(String offID) throws SQLException, ClassNotFoundException {
+    public void removeOffByID(String offID) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Offs WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, offID);
         preparedStatement.execute();
     }
 
-    public static void approveOffByID(String offID) throws SQLException, ClassNotFoundException {
+    public void approveOffByID(String offID) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Offs SET Status = ? WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(2, offID);
@@ -148,21 +152,21 @@ public class OffTable extends Database{
         preparedStatement.execute();
     }
 
-    public static boolean isThereOffWithID(String offID) throws SQLException, ClassNotFoundException {
+    public boolean isThereOffWithID(String offID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Offs WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, offID);
         return preparedStatement.executeQuery().next();
     }
 
-    public static boolean isThereEditingOffWithID(String offID) throws SQLException, ClassNotFoundException {
+    public boolean isThereEditingOffWithID(String offID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM EditingOffs WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, offID);
         return preparedStatement.executeQuery().next();
     }
 
-    public static void editEditingOffName(String offID, String offName) throws SQLException, ClassNotFoundException {
+    public void editEditingOffName(String offID, String offName) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingOffs SET OffName = ? WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, offName);
@@ -170,7 +174,7 @@ public class OffTable extends Database{
         preparedStatement.execute();
     }
 
-    public static void changeOffStatus(String offID, int status) throws SQLException, ClassNotFoundException {
+    public void changeOffStatus(String offID, int status) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Offs SET Status = ? WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(2, offID);
@@ -178,7 +182,7 @@ public class OffTable extends Database{
         preparedStatement.execute();
     }
 
-    public static void addEditingOff(Off off) throws SQLException, ClassNotFoundException {
+    public void addEditingOff(Off off) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO EditingOffs(OffID, OffName, ProductID, Status, StartDate, FinishDate, OffPercent, " +
                 "VendorUsername) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -195,14 +199,14 @@ public class OffTable extends Database{
         }
     }
 
-    public static Off getSpecificEditingOff(String offID) throws SQLException, ClassNotFoundException {
+    public Off getSpecificEditingOff(String offID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM EditingOffs WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, offID);
         return Off.makeOffByID(preparedStatement.executeQuery());
     }
 
-    public static void editEditingOffFinishDate(String offID, Date date) throws SQLException, ClassNotFoundException {
+    public void editEditingOffFinishDate(String offID, Date date) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingOffs SET FinishDate = ? WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDate(1, date);
@@ -210,7 +214,7 @@ public class OffTable extends Database{
         preparedStatement.execute();
     }
 
-    public static void editEditingOffPercent(String offID, Double percent) throws SQLException, ClassNotFoundException {
+    public void editEditingOffPercent(String offID, Double percent) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingOffs SET OffPercent = ? WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDouble(1, percent);
@@ -218,14 +222,14 @@ public class OffTable extends Database{
         preparedStatement.execute();
     }
 
-    public static void removeEditingOff(String offID) throws SQLException, ClassNotFoundException {
+    public void removeEditingOff(String offID) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM EditingOffs WHERE OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, offID);
         preparedStatement.execute();
     }
 
-    public static ArrayList<String> getEditingOffNames() throws SQLException, ClassNotFoundException {
+    public ArrayList<String> getEditingOffNames() throws SQLException, ClassNotFoundException {
         String command = "SELECT DISTINCT OffName FROM EditingOffs WHERE Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, 3);
@@ -237,7 +241,7 @@ public class OffTable extends Database{
         return editingOffNames;
     }
 
-    public static ArrayList<String> getEditingOffIDs() throws SQLException, ClassNotFoundException {
+    public ArrayList<String> getEditingOffIDs() throws SQLException, ClassNotFoundException {
         String command = "SELECT DISTINCT OffID FROM EditingOffs WHERE Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, 3);
@@ -249,26 +253,26 @@ public class OffTable extends Database{
         return editingOffIDs;
     }
 
-    public static Off getOffByProductID(String id) throws SQLException, ClassNotFoundException {
+    public Off getOffByProductID(String id) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Offs WHERE ProductID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, id);
         Off off = Off.makeOffByID(preparedStatement.executeQuery());
-        return OffTable.getSpecificOff(off.getOffID());
+        return OffTable.getInstance().getSpecificOff(off.getOffID());
     }
 
-    public static ArrayList<Off> getAllOffs() throws SQLException, ClassNotFoundException {
+    public ArrayList<Off> getAllOffs() throws SQLException, ClassNotFoundException {
         String command = "SELECT DISTINCT OffID FROM Offs";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Off> allOffs = new ArrayList<>();
         while (resultSet.next()){
-            allOffs.add(OffTable.getSpecificOff(resultSet.getString("OffID")));
+            allOffs.add(OffTable.getInstance().getSpecificOff(resultSet.getString("OffID")));
         }
         return allOffs;
     }
 
-    public static boolean isThereProductInSpecificOff(String offID, String productID) throws SQLException, ClassNotFoundException {
+    public boolean isThereProductInSpecificOff(String offID, String productID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Offs WHERE ProductID = ? AND OffID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
@@ -276,33 +280,33 @@ public class OffTable extends Database{
         return preparedStatement.executeQuery().next();
     }
 
-    public static ArrayList<Off> getAllShowingOffs() throws SQLException, ClassNotFoundException {
+    public ArrayList<Off> getAllShowingOffs() throws SQLException, ClassNotFoundException {
         String command = "SELECT DISTINCT OffID FROM Offs WHERE Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, 1);
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Off> allOffs = new ArrayList<>();
         while (resultSet.next()){
-            allOffs.add(OffTable.getSpecificOff(resultSet.getString("OffID")));
+            allOffs.add(OffTable.getInstance().getSpecificOff(resultSet.getString("OffID")));
         }
         return allOffs;
     }
 
-    public static void removeProductFromOffs(String productID) throws SQLException, ClassNotFoundException {
+    public void removeProductFromOffs(String productID) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Offs WHERE ProductID = ?;";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
         preparedStatement.execute();
     }
 
-    public static void removeProductFromEditingOffs(String productID) throws SQLException, ClassNotFoundException {
+    public void removeProductFromEditingOffs(String productID) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM EditingOffs WHERE ProductID = ?;";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productID);
         preparedStatement.execute();
     }
 
-    public static String getOffImageFilePath(String offID) {
+    public String getOffImageFilePath(String offID) {
         File folder = new File("database\\Images\\Offs");
         folder.mkdir();
         String fileName = "database\\Images\\Offs\\" + offID;
@@ -315,11 +319,11 @@ public class OffTable extends Database{
         return null;
     }
 
-    public static FileInputStream getOffImageInputStream(String offID) throws FileNotFoundException {
+    public FileInputStream getOffImageInputStream(String offID) throws FileNotFoundException {
         return new FileInputStream(getOffImageFilePath(offID));
     }
 
-    public static void setOffImage(String offID, File pictureFile) throws IOException {
+    public void setOffImage(String offID, File pictureFile) throws IOException {
         File folder = new File("database\\Images\\Offs");
         folder.mkdir();
         String[] splitPath = pictureFile.getPath().split("\\.");
@@ -328,12 +332,12 @@ public class OffTable extends Database{
         Files.copy(pictureFile.toPath(), saveImage.toPath());
     }
 
-    public static void removeOffImage(String offID) {
+    public void removeOffImage(String offID) {
         File file = new File(getOffImageFilePath(offID));
         file.delete();
     }
 
-    public static String getEditingOffImageFilePath(String offID) {
+    public String getEditingOffImageFilePath(String offID) {
         File folder = new File("database\\Images\\EditingOffs");
         folder.mkdir();
         String fileName = "database\\Images\\EditingOffs\\" + offID;
@@ -346,14 +350,14 @@ public class OffTable extends Database{
         return null;
     }
 
-    public static void removeEditingOffImage(String offID) {
+    public void removeEditingOffImage(String offID) {
         if(getEditingOffImageFilePath(offID) != null) {
             File file = new File(getEditingOffImageFilePath(offID));
             file.delete();
         }
     }
 
-    public static void setEditingOffImage(String offID, File pictureFile) throws IOException {
+    public void setEditingOffImage(String offID, File pictureFile) throws IOException {
         File folder = new File("database\\Images\\EditingOffs");
         folder.mkdir();
         String[] splitPath = pictureFile.getPath().split("\\.");
@@ -362,11 +366,11 @@ public class OffTable extends Database{
         Files.copy(pictureFile.toPath(), saveImage.toPath());
     }
 
-    public static FileInputStream getEditingOffImageInputStream(String offID) throws FileNotFoundException {
+    public FileInputStream getEditingOffImageInputStream(String offID) throws FileNotFoundException {
         return new FileInputStream(getEditingOffImageFilePath(offID));
     }
 
-    public static void removeOutDatedOffs() throws SQLException, ClassNotFoundException {
+    public void removeOutDatedOffs() throws SQLException, ClassNotFoundException {
         for (Off off : getAllOffs()) {
             if(off.getFinishDate().compareTo(new Date(System.currentTimeMillis())) < 0) {
                 removeOffByID(off.getOffID());
@@ -377,7 +381,7 @@ public class OffTable extends Database{
         }
     }
 
-    public static String getOffImageExtensionByID(String offID) {
+    public String getOffImageExtensionByID(String offID) {
         String fileName = "database\\Images\\Offs\\" + offID;
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {
@@ -388,7 +392,7 @@ public class OffTable extends Database{
         return "png";
     }
 
-    public static String getEditingOffImageExtensionByID(String offID) {
+    public String getEditingOffImageExtensionByID(String offID) {
         String fileName = "database\\Images\\EditingOffs\\" + offID;
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {
@@ -399,7 +403,7 @@ public class OffTable extends Database{
         return "png";
     }
 
-    public static FileOutputStream getOffImageOutputStream(String offID, String fileExtension) throws IOException {
+    public FileOutputStream getOffImageOutputStream(String offID, String fileExtension) throws IOException {
         String fileName = "database\\Images\\Offs\\" + offID + "." + fileExtension;
         File pictureFile = new File(fileName);
         if (!pictureFile.exists()) {
@@ -411,7 +415,7 @@ public class OffTable extends Database{
         }
     }
 
-    public static FileOutputStream getEditingOffImageOutputStream(String offID, String fileExtension) throws IOException {
+    public FileOutputStream getEditingOffImageOutputStream(String offID, String fileExtension) throws IOException {
         String fileName = "database\\Images\\EditingOffs\\" + offID + "." + fileExtension;
         File pictureFile = new File(fileName);
         if (pictureFile.exists()) {
