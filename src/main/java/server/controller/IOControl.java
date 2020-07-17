@@ -1,6 +1,5 @@
 package server.controller;
 
-import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
 import server.controller.account.IOValidity;
 import server.model.db.AccountTable;
@@ -12,7 +11,7 @@ import notification.Notification;
 
 import java.sql.SQLException;
 
-public class IOControl extends Control implements IOValidity {
+public class IOControl implements IOValidity {
     private static IOControl ioControl = null;
 
     public Notification register(Account account) {

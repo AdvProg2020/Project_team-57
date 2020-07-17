@@ -1,6 +1,5 @@
 package server.controller.product;
 
-import server.controller.Control;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import server.model.db.*;
@@ -17,7 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ProductControl extends Control {
+public class ProductControl {
     private static ProductControl productControl = null;
 
     @Deprecated

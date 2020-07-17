@@ -3,9 +3,11 @@ package server.model.existence;
 import server.model.db.OffTable;
 import server.model.db.ProductTable;
 
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Log {
@@ -69,6 +71,7 @@ public class Log {
         private double initPrice;
         private double offPrice;
         private boolean isCountable;
+        private String quantityStr;
 
         public ProductOfLog(String productID,boolean isCountable, int count, double amount, double initPrice, double offPrice, String vendorUsername) {
             this.productID = productID;
@@ -85,6 +88,7 @@ public class Log {
             } catch (ClassNotFoundException e) {
                 //:)
             }
+            setQuantityStr();
         }
 
         public ProductOfLog(Product product) throws SQLException, ClassNotFoundException {
@@ -106,7 +110,20 @@ public class Log {
             } catch (ClassNotFoundException e) {
                 //:)
             }
+            setQuantityStr();
         }
+
+        private String getSmoothDoubleFormat(double number) {
+            DecimalFormat doubleFormatter = new DecimalFormat("#.####");
+            doubleFormatter.setRoundingMode(RoundingMode.HALF_UP);
+            return doubleFormatter.format(number);
+        }
+
+        private void setQuantityStr() {
+            quantityStr = "" + (isCountable ? Integer.toString(count) : getSmoothDoubleFormat(amount));
+            System.out.println("quantityStr: " + quantityStr);
+        }
+
         public ProductOfLog() {
 
         }
@@ -169,6 +186,10 @@ public class Log {
 
         public String getProductName() {
             return productName;
+        }
+
+        public String getQuantityStr() {
+            return quantityStr;
         }
     }
     //End Inner Class

@@ -1,11 +1,10 @@
 package server.controller.product;
 
-import server.controller.Control;
 import server.model.existence.Product;
 
 import java.util.Comparator;
 
-public class Sorting extends Control {
+public class Sorting {
     public static class ViewSortAscending implements Comparator<Product> {
         @Override
         public int compare(Product o1, Product o2) {

@@ -1,6 +1,5 @@
 package server.controller.account;
 
-import server.controller.Control;
 import server.controller.product.ProductControl;
 import server.model.db.*;
 import server.model.existence.Account;
@@ -10,7 +9,6 @@ import server.model.existence.Product;
 import notification.Notification;
 
 import java.io.File;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -230,41 +228,6 @@ public class VendorControl extends AccountControl{
             //:)
         }
         return new ArrayList<>();
-    }
-
-    public ArrayList<Product> getAllProductsInSpecificLog() {
-        try {
-            ArrayList<Product> allProducts = new ArrayList<>();
-            for (Log.ProductOfLog product : LogTable.getVendorLogByID(getCurrentLogID(), Control.getUsername()).getAllProducts()) {
-                allProducts.add(ProductTable.getProductByID(product.getProductID()));
-            }
-            return allProducts;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return new ArrayList<>();
-    }
-
-    public String getCustomerName(){
-        try {
-            return LogTable.getVendorLogByID(getCurrentLogID(), Control.getUsername()).getCustomerName();
-        } catch (SQLException | ClassNotFoundException e) {
-            //:)
-        }
-        return null;
-    }
-
-    public Log getCurrentLog() {
-        try {
-            return LogTable.getVendorLogByID(AccountControl.getCurrentLogID(), Control.getUsername());
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return new Log();
     }
 
     public ArrayList<Account> getProductBuyers(String productID) {

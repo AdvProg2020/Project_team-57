@@ -4,9 +4,6 @@ import client.api.Command;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.scene.control.*;
-import server.controller.Control;
-import server.controller.account.AdminControl;
-import server.controller.product.ProductControl;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -21,7 +18,6 @@ import server.server.Response;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 

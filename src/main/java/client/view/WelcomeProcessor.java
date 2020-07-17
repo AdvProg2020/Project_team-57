@@ -1,14 +1,11 @@
 package client.view;
 
 import client.api.Command;
-import com.google.gson.GsonBuilder;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-import server.controller.Control;
 import server.controller.IOControl;
-import server.controller.product.ProductControl;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;

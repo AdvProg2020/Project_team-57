@@ -187,7 +187,6 @@ public class TableViewProcessor<T> extends Processor {
                 initDiscountColumns();
                 break;
             case DISCOUNT_CUSTOMERS:
-                //TODO(FOR CHECKBOX)
                 initDiscountCustomersColumns();
                 break;
             case ADMIN_COMMENTS:

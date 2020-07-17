@@ -2,7 +2,6 @@ package server.controller.account;
 
 import javafx.scene.image.Image;
 import notification.Notification;
-import server.controller.Control;
 import server.controller.product.ProductControl;
 import server.model.db.*;
 import server.model.existence.Account;
@@ -15,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-public class AccountControl extends Control implements IOValidity {
+public class AccountControl implements IOValidity {
     private static AccountControl customerControl = null;
     private static String currentLogID;
     private boolean isMusicPlaying = false;

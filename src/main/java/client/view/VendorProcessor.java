@@ -1,6 +1,5 @@
 package client.view;
 
-import server.controller.Control;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -18,7 +17,6 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
-import server.model.existence.Account;
 import server.model.existence.Log;
 import server.model.existence.Off;
 
