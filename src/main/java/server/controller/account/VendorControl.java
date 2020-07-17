@@ -24,37 +24,7 @@ public class VendorControl extends AccountControl{
         return vendorControl;
     }
 
-    @Deprecated
-    public ArrayList<Notification> oldAddProduct(Product product, ArrayList<File> productImageFiles) {
-        ArrayList<Notification> addingProductNotifications = new ArrayList<>();
-
-        try {
-            addingProductNotifications.addAll(checkProductFields(product));
-            if (addingProductNotifications.isEmpty()) {
-                while (true) {
-                    String productId = generateProductID();
-                    if (ProductTable.isIDFree(productId)) {
-                        product.setID(productId);
-                        break;
-                    }
-                }
-                if (product.isCountable())
-                    VendorTable.addCountableProduct(product, getUsername());
-                else
-                    VendorTable.addUnCountableProduct(product, getUsername());
-                for (File productImageFile : productImageFiles) {
-                    ProductControl.getController().addProductPicture(product.getID(), productImageFile);
-                }
-                addingProductNotifications.add(Notification.ADD_PRODUCT);
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            return new ArrayList<>();
-        }
-
-        return addingProductNotifications;
-    }
-
-    public String addProduct(Product product, ArrayList<Notification> addingProductNotifications) {
+    public String addProduct(Product product, ArrayList<Notification> addingProductNotifications, String username) {
         try {
             addingProductNotifications.addAll(checkProductFields(product));
             if (addingProductNotifications.isEmpty()) {
@@ -67,9 +37,9 @@ public class VendorControl extends AccountControl{
                     }
                 }
                 if (product.isCountable())
-                    VendorTable.addCountableProduct(product, getUsername());
+                    VendorTable.addCountableProduct(product, username);
                 else
-                    VendorTable.addUnCountableProduct(product, getUsername());
+                    VendorTable.addUnCountableProduct(product, username);
 
                 addingProductNotifications.add(Notification.ADD_PRODUCT);
                 return productID;
@@ -105,7 +75,7 @@ public class VendorControl extends AccountControl{
         return checkNotifications;
     }
 
-    public Notification editProduct(Product currentProduct, Product editingProduct, ArrayList<File> productImageFiles) {
+    public Notification editProduct(Product currentProduct, Product editingProduct, String username) {
         Notification editProductNotification = null;
 
         try {
@@ -113,7 +83,7 @@ public class VendorControl extends AccountControl{
 
             if (editProductNotification == null) {
                 editingProduct.setStatus(3);
-                editingProduct.setSellerUserName(Control.getUsername());
+                editingProduct.setSellerUserName(username);
                 ProductTable.setProductStatus(editingProduct.getID(), 3);
                 if (EditingProductTable.isIDFree(editingProduct.getID())) {
                     EditingProductTable.addProduct(editingProduct);
@@ -123,35 +93,6 @@ public class VendorControl extends AccountControl{
                     else
                         EditingProductTable.updateUnCountableProduct(editingProduct);
                 }
-                ProductControl.getController().addEditingProductPictures(editingProduct.getID(), productImageFiles);
-                editProductNotification = Notification.EDIT_PRODUCT;
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            editProductNotification = Notification.UNKNOWN_ERROR;
-        }
-
-        return editProductNotification;
-    }
-
-    public Notification editProduct(Product currentProduct, Product editingProduct) {
-        Notification editProductNotification = null;
-
-        try {
-            editProductNotification = checkEditingProduct(currentProduct, editingProduct);
-
-            if (editProductNotification == null) {
-                editingProduct.setStatus(3);
-                editingProduct.setSellerUserName(Control.getUsername());
-                ProductTable.setProductStatus(editingProduct.getID(), 3);
-                if (EditingProductTable.isIDFree(editingProduct.getID())) {
-                    EditingProductTable.addProduct(editingProduct);
-                } else {
-                    if (editingProduct.isCountable())
-                        EditingProductTable.updateCountableProduct(editingProduct);
-                    else
-                        EditingProductTable.updateUnCountableProduct(editingProduct);
-                }
-                /*ProductControl.getController().addEditingProductPictures(editingProduct.getID(), productImageFiles);*/
                 editProductNotification = Notification.EDIT_PRODUCT;
             }
         } catch (SQLException | ClassNotFoundException e) {
@@ -222,35 +163,6 @@ public class VendorControl extends AccountControl{
         return new ArrayList<>();
     }
 
-    @Deprecated
-    public Notification addOff(Off off, File offImageFile){
-       if (off.getOffName() == null)
-           return Notification.UNCOMPLETED_OFF_NAME;
-       if (off.getFinishDate() == null)
-           return Notification.NOT_SET_FINISH_DATE;
-       if (off.getOffPercent() <= 0 || off.getOffPercent() >= 100)
-           return Notification.OUT_BOUND_OF_PERCENT;
-       if(off.getProductIDs() == null || off.getProductIDs().size() == 0)
-           return Notification.EMPTY_OFF_PRODUCTS;
-       if(off.getStartDate().compareTo(off.getFinishDate()) > -1)
-           return Notification.START_DATE_AFTER_FINISH_DATE;
-       off.setVendorUsername(Control.getUsername());
-       try {
-           do {
-               off.setOffID(setOffID());
-           } while (OffTable.isThereOffWithID(off.getOffID()));
-           off.setStatus(2);
-           if(offImageFile != null)
-               ProductControl.getController().setOffPicture(off.getOffID(), offImageFile);
-           OffTable.addOff(off);
-           return Notification.ADD_OFF;
-       } catch (SQLException e) {
-           return Notification.UNKNOWN_ERROR;
-       } catch (ClassNotFoundException e) {
-           return Notification.UNKNOWN_ERROR;
-       }
-    }
-
     public Notification addOff(Off off, String username){
         if (off.getOffName() == null)
             return Notification.UNCOMPLETED_OFF_NAME;
@@ -299,117 +211,15 @@ public class VendorControl extends AccountControl{
                     }
                 }
             }
-            for (Product product : VendorTable.getProductsWithUsername(Control.getUsername())) {
+            for (Product product : VendorTable.getProductsWithUsername(username)) {
                 if(!OffTable.isThereProductInOffIgnoreStatus(product.getID()) && product.getStatus() != 2)
                     nonOffProducts.add(product);
             }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return nonOffProducts;
     }
-
-/*    public Notification editOffName(String offID, String offName)
-    {
-        try {
-            if(OffTable.isThereEditingOffWithID(offID)) {
-                Off off = OffTable.getSpecificEditingOff(offID);
-                if(off.getOffName().equals(offName))
-                    return Notification.DUPLICATE_OFF_VALUE;
-                OffTable.editEditingOffName(off.getOffID() ,offName);
-            } else {
-                Off off = OffTable.getSpecificOff(offID);
-                if(off.getOffName().equals(offName))
-                    return Notification.DUPLICATE_OFF_VALUE;
-                OffTable.changeOffStatus(offID, 3);
-                off.setOffName(offName);
-                off.setStatus(3);
-                OffTable.addEditingOff(off);
-            }
-            return Notification.OFF_EDITED;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return Notification.UNKNOWN_ERROR;
-    }*/
-
-/*    public Notification editOffFinishDate(String offID, Date date)
-    {
-        try {
-            if(OffTable.isThereEditingOffWithID(offID)) {
-                Off off = OffTable.getSpecificEditingOff(offID);
-                if(off.getFinishDate().compareTo(date) == 0)
-                    return Notification.DUPLICATE_OFF_VALUE;
-                if(date.compareTo(new Date(System.currentTimeMillis())) != 1 || date.compareTo(off.getStartDate()) != 1)
-                    return Notification.WRONG_OFF_FINISH_DATE;
-                OffTable.editEditingOffFinishDate(off.getOffID() ,date);
-            } else {
-                Off off = OffTable.getSpecificOff(offID);
-                if(off.getFinishDate().compareTo(date) == 0)
-                    return Notification.DUPLICATE_OFF_VALUE;
-                if(date.compareTo(new Date(System.currentTimeMillis())) != 1 || date.compareTo(off.getStartDate()) != 1)
-                    return Notification.WRONG_OFF_FINISH_DATE;
-                OffTable.changeOffStatus(offID, 3);
-                off.setFinishDate(date);
-                off.setStatus(3);
-                OffTable.addEditingOff(off);
-            }
-            return Notification.OFF_EDITED;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return Notification.UNKNOWN_ERROR;
-    }*/
-
-    /*public Notification editOffPercent(String offID, Double percent)
-    {
-        try {
-            if(OffTable.isThereEditingOffWithID(offID)) {
-                Off off = OffTable.getSpecificEditingOff(offID);
-                if(off.getOffPercent() == percent)
-                    return Notification.DUPLICATE_OFF_VALUE;
-                if(!(percent > 0 && percent <= 100))
-                    return Notification.INVALID_OFF_PERCENT;
-                OffTable.editEditingOffPercent(off.getOffID(), percent);
-            } else {
-                Off off = OffTable.getSpecificOff(offID);
-                if(off.getOffPercent() == percent)
-                    return Notification.DUPLICATE_OFF_VALUE;
-                if(!(percent > 0 && percent <= 100))
-                    return Notification.INVALID_OFF_PERCENT;
-                OffTable.changeOffStatus(offID, 3);
-                off.setOffPercent(percent);
-                off.setStatus(3);
-                OffTable.addEditingOff(off);
-            }
-            return Notification.OFF_EDITED;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return Notification.UNKNOWN_ERROR;
-    }*/
-
-/*    public Notification removeOffWithID(String offID) {
-        try {
-            if(OffTable.isThereEditingOffWithID(offID))
-                OffTable.removeEditingOff(offID);
-            OffTable.removeOffByID(offID);
-            return Notification.OFF_REMOVED;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return Notification.UNKNOWN_ERROR;
-    }*/
 
     public ArrayList<Log> getAllVendorLogs(String username) {
         try {
@@ -440,9 +250,7 @@ public class VendorControl extends AccountControl{
     public String getCustomerName(){
         try {
             return LogTable.getVendorLogByID(getCurrentLogID(), Control.getUsername()).getCustomerName();
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return null;

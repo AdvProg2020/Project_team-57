@@ -34,9 +34,7 @@ public class IOControl extends Control implements IOValidity {
                 return Notification.REGISTER_SUCCESSFUL;
             } else
                 return Notification.ERROR_FULL_USERNAME;
-        } catch (SQLException e) {
-            return Notification.UNKNOWN_ERROR;
-        } catch (ClassNotFoundException e){
+        } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
     }
@@ -46,14 +44,12 @@ public class IOControl extends Control implements IOValidity {
             if (!AccountTable.isUsernameFree(account.getUsername())) {
                 if (AccountTable.isPasswordCorrect(account.getUsername(), account.getPassword())) {
                     if(AccountTable.isUserApproved(account.getUsername())) {
-                        Control.setType(AccountTable.getTypeByUsername(account.getUsername()));
-                        Control.setUsername(account.getUsername());
-                        Control.setLoggedIn(true);
-                        if (Control.getType().equals("Customer")) {
+                        String type = AccountTable.getTypeByUsername(account.getUsername());
+                        if (type.equals("Customer")) {
                             CartTable.addTempToUsername(account.getUsername());
                         }
                         CartTable.removeTemp();
-                        if (Control.getType().equals("Customer") && AccountTable.didPeriodPass("Ya Zahra"))
+                        if (type.equals("Customer") && AccountTable.didPeriodPass("Ya Zahra"))
                             AdminControl.getController().getGiftDiscount();
                         //TODO(FOR MEDIA)
                         //AccountControl.getController().initAudios();
@@ -67,9 +63,7 @@ public class IOControl extends Control implements IOValidity {
                     return Notification.WRONG_PASSWORD;
             } else
                 return Notification.ERROR_FREE_USERNAME;
-        } catch (SQLException e) {
-            return Notification.UNKNOWN_ERROR;
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
     }

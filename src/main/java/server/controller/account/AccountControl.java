@@ -33,15 +33,6 @@ public class AccountControl extends Control implements IOValidity {
         AccountControl.currentLogID = currentLogID;
     }
 
-    public Account getAccount() {
-        try {
-            return AccountTable.getAccountByUsername(Control.getUsername());
-        } catch (Exception e) {
-            //:)
-            return new Account();
-        }
-    }
-
     public Account getAccountByUsername(String username){
         try {
             return AccountTable.getAccountByUsername(username);
@@ -68,20 +59,6 @@ public class AccountControl extends Control implements IOValidity {
             AccountTable.editField(username, "Password", newPassword);
             return Notification.CHANGE_PASSWORD_SUCCESSFULLY;
         } catch (Exception e) {
-            return Notification.UNKNOWN_ERROR;
-        }
-    }
-
-    public Notification editField(String fieldName, String newValue) {
-        try {
-            if(isNewValueValid(fieldName, newValue)) {
-                AccountTable.editField(Control.getUsername(), fieldName, newValue);
-                return Notification.EDIT_FIELD_SUCCESSFULLY;
-            } else {
-                return InvalidField(fieldName, newValue);
-            }
-        } catch (Exception e) {
-            //:)
             return Notification.UNKNOWN_ERROR;
         }
     }

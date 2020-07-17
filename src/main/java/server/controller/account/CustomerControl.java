@@ -22,20 +22,6 @@ public class CustomerControl extends AccountControl{
         return customerControl;
     }
 
-    @Deprecated
-    public ArrayList<Product> getAllCartProducts(){
-        try {
-            DiscountTable.removeOutDatedDiscounts();
-            OffTable.removeOutDatedOffs();
-            return CartTable.getAllCartWithUsername(IOControl.getUsername());
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return new ArrayList<>();
-    }
-
     public ArrayList<Product> getAllCartProducts(String username){
         try {
             DiscountTable.removeOutDatedDiscounts();
@@ -92,136 +78,13 @@ public class CustomerControl extends AccountControl{
 //        return null;
     }
 
-    private String getUserNameForCart() {
-        if(Control.getType() != null && !Control.getType().equals("Customer")) {
-//            :)
-        } else if(Control.isLoggedIn()) {
-            return Control.getUsername();
-        } else {
-            return "temp";
-        }
-
-        return null;
-    }
-
-    public Product getCartProductByID(String ID) {
+    public Product getCartProductByID(String ID, String username) {
         try {
-            return CartTable.getCartProductByID(getUserNameForCart(), ID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+            return CartTable.getCartProductByID(getUserNameForCart(username), ID);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return new Product();
-    }
-
-/*    public Notification increaseCount(String productID, String command) {
-        try {
-            int input = Integer.parseInt(command);
-            if(input > 0) {
-                try {
-                    if(CartTable.getCartProductByID(Control.getUsername(), productID).getCount() + input <= ProductTable.getProductByID(productID).getCount())
-                    {
-                        CartTable.modifyCartProductCounts(Control.getUsername(), productID, input);
-                        return Notification.INCREASED;
-                    }
-                    return Notification.MORE_THAN_INVENTORY_COUNTABLE;
-                } catch (SQLException e) {
-                    //:)
-                } catch (ClassNotFoundException e) {
-                    //:)
-                }
-            }
-        } catch (NumberFormatException e) { } catch (NullPointerException e) { }
-        return Notification.INVALID_COUNT;
-    }*/
-
-/*    public Notification decreaseCount(String productID, String command) {
-        try {
-            int input = Integer.parseInt(command);
-            if(input > 0) {
-                try {
-                    if(CartTable.getCartProductByID(Control.getUsername(), productID).getCount() - input > 0)
-                    {
-                        CartTable.modifyCartProductCounts(Control.getUsername(), productID, ((-1) * input));
-                        return Notification.DECREASED;
-                    }
-                    return Notification.MORE_THAN_CART_COUNTABLE;
-                } catch (SQLException e) {
-                    //:)
-                } catch (ClassNotFoundException e) {
-                    //:)
-                }
-            }
-        } catch (NumberFormatException e) { } catch (NullPointerException e) { }
-        return Notification.INVALID_COUNT;
-    }*/
-
-/*    public Notification increaseAmount(String productID, String command) {
-        try {
-            double input = Double.parseDouble(command);
-            if(input > 0)
-            {
-                try {
-                    if(CartTable.getCartProductByID(Control.getUsername(), productID).getAmount() + input <= ProductTable.getProductByID(productID).getAmount())
-                    {
-                        CartTable.modifyCartProductAmount(Control.getUsername(), productID, input);
-                        return Notification.INCREASED;
-                    }
-                } catch (SQLException e) {
-                    //:)
-                } catch (ClassNotFoundException e) {
-                    //:)
-                }
-                return Notification.MORE_THAN_INVENTORY_UNCOUNTABLE;
-            }
-        } catch (NumberFormatException e) {} catch (NullPointerException e) {}
-        return Notification.INVALID_AMOUNT;
-    }*/
-
-/*    public Notification decreaseAmount(String productID, String command) {
-        try {
-            double input = Double.parseDouble(command);
-            if(input > 0)
-            {
-                try {
-                    if(CartTable.getCartProductByID(Control.getUsername(), productID).getAmount() - input > 0)
-                    {
-                        CartTable.modifyCartProductAmount(Control.getUsername(), productID, ((-1) * input));
-                        return Notification.DECREASED;
-                    }
-                } catch (SQLException e) {
-                    //:)
-                } catch (ClassNotFoundException e) {
-                    //:)
-                }
-                return Notification.MORE_THAN_CART_UNCOUNTABLE;
-            }
-        } catch (NumberFormatException e) {} catch (NullPointerException e) {}
-        return Notification.INVALID_AMOUNT;
-    }*/
-
-    public double calculateCartTotalPrice() {
-        double totalPrice = 0;
-        try {
-            for (Product product : CartTable.getAllCartWithUsername(Control.getUsername())) {
-                double newPrice;
-                if(!OffTable.isThereProductInOff(product.getID()))
-                    newPrice = product.getPrice();
-                else
-                    newPrice = product.getPrice() -
-                            (product.getPrice() * OffTable.getOffByProductID(product.getID()).getOffPercent() / 100);
-                if(product.isCountable())
-                    totalPrice += newPrice * product.getCount();
-                else
-                    totalPrice += newPrice * product.getAmount();
-            }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return totalPrice;
     }
 
     public Notification removeProductFromCartByID(String username, String productID) {
@@ -291,7 +154,7 @@ public class CustomerControl extends AccountControl{
                 initPrice += product.getPrice() * product.getCount();
             }
             finalPrice = calculateFinalPrice(property.hasDiscount(), property.getDiscount(), offPrice);
-            return affordability(initPrice, offPrice, finalPrice, property);
+            return affordability(initPrice, offPrice, finalPrice, username, property);
 
         } catch (SQLException e) {
             //:)
@@ -301,9 +164,9 @@ public class CustomerControl extends AccountControl{
         return Notification.UNKNOWN_ERROR;
     }
 
-    private Notification affordability(double initPrice, double offPrice, double finalPrice, Property property) {
+    private Notification affordability(double initPrice, double offPrice, double finalPrice, String username, Property property) {
         try {
-            Account customer = AccountTable.getAccountByUsername(Control.getUsername());
+            Account customer = AccountTable.getAccountByUsername(username);
             if(finalPrice > customer.getCredit())
                 return Notification.CANT_AFFORD_CART;
             AccountTable.changeCredit(customer.getUsername(),((-1) * finalPrice));
@@ -480,37 +343,6 @@ public class CustomerControl extends AccountControl{
             //:)
         }
         return new Log();
-    }
-
-    public int getScore(String productID){
-        try {
-            if (ProductTable.didScore(Control.getUsername(), productID))
-                return ProductTable.getScore(Control.getUsername(), productID);
-            return -1;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return 1;
-    }
-
-    public Notification setScore(String productID, int score){
-        try {
-            if (ProductTable.didScore(Control.getUsername(), productID)){
-                ProductTable.updateScore(Control.getUsername(), productID, score);
-                ProductTable.updateProductsAvgScore(productID);
-                return Notification.UPDATE_SCORE;
-            }
-            ProductTable.setScore(Control.getUsername(), productID, score);
-            ProductTable.updateProductsAvgScore(productID);
-            return Notification.SET_SCORE;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return Notification.UNKNOWN_ERROR;
     }
 
     public boolean isProductPurchasedByCustomer(String productID, String customerUsername) {

@@ -297,26 +297,34 @@ public class ProductHandler extends Handler {
     private String sendProduct(String sendType) {
         Command<Product> command = commandParser.parseToCommand(Command.class, (Class<Product>)Product.class);
 
-        String productID = null;
-        ArrayList<Notification> notifications = new ArrayList<>();
-        switch (sendType) {
-            case "add":
-                Product product = command.getDatum();
-                productID = vendorControl.addProduct(product, notifications);
-                break;
-            case "edit":
-                Product currentProduct = command.getData(0), editingProduct = command.getData(1);
-                notifications.add(vendorControl.editProduct(currentProduct, editingProduct));
-                break;
-            default:
-                System.err.println("Shit. Error In #sendProduct");
-                return null;
-        }
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            String username = server.getUsernameByAuth(command.getAuthToken()), productID = null;
+            ArrayList<Notification> notifications = new ArrayList<>();
+            switch (sendType) {
+                case "add":
+                    Product product = command.getDatum();
+                    productID = vendorControl.addProduct(product, notifications, username);
+                    break;
+                case "edit":
+                    Product currentProduct = command.getData(0), editingProduct = command.getData(1);
+                    if (currentProduct.getSellerUserName().equals(username) && editingProduct.getSellerUserName().equals(username)) {
+                        notifications.add(vendorControl.editProduct(currentProduct, editingProduct, username));
+                        break;
+                    } else {
+                        return gson.toJson(HACK_RESPONSE);
+                    }
+                default:
+                    System.err.println("Shit. Error In #sendProduct");
+                    return null;
+            }
 
-        Notification[] notificationsArray = notifications.toArray(new Notification[0]);
-        Response<Notification> response = new Response<>(Notification.PACKET_NOTIFICATION, notificationsArray);
-        response.setAdditionalString(productID);
-        return gson.toJson(response);
+            Notification[] notificationsArray = notifications.toArray(new Notification[0]);
+            Response<Notification> response = new Response<>(Notification.PACKET_NOTIFICATION, notificationsArray);
+            response.setAdditionalString(productID);
+            return gson.toJson(response);
+        } else {
+            return gson.toJson(HACK_RESPONSE);
+        }
     }
 
     private String getAllShowingProducts() {
@@ -366,7 +374,8 @@ public class ProductHandler extends Handler {
     }
 
     private String getProduct(String productType) {
-        String productID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        String productID = command.getDatum();
 
         Product product = null;
         switch (productType) {
@@ -377,7 +386,11 @@ public class ProductHandler extends Handler {
                 product = productControl.getEditedProductByID(productID);
                 break;
             case "cart product":
-                product = customerControl.getCartProductByID(productID);
+                if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+                    product = customerControl.getCartProductByID(productID, server.getUsernameByAuth(command.getAuthToken()));
+                } else {
+                    return gson.toJson(HACK_RESPONSE);
+                }
                 break;
             default:
                 System.err.println("Shit. Error In Getting Product");

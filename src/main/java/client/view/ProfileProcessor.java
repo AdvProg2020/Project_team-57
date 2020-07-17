@@ -305,18 +305,6 @@ public class ProfileProcessor extends Processor {
         client.sendImage(command, pictureFile);
     }
 
-    private Alert editField(String fieldName, JFXTextField textField, Alert previousAlert) {
-        Alert alert = accountControl.editField(fieldName, textField.getText()).getAlert();
-
-        if(!alert.getTitle().equals("Edit Successful"))
-            textField.setStyle("-fx-border-color: firebrick; -fx-border-width: 0 0 2 0;");
-
-        if(previousAlert == null || previousAlert.getTitle().equals("Edit Successful"))
-            return alert;
-        else
-            return previousAlert;
-    }
-
     public void changePasswordMouseClicked(MouseEvent mouseEvent) {
 //        Alert alert = accountControl.changePassword(oldPasswordField.getText(), newPasswordField.getText()).getAlert();
         Command<String> command = new Command<>("change password", Command.HandleType.ACCOUNT, oldPasswordField.getText(), newPasswordField.getText());
