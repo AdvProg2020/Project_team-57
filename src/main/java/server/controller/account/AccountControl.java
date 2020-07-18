@@ -16,9 +16,7 @@ import java.util.ArrayList;
 
 public class AccountControl implements IOValidity {
     private static AccountControl customerControl = null;
-
-    protected static final Object discountPurchaseLock = new Object();
-
+    private static String currentLogID;
     private boolean isMusicPlaying = false;
     //TODO(FOR MEDIA)
     //private ArrayList<Audio> audios;
@@ -26,9 +24,17 @@ public class AccountControl implements IOValidity {
     //private ChangeMusicThread changeMusicThread = new ChangeMusicThread();
     private int nextMusicK = 0;
 
+    public static String getCurrentLogID() {
+        return currentLogID;
+    }
+
+    public static void setCurrentLogID(String currentLogID) {
+        AccountControl.currentLogID = currentLogID;
+    }
+
     public Account getAccountByUsername(String username){
         try {
-            return AccountTable.getInstance().getAccountByUsername(username);
+            return AccountTable.getAccountByUsername(username);
         } catch (Exception e) {
             //:)
             return new Account();
@@ -41,7 +47,7 @@ public class AccountControl implements IOValidity {
                 return Notification.EMPTY_OLD_PASSWORD;
             if(newPassword == null || newPassword.isEmpty())
                 return Notification.EMPTY_NEW_PASSWORD;
-            if(!AccountTable.getInstance().isPasswordCorrect(username, oldPassword))
+            if(!AccountTable.isPasswordCorrect(username, oldPassword))
                 return Notification.WRONG_OLD_PASSWORD;
             if (oldPassword.equals(newPassword))
                 return Notification.SAME_PASSWORD_ERROR;
@@ -49,7 +55,7 @@ public class AccountControl implements IOValidity {
                 return Notification.ERROR_PASSWORD_LENGTH_EDIT;
             if (!this.isPasswordValid(newPassword))
                 return Notification.ERROR_PASSWORD_FORMAT_EDIT;
-            AccountTable.getInstance().editField(username, "Password", newPassword);
+            AccountTable.editField(username, "Password", newPassword);
             return Notification.CHANGE_PASSWORD_SUCCESSFULLY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
@@ -103,7 +109,7 @@ public class AccountControl implements IOValidity {
     public Notification addMoney(String username, double money) {
         try {
             if(money != 0)
-                AccountTable.getInstance().changeCredit(username, money);
+                AccountTable.changeCredit(username, money);
 
             return Notification.RISE_MONEY_SUCCESSFULLY;
         } catch (NumberFormatException e) {
@@ -116,10 +122,10 @@ public class AccountControl implements IOValidity {
     public Notification getMoney(String username, double money) {
         try {
             if(money > 0) {
-                if (AccountTable.getInstance().getCredit(username) < money)
+                if (AccountTable.getCredit(username) < money)
                     return Notification.LACK_BALANCE_ERROR;
 
-                AccountTable.getInstance().changeCredit(username, -money);
+                AccountTable.changeCredit(username, -money);
             }
 
             return Notification.GET_MONEY_SUCCESSFULLY;
@@ -132,7 +138,7 @@ public class AccountControl implements IOValidity {
 
     public Notification modifyApprove(String username, int flag) {
         try {
-            VendorTable.getInstance().modifyApprove(username, flag);
+            VendorTable.modifyApprove(username, flag);
             if (flag == 0)
                 return Notification.DECLINE_REQUEST;
             else
@@ -152,7 +158,7 @@ public class AccountControl implements IOValidity {
 
     public ArrayList<Account> getAllAccounts() {
         try {
-            return AccountTable.getInstance().getAllAccounts();
+            return AccountTable.getAllAccounts();
         } catch (SQLException e) {
             //:)
             return new ArrayList<>();
@@ -165,39 +171,38 @@ public class AccountControl implements IOValidity {
     public synchronized Notification deleteUserWithUsername(String username) {
         try {
             if(getAccountByUsername(username).getType().equals("Vendor")) {
-                for (Product product : VendorTable.getInstance().getProductsWithUsername(username)) {
+                for (Product product : VendorTable.getProductsWithUsername(username)) {
                     ProductControl.getController().removeProductById(product.getID());
                 }
-                OffTable offTable = OffTable.getInstance();
-                for (Off vendorOff : offTable.getVendorOffs(username)) {
+                for (Off vendorOff : OffTable.getVendorOffs(username)) {
                     String ID = vendorOff.getOffID();
-                    offTable.removeOffByID(ID);
+                    OffTable.removeOffByID(ID);
                     if(ProductControl.getController().doesOffHaveImage(ID))
-                        offTable.removeOffImage(ID);
+                        OffTable.removeOffImage(ID);
                     if(ProductControl.getController().isOffEditing(ID)) {
-                        offTable.removeEditingOff(ID);
+                        OffTable.removeEditingOff(ID);
                         if(ProductControl.getController().doesEditingOffHaveImage(ID))
-                            offTable.removeEditingOffImage(ID);
+                            OffTable.removeEditingOffImage(ID);
                     }
                 }
             } else {
-                ProductTable productTable = ProductTable.getInstance();
-                productTable.removeAllUserComments(username);
-                productTable.removeAllUserScores(username);
-                CartTable.getInstance().removeAllCustomerCartProducts(username);
+                ProductTable.removeAllUserComments(username);
+                ProductTable.removeAllUserScores(username);
+                CartTable.removeAllCustomerCartProducts(username);
             }
-            AccountTable accountTable = AccountTable.getInstance();
-            accountTable.deleteUserWithUsername(username);
-            accountTable.deleteProfileImage(username);
+            AccountTable.deleteUserWithUsername(username);
+            AccountTable.deleteProfileImage(username);
             return Notification.DELETE_USER;
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
            return Notification.UNKNOWN_ERROR;
+        } catch (ClassNotFoundException e) {
+            return Notification.UNKNOWN_ERROR;
         }
     }
 
     public Off getOffByID(String offID) {
         try {
-            Off off = OffTable.getInstance().getSpecificOff(offID);
+            Off off = OffTable.getSpecificOff(offID);
             return off;
         } catch (SQLException e) {
             //:)
@@ -209,7 +214,7 @@ public class AccountControl implements IOValidity {
 
     public boolean isThereOffInEditingTable(String offID) {
         try {
-            return OffTable.getInstance().isThereEditingOffWithID(offID);
+            return OffTable.isThereEditingOffWithID(offID);
         } catch (SQLException e) {
             //:)
         } catch (ClassNotFoundException e) {
@@ -220,8 +225,10 @@ public class AccountControl implements IOValidity {
 
     public Off getOffFromEditingTable(String offID) {
         try {
-            return OffTable.getInstance().getSpecificEditingOff(offID);
-        } catch (SQLException | ClassNotFoundException e) {
+            return OffTable.getSpecificEditingOff(offID);
+        } catch (SQLException e) {
+            //:)
+        } catch (ClassNotFoundException e) {
             //:)
         }
         return null;
@@ -229,28 +236,45 @@ public class AccountControl implements IOValidity {
 
     public Off getVendorOff(String offID) {
         try {
-            if(OffTable.getInstance().isThereEditingOffWithID(offID))
-                return OffTable.getInstance().getSpecificEditingOff(offID);
-            return OffTable.getInstance().getSpecificOff(offID);
-        } catch (SQLException | ClassNotFoundException e) {
+            if(OffTable.isThereEditingOffWithID(offID))
+                return OffTable.getSpecificEditingOff(offID);
+            return OffTable.getSpecificOff(offID);
+        } catch (SQLException e) {
+            //:)
+        } catch (ClassNotFoundException e) {
             //:)
         }
         return new Off();
     }
 
+    public Log.ProductOfLog getProductOfLog(String productID){
+        try {
+            for (Log.ProductOfLog productOfLog : LogTable.getCustomerLogByID(getCurrentLogID()).getAllProducts()) {
+                if (productID.equals(productOfLog.getProductID()))
+                    return productOfLog;
+            }
+        } catch (SQLException e) {
+            //:)
+        } catch (ClassNotFoundException e) {
+            //:)
+        }
+        return new Log.ProductOfLog();
+    }
+
     public ArrayList<Account> getModifiedAccounts(Account.AccountType accountType, String... searchs) {
         if(searchs == null || searchs.length == 0) {
             try {
-                AccountTable accountTable = AccountTable.getInstance();
                 switch (accountType) {
                     case ADMIN:
-                        return accountTable.getAllAdmins();
+                        return AccountTable.getAllAdmins();
                     case VENDOR:
-                        return accountTable.getAllVendors();
+                        return AccountTable.getAllVendors();
                     case CUSTOMER:
-                        return accountTable.getAllCustomers();
+                        return AccountTable.getAllCustomers();
                 }
-            } catch (SQLException | ClassNotFoundException e) {
+            } catch (SQLException e) {
+                //:)
+            } catch (ClassNotFoundException e) {
                 //:)
             }
             return new ArrayList<>();
@@ -273,15 +297,17 @@ public class AccountControl implements IOValidity {
         try {
             if(doesUserHaveImage(username))
             {
-                FileInputStream fileInputStream = AccountTable.getInstance().getProfileImageInputStream(username);
+                FileInputStream fileInputStream = AccountTable.getProfileImageInputStream(username);
                 Image image = new Image(fileInputStream);
                 fileInputStream.close();
                 return image;
             }
-            FileInputStream fileInputStream = AccountTable.getInstance().getProfileImageInputStream("1");
+            FileInputStream fileInputStream = AccountTable.getProfileImageInputStream("1");
             Image image = new Image(fileInputStream);
             fileInputStream.close();
             return image;
+        } catch (FileNotFoundException e) {
+            //:)
         } catch (IOException e) {
             //:)
         }
@@ -291,7 +317,7 @@ public class AccountControl implements IOValidity {
     public FileInputStream getUserImageInputStream(String username) {
         try {
             String imageInput = doesUserHaveImage(username) ? username : "1";
-            return AccountTable.getInstance().getProfileImageInputStream(imageInput);
+            return AccountTable.getProfileImageInputStream(imageInput);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -302,7 +328,7 @@ public class AccountControl implements IOValidity {
     public Integer[] getProfileImageArrayByUsername(String username) {
         try {
             String imageInput = doesUserHaveImage(username) ? username : "1";
-            FileInputStream fileInputStream = AccountTable.getInstance().getProfileImageInputStream(imageInput);
+            FileInputStream fileInputStream = AccountTable.getProfileImageInputStream(imageInput);
             ArrayList<Integer> imageArray = new ArrayList<>();
 
             int i;
@@ -317,6 +343,8 @@ public class AccountControl implements IOValidity {
                 integers[j] = imageArray.get(j);
             }
             return integers;
+        } catch (FileNotFoundException e) {
+            //:)
         } catch (IOException e) {
             //:)
         }
@@ -324,19 +352,19 @@ public class AccountControl implements IOValidity {
     }
 
     public boolean doesUserHaveImage(String username) {
-        return AccountTable.getInstance().getUserImageFilePath(username) != null;
+        return AccountTable.getUserImageFilePath(username) != null;
     }
 
     public void setAccountPicture(String username, File pictureFile) {
         if(pictureFile == null) {
             if(doesUserHaveImage(username))
-                AccountTable.getInstance().deleteProfileImage(username);
+                AccountTable.deleteProfileImage(username);
         } else {
             if(doesUserHaveImage(username)) {
-                AccountTable.getInstance().deleteProfileImage(username);
+                AccountTable.deleteProfileImage(username);
             }
             try {
-                AccountTable.getInstance().setProfileImage(username, pictureFile);
+                AccountTable.setProfileImage(username, pictureFile);
             } catch (IOException e) {
                 //:)
             }
@@ -346,15 +374,15 @@ public class AccountControl implements IOValidity {
 
     public void deleteAccountPicture(String username) {
         if(doesUserHaveImage(username))
-            AccountTable.getInstance().deleteProfileImage(username);
+            AccountTable.deleteProfileImage(username);
     }
 
     public FileOutputStream getAccountPictureOutputStream(String username, String pictureExtension) {
         if(doesUserHaveImage(username)) {
-            AccountTable.getInstance().deleteProfileImage(username);
+            AccountTable.deleteProfileImage(username);
         }
         try {
-            return AccountTable.getInstance().getProfileImageOutputStream(username, pictureExtension);
+            return AccountTable.getProfileImageOutputStream(username, pictureExtension);
         } catch (IOException e) {
             System.err.println("Error In #getAccountPictureOutputStream");
             e.printStackTrace();
@@ -365,27 +393,29 @@ public class AccountControl implements IOValidity {
 
     public Notification editAccount(final Account newAccount) {
         try {
-            Account oldAccount = AccountTable.getInstance().getAccountByUsername(newAccount.getUsername());
+            Account oldAccount = AccountTable.getAccountByUsername(newAccount.getUsername());
             if (newAccount.getFirstName() != null)
                 if (!newAccount.getFirstName().isEmpty() &&
                         !newAccount.getFirstName().equals(oldAccount.getFirstName())) {
-                    AccountTable.getInstance().editField(newAccount.getUsername(), "FirstName", newAccount.getFirstName());
+                    AccountTable.editField(newAccount.getUsername(), "FirstName", newAccount.getFirstName());
                 }
             if (newAccount.getLastName() != null)
                 if (!newAccount.getLastName().isEmpty() &&
                         !newAccount.getLastName().equals(oldAccount.getLastName())) {
-                    AccountTable.getInstance().editField(newAccount.getUsername(), "LastName", newAccount.getLastName());
+                    AccountTable.editField(newAccount.getUsername(), "LastName", newAccount.getLastName());
                 }
             if (newAccount.getEmail() == null || !newAccount.getEmail().equals(oldAccount.getEmail())) {
-                AccountTable.getInstance().editField(newAccount.getUsername(), "Email", newAccount.getEmail() == null ? "" : newAccount.getEmail());
+                AccountTable.editField(newAccount.getUsername(), "Email", newAccount.getEmail() == null ? "" : newAccount.getEmail());
             }
             if (oldAccount.getType().equals("Vendor")) {
                 if (newAccount.getBrand() == null || !newAccount.getBrand().equals(oldAccount.getBrand())) {
-                    AccountTable.getInstance().editField(newAccount.getUsername(), "Brand", newAccount.getBrand() == null ? "" : newAccount.getBrand());
+                    AccountTable.editField(newAccount.getUsername(), "Brand", newAccount.getBrand() == null ? "" : newAccount.getBrand());
                 }
             }
             return Notification.EDIT_FIELD_SUCCESSFULLY;
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;
@@ -393,9 +423,11 @@ public class AccountControl implements IOValidity {
 
     public double getCredit(String username) {
         try {
-            Account account = AccountTable.getInstance().getAccountByUsername(username);
+            Account account = AccountTable.getAccountByUsername(username);
             return account.getCredit();
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 

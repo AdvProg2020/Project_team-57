@@ -9,11 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class VendorTable extends Database {
-    public static VendorTable getInstance() {
-        return new VendorTable();
-    }
-
-    public ArrayList<Account> getUnApprovedVendors() throws SQLException, ClassNotFoundException {
+    public static ArrayList<Account> getUnApprovedVendors() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Accounts WHERE AccType = ? AND IsApproved = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, "Vendor");
@@ -26,7 +22,7 @@ public class VendorTable extends Database {
         return accounts;
     }
 
-    public void modifyApprove(String username, int flag) throws SQLException, ClassNotFoundException {
+    public static void modifyApprove(String username, int flag) throws SQLException, ClassNotFoundException {
         String accept = "UPDATE Accounts SET IsApproved = ? WHERE Username = ?";
         String decline = "DELETE FROM Accounts WHERE Username = ?";
         PreparedStatement preparedStatement;
@@ -41,7 +37,7 @@ public class VendorTable extends Database {
         preparedStatement.execute();
     }
 
-    public ArrayList<Product> getProductsWithUsername(String username) throws SQLException, ClassNotFoundException {
+    public static ArrayList<Product> getProductsWithUsername(String username) throws SQLException, ClassNotFoundException {
         ArrayList<Product> products = new ArrayList<>();
         products.addAll(getApprovedProductsWithUsername(username));
         products.addAll(getUnApprovedProductsWithUsername(username));
@@ -49,7 +45,7 @@ public class VendorTable extends Database {
         return products;
     }
 
-    public ArrayList<Product> getApprovedProductsWithUsername(String username) throws SQLException, ClassNotFoundException {
+    public static ArrayList<Product> getApprovedProductsWithUsername(String username) throws SQLException, ClassNotFoundException {
         ArrayList<Product> products = new ArrayList<>();
         String command = "SELECT * FROM Products WHERE SellerUsername = ? AND Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -62,7 +58,7 @@ public class VendorTable extends Database {
         return products;
     }
 
-    public ArrayList<Product> getUnApprovedProductsWithUsername(String username) throws SQLException, ClassNotFoundException {
+    public static ArrayList<Product> getUnApprovedProductsWithUsername(String username) throws SQLException, ClassNotFoundException {
         ArrayList<Product> products = new ArrayList<>();
         String command = "SELECT * FROM Products WHERE SellerUsername = ? AND Status = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -75,7 +71,7 @@ public class VendorTable extends Database {
         return products;
     }
 
-    public ArrayList<Product> getEditingProductsWithUsername(String username) throws SQLException, ClassNotFoundException {
+    public static ArrayList<Product> getEditingProductsWithUsername(String username) throws SQLException, ClassNotFoundException {
         ArrayList<Product> products = new ArrayList<>();
         String command = "SELECT * FROM EditingProducts WHERE SellerUsername = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -87,7 +83,7 @@ public class VendorTable extends Database {
         return products;
     }
 
-    public void addCountableProduct(Product product, String username) throws SQLException, ClassNotFoundException {
+    public static void addCountableProduct(Product product, String username) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Products (ID, ProductName, Brand, SellerUsername, Count, IsCountable, Category," +
                 "Description, Price, AverageScore, Status, Seen, ScoreNum, ApprovalDate)" +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -109,7 +105,7 @@ public class VendorTable extends Database {
         preparedStatement.execute();
     }
 
-    public void addUnCountableProduct(Product product, String username) throws SQLException, ClassNotFoundException {
+    public static void addUnCountableProduct(Product product, String username) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Products (ID, ProductName, Brand, SellerUsername, Amount, IsCountable, Category," +
                 "Description, Price, AverageScore, Status, Seen, ScoreNum, ApprovalDate)" +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

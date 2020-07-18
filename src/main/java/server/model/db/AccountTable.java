@@ -12,18 +12,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AccountTable extends Database {
-    public static AccountTable getInstance() {
-        return new AccountTable();
-    }
-
-    public boolean isUsernameFree(String username) throws SQLException, ClassNotFoundException {
+    public static boolean isUsernameFree(String username) throws SQLException, ClassNotFoundException {
         String command = "SELECT * From Accounts WHERE Username = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
         return !preparedStatement.executeQuery().next();
     }
 
-    public boolean isPasswordCorrect(String username, String password) throws SQLException, ClassNotFoundException {
+    public static boolean isPasswordCorrect(String username, String password) throws SQLException, ClassNotFoundException {
         String command = "SELECT Password From Accounts WHERE Username = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
@@ -32,14 +28,14 @@ public class AccountTable extends Database {
         return password.equals(resultSet.getString("Password"));
     }
 
-    public boolean isUserApproved(String username) throws SQLException, ClassNotFoundException {
+    public static boolean isUserApproved(String username) throws SQLException, ClassNotFoundException {
         String command = "SELECT IsApproved FROM Accounts WHERE Username = ?;";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
         return preparedStatement.executeQuery().getBoolean("IsApproved");
     }
 
-    public void addAccount(Account account) throws SQLException, ClassNotFoundException {
+    public static void addAccount(Account account) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Accounts (Username, Password, AccType, IsApproved, FirstName, LastName) " +
                 "VALUES (?, ?, ?, ?, ?, ?);";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -55,7 +51,7 @@ public class AccountTable extends Database {
         preparedStatement.execute();
     }
 
-    public String getTypeByUsername(String username) throws SQLException, ClassNotFoundException {
+    public static String getTypeByUsername(String username) throws SQLException, ClassNotFoundException {
         String command = "SELECT AccType From Accounts WHERE Username = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
@@ -64,21 +60,21 @@ public class AccountTable extends Database {
         return resultSet.getString("AccType");
     }
 
-    public boolean isThereAdmin() throws SQLException, ClassNotFoundException {
+    public static boolean isThereAdmin() throws SQLException, ClassNotFoundException {
         String command = "SELECT * From Accounts WHERE AccType = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, "Admin");
         return preparedStatement.executeQuery().next();
     }
 
-    public Account getAccountByUsername(String username) throws SQLException, ClassNotFoundException {
+    public static Account getAccountByUsername(String username) throws SQLException, ClassNotFoundException {
         String command = "SELECT * From Accounts WHERE Username = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
         return Account.makeAccount(preparedStatement.executeQuery());
     }
 
-    public void editField(String username, String fieldName, String value) throws SQLException, ClassNotFoundException {
+    public static void editField(String username, String fieldName, String value) throws SQLException, ClassNotFoundException {
         String command = "UPDATE Accounts SET " + fieldName + " = ? WHERE Username = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, value);
@@ -86,7 +82,7 @@ public class AccountTable extends Database {
         preparedStatement.execute();
     }
 
-    public void changeCredit(String username, double money) throws SQLException, ClassNotFoundException {
+    public static void changeCredit(String username, double money) throws SQLException, ClassNotFoundException {
         double credit = getCredit(username);
         credit += money;
         String command = "UPDATE Accounts SET Credit = ? WHERE Username = ?";
@@ -96,7 +92,7 @@ public class AccountTable extends Database {
         preparedStatement.execute();
     }
 
-    public double getCredit(String username) throws SQLException, ClassNotFoundException {
+    public static double getCredit(String username) throws SQLException, ClassNotFoundException {
         String command = "SELECT Credit From Accounts WHERE Username = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
@@ -105,7 +101,7 @@ public class AccountTable extends Database {
         return resultSet.getDouble("Credit");
     }
 
-    public ArrayList<Account> getAllAccounts() throws SQLException, ClassNotFoundException {
+    public static ArrayList<Account> getAllAccounts() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Accounts WHERE IsApproved = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setBoolean(1, true);
@@ -117,14 +113,14 @@ public class AccountTable extends Database {
         return allAccounts;
     }
 
-    public void deleteUserWithUsername(String username) throws SQLException, ClassNotFoundException {
+    public static void deleteUserWithUsername(String username) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM Accounts WHERE Username = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
         preparedStatement.execute();
     }
 
-    public ArrayList<Account> getAllUsers() throws SQLException, ClassNotFoundException {
+    public static ArrayList<Account> getAllUsers() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Accounts WHERE (AccType = ? OR AccType = ?) AND IsApproved = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, "Vendor");
@@ -138,7 +134,7 @@ public class AccountTable extends Database {
         return allUsers;
     }
 
-    public ArrayList<Account> getAllAdmins() throws SQLException, ClassNotFoundException {
+    public static ArrayList<Account> getAllAdmins() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Accounts WHERE AccType = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, "Admin");
@@ -150,7 +146,7 @@ public class AccountTable extends Database {
         return allAdmins;
     }
 
-    public ArrayList<Account> getAllVendors() throws SQLException, ClassNotFoundException {
+    public static ArrayList<Account> getAllVendors() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM Accounts WHERE AccType = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, "Vendor");
@@ -162,7 +158,7 @@ public class AccountTable extends Database {
         return allAdmins;
     }
 
-    public ArrayList<Account> getAllCustomers() throws SQLException, ClassNotFoundException {
+    public static ArrayList<Account> getAllCustomers() throws SQLException, ClassNotFoundException {
         ArrayList<Account> allCustomers = new ArrayList<>();
         String command = "SELECT * FROM Accounts WHERE AccType = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -173,7 +169,7 @@ public class AccountTable extends Database {
         return allCustomers;
     }
 
-    public boolean didPeriodPass(String ID) throws SQLException, ClassNotFoundException {
+    public static boolean didPeriodPass(String ID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM TimeLapse WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, ID);
@@ -186,7 +182,7 @@ public class AccountTable extends Database {
         return false;
     }
 
-    public void updatePeriod(String ID) throws SQLException, ClassNotFoundException {
+    public static void updatePeriod(String ID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM TimeLapse WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, ID);
@@ -200,7 +196,7 @@ public class AccountTable extends Database {
         preparedStatement.execute();
     }
 
-    public HashMap<Date, Date> getTimeLapse(String ID) throws SQLException, ClassNotFoundException {
+    public static HashMap<Date, Date> getTimeLapse(String ID) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM TimeLapse WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, ID);
@@ -210,7 +206,7 @@ public class AccountTable extends Database {
         return map;
     }
 
-    public String getUserImageFilePath(String username) {
+    public static String getUserImageFilePath(String username) {
         String fileName = "database\\Images\\Users\\" + username;
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {
@@ -223,18 +219,18 @@ public class AccountTable extends Database {
         return null;
     }
 
-    public FileInputStream getProfileImageInputStream(String username) throws FileNotFoundException {
+    public static FileInputStream getProfileImageInputStream(String username) throws FileNotFoundException {
         return new FileInputStream(getUserImageFilePath(username));
     }
 
-    public void setProfileImage(String username, File pictureFile) throws IOException {
+    public static void setProfileImage(String username, File pictureFile) throws IOException {
         String[] splitPath = pictureFile.getPath().split("\\.");
         String fileExtension = splitPath[splitPath.length - 1];
         File saveImage = new File("database\\Images\\Users\\" + username + "." + fileExtension);
         Files.copy(pictureFile.toPath(), saveImage.toPath());
     }
 
-    public FileOutputStream getProfileImageOutputStream(String username, String imageExtension) throws IOException {
+    public static FileOutputStream getProfileImageOutputStream(String username, String imageExtension) throws IOException {
         File profileImageFile = new File("database\\Images\\Users\\" + username + "." + imageExtension);
 
         if(!profileImageFile.exists()) {
@@ -245,7 +241,7 @@ public class AccountTable extends Database {
         return new FileOutputStream(profileImageFile);
     }
 
-    public void deleteProfileImage(String username) {
+    public static void deleteProfileImage(String username) {
         if(getUserImageFilePath(username) != null) {
             File file = new File(getUserImageFilePath(username));
             file.delete();

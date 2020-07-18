@@ -10,11 +10,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class EditingProductTable extends Database{
-    public static EditingProductTable getInstance() {
-        return new EditingProductTable();
-    }
 
-    public Product getEditingProductWithID(String productID) throws SQLException, ClassNotFoundException
+    public static Product getEditingProductWithID(String productID) throws SQLException, ClassNotFoundException
     {
         String command = "SELECT * FROM EditingProducts WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -22,14 +19,14 @@ public class EditingProductTable extends Database{
         return new Product(preparedStatement.executeQuery());
     }
 
-    public boolean isIDFree(String productId) throws SQLException, ClassNotFoundException {
+    public static boolean isIDFree(String productId) throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM EditingProducts WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, productId);
         return !(preparedStatement.executeQuery().next());
     }
 
-    public void updateCountableProduct(Product product) throws SQLException, ClassNotFoundException {
+    public static void updateCountableProduct(Product product) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingProducts SET Price = ?, " +
                 "ProductName = ?, " +
                 "Category = ?, " +
@@ -48,7 +45,7 @@ public class EditingProductTable extends Database{
         preparedStatement.execute();
     }
 
-    public void updateUnCountableProduct(Product product) throws SQLException, ClassNotFoundException {
+    public static void updateUnCountableProduct(Product product) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingProducts SET Price = ?, " +
                 "ProductName = ?, " +
                 "Category = ?, " +
@@ -67,7 +64,7 @@ public class EditingProductTable extends Database{
         preparedStatement.execute();
     }
 
-    public void editFieldWithName(String ID, String fieldName, String newValue) throws SQLException, ClassNotFoundException {
+    public static void editFieldWithName(String ID, String fieldName, String newValue) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingProducts SET " + fieldName + " = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, newValue);
@@ -75,7 +72,7 @@ public class EditingProductTable extends Database{
         preparedStatement.execute();
     }
 
-    public void changeProductCount(String ID, int newValue) throws SQLException, ClassNotFoundException {
+    public static void changeProductCount(String ID, int newValue) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingProducts SET Count = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setInt(1, newValue);
@@ -83,7 +80,7 @@ public class EditingProductTable extends Database{
         preparedStatement.execute();
     }
 
-    public void changeProductAmount(String ID, double newValue) throws SQLException, ClassNotFoundException {
+    public static void changeProductAmount(String ID, double newValue) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingProducts SET Amount = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDouble(1, newValue);
@@ -91,7 +88,7 @@ public class EditingProductTable extends Database{
         preparedStatement.execute();
     }
 
-    public void changeProductPrice(String ID, double newValue) throws SQLException, ClassNotFoundException {
+    public static void changeProductPrice(String ID, double newValue) throws SQLException, ClassNotFoundException {
         String command = "UPDATE EditingProducts SET Price = ? WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDouble(1, newValue);
@@ -99,7 +96,7 @@ public class EditingProductTable extends Database{
         preparedStatement.execute();
     }
 
-    public void addProduct(Product product) throws SQLException, ClassNotFoundException {
+    public static void addProduct(Product product) throws SQLException, ClassNotFoundException {
         String command =  "INSERT INTO EditingProducts (ID, ProductName, Brand, SellerUsername, Count, Amount, " +
                 "IsCountable, Category, Description, Price, AverageScore, Status, ApprovalDate, Seen, ScoreNum) " +
                         "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -128,7 +125,7 @@ public class EditingProductTable extends Database{
         preparedStatement.execute();
     }
 
-    public ArrayList<Product> getAllEditingProducts() throws SQLException, ClassNotFoundException {
+    public static ArrayList<Product> getAllEditingProducts() throws SQLException, ClassNotFoundException {
         String command = "SELECT * FROM EditingProducts";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -139,14 +136,14 @@ public class EditingProductTable extends Database{
         return allEditingProducts;
     }
 
-    public void removeProductById(String id) throws SQLException, ClassNotFoundException {
+    public static void removeProductById(String id) throws SQLException, ClassNotFoundException {
         String command = "DELETE FROM EditingProducts WHERE ID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, id);
         preparedStatement.execute();
     }
 
-    public String getEditingProductImageFilePath(String productID, int number) {
+    public static String getEditingProductImageFilePath(String productID, int number) {
         String fileName = "database\\Images\\EditingProducts\\" + productID + "\\" + number;
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {
@@ -157,11 +154,11 @@ public class EditingProductTable extends Database{
         return null;
     }
 
-    public FileInputStream getEditingProductImageInputStream(String ID, int number) throws FileNotFoundException {
+    public static FileInputStream getEditingProductImageInputStream(String ID, int number) throws FileNotFoundException {
         return new FileInputStream(getEditingProductImageFilePath(ID, number));
     }
 
-    public void addImage(String productID, int productNumber, File pictureFile) throws IOException {
+    public static void addImage(String productID, int productNumber, File pictureFile) throws IOException {
         File productFolder = new File("database\\Images\\EditingProducts\\" + productID );
         if(!productFolder.exists())
             productFolder.mkdir();
@@ -171,24 +168,24 @@ public class EditingProductTable extends Database{
         Files.copy(pictureFile.toPath(), saveImage.toPath());
     }
 
-    public boolean deleteEditingProductImageFolder(String productID) {
+    public static boolean deleteEditingProductImageFolder(String productID) {
         File folder = new File("database\\Images\\EditingProducts\\" + productID );
         return folder.delete();
     }
 
-    public void deleteImage(String productID, int imageNumber) throws IOException {
+    public static void deleteImage(String productID, int imageNumber) throws IOException {
         File deletingImage = new File(String.valueOf(getEditingProductImageFilePath(productID, imageNumber)));
         deletingImage.delete();
     }
 
-    public void renameImage(String productID, int number, File file) {
+    public static void renameImage(String productID, int number, File file) {
         String[] splitPath = file.getPath().split("\\.");
         String fileExtension = splitPath[splitPath.length - 1];
         File renamedFile = new File("database\\Images\\EditingProducts\\" + productID + "\\" + number + "." + fileExtension);
         file.renameTo(renamedFile);
     }
 
-    public ArrayList<File> copyEditingProductNewImagesInTemp(String productID, ArrayList<File> productImageFiles) throws IOException {
+    public static ArrayList<File> copyEditingProductNewImagesInTemp(String productID, ArrayList<File> productImageFiles) throws IOException {
         ArrayList<File> pictureFiles = new ArrayList<>();
         File productOriginFolder = new File("database\\Images\\EditingProducts\\" + productID);
         productOriginFolder.mkdir();
@@ -205,7 +202,7 @@ public class EditingProductTable extends Database{
         return pictureFiles;
     }
 
-    public void removeEditingProductTempImages(String productID) {
+    public static void removeEditingProductTempImages(String productID) {
         File folder = new File("database\\Images\\EditingProducts\\" + productID);
         folder.mkdir();
         folder = new File("database\\Images\\EditingProducts\\" + productID + "\\Jesus");
@@ -218,21 +215,21 @@ public class EditingProductTable extends Database{
         }
     }
 
-    public void transferEditingImages(String productID) throws IOException {
-        new ProductTable().removeAllProductImages(productID);
+    public static void transferEditingImages(String productID) throws IOException {
+        ProductTable.removeAllProductImages(productID);
         File tempFolder = new File("database\\Images\\EditingProducts\\" + productID);
         String[] entries = tempFolder.list();
         int i = 0;
         for(String s: entries){
             File currentFile = new File(tempFolder.getPath(),s);
             if(!currentFile.getName().equals("Jesus")) {
-                new ProductTable().addImage(productID, (++i), currentFile);
+                ProductTable.addImage(productID, (++i), currentFile);
             }
         }
-        new EditingProductTable().removeAllEditingProductImages(productID);
+        EditingProductTable.removeAllEditingProductImages(productID);
     }
 
-    public void removeAllEditingProductImages(String productID) {
+    public static void removeAllEditingProductImages(String productID) {
         File file = new File("database\\Images\\EditingProducts\\" + productID);
         file.mkdir();
         File tempFolder = new File("database\\Images\\EditingProducts\\" + productID);
@@ -243,7 +240,7 @@ public class EditingProductTable extends Database{
         }
     }
 
-    public FileOutputStream getEditingProductImageOutputStream(String productID, String fileExtension, int number) throws IOException {
+    public static FileOutputStream getEditingProductImageOutputStream(String productID, String fileExtension, int number) throws IOException {
         String folderFileName = "database\\Images\\EditingProducts\\" + productID;
         new File(folderFileName).mkdirs();
         String fileName = "database\\Images\\EditingProducts\\" + productID + "\\" + number + "." + fileExtension;
@@ -257,7 +254,7 @@ public class EditingProductTable extends Database{
         }
     }
 
-    public String getEditingProductImageFileExtension(String productID, int number) {
+    public static String getEditingProductImageFileExtension(String productID, int number) {
         String fileName = "database\\Images\\EditingProducts\\" + productID + "\\" + number;
         String[] validImageExtensions = {"jpg" , "jpeg" , "png", "bmp"};
         for (String validImageExtension : validImageExtensions) {

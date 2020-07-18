@@ -28,8 +28,8 @@ public class IOControl implements IOValidity {
         if (account.getLastName().length() > 25)
             return Notification.ERROR_LAST_NAME_LENGTH;
         try {
-            if (AccountTable.getInstance().isUsernameFree(account.getUsername())) {
-                AccountTable.getInstance().addAccount(account);
+            if (AccountTable.isUsernameFree(account.getUsername())) {
+                AccountTable.addAccount(account);
                 return Notification.REGISTER_SUCCESSFUL;
             } else
                 return Notification.ERROR_FULL_USERNAME;
@@ -40,23 +40,20 @@ public class IOControl implements IOValidity {
 
     public Notification login(Account account){
         try {
-            AccountTable accountTable = AccountTable.getInstance();
-
-            if (!accountTable.isUsernameFree(account.getUsername())) {
-                if (accountTable.isPasswordCorrect(account.getUsername(), account.getPassword())) {
-                    if(accountTable.isUserApproved(account.getUsername())) {
-                        String type = accountTable.getTypeByUsername(account.getUsername());
-                        CartTable cartTable = CartTable.getInstance();
+            if (!AccountTable.isUsernameFree(account.getUsername())) {
+                if (AccountTable.isPasswordCorrect(account.getUsername(), account.getPassword())) {
+                    if(AccountTable.isUserApproved(account.getUsername())) {
+                        String type = AccountTable.getTypeByUsername(account.getUsername());
                         if (type.equals("Customer")) {
-                            cartTable.addTempToUsername(account.getUsername());
+                            CartTable.addTempToUsername(account.getUsername());
                         }
-                        cartTable.removeTemp();
-                        if (type.equals("Customer") && accountTable.didPeriodPass("Ya Zahra"))
+                        CartTable.removeTemp();
+                        if (type.equals("Customer") && AccountTable.didPeriodPass("Ya Zahra"))
                             AdminControl.getController().getGiftDiscount();
                         //TODO(FOR MEDIA)
                         //AccountControl.getController().initAudios();
-                        DiscountTable.getInstance().removeOutDatedDiscounts();
-                        OffTable.getInstance().removeOutDatedOffs();
+                        DiscountTable.removeOutDatedDiscounts();
+                        OffTable.removeOutDatedOffs();
                         return Notification.LOGIN_SUCCESSFUL;
                     } else {
                         return Notification.USER_NOT_APPROVED;
@@ -72,7 +69,7 @@ public class IOControl implements IOValidity {
 
     public boolean isThereAdmin() {
         try {
-            return AccountTable.getInstance().isThereAdmin();
+            return AccountTable.isThereAdmin();
         } catch (Exception e) {
             //:)
             return false;
