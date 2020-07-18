@@ -22,4 +22,5 @@ public class Receipt {
         this.isPaid = resultSet.getBoolean("Paid");
 
     }
+
 }

@@ -54,10 +54,9 @@ public class SapahDB {
         ResultSet resultSet = statement.executeQuery(command);
         if (!resultSet.next()){
             statement.execute("CREATE TABLE AuthTokens(" +
-                    "Auth varchar(16)," +
+                    "Auth varchar(20)," +
                     "AccountID varchar(10)," +
-                    "Expired BIT," +
-                    "CreatDate DATE," +
+                    "CreateDate DATE," +
                     "primary key(Auth));");
         }
         statement.close();
@@ -67,7 +66,7 @@ public class SapahDB {
     private static void initAccountsTable(Statement statement) throws SQLException {
         String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'Accounts'";
         ResultSet resultSet = statement.executeQuery(command);
-        if (!resultSet.next()){
+        if (!resultSet.next()) {
             statement.execute("CREATE TABLE Accounts(" +
                     "AccountID varchar(10)," +
                     "Username varchar(16)," +
@@ -80,6 +79,8 @@ public class SapahDB {
         statement.close();
         resultSet.close();
     }
+    //Finish Init
+
 
     public static void createAccount(String accountID, String firstName, String lastName, String username, String password) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Accounts (AccountID, Username, Password, FirstName, LastName, Balance) Values (?, ?, ?, ?, ?, ?)";
@@ -104,6 +105,77 @@ public class SapahDB {
         String command = "SELECT * FROM Accounts WHERE Username = ?;";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, username);
+        return preparedStatement.executeQuery().next();
+    }
+
+    public static String getPasswordWithUsername(String username) throws SQLException, ClassNotFoundException {
+        String command = "SELECT Password FROM Accounts WHERE Username = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        return preparedStatement.executeQuery().getString("Password");
+    }
+
+    public static String getAccountIDWithUsername(String username) throws SQLException, ClassNotFoundException {
+        String command = "SELECT AccountID FROM Accounts WHERE Username = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, username);
+        return preparedStatement.executeQuery().getString("AccountID");
+    }
+
+    public static boolean isThereAuth(String auth) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM AuthTokens WHERE Auth = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, auth);
+        return preparedStatement.executeQuery().next();
+    }
+
+    public static void addAuth(String authToken, String accountID) throws SQLException, ClassNotFoundException {
+        String command = "INSERT INTO AuthTokens (Auth, AccountID, CreateDate) Values (?, ?, ?);";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, authToken);
+        preparedStatement.setString(2, accountID);
+        preparedStatement.setDate(3, new Date(System.currentTimeMillis()));
+        preparedStatement.execute();
+    }
+
+    public static Date getAuthDateWithAuth(String auth) throws SQLException, ClassNotFoundException {
+        String command = "SELECT CreateDate FROM AuthTokens WHERE Auth = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, auth);
+        return preparedStatement.executeQuery().getDate("CreateDate");
+    }
+
+    public static boolean isAccountIDValid(String accountID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Accounts WHERE AccountID = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, accountID);
+        return preparedStatement.executeQuery().next();
+    }
+
+    public static String getAccountIDWithAuth(String auth) throws SQLException, ClassNotFoundException {
+        String command = "SELECT AccountID FROM AuthTokens WHERE Auth = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, auth);
+        return preparedStatement.executeQuery().getString("AccountID");
+    }
+
+    public static void createReceipt(String receiptID, String token, String receiptType, String money, String sourceID, String destID, String description) throws SQLException, ClassNotFoundException {
+        String command = "INSERT INTO Receipts (ReceiptID, ReceiptType, Description, Money, SourceID, DestID, Paid) Values (?, ?, ?, ?, ?, ?, ?);";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, receiptID);
+        preparedStatement.setString(2, receiptType);
+        preparedStatement.setString(3, description);
+        preparedStatement.setDouble(4, Double.parseDouble(money));
+        preparedStatement.setString(5, sourceID);
+        preparedStatement.setString(6, destID);
+        preparedStatement.setBoolean(7, false));
+        preparedStatement.execute();
+    }
+
+    public static boolean isThereReceiptWithID(String receiptID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Receipts WHERE ReceiptID = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, receiptID);
         return preparedStatement.executeQuery().next();
     }
 }
