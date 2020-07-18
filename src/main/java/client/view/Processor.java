@@ -339,4 +339,19 @@ public abstract class Processor {
         Response<Product> response = client.postAndGet(command, Response.class, (Class<Product>)Product.class);
         return response.getData();
     }
+
+    protected String getWage() {
+        Command command = new Command("get wage", Command.HandleType.ACCOUNT);
+        Response<Double> response = client.postAndGet(command, Response.class, (Class<Double>)Double.class);
+        System.out.println(response.getDatum());
+        return getSmoothDoubleFormat(response.getDatum());
+    }
+
+    protected String getMinimumWallet() {
+        Command command = new Command("get minimum wallet", Command.HandleType.ACCOUNT);
+        Response<Double> response = client.postAndGet(command, Response.class, (Class<Double>)Double.class);
+        System.out.println(response.getDatum());
+        return getSmoothDoubleFormat(response.getDatum());
+    }
+
 }

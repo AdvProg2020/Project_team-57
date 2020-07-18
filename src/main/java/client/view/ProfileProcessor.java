@@ -4,6 +4,7 @@ import client.api.Command;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import javafx.scene.control.TextInputControl;
 import server.controller.account.AccountControl;
 import javafx.animation.*;
 import javafx.beans.value.ChangeListener;
@@ -54,9 +55,10 @@ public class ProfileProcessor extends Processor {
     public ImageView deleteImage;
     public Rectangle rightLine, rightLine1;
 
+    public JFXTextField minimumCreditField;
     public JFXTextField currentCreditField, additionCreditField;
     public JFXTextField bankUsername;
-    public JFXTextField bankPassword;
+    public JFXPasswordField bankPassword;
     public JFXTextField accountNumber;
     public JFXButton subButton, addButton;
 
@@ -164,6 +166,7 @@ public class ProfileProcessor extends Processor {
 
     private void setProfileCreditFields() {
         currentCreditField.setText(Double.toString(account.getCredit()));
+        minimumCreditField.setText(getMinimumWallet());
 
         if(!account.getUsername().equals(super.getUsername())) {
             profileCreditPane.getChildren().remove(addButton);
@@ -335,6 +338,10 @@ public class ProfileProcessor extends Processor {
 
         if(notification.equals(Notification.RISE_MONEY_SUCCESSFULLY)) {
             resetMoney();
+        } else if(notification == Notification.INVALID_TRANSACTION_INFO) {
+            bankUsername.setStyle(errorTextFieldStyle);
+            bankPassword.setStyle(errorTextFieldStyle);
+            accountNumber.setStyle(errorTextFieldStyle);
         } else {
             additionCreditField.setStyle(errorTextFieldStyle);
         }
@@ -351,6 +358,10 @@ public class ProfileProcessor extends Processor {
 
         if(notification.equals(Notification.GET_MONEY_SUCCESSFULLY)) {
             resetMoney();
+        } else if(notification == Notification.INVALID_TRANSACTION_INFO) {
+            bankUsername.setStyle(errorTextFieldStyle);
+            bankPassword.setStyle(errorTextFieldStyle);
+            accountNumber.setStyle(errorTextFieldStyle);
         } else {
             additionCreditField.setStyle(errorTextFieldStyle);
         }
@@ -365,8 +376,8 @@ public class ProfileProcessor extends Processor {
     }
 
     public void textFieldMouseClicked(MouseEvent mouseEvent) {
-        JFXTextField textField = (JFXTextField) mouseEvent.getSource();
-        textField.setStyle("");
+        TextInputControl textInputControl = (TextInputControl) mouseEvent.getSource();
+        textInputControl.setStyle("");
     }
 
     public void passwordFieldMouseClicked(MouseEvent mouseEvent) {

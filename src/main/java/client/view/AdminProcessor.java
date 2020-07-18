@@ -74,20 +74,6 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
         }
     }
 
-    private String getWage() {
-        Command command = new Command("get wage", Command.HandleType.ACCOUNT);
-        Response<Double> response = client.postAndGet(command, Response.class, (Class<Double>)Double.class);
-        System.out.println(response.getDatum());
-        return getSmoothDoubleFormat(response.getDatum());
-    }
-
-    private String getMinimumWallet() {
-        Command command = new Command("get minimum wallet", Command.HandleType.ACCOUNT);
-        Response<Double> response = client.postAndGet(command, Response.class, (Class<Double>)Double.class);
-        System.out.println(response.getDatum());
-        return getSmoothDoubleFormat(response.getDatum());
-    }
-
     private void initLabelsForUsername() {
         usernameLabel.setText(loggedInAccount.getUsername());
     }

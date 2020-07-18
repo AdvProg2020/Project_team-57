@@ -222,18 +222,23 @@ public class AccountHandler extends Handler {
     }
 
     private Notification doWithDraw(String username, String password, String bankNumber, String moneyString) {
+        System.err.println("Money : " + moneyString);
         String bankAuthToken = server.getBankAuthToken(username, password);
+        System.err.println("BankAuthToken : " + bankAuthToken);
         if(bankAuthToken.equals("invalid username or password")) {
             return Notification.INVALID_TRANSACTION_INFO;
         }
-
+        bankAuthToken = server.getBankAuthToken(Server.MARKET_BANK_USERNAME, Server.MARKET_BANK_PASSWORD);
         String receiptID = server.getReceipt(bankAuthToken, "move", moneyString, "Fuck", Server.MARKET_BANK_ACCOUNT_NUMBER, bankNumber);
+        System.err.println("Receipt :" + receiptID);
         if(receiptID.equals("dest account id is invalid")) {
             return Notification.INVALID_TRANSACTION_INFO;
         }
-        if(server.payReceipt(receiptID).equals("done successfully")) {
+        String payResult;
+        if((payResult = server.payReceipt(receiptID)).equals("done successfully")) {
             return Notification.SUCCESSFUL_TRANSACTION;
         }
+        System.err.println("Pay Result : " + payResult);
         return Notification.MARKET_NOT_ENOUGH_MONEY;
     }
 
