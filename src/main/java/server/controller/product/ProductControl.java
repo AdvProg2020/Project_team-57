@@ -10,13 +10,14 @@ import server.model.existence.Product;
 import notification.Notification;
 import server.server.Property;
 import server.server.Property.*;
+import server.server.RandomGenerator;
 
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ProductControl {
+public class ProductControl implements RandomGenerator {
     private static ProductControl productControl = null;
 
     @Deprecated
@@ -404,9 +405,16 @@ public class ProductControl {
         String commentID;
 
         try {
-            do {
-                commentID = generateCommentID();
-            } while (ProductTable.isThereCommentByID(commentID));
+            commentID = "c" + generateRandomNumber(7, s -> {
+                try {
+                    return ProductTable.isThereCommentByID(s);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            });
             comment.setCommentID(commentID);
             ProductTable.addComment(comment);
 
@@ -420,16 +428,6 @@ public class ProductControl {
             e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;
-    }
-
-    private String generateCommentID() {
-        StringBuilder commentID = new StringBuilder("c");
-        char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
-
-        for (int i = 0; i < 7; ++i)
-            commentID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
-
-        return commentID.toString();
     }
 
     public ArrayList<Comment> getAllProductComments(String productId, String username, String type) {

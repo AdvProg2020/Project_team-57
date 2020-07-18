@@ -8,13 +8,14 @@ import server.model.existence.Account;
 import server.model.existence.Log;
 import server.model.existence.Off;
 import server.model.existence.Product;
+import server.server.RandomGenerator;
 
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-public class AccountControl implements IOValidity {
+public class AccountControl implements IOValidity, RandomGenerator {
     private static AccountControl customerControl = null;
     private static String currentLogID;
     private boolean isMusicPlaying = false;

@@ -17,7 +17,7 @@ import java.net.Socket;
 import java.util.HashMap;
 
 
-public class Server {
+public class Server implements RandomGenerator{
     public static int SERVER_PORT;
     private ServerSocket serverSocket;
     private ObjectMapper mapper;
@@ -121,10 +121,11 @@ public class Server {
     }
 
     public String makeAuth() {
-        String auth;
+        String auth = generateRandomString(12, s -> authTokens.containsKey(s));
+/*        String auth;
         do {
             auth = generateRandomString();
-        } while (authTokens.containsKey(auth));
+        } while (authTokens.containsKey(auth));*/
         return auth;
     }
 
@@ -133,24 +134,12 @@ public class Server {
     }
 
     public String makeRelic() {
-        String relic;
+        String relic = generateRandomString(12, s -> relics.containsKey(s));
+/*        String relic;
         do {
             relic = generateRandomString();
-        }while (relics.containsKey(relic));
+        }while (relics.containsKey(relic));*/
         return relic;
-    }
-
-    public String generateRandomString(){
-        StringBuilder ID = new StringBuilder();
-        for(int i = 0; i < 12; ++i) {
-            int x = (((int) (Math.random() * 1000000)) % 75) + 48;
-            if(x == 92) {
-                i--;
-                continue;
-            }
-            ID.append(Character.valueOf((char)x));
-        }
-        return ID.toString();
     }
 
     public String getUsernameByAuth (String auth) {

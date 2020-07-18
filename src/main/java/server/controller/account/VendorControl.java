@@ -7,6 +7,7 @@ import server.model.existence.Log;
 import server.model.existence.Off;
 import server.model.existence.Product;
 import notification.Notification;
+import server.server.RandomGenerator;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -26,14 +27,16 @@ public class VendorControl extends AccountControl{
         try {
             addingProductNotifications.addAll(checkProductFields(product));
             if (addingProductNotifications.isEmpty()) {
-                String productID = null;
-                while (true) {
-                    productID = generateProductID();
-                    if (ProductTable.isIDFree(productID)) {
-                        product.setID(productID);
-                        break;
+                String productID = "p" + generateRandomNumber(7, s -> {
+                    try {
+                        return !ProductTable.isIDFree(s);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
                     }
-                }
+                    return false;
+                });
                 if (product.isCountable())
                     VendorTable.addCountableProduct(product, username);
                 else
@@ -127,7 +130,7 @@ public class VendorControl extends AccountControl{
         return null;
     }
 
-    private String generateProductID()
+/*    private String generateProductID()
     {
         char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
         StringBuilder ID = new StringBuilder("p");
@@ -136,7 +139,7 @@ public class VendorControl extends AccountControl{
             ID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
         }
         return ID.toString();
-    }
+    }*/
 
     public boolean isThereCategoryWithName(String categoryName) {
         try {
@@ -174,9 +177,17 @@ public class VendorControl extends AccountControl{
             return Notification.START_DATE_AFTER_FINISH_DATE;
         off.setVendorUsername(username);
         try {
-            do {
-                off.setOffID(setOffID());
-            } while (OffTable.isThereOffWithID(off.getOffID()));
+
+            off.setOffID("o" + generateRandomNumber(7, s -> {
+                try {
+                    return OffTable.isThereOffWithID(s);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }));
             off.setStatus(2);
 
             OffTable.addOff(off);
@@ -186,16 +197,6 @@ public class VendorControl extends AccountControl{
         } catch (ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
-    }
-
-    private String setOffID(){
-        char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
-        StringBuilder offID = new StringBuilder("o");
-
-        for(int i = 0; i < 7; ++i)
-            offID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
-
-        return offID.toString();
     }
 
     public ArrayList<Product> getNonOffProducts(String username, String... exceptions) {

@@ -277,12 +277,16 @@ public class AdminControl extends AccountControl{
                 }
             }
 
-            String ID = "";
-
-            do {
-                ID = generateDiscountID();
-            } while (DiscountTable.isThereDiscountWithID(ID));
-
+            String ID = "d" + generateRandomNumber(7, s -> {
+                try {
+                    return DiscountTable.isThereDiscountWithID(s);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            });
             discount.setID(ID);
             DiscountTable.addDiscount(discount);
         } catch (SQLException | ClassNotFoundException e) {
@@ -342,16 +346,6 @@ public class AdminControl extends AccountControl{
             notification = Notification.EMPTY_DISCOUNT_CUSTOMERS_LIST;
 
         return notification;
-    }
-
-    private String generateDiscountID() {
-        char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
-        StringBuilder ID = new StringBuilder("d");
-
-        for(int i = 0; i < 7; ++i)
-            ID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
-
-        return ID.toString();
     }
 
     public ArrayList<Off> getAllUnApprovedOffs() {
@@ -456,7 +450,17 @@ public class AdminControl extends AccountControl{
         try {
             Date currentDate = new Date(new java.util.Date().getTime());
             Date finishDate = new Date((new java.util.Date().getTime() + (long) 6.048e+8));
-            Discount discount = new Discount(generateDiscountID(), "Gift-" + currentDate.toString(), currentDate, finishDate, 10, 2000, 1);
+            String ID = "d" + generateRandomNumber(7, s -> {
+                try {
+                    return DiscountTable.isThereDiscountWithID(s);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            });
+            Discount discount = new Discount(ID, "Gift-" + currentDate.toString(), currentDate, finishDate, 10, 2000, 1);
             int customerNum;
             if (AccountTable.getAllAccounts().size() > 5) {
                 for (int i = 0; i < 5; i++) {
