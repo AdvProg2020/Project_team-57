@@ -19,19 +19,37 @@
       <Label layoutX="150.0" layoutY="67.0" text="Change Credit" />
       <Rectangle fx:id="rightLine" arcHeight="5.0" arcWidth="5.0" fill="#e0f2f1" height="10.0" layoutX="150.0" layoutY="92.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" styleClass="Menu_Line" width="350.0" />
       <Rectangle fx:id="leftLine" arcHeight="5.0" arcWidth="5.0" fill="#e0f2f1" height="10.0" layoutY="92.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" styleClass="Menu_Line" width="50.0" />
-      <Label layoutX="75.0" layoutY="247.0" text="Current Credit">
+      <Label layoutX="75.0" layoutY="195.0" text="Current Credit">
          <font>
             <Font name="Calibri" size="16.0" />
          </font>
       </Label>
-      <Label layoutX="69.0" layoutY="302.0" text="Addition Credit">
+      <Label layoutX="69.0" layoutY="250.0" text="Addition Credit">
          <font>
             <Font name="Calibri" size="16.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="currentCreditField" disable="true" editable="false" layoutX="182.0" layoutY="240.0" prefHeight="31.0" prefWidth="232.0" text="\$$$$$$$$$" />
-      <JFXTextField fx:id="additionCreditField" layoutX="182.0" layoutY="295.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="232.0" />
-      <JFXButton fx:id="addButton" buttonType="RAISED" layoutX="316.0" layoutY="390.0" onMouseClicked="#addMoneyMouseClicked" text="Add Money" />
-      <JFXButton fx:id="subButton" buttonType="RAISED" layoutX="168.0" layoutY="390.0" onMouseClicked="#subtractMoneyMouseClicked" text="Subtract Money" />
+      <JFXTextField fx:id="currentCreditField" disable="true" editable="false" layoutX="182.0" layoutY="188.0" prefHeight="31.0" prefWidth="232.0" text="\$$$$$$$$$" />
+      <JFXTextField fx:id="additionCreditField" layoutX="182.0" layoutY="243.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="232.0" />
+      <JFXButton fx:id="addButton" buttonType="RAISED" layoutX="324.0" layoutY="495.0" onMouseClicked="#addMoneyMouseClicked" text="Add Money" />
+      <JFXButton fx:id="subButton" buttonType="RAISED" layoutX="176.0" layoutY="495.0" onMouseClicked="#subtractMoneyMouseClicked" text="Subtract Money" />
+      <JFXTextField fx:id="bankUsername" layoutX="182.0" layoutY="298.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="232.0" />
+      <JFXTextField fx:id="bankPassword" layoutX="182.0" layoutY="353.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="232.0" />
+      <JFXTextField fx:id="accountNumber" layoutX="182.0" layoutY="408.0" onMouseClicked="#textFieldMouseClicked" prefHeight="31.0" prefWidth="232.0" />
+      <Label layoutX="56.0" layoutY="415.0" text="Account Number">
+         <font>
+            <Font name="Calibri" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="63.0" layoutY="305.0" text="Bank Username">
+         <font>
+            <Font name="Calibri" size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="67.0" layoutY="360.0" text="Bank Password">
+         <font>
+            <Font name="Calibri" size="16.0" />
+         </font>
+      </Label>
    </children>
 </Pane>
