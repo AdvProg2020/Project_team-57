@@ -37,6 +37,7 @@ public class Database {
         initScoreTable(initConnection.createStatement());
         initCommentsTable(initConnection.createStatement());
         initTimeLapseTable(initConnection.createStatement());
+        initMarketCreditTable(initConnection.createStatement());
         removeTempAccountsFromCarts(initConnection);
 /*        DiscountTable.removeOutDatedDiscount();
         OffTable.removeOutDatedDiscount();*/
@@ -44,6 +45,28 @@ public class Database {
 
         isDBInit = true;
         initConnection.close();
+    }
+
+    private static void initMarketCreditTable(Statement statement) throws SQLException, ClassNotFoundException {
+        String command = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'MarketCredit'";
+        ResultSet resultSet = statement.executeQuery(command);
+        if (!resultSet.next()){
+            statement.execute("CREATE TABLE MarketCredit(" +
+                    "Specifier varchar (100)," +
+                    "Holder double," +
+                    "primary key(Specifier)" +
+                    ");");
+            String sql = "INSERT INTO MarketCredit(Specifier, Holder) VALUES(?,?)";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
+            preparedStatement.setString(1, "Minimum Wallet");
+            preparedStatement.setDouble(2, 500);
+            preparedStatement.execute();
+            preparedStatement.setString(1, "Market Wage");
+            preparedStatement.setDouble(2, 5);
+            preparedStatement.execute();
+        }
+        statement.close();
+        resultSet.close();
     }
 
     private static void initTimeLapseTable(Statement statement) throws SQLException, ClassNotFoundException {

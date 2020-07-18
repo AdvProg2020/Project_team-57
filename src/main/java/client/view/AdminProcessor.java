@@ -2,6 +2,9 @@ package client.view;
 
 import client.api.Command;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import server.controller.account.AdminControl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -37,6 +40,8 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
     public Pane manageCustomers;
     public Pane manageVendors;
     public Pane manageAdmins;
+    public JFXTextField wageField;
+    public JFXTextField minimumWalletField;
     private ArrayList<JFXButton> buttons = new ArrayList<>();
 
 
@@ -58,12 +63,29 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             }
             loader.setController(this);
             mainPane.setCenter(subRoot);
-            //TODO(???)
             client.postAndGet(new Command("create discount added users", Command.HandleType.GENERAL), Response.class, (Class<Object>)Object.class);
-            //AdminControl.getController().createDiscountAddedUsers();
             //TODO(FOR MEDIA)
             //initMusicPlayer();
+        } else if(location.toString().contains("AdminCashStats")){
+            setDoubleFields(wageField, 100.0);
+            setDoubleFields(minimumWalletField, Double.MAX_VALUE);
+            wageField.setText(getWage());
+            minimumWalletField.setText(getMinimumWallet());
         }
+    }
+
+    private String getWage() {
+        Command command = new Command("get wage", Command.HandleType.ACCOUNT);
+        Response<Double> response = client.postAndGet(command, Response.class, (Class<Double>)Double.class);
+        System.out.println(response.getDatum());
+        return getSmoothDoubleFormat(response.getDatum());
+    }
+
+    private String getMinimumWallet() {
+        Command command = new Command("get minimum wallet", Command.HandleType.ACCOUNT);
+        Response<Double> response = client.postAndGet(command, Response.class, (Class<Double>)Double.class);
+        System.out.println(response.getDatum());
+        return getSmoothDoubleFormat(response.getDatum());
     }
 
     private void initLabelsForUsername() {
@@ -293,6 +315,52 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             } catch (IOException e) {
                 //:)
             }
+        }
+    }
+
+    public void manageCashStats(MouseEvent mouseEvent) {
+        if (canOpenSubStage("Manage Cash Stats", parentProcessor)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("AdminCashStats.fxml"));
+                Parent root = loader.load();
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.setResizable(false);
+                newStage.setTitle("Manage Cash Stats");
+                parentProcessor.addSubStage(newStage);
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("Statistics Icon.png")));
+                newStage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void saveMinimumWalletMoney(ActionEvent actionEvent) {
+        if(!minimumWalletField.getText().isEmpty()) {
+            Command<Double> command = new Command<>("set minimum wallet money", Command.HandleType.ACCOUNT, Double.parseDouble(minimumWalletField.getText()));
+            client.postAndGet(command, Response.class, (Class<Object>)Object.class).getMessage().getAlert().show();
+        } else {
+            minimumWalletField.setStyle(errorTextFieldStyle);
+        }
+    }
+
+    public void saveMarketWage(ActionEvent actionEvent) {
+        if(!wageField.getText().isEmpty()) {
+            Command<Double> command = new Command<>("set market wage", Command.HandleType.ACCOUNT, Double.parseDouble(wageField.getText()));
+            client.postAndGet(command, Response.class, (Class<Object>)Object.class).getMessage().getAlert().show();
+        } else {
+            wageField.setStyle(errorTextFieldStyle);
+        }
+    }
+
+    public void fieldOnKey(KeyEvent keyEvent) {
+        ((JFXTextField)keyEvent.getSource()).setStyle(null);
+        if(keyEvent.getCode() == KeyCode.ENTER) {
+            if(((JFXTextField)keyEvent.getSource()).getId().equals("minimumWalletField"))
+                saveMinimumWalletMoney(null);
+            else
+                saveMarketWage(null);
         }
     }
 }

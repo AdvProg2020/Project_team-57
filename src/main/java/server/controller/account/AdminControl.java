@@ -569,4 +569,42 @@ public class AdminControl extends AccountControl{
         }
         return new ArrayList<>();
     }
+
+    public Notification setMarketWage(Double wage) {
+        try {
+            AccountTable.setMarketWage(wage);
+            return Notification.CHANGED_SUCCESSFUL;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
+    }
+
+    public Notification setMinimumWallet(Double minimumWallet) {
+        try {
+            AccountTable.setMinimumWallet(minimumWallet);
+            return Notification.CHANGED_SUCCESSFUL;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Notification.UNKNOWN_ERROR;
+    }
+
+    public Double getWage() {
+        try {
+            return AccountTable.getWage();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    public Double getMinimumWallet() {
+        try {
+            return AccountTable.getMinimumWallet();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
 }

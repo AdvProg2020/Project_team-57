@@ -192,7 +192,8 @@ public enum Notification {
     FUCK_YOU("Fuck You", Alert.AlertType.ERROR, "MotherFucker", "You Son Of A Bitch"),
     INVALID_TRANSACTION_INFO("Invalid Transaction Info", Alert.AlertType.ERROR, "Error", "Invalid Info"),
     SUCCESSFUL_TRANSACTION("Transaction Successful", Alert.AlertType.INFORMATION, "Successful", "Transaction"),
-    NOT_ENOUGH_MONEY_BANK("Your Bank Account Doesn't Have Enough Money", Alert.AlertType.ERROR, "Error", "Bank Account");
+    NOT_ENOUGH_MONEY_BANK("Your Bank Account Doesn't Have Enough Money", Alert.AlertType.ERROR, "Error", "Bank Account"),
+    CHANGED_SUCCESSFUL("Successfully Modified", Alert.AlertType.INFORMATION, "Information", "Market Credit");
 
 
     private String message;

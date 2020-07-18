@@ -247,4 +247,40 @@ public class AccountTable extends Database {
             file.delete();
         }
     }
+
+    public static void setMarketWage(Double wage) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE MarketCredit" +
+                " SET Holder = ?" +
+                " WHERE Specifier = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(2, "Market Wage");
+        preparedStatement.setDouble(1, wage);
+        preparedStatement.execute();
+    }
+
+    public static void setMinimumWallet(Double minimumWallet) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE MarketCredit" +
+                " SET Holder = ?" +
+                " WHERE Specifier = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(2, "Minimum Wallet");
+        preparedStatement.setDouble(1, minimumWallet);
+        preparedStatement.execute();
+    }
+
+    public static Double getWage() throws SQLException, ClassNotFoundException {
+        String command = "SELECT Holder From MarketCredit WHERE Specifier = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, "Market Wage");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet.getDouble("Holder");
+    }
+
+    public static Double getMinimumWallet() throws SQLException, ClassNotFoundException {
+        String command = "SELECT Holder From MarketCredit WHERE Specifier = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, "Minimum Wallet");
+        ResultSet resultSet = preparedStatement.executeQuery();
+        return resultSet.getDouble("Holder");
+    }
 }

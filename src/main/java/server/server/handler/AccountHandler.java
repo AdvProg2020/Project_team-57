@@ -76,9 +76,43 @@ public class AccountHandler extends Handler {
                 return getProductBuyers();
             case "delete user":
                 return deleteUser();
+            case "set minimum wallet money":
+                return setMinimumWallet();
+            case "set market wage":
+                return setMarketWage();
+            case "get wage":
+                return getWage();
+            case "get minimum wallet":
+                return getMinimumWallet();
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String getMinimumWallet() {
+        Response<Double> response = new Response<>(Notification.PACKET_NOTIFICATION, adminControl.getMinimumWallet());
+        return gson.toJson(response);
+    }
+
+    private String getWage() {
+        Response<Double> response = new Response<>(Notification.PACKET_NOTIFICATION, adminControl.getWage());
+        return gson.toJson(response);
+    }
+
+    private String setMarketWage() {
+        Command<Double> command = commandParser.parseToCommand(Command.class, (Class<Double>) Double.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            return gson.toJson(new Response(adminControl.setMarketWage(command.getDatum())));
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String setMinimumWallet() {
+        Command<Double> command = commandParser.parseToCommand(Command.class, (Class<Double>) Double.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            return gson.toJson(new Response(adminControl.setMinimumWallet(command.getDatum())));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String deleteUser() {
