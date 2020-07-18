@@ -22,6 +22,9 @@ public class AdminControl extends AccountControl{
         return adminControl;
     }
 
+    private static final Object addDelCategoryLock = new Object();
+    public static final Object offLock1 = new Object();
+
     private HashMap<Discount, ArrayList<String>> discountsAddedUsers;
 
     public void createDiscountAddedUsers() {
@@ -67,59 +70,64 @@ public class AdminControl extends AccountControl{
 
     public Notification addCategory(Category category)
     {
-        try {
-            if (!CategoryTable.isThereCategoryWithName(category.getName())) {
-                if(category.getName().length() > 5 && category.getName().length() < 17) {
-                    if(category.getFeatures().length() < 101) {
-                        if (category.getParentCategory() != null && !CategoryTable.isThereCategoryWithName(category.getParentCategory()))
-                            return Notification.PARENT_CATEGORY_NOT_FOUND;
-                        if (category.getParentCategory() == null)
-                            category.setParentCategory("All Products");
-                        CategoryTable.addCategory(category);
-                        return Notification.CATEGORY_ADDED;
+        synchronized (addDelCategoryLock) {
+            try {
+                CategoryTable categoryTable = CategoryTable.getInstance();
+                if (!categoryTable.isThereCategoryWithName(category.getName())) {
+                    if(category.getName().length() > 5 && category.getName().length() < 17) {
+                        if(category.getFeatures().length() < 101) {
+                            if (category.getParentCategory() != null && !categoryTable.isThereCategoryWithName(category.getParentCategory()))
+                                return Notification.PARENT_CATEGORY_NOT_FOUND;
+                            if (category.getParentCategory() == null)
+                                category.setParentCategory("All Products");
+                            categoryTable.addCategory(category);
+                            return Notification.CATEGORY_ADDED;
+                        }
+                        return Notification.INVALID_FEATURES;
                     }
-                    return Notification.INVALID_FEATURES;
+                    return Notification.INVALID_CATEGORY_NAME;
                 }
-                return Notification.INVALID_CATEGORY_NAME;
+                return Notification.DUPLICATE_CATEGORY_NAME;
+            } catch (SQLException | ClassNotFoundException e) {
+                //:)
             }
-            return Notification.DUPLICATE_CATEGORY_NAME;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
 
-        return Notification.UNKNOWN_ERROR;
+            return Notification.UNKNOWN_ERROR;
+        }
     }
 
     public Notification removeCategory(Category category) {
-        try {
-            if (category == null)
-                return Notification.NOT_SELECTED_CATEGORY;
-            if(category.getName().equals("All Products"))
-                return Notification.CANT_DELETE_CATEGORY;
-            if (CategoryTable.isThereCategoryWithName(category.getName())) {
-                ArrayList<Category> subCategories = CategoryTable.getSubCategories(category.getName());
-                for (Category subCategory : subCategories) {
-                    CategoryTable.setCategoryParentName(subCategory.getName(), category.getParentCategory());
+        synchronized (addDelCategoryLock) {
+            try {
+                if (category == null)
+                    return Notification.NOT_SELECTED_CATEGORY;
+                if(category.getName().equals("All Products"))
+                    return Notification.CANT_DELETE_CATEGORY;
+                CategoryTable categoryTable = CategoryTable.getInstance();
+                if (categoryTable.isThereCategoryWithName(category.getName())) {
+                    ArrayList<Category> subCategories = categoryTable.getSubCategories(category.getName());
+                    for (Category subCategory : subCategories) {
+                        categoryTable.setCategoryParentName(subCategory.getName(), category.getParentCategory());
+                    }
+                    categoryTable.removeCategoryWithName(category.getName());
+                    ProductTable productTable = ProductTable.getInstance();
+                    ArrayList<Product> products = productTable.getProductsWithCategory(category.getName());
+                    for (Product product : products) {
+                        productTable.removeProductByID(product.getID());
+                        EditingProductTable editingProductTable = EditingProductTable.getInstance();
+                        if (!editingProductTable.isIDFree(product.getID()))
+                            editingProductTable.removeProductById(product.getID());
+                    }
+                    return Notification.CATEGORY_DELETED;
                 }
-                CategoryTable.removeCategoryWithName(category.getName());
-                ArrayList<Product> products = ProductTable.getProductsWithCategory(category.getName());
-                for (Product product : products) {
-                    ProductTable.removeProductByID(product.getID());
-                    if (!EditingProductTable.isIDFree(product.getID()))
-                        EditingProductTable.removeProductById(product.getID());
-                }
-                return Notification.CATEGORY_DELETED;
+                return Notification.CATEGORY_NOT_FOUND;
+            } catch (SQLException | ClassNotFoundException e) {
+                //:)
             }
-            return Notification.CATEGORY_NOT_FOUND;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+
+            return Notification.UNKNOWN_ERROR;
         }
 
-        return Notification.UNKNOWN_ERROR;
     }
 
     public Notification editCategory(Category oldCategory, Category newCategory, String fieldName) {
@@ -140,21 +148,22 @@ public class AdminControl extends AccountControl{
         return notification;
     }
 
-    public Notification editCategoryName(Category oldCategory, Category newCategory)
-    {
+    public synchronized Notification editCategoryName(Category oldCategory, Category newCategory) {
         try {
             if(!oldCategory.getName().equals(newCategory.getName()))
             {
-                if(!CategoryTable.isThereCategoryWithName(newCategory.getName()))
+                if(!CategoryTable.getInstance().isThereCategoryWithName(newCategory.getName()))
                 {
                     if(newCategory.getName().length() < 17 && newCategory.getName().length() > 5) {
-                        for (Product product : ProductTable.getProductsWithCategory(oldCategory.getName())) {
-                            ProductTable.changeProductCategoryByID(product.getID(), newCategory.getName());
+                        ProductTable productTable = ProductTable.getInstance();
+                        for (Product product : productTable.getProductsWithCategory(oldCategory.getName())) {
+                            productTable.changeProductCategoryByID(product.getID(), newCategory.getName());
                         }
-                        for (Category subcategory : CategoryTable.getSubCategories(oldCategory.getName())) {
-                            CategoryTable.setCategoryParentName(subcategory.getName(), newCategory.getName());
+                        CategoryTable categoryTable = CategoryTable.getInstance();
+                        for (Category subcategory : categoryTable.getSubCategories(oldCategory.getName())) {
+                            categoryTable.setCategoryParentName(subcategory.getName(), newCategory.getName());
                         }
-                        CategoryTable.changeCategoryName(oldCategory.getName(), newCategory.getName());
+                        categoryTable.changeCategoryName(oldCategory.getName(), newCategory.getName());
                         return Notification.CATEGORY_MODIFIED;
                     }
                     return Notification.INVALID_CATEGORY_NAME;
@@ -163,9 +172,7 @@ public class AdminControl extends AccountControl{
             }
             return Notification.CATEGORY_MODIFIED;
             //return Notification.SAME_CATEGORY_FIELD_ERROR;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return Notification.UNKNOWN_ERROR;
@@ -173,23 +180,23 @@ public class AdminControl extends AccountControl{
 
     public Notification editCategoryFeatures(Category oldCategory, Category newCategory)
     {
-        try {
-            if (!oldCategory.getFeatures().equals(newCategory.getFeatures())) {
-                if(newCategory.getFeatures().length() < 101) {
-                    CategoryTable.changeCategoryFeatures(oldCategory.getName(), newCategory.getFeatures());
-                    return Notification.CATEGORY_MODIFIED;
+        synchronized (addDelCategoryLock) {
+            try {
+                if (!oldCategory.getFeatures().equals(newCategory.getFeatures())) {
+                    if(newCategory.getFeatures().length() < 101) {
+                        CategoryTable.getInstance().changeCategoryFeatures(oldCategory.getName(), newCategory.getFeatures());
+                        return Notification.CATEGORY_MODIFIED;
+                    }
+                    return Notification.INVALID_FEATURES;
                 }
-                return Notification.INVALID_FEATURES;
+                return Notification.CATEGORY_MODIFIED;
+                //return Notification.SAME_CATEGORY_FIELD_ERROR;
+            } catch (SQLException | ClassNotFoundException e) {
+                //:)
             }
-            return Notification.CATEGORY_MODIFIED;
-            //return Notification.SAME_CATEGORY_FIELD_ERROR;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
 
-        return Notification.UNKNOWN_ERROR;
+            return Notification.UNKNOWN_ERROR;
+        }
     }
 
     public Notification editCategoryParentName(Category oldCategory, Category newCategory)
@@ -197,15 +204,14 @@ public class AdminControl extends AccountControl{
         if(!oldCategory.getParentCategory().equals(newCategory.getParentCategory()))
         {
             try {
-                if(CategoryTable.isThereCategoryWithName(newCategory.getParentCategory())) {
-                    CategoryTable.setCategoryParentName(oldCategory.getName(), newCategory.getParentCategory());
+                CategoryTable categoryTable = CategoryTable.getInstance();
+                if(categoryTable.isThereCategoryWithName(newCategory.getParentCategory())) {
+                    categoryTable.setCategoryParentName(oldCategory.getName(), newCategory.getParentCategory());
                     return Notification.CATEGORY_MODIFIED;
                 }
                     return Notification.PARENT_CATEGORY_NOT_FOUND;
 
-            } catch (SQLException e) {
-                //:)
-            } catch (ClassNotFoundException e) {
+            } catch (SQLException | ClassNotFoundException e) {
                 //:)
             }
         }
@@ -213,47 +219,22 @@ public class AdminControl extends AccountControl{
         //return Notification.SAME_FIELD_ERROR;
     }
 
-    public Category getCategoryByName(String categoryName) {
-        try {
-            return CategoryTable.getCategoryWithName(categoryName);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return new Category();
-    }
-
     public ArrayList<Discount> getAllDiscounts() {
         try {
-            DiscountTable.removeOutDatedDiscounts();
-            return DiscountTable.getAllDiscountCodes();
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            DiscountTable discountTable = DiscountTable.getInstance();
+            discountTable.removeOutDatedDiscounts();
+            return discountTable.getAllDiscountCodes();
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
     }
 
-    public Discount getDiscountByID(String ID) {
-        try {
-            return DiscountTable.getDiscountByID(ID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return new Discount();
-    }
-
     public Notification removeDiscountByID(String ID)
     {
         try {
-            DiscountTable.removeDiscountCode(ID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            DiscountTable.getInstance().removeDiscountCode(ID);
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return Notification.DELETED_DISCOUNT;
@@ -262,38 +243,42 @@ public class AdminControl extends AccountControl{
     public Notification addDiscount(Discount discount) {
         Notification notification = null;
 
-        try {
-            if(discount.getID() != null && !discount.getID().isEmpty()) {
-                if((notification = setNewDiscountsEmptyFields(discount)) == null) {
-                    DiscountTable.removeDiscountCode(discount.getID());
-                    notification = Notification.EDIT_DISCOUNT;
-                } else
-                    return notification;
-            } else {
-                if((notification = isDiscountComplete(discount)) == null) {
-                    notification = Notification.ADD_DISCOUNT;
+        synchronized (discountPurchaseLock) {
+            try {
+                if(discount.getID() != null && !discount.getID().isEmpty()) {
+                    if((notification = setNewDiscountsEmptyFields(discount)) == null) {
+                        DiscountTable.getInstance().removeDiscountCode(discount.getID());
+                        notification = Notification.EDIT_DISCOUNT;
+                    } else
+                        return notification;
                 } else {
-                    return notification;
+                    if((notification = isDiscountComplete(discount)) == null) {
+                        notification = Notification.ADD_DISCOUNT;
+                    } else {
+                        return notification;
+                    }
                 }
+
+                String ID = "";
+
+                DiscountTable discountTable = DiscountTable.getInstance();
+                do {
+                    ID = generateDiscountID();
+                } while (discountTable.isThereDiscountWithID(ID));
+
+                discount.setID(ID);
+                discountTable.addDiscount(discount);
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+                System.err.println("Error In #addDiscount");
             }
-
-            String ID = "";
-
-            do {
-                ID = generateDiscountID();
-            } while (DiscountTable.isThereDiscountWithID(ID));
-
-            discount.setID(ID);
-            DiscountTable.addDiscount(discount);
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            System.err.println("Error In #addDiscount");
+            return notification;
         }
-        return notification;
+
     }
 
     public Notification setNewDiscountsEmptyFields(Discount newDiscount) throws SQLException, ClassNotFoundException {
-        Discount oldDiscount = DiscountTable.getDiscountByID(newDiscount.getID());
+        Discount oldDiscount = DiscountTable.getInstance().getDiscountByID(newDiscount.getID());
 
         if(newDiscount.getCode() == null || newDiscount.getCode().isEmpty())
             newDiscount.setCode(oldDiscount.getCode());
@@ -355,82 +340,87 @@ public class AdminControl extends AccountControl{
     }
 
     public ArrayList<Off> getAllUnApprovedOffs() {
-        try {
-            OffTable.removeOutDatedOffs();
-            return OffTable.getAllUnApprovedOffs();
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
+        synchronized (offLock1) {
+            try {
+                OffTable offTable = OffTable.getInstance();
+                offTable.removeOutDatedOffs();
+                return offTable.getAllUnApprovedOffs();
+            } catch (SQLException | ClassNotFoundException e) {
+                //:)
+            }
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
     }
 
     public Notification modifyOffApprove(String offID, boolean flag){
-        try {
-            if (flag){
-                OffTable.approveOffByID(offID);
-                return Notification.ACCEPT_OFF_REQUEST;
-            } else{
-                OffTable.removeOffByID(offID);
-                return Notification.DECLINE_REQUEST;
+        synchronized (offLock1) {
+            try {
+                OffTable offTable = OffTable.getInstance();
+                if (flag){
+                    offTable.approveOffByID(offID);
+                    return Notification.ACCEPT_OFF_REQUEST;
+                } else{
+                    offTable.removeOffByID(offID);
+                    return Notification.DECLINE_REQUEST;
+                }
+            } catch (SQLException | ClassNotFoundException e) {
+                return Notification.UNKNOWN_ERROR;
             }
-        } catch (SQLException e) {
-            return Notification.UNKNOWN_ERROR;
-        } catch (ClassNotFoundException e) {
-            return Notification.UNKNOWN_ERROR;
         }
     }
 
     public Notification modifyOffEditingApprove(String offID, boolean isAccepted)
     {
         try {
-            Off editingOff = OffTable.getSpecificEditingOff(offID);
+            OffTable offTable = OffTable.getInstance();
+            Off editingOff = offTable.getSpecificEditingOff(offID);
             if(isAccepted)
             {
-                OffTable.removeOffByID(editingOff.getOffID());
+                offTable.removeOffByID(editingOff.getOffID());
                 editingOff.setStatus(1);
-                OffTable.addOff(editingOff);
-                OffTable.removeEditingOff(editingOff.getOffID());
+                offTable.addOff(editingOff);
+                offTable.removeEditingOff(editingOff.getOffID());
                 acceptEditingOffImages(offID);
                 return Notification.OFF_EDITING_ACCEPTED;
             } else {
-                OffTable.removeEditingOff(offID);
-                OffTable.changeOffStatus(offID, 1);
+                offTable.removeEditingOff(offID);
+                offTable.changeOffStatus(offID, 1);
                 declineEditingOffImages(offID);
                 return Notification.OFF_EDITING_DECLINED;
             }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return Notification.UNKNOWN_ERROR;
     }
 
     private void declineEditingOffImages(String offID) {
-        if(ProductControl.getController().doesEditingOffHaveImage(offID)) {
-            OffTable.removeEditingOffImage(offID);
+        synchronized (offLock1) {
+            if(ProductControl.getController().doesEditingOffHaveImage(offID)) {
+                OffTable.getInstance().removeEditingOffImage(offID);
+            }
         }
     }
 
     private void acceptEditingOffImages(String offID) {
-        try {
-            if(ProductControl.getController().doesOffHaveImage(offID))
-                OffTable.removeOffImage(offID);
-            if(ProductControl.getController().doesEditingOffHaveImage(offID)) {
-                OffTable.setOffImage(offID, ProductControl.getController().getEditingOffImageFileByID(offID));
-                declineEditingOffImages(offID);
+        synchronized (offLock1) {
+            try {
+                OffTable offTable = OffTable.getInstance();
+                if(ProductControl.getController().doesOffHaveImage(offID))
+                    offTable.removeOffImage(offID);
+                if(ProductControl.getController().doesEditingOffHaveImage(offID)) {
+                    offTable.setOffImage(offID, ProductControl.getController().getEditingOffImageFileByID(offID));
+                    declineEditingOffImages(offID);
+                }
+            } catch (IOException e) {
+                //:)
             }
-        } catch (IOException e) {
-            //:)
         }
-
     }
 
     public ArrayList<Comment> getAllUnApprovedComments() {
         try {
-            return ProductTable.getAllUnApprovedComments();
+            return ProductTable.getInstance().getAllUnApprovedComments();
         } catch (SQLException | ClassNotFoundException e) {
             System.err.println("Error In #getAllUnApprovedComments");
             e.printStackTrace();
@@ -438,13 +428,13 @@ public class AdminControl extends AccountControl{
         return new ArrayList<>();
     }
 
-    public Notification modifyCommentApproval(String commentID, boolean flag){
+    public Notification modifyCommentApproval(String commentID, boolean flag) {
         try {
             if (flag){
-                ProductTable.modifyCommentApproval(commentID, 1);
+                ProductTable.getInstance().modifyCommentApproval(commentID, 1);
                 return Notification.ACCEPTING_COMMENT;
             }
-            ProductTable.modifyCommentApproval(commentID, 3);
+            ProductTable.getInstance().modifyCommentApproval(commentID, 3);
             return Notification.DECLINE_COMMENT;
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -458,19 +448,19 @@ public class AdminControl extends AccountControl{
             Date finishDate = new Date((new java.util.Date().getTime() + (long) 6.048e+8));
             Discount discount = new Discount(generateDiscountID(), "Gift-" + currentDate.toString(), currentDate, finishDate, 10, 2000, 1);
             int customerNum;
-            if (AccountTable.getAllAccounts().size() > 5) {
+            AccountTable accountTable = AccountTable.getInstance();
+            DiscountTable discountTable = DiscountTable.getInstance();
+            if (accountTable.getAllAccounts().size() > 5) {
                 for (int i = 0; i < 5; i++) {
-                    customerNum = ((int) (Math.random() * 100000000)) % AccountTable.getAllAccounts().size();
-                    DiscountTable.addGiftDiscount(discount, AccountTable.getAllAccounts().get(customerNum).getUsername());
+                    customerNum = ((int) (Math.random() * 100000000)) % accountTable.getAllAccounts().size();
+                    discountTable.addGiftDiscount(discount, accountTable.getAllAccounts().get(customerNum).getUsername());
                 }
             } else {
-                customerNum = ((int) (Math.random() * 100000000)) % AccountTable.getAllAccounts().size();
-                DiscountTable.addGiftDiscount(discount, AccountTable.getAllAccounts().get(customerNum).getUsername());
+                customerNum = ((int) (Math.random() * 100000000)) % accountTable.getAllAccounts().size();
+                discountTable.addGiftDiscount(discount, accountTable.getAllAccounts().get(customerNum).getUsername());
             }
-            AccountTable.updatePeriod("Ya Zahra");
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            accountTable.updatePeriod("Ya Zahra");
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
     }
@@ -495,11 +485,9 @@ public class AdminControl extends AccountControl{
 
     public ArrayList<Product> getAllNotApprovedProducts() {
         try {
-            OffTable.removeOutDatedOffs();
-            return ProductTable.getAllNotApprovedProducts();
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            OffTable.getInstance().removeOutDatedOffs();
+            return ProductTable.getInstance().getAllNotApprovedProducts();
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
@@ -507,12 +495,14 @@ public class AdminControl extends AccountControl{
 
     public Notification modifyEditingProductApprove(String productID, boolean approved) {
         try {
+            EditingProductTable editingProductTable = EditingProductTable.getInstance();
+
             if(approved) {
-                EditingProductTable.transferEditingImages(productID);
+                editingProductTable.transferEditingImages(productID);
                 return acceptEditingProductByID(productID);
             }
             else {
-                EditingProductTable.removeAllEditingProductImages(productID);
+                editingProductTable.removeAllEditingProductImages(productID);
                 return ProductControl.getController().removeEditingProductById(productID);
             }
         } catch (IOException e) {
@@ -530,12 +520,11 @@ public class AdminControl extends AccountControl{
 
     private Notification approveProductByID(String id){
         try {
-            ProductTable.setProductStatus(id, 1);
-            ProductTable.setProductApprovalDate(id);
+            ProductTable productTable = ProductTable.getInstance();
+            productTable.setProductStatus(id, 1);
+            productTable.setProductApprovalDate(id);
             return Notification.ACCEPT_ADDING_PRODUCT;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
 
@@ -544,16 +533,20 @@ public class AdminControl extends AccountControl{
 
     private Notification acceptEditingProductByID(String editingProductID) {
         try {
-            Product editingProduct = EditingProductTable.getEditingProductWithID(editingProductID);
-            editingProduct.setApprovalDate(ProductTable.getProductByID(editingProductID).getApprovalDate());
-            editingProduct.setSeen(ProductTable.getProductByID(editingProductID).getSeen());
-            EditingProductTable.removeProductById(editingProductID);
-            ProductTable.removeProductByID(editingProduct.getID());
+            EditingProductTable editingProductTable = EditingProductTable.getInstance();
+            ProductTable productTable = ProductTable.getInstance();
+            VendorTable vendorTable = VendorTable.getInstance();
+
+            Product editingProduct = editingProductTable.getEditingProductWithID(editingProductID);
+            editingProduct.setApprovalDate(productTable.getProductByID(editingProductID).getApprovalDate());
+            editingProduct.setSeen(productTable.getProductByID(editingProductID).getSeen());
+            editingProductTable.removeProductById(editingProductID);
+            productTable.removeProductByID(editingProduct.getID());
             if(editingProduct.isCountable())
-                VendorTable.addCountableProduct(editingProduct, editingProduct.getSellerUserName());
+                vendorTable.addCountableProduct(editingProduct, editingProduct.getSellerUserName());
             else
-                VendorTable.addUnCountableProduct(editingProduct, editingProduct.getSellerUserName());
-            ProductTable.setProductStatus(editingProduct.getID(), 1);
+                vendorTable.addUnCountableProduct(editingProduct, editingProduct.getSellerUserName());
+            productTable.setProductStatus(editingProduct.getID(), 1);
             return Notification.ACCEPT_EDITING_PRODUCT;
         } catch (SQLException | ClassNotFoundException e) {
             //:)
@@ -563,7 +556,7 @@ public class AdminControl extends AccountControl{
 
     public ArrayList<Category> getAllCategories() {
         try {
-            return CategoryTable.getAllCategories();
+            return CategoryTable.getInstance().getAllCategories();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

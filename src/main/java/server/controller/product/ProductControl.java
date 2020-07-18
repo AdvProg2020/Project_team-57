@@ -19,19 +19,9 @@ import java.util.Collections;
 public class ProductControl {
     private static ProductControl productControl = null;
 
-    @Deprecated
-    public void setProductOffPrice(Product product) throws SQLException, ClassNotFoundException {
-        if(OffTable.isThereProductInOff(product.getID())) {
-            product.setOnSale(true);
-            double offPercent = OffTable.getOffPercentByProductID(product.getID());
-            product.setOffPercent(offPercent);
-            product.setOffPrice( (1.0 - offPercent / 100) * product.getPrice());
-        }
-    }
-
     public Product getProductById(String productId) {
         try {
-            Product product = ProductTable.getProductByID(productId);
+            Product product = ProductTable.getInstance().getProductByID(productId);
 /*            setProductOffPrice(product);*/
             return product;
         } catch (Exception e) {
@@ -41,16 +31,20 @@ public class ProductControl {
 
     public synchronized Notification removeProductById(String productId) {
         try {
-            ProductTable.removeProductByID(productId);
-            if (!EditingProductTable.isIDFree(productId))
-                EditingProductTable.removeProductById(productId);
-            OffTable.removeProductFromOffs(productId);
-            OffTable.removeProductFromEditingOffs(productId);
-            CartTable.deleteProductFromCarts(productId);
-            ProductTable.removeAllProductComments(productId);
-            ProductTable.deleteProductFromScores(productId);
-            ProductTable.removeAllProductImages(productId);
-            EditingProductTable.removeAllEditingProductImages(productId);
+            ProductTable productTable = ProductTable.getInstance();
+            EditingProductTable editingProductTable = EditingProductTable.getInstance();
+            OffTable offTable = OffTable.getInstance();
+
+            productTable.removeProductByID(productId);
+            if (!editingProductTable.isIDFree(productId))
+                editingProductTable.removeProductById(productId);
+            offTable.removeProductFromOffs(productId);
+            offTable.removeProductFromEditingOffs(productId);
+            CartTable.getInstance().deleteProductFromCarts(productId);
+            productTable.removeAllProductComments(productId);
+            productTable.deleteProductFromScores(productId);
+            productTable.removeAllProductImages(productId);
+            editingProductTable.removeAllEditingProductImages(productId);
             return Notification.REMOVE_PRODUCT_SUCCESSFULLY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
@@ -65,45 +59,49 @@ public class ProductControl {
 
     public Notification editField(String fieldName, String newField, String ID) {
         try {
-            if (ProductTable.getProductByID(ID).getStatus() == 2)
+            ProductTable productTable = ProductTable.getInstance();
+            EditingProductTable editingProductTable = EditingProductTable.getInstance();
+
+            if (productTable.getProductByID(ID).getStatus() == 2)
                 return Notification.PRODUCT_NOT_AVAILABLE;
 
 //            if (checkFieldEquality(fieldName, newField, ID))
 //                return Notification.SAME_FIELD_ERROR;
             if(newField != null && !newField.isEmpty()) {
-                if (fieldName.equals("Category") && !CategoryTable.isThereCategoryWithName(newField))
+                if (fieldName.equals("Category") && !CategoryTable.getInstance().isThereCategoryWithName(newField))
                     return Notification.INVALID_CATEGORY_NAME;
 
-                if (ProductTable.getProductByID(ID).getStatus() == 1)
-                    ProductTable.setProductStatus(ID, 3);
+                if (productTable.getProductByID(ID).getStatus() == 1)
+                    productTable.setProductStatus(ID, 3);
 
-                if (EditingProductTable.isIDFree(ID))
-                    EditingProductTable.addProduct(ProductTable.getProductByID(ID));
+                if (editingProductTable.isIDFree(ID))
+                    editingProductTable.addProduct(productTable.getProductByID(ID));
 
                 editSpecificField(fieldName, newField, ID);
             }
 
             return Notification.EDIT_FIELD_SUCCESSFULLY;
-        } catch (SQLException e) {
-            return Notification.UNKNOWN_ERROR;
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
     }
 
     private void editSpecificField(String fieldName, String newField, String ID) {
         try {
+            ProductTable productTable = ProductTable.getInstance();
+            EditingProductTable editingProductTable = EditingProductTable.getInstance();
+
             if (fieldName.equals("ProductName") || fieldName.equals("Brand") ||
                     fieldName.equals("Category") || fieldName.equals("Description")) {
-                EditingProductTable.editFieldWithName(ID, fieldName, newField);
+                editingProductTable.editFieldWithName(ID, fieldName, newField);
             } else if (fieldName.equals("Count"))
-                EditingProductTable.changeProductCount(ID, Integer.parseInt(newField));
+                editingProductTable.changeProductCount(ID, Integer.parseInt(newField));
 
             else if (fieldName.equals("Amount"))
-                EditingProductTable.changeProductAmount(ID, Double.parseDouble(newField));
+                editingProductTable.changeProductAmount(ID, Double.parseDouble(newField));
 
             else if (fieldName.equals("Price"))
-                EditingProductTable.changeProductPrice(ID, Double.parseDouble(newField));
+                editingProductTable.changeProductPrice(ID, Double.parseDouble(newField));
         } catch (Exception e) {
             //:)
         }
@@ -141,18 +139,19 @@ public class ProductControl {
 
     public Product getEditedProductByID(String ID) {
         try {
+            ProductTable productTable = ProductTable.getInstance();
+            EditingProductTable editingProductTable = EditingProductTable.getInstance();
+
             Product product = null;
 
-            if (EditingProductTable.isIDFree(ID))
-                product = ProductTable.getProductByID(ID);
+            if (editingProductTable.isIDFree(ID))
+                product = productTable.getProductByID(ID);
             else
-                product = EditingProductTable.getEditingProductWithID(ID);
+                product = editingProductTable.getEditingProductWithID(ID);
 
             /*setProductOffPrice(product);*/
             return product;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return null;
@@ -160,12 +159,10 @@ public class ProductControl {
 
     public Notification removeEditingProductById(String editingProductID) {
         try {
-            EditingProductTable.removeProductById(editingProductID);
-            ProductTable.setProductStatus(editingProductID, 1);
+            EditingProductTable.getInstance().removeProductById(editingProductID);
+            ProductTable.getInstance().setProductStatus(editingProductID, 1);
             return Notification.DECLINE_EDITING_PRODUCT;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return Notification.UNKNOWN_ERROR;
@@ -173,14 +170,12 @@ public class ProductControl {
 
     public ArrayList<Product> getAllShowingProducts(Property property) {
         try {
-            OffTable.removeOutDatedOffs();
+            OffTable.getInstance().removeOutDatedOffs();
             ArrayList<Product> showingProducts = convertIDsToProducts(filterProducts(property));
             filterProductsWithPrice(showingProducts, property.getFilter());
             sortProducts(showingProducts, property.getSort());
             return showingProducts;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
@@ -198,12 +193,12 @@ public class ProductControl {
             }
         } else {
             if(!property.isOffListic()) {
-                for (Product product : ProductTable.getAllShowingProducts()) {
+                for (Product product : ProductTable.getInstance().getAllShowingProducts()) {
                     filteredProductIds.add(product.getID());
                 }
             } else {
-                for (Product product : ProductTable.getAllShowingProducts()) {
-                    if (OffTable.isThereProductInSpecificOff(property.getListicOffID(), product.getID()))
+                for (Product product : ProductTable.getInstance().getAllShowingProducts()) {
+                    if (OffTable.getInstance().isThereProductInSpecificOff(property.getListicOffID(), product.getID()))
                         filteredProductIds.add(product.getID());
                 }
             }
@@ -228,16 +223,14 @@ public class ProductControl {
         try {
             double productPriceForVendor = 0;
 
-            if(OffTable.isThereProductInOff(product.getID())) {
+            if(OffTable.getInstance().isThereProductInOff(product.getID())) {
                 productPriceForVendor = product.getOffPrice();
             } else {
              productPriceForVendor = product.getPrice();
             }
 
             return productPriceForVendor;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return 0;
@@ -246,7 +239,7 @@ public class ProductControl {
     private ArrayList<Product> convertIDsToProducts(ArrayList<String> productIDs) throws SQLException, ClassNotFoundException {
         ArrayList<Product> products = new ArrayList<>();
         for (String productID : productIDs) {
-            products.add(ProductTable.getProductByID(productID));
+            products.add(ProductTable.getInstance().getProductByID(productID));
         }
         return products;
     }
@@ -272,42 +265,45 @@ public class ProductControl {
     }
 
     private ArrayList<String> filterOnCategory(String category, Property property) throws SQLException, ClassNotFoundException {
-        if (!CategoryTable.isThereSubCategories(category) &&
-                !ProductTable.isThereProductWithSpecificCategory(category)) {
+        ProductTable productTable = ProductTable.getInstance();
+        OffTable offTable = OffTable.getInstance();
+        CategoryTable categoryTable = CategoryTable.getInstance();
+
+        if (!categoryTable.isThereSubCategories(category) &&
+                !productTable.isThereProductWithSpecificCategory(category)) {
             return new ArrayList<>();
         }
         ArrayList<String> productIds = new ArrayList<>();
         if(!property.isOffListic()) {
-            for (Product product : ProductTable.getProductsWithCategory(category)) {
+            for (Product product : productTable.getProductsWithCategory(category)) {
                 if (product.getStatus() != 2)
                     productIds.add(product.getID());
             }
         } else {
-            for (Product product : ProductTable.getProductsWithCategory(category)) {
-                if (product.getStatus() != 2 && OffTable.isThereProductInSpecificOff(property.getListicOffID(), product.getID()))
+            for (Product product : productTable.getProductsWithCategory(category)) {
+                if (product.getStatus() != 2 && offTable.isThereProductInSpecificOff(property.getListicOffID(), product.getID()))
                     productIds.add(product.getID());
             }
         }
 
-        for (Category subCategory : CategoryTable.getSubCategories(category)) {
+        for (Category subCategory : categoryTable.getSubCategories(category)) {
             productIds.addAll(filterOnCategory(subCategory.getName(), property));
         }
         return productIds;
     }
 
     private void filterOnName(ArrayList<String> filteredProductIds, ArrayList<String> filterNames) {
+        final ProductTable productTable = ProductTable.getInstance();
         filteredProductIds.removeIf(filterProductId -> {
             boolean result = true;
 
             try {
                 for (String filterName : filterNames) {
-                    if(ProductTable.getProductByID(filterProductId).getName().contains(filterName)) {
+                    if(productTable.getProductByID(filterProductId).getName().contains(filterName)) {
                         result = false;
                     }
                 }
-            } catch (SQLException e) {
-                //:)
-            } catch (ClassNotFoundException e) {
+            } catch (SQLException | ClassNotFoundException e) {
                 //:)
             }
             return result;
@@ -316,31 +312,29 @@ public class ProductControl {
 
     public void addSeenToProduct(String productID) {
         try {
-            ProductTable.addSeenToProductWithID(productID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            ProductTable.getInstance().addSeenToProductWithID(productID);
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
     }
 
     public Off getOffByProductID(String productID) {
         try {
-            return OffTable.getOffByProductID(productID);
-        } catch (SQLException e) {
-            return new Off();
-        } catch (ClassNotFoundException e) {
+            return OffTable.getInstance().getOffByProductID(productID);
+        } catch (SQLException | ClassNotFoundException e) {
             return new Off();
         }
     }
 
     public ArrayList <Product> getAllComparingProducts(Property property) {
         try {
-            OffTable.removeOutDatedOffs();
-            String firstProductCategory = ProductTable.getProductByID(property.getComparingProducts(0).getID()).getCategory();
-            while (CategoryTable.getParentCategory(firstProductCategory) != null &&
-                    !CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
-                firstProductCategory = CategoryTable.getParentCategory(firstProductCategory);
+            CategoryTable categoryTable = CategoryTable.getInstance();
+
+            OffTable.getInstance().removeOutDatedOffs();
+            String firstProductCategory = ProductTable.getInstance().getProductByID(property.getComparingProducts(0).getID()).getCategory();
+            while (categoryTable.getParentCategory(firstProductCategory) != null &&
+                    !categoryTable.getParentCategory(firstProductCategory).equals("All Products"))
+                firstProductCategory = categoryTable.getParentCategory(firstProductCategory);
             ArrayList<Product> comparableProducts = convertIDsToProducts(filterOnCategory(firstProductCategory, property));
             comparableProducts.removeIf(product -> {
                 return product.getID().equals(property.getComparingProducts(0).getID()) ;
@@ -353,10 +347,12 @@ public class ProductControl {
     }
 
     //Comment Scoring
-    public int getScore(Comment comment){
+    public int getScore(Comment comment) {
         try {
-            if (ProductTable.didScore(comment.getCustomerUsername(), comment.getProductID()))
-                return ProductTable.getScore(comment.getCustomerUsername(), comment.getProductID());
+            ProductTable productTable = ProductTable.getInstance();
+
+            if (productTable.didScore(comment.getCustomerUsername(), comment.getProductID()))
+                return productTable.getScore(comment.getCustomerUsername(), comment.getProductID());
             return 0;
         } catch (SQLException | ClassNotFoundException e) {
             //:)
@@ -364,15 +360,17 @@ public class ProductControl {
         return 0;
     }
 
-    public Notification setScore(Comment comment, String username){
+    public Notification setScore(Comment comment, String username) {
         try {
-            if (ProductTable.didScore(username, comment.getProductID())){
-                ProductTable.updateScore(username, comment.getProductID(), comment.getScore());
-                ProductTable.updateProductsAvgScore(comment.getProductID());
+            ProductTable productTable = ProductTable.getInstance();
+
+            if (productTable.didScore(username, comment.getProductID())) {
+                productTable.updateScore(username, comment.getProductID(), comment.getScore());
+                productTable.updateProductsAvgScore(comment.getProductID());
                 return Notification.UPDATE_SCORE;
             }
-            ProductTable.setScore(comment.getCustomerUsername(), comment.getProductID(), comment.getScore());
-            ProductTable.updateProductsAvgScore(comment.getProductID());
+            productTable.setScore(comment.getCustomerUsername(), comment.getProductID(), comment.getScore());
+            productTable.updateProductsAvgScore(comment.getProductID());
             return Notification.SET_SCORE;
         } catch (SQLException | ClassNotFoundException e) {
             System.err.println("Error In #setScore");
@@ -383,16 +381,16 @@ public class ProductControl {
     }
     //Comment Scoring
 
-    public double getAverageScore(String productID){
+    public double getAverageScore(String productID) {
         try {
+            ProductTable productTable = ProductTable.getInstance();
+
             double averageScore = 0;
-            for (Integer score : ProductTable.getAllScores(productID)) {
+            for (Integer score : productTable.getAllScores(productID)) {
                 averageScore += score;
             }
-            return averageScore / ProductTable.getAllScores(productID).size();
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            return averageScore / productTable.getAllScores(productID).size();
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return 1;
@@ -404,18 +402,20 @@ public class ProductControl {
         String commentID;
 
         try {
+            ProductTable productTable = ProductTable.getInstance();
+
             do {
                 commentID = generateCommentID();
-            } while (ProductTable.isThereCommentByID(commentID));
+            } while (productTable.isThereCommentByID(commentID));
             comment.setCommentID(commentID);
-            ProductTable.addComment(comment);
+            productTable.addComment(comment);
 
             //Todo Approving Score Haminjori Nemishe Score Gozasht. Bas Taeid Beshe
             if(comment.getScore() != 0)
                 setScore(comment, username);
 
             return Notification.ADD_COMMENT;
-        } catch (SQLException | ClassNotFoundException e){
+        } catch (SQLException | ClassNotFoundException e) {
             System.err.println("Error In #addComment");
             e.printStackTrace();
         }
@@ -436,13 +436,15 @@ public class ProductControl {
         ArrayList<Comment> productComments = new ArrayList<>();
 
         try {
-            for (Comment comment : ProductTable.getAllApprovedCommentsOnThisProduct(productId)) {
+            ProductTable productTable = ProductTable.getInstance();
+
+            for (Comment comment : productTable.getAllApprovedCommentsOnThisProduct(productId)) {
                 comment.setScore(getScore(comment));
                 productComments.add(comment);
             }
 
             if(type != null && type.equals("Customer")) {
-                for (Comment comment : ProductTable.getAllLoggedInUserComment(username, productId)) {
+                for (Comment comment : productTable.getAllLoggedInUserComment(username, productId)) {
                     comment.setScore(getScore(comment));
                     productComments.add(comment);
                 }
@@ -462,10 +464,8 @@ public class ProductControl {
 
     public Comment getCommentByID(String commentID) {
         try {
-            return ProductTable.getCommentByID(commentID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            return ProductTable.getInstance().getCommentByID(commentID);
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
 
@@ -475,17 +475,15 @@ public class ProductControl {
     public Image getProductImageByID(String ID, int number) {
         try {
             if(doesProductHaveImage(ID)) {
-                FileInputStream fileInputStream = ProductTable.getProductImageInputStream(ID, number);
+                FileInputStream fileInputStream = ProductTable.getInstance().getProductImageInputStream(ID, number);
                 Image image = new Image(fileInputStream);
                 fileInputStream.close();
                 return image;
             }
-            FileInputStream fileInputStream = ProductTable.getProductImageInputStream("1", 1);
+            FileInputStream fileInputStream = ProductTable.getInstance().getProductImageInputStream("1", 1);
             Image image = new Image(fileInputStream);
             fileInputStream.close();
             return image;
-        } catch (FileNotFoundException e) {
-            //:)
         } catch (IOException e) {
             //:)
         }
@@ -495,7 +493,7 @@ public class ProductControl {
     public FileInputStream getProductImageFileInputStreamByID(String ID, int number) {
         try {
             String productID = doesProductHaveImage(ID) ? ID : ("" + 1);
-            return ProductTable.getProductImageInputStream(productID, number);
+            return ProductTable.getInstance().getProductImageInputStream(productID, number);
         } catch (FileNotFoundException e) {
             //:)
         }
@@ -505,7 +503,7 @@ public class ProductControl {
     public FileInputStream getEditingProductImageFileInputStreamByID(String ID, int number) {
         try {
             String productID = doesEditingProductHaveImage(ID) ? ID : ("" + 1);
-            return EditingProductTable.getEditingProductImageInputStream(productID, number);
+            return EditingProductTable.getInstance().getEditingProductImageInputStream(productID, number);
         } catch (FileNotFoundException e) {
             //:)
         }
@@ -515,17 +513,15 @@ public class ProductControl {
     public Image getOffImageByID(String offID) {
         try {
         if(doesOffHaveImage(offID)) {
-            FileInputStream fileInputStream = OffTable.getOffImageInputStream(offID);
+            FileInputStream fileInputStream = OffTable.getInstance().getOffImageInputStream(offID);
             Image image = new Image(fileInputStream);
             fileInputStream.close();
             return image;
         }
-        FileInputStream fileInputStream = OffTable.getOffImageInputStream("1");
+        FileInputStream fileInputStream = OffTable.getInstance().getOffImageInputStream("1");
         Image image = new Image(fileInputStream);
         fileInputStream.close();
         return image;
-        } catch (FileNotFoundException e) {
-            //:)
         } catch (IOException e) {
             //:)
         }
@@ -534,24 +530,22 @@ public class ProductControl {
 
     public void deleteEditingOffPicture(String offID) {
         if(doesEditingOffHaveImage(offID)) {
-            OffTable.removeEditingOffImage(offID);
+            OffTable.getInstance().removeEditingOffImage(offID);
         }
     }
 
     public Image getEditingOffImageByID(String offID) {
         try {
             if(doesEditingOffHaveImage(offID)) {
-                FileInputStream fileInputStream = OffTable.getEditingOffImageInputStream(offID);
+                FileInputStream fileInputStream = OffTable.getInstance().getEditingOffImageInputStream(offID);
                 Image image = new Image(fileInputStream);
                 fileInputStream.close();
                 return image;
             }
-            FileInputStream fileInputStream = OffTable.getOffImageInputStream("1");
+            FileInputStream fileInputStream = OffTable.getInstance().getOffImageInputStream("1");
             Image image = new Image(fileInputStream);
             fileInputStream.close();
             return image;
-        } catch (FileNotFoundException e) {
-            //:)
         } catch (IOException e) {
             //:)
         }
@@ -560,16 +554,18 @@ public class ProductControl {
 
     @Deprecated
     public File getOffImageFileByID(String offID) {
+        OffTable offTable = OffTable.getInstance();
+
         if(doesOffHaveImage(offID)) {
-            return new File(OffTable.getOffImageFilePath(offID));
+            return new File(offTable.getOffImageFilePath(offID));
         } else
-            return new File(OffTable.getOffImageFilePath("1"));
+            return new File(offTable.getOffImageFilePath("1"));
 
     }
 
     public FileInputStream getOffImageFileInputStreamByID(String offID) {
         try {
-            return OffTable.getOffImageInputStream((doesOffHaveImage(offID) ? offID : "1"));
+            return OffTable.getInstance().getOffImageInputStream((doesOffHaveImage(offID) ? offID : "1"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -577,24 +573,26 @@ public class ProductControl {
     }
 
     public boolean doesOffHaveImage(String offID) {
-        return OffTable.getOffImageFilePath(offID) != null;
+        return OffTable.getInstance().getOffImageFilePath(offID) != null;
     }
 
     public boolean doesProductHaveImage(String ID) {
-        return ProductTable.getProductImageFilePath(ID, 1) != null;
+        return ProductTable.getInstance().getProductImageFilePath(ID, 1) != null;
     }
 
     public boolean doesProductHaveImageWithNumber(String ID, int number) {
-        return ProductTable.getProductImageFilePath(ID, number) != null;
+        return ProductTable.getInstance().getProductImageFilePath(ID, number) != null;
     }
 
     public void setOffPicture(String offID, File pictureFile) {
         if(pictureFile != null) {
+            OffTable offTable = OffTable.getInstance();
+
             if(doesOffHaveImage(offID)) {
-                OffTable.removeOffImage(offID);
+                offTable.removeOffImage(offID);
             }
             try {
-                OffTable.setOffImage(offID, pictureFile);
+                offTable.setOffImage(offID, pictureFile);
             } catch (IOException e) {
                 //:)
             }
@@ -604,11 +602,13 @@ public class ProductControl {
     public void setEditingOffPicture(String offID, File pictureFile) {
         if(pictureFile != null) {
             if(!pictureFile.getPath().contains("database\\Images\\EditingOffs\\" + offID)) {
+                OffTable offTable = OffTable.getInstance();
+
                 if (doesEditingOffHaveImage(offID)) {
-                    OffTable.removeEditingOffImage(offID);
+                    offTable.removeEditingOffImage(offID);
                 }
                 try {
-                    OffTable.setEditingOffImage(offID, pictureFile);
+                    offTable.setEditingOffImage(offID, pictureFile);
                 } catch (IOException e) {
                     //:)
                 }
@@ -617,7 +617,7 @@ public class ProductControl {
     }
 
     public boolean doesEditingOffHaveImage(String offID) {
-        return OffTable.getEditingOffImageFilePath(offID) != null;
+        return OffTable.getInstance().getEditingOffImageFilePath(offID) != null;
     }
 
     public int getProductImagesNumberByID(String productID) {
@@ -639,18 +639,16 @@ public class ProductControl {
     }
 
     private boolean doesEditingProductHaveImageWithNumber(String productID, int number) {
-        return EditingProductTable.getEditingProductImageFilePath(productID, number) != null;
+        return EditingProductTable.getInstance().getEditingProductImageFilePath(productID, number) != null;
     }
 
     @Deprecated
     public TreeItem<Category> getCategoryTableRoot() {
         try {
-            TreeItem rootCategory = new TreeItem(CategoryTable.getCategoryWithName("All Products"));
+            TreeItem rootCategory = new TreeItem(CategoryTable.getInstance().getCategoryWithName("All Products"));
             setSubCategories(rootCategory);
             return rootCategory;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return null;
@@ -658,7 +656,7 @@ public class ProductControl {
 
     public void setSubCategories(TreeItem parentCategoryTreeItem) throws SQLException, ClassNotFoundException {
         Category parentCategory = (Category) parentCategoryTreeItem.getValue();
-        for (Category subCategory : CategoryTable.getSubCategories(parentCategory.getName())) {
+        for (Category subCategory : CategoryTable.getInstance().getSubCategories(parentCategory.getName())) {
             TreeItem subCategoryTreeItem = new TreeItem(subCategory);
             parentCategoryTreeItem.getChildren().add(subCategoryTreeItem);
             setSubCategories(subCategoryTreeItem);
@@ -668,7 +666,7 @@ public class ProductControl {
     public void addProductPicture(String productID, File pictureFile) {
         if(pictureFile != null) {
             try {
-                ProductTable.addImage(productID, getProductImagesNumberByID(productID) + 1, pictureFile);
+                ProductTable.getInstance().addImage(productID, getProductImagesNumberByID(productID) + 1, pictureFile);
             } catch (IOException e) {
                 //:)
             }
@@ -678,7 +676,7 @@ public class ProductControl {
     public FileOutputStream getProductPictureOutputStream(String productID, String fileExtension) {
         try {
 //            ProductTable.addImage(productID, getProductImagesNumberByID(productID) + 1, pictureFile);
-            return ProductTable.getProductImageOutputStream(productID, fileExtension, getProductImagesNumberByID(productID) + 1);
+            return ProductTable.getInstance().getProductImageOutputStream(productID, fileExtension, getProductImagesNumberByID(productID) + 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -688,7 +686,7 @@ public class ProductControl {
 
     public FileOutputStream getOffPictureOutputStream(String offID, String fileExtension) {
         try {
-            return OffTable.getOffImageOutputStream(offID, fileExtension);
+            return OffTable.getInstance().getOffImageOutputStream(offID, fileExtension);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -697,22 +695,24 @@ public class ProductControl {
     }
 
     public boolean doesEditingProductHaveImage(String ID) {
-        return EditingProductTable.getEditingProductImageFilePath(ID, 1) != null;
+        return EditingProductTable.getInstance().getEditingProductImageFilePath(ID, 1) != null;
     }
 
     public void addEditingProductPictures(String productId, ArrayList<File> productImageFiles) {
         try {
-            ArrayList<File> productNewImageFiles = EditingProductTable.copyEditingProductNewImagesInTemp(productId,productImageFiles);
+            EditingProductTable editingProductTable = EditingProductTable.getInstance();
+
+            ArrayList<File> productNewImageFiles = editingProductTable.copyEditingProductNewImagesInTemp(productId,productImageFiles);
             if(doesEditingProductHaveImage(productId)) {
                 int board = getEditingProductImagesNumberByID(productId);
                 for(int i = 0; i < board; ++i) {
-                    EditingProductTable.deleteImage(productId, (i + 1));
+                    editingProductTable.deleteImage(productId, (i + 1));
                 }
             }
             for (int i = 0; i < productNewImageFiles.size(); i++) {
-                EditingProductTable.addImage(productId, (i + 1), productNewImageFiles.get(i));
+                editingProductTable.addImage(productId, (i + 1), productNewImageFiles.get(i));
             }
-            EditingProductTable.removeEditingProductTempImages(productId);
+            editingProductTable.removeEditingProductTempImages(productId);
         } catch (IOException e) {
             //:)
         }
@@ -722,8 +722,10 @@ public class ProductControl {
         try {
             if(doesEditingProductHaveImage(productID)) {
                 int board = getEditingProductImagesNumberByID(productID);
+
+                EditingProductTable editingProductTable = EditingProductTable.getInstance();
                 for(int i = 0; i < board; ++i) {
-                    EditingProductTable.deleteImage(productID, (i + 1));
+                    editingProductTable.deleteImage(productID, (i + 1));
                 }
             }
         } catch (IOException e) {
@@ -733,7 +735,7 @@ public class ProductControl {
 
     public FileOutputStream getEditingProductPictureOutputStream(String productID, String fileExtension) {
         try {
-            return EditingProductTable.getEditingProductImageOutputStream(productID, fileExtension, getEditingProductImagesNumberByID(productID) + 1);
+            return EditingProductTable.getInstance().getEditingProductImageOutputStream(productID, fileExtension, getEditingProductImagesNumberByID(productID) + 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -744,12 +746,12 @@ public class ProductControl {
     public Image getEditingProductImage(String ID, int number) {
         try {
             if(doesEditingProductHaveImage(ID)) {
-                FileInputStream fileInputStream = EditingProductTable.getEditingProductImageInputStream(ID, number);
+                FileInputStream fileInputStream = EditingProductTable.getInstance().getEditingProductImageInputStream(ID, number);
                 Image image = new Image(fileInputStream);
                 fileInputStream.close();
                 return image;
             }
-            FileInputStream fileInputStream = EditingProductTable.getEditingProductImageInputStream("1", 1);
+            FileInputStream fileInputStream = EditingProductTable.getInstance().getEditingProductImageInputStream("1", 1);
             Image image = new Image(fileInputStream);
             fileInputStream.close();
             return image;
@@ -764,9 +766,11 @@ public class ProductControl {
         if(product.getStatus() != 3) {
             imageFiles.addAll(getProductNonEditedImageFiles(product));
         } else {
+
+            EditingProductTable editingProductTable = EditingProductTable.getInstance();
             for(int i = 0; i < getEditingProductImagesNumberByID(product.getID()); ++i) {
                 imageFiles.add(
-                        new File(EditingProductTable.getEditingProductImageFilePath(product.getID(), (i+1)))
+                        new File(editingProductTable.getEditingProductImageFilePath(product.getID(), (i+1)))
                 );
             }
         }
@@ -779,9 +783,11 @@ public class ProductControl {
 
     public ArrayList<File> getProductNonEditedImageFiles(Product product) {
         ArrayList<File> imageFiles = new ArrayList<>();
+
+        ProductTable productTable = ProductTable.getInstance();
         for(int i = 0; i < getProductImagesNumberByID(product.getID()); ++i) {
             imageFiles.add(
-                    new File(ProductTable.getProductImageFilePath(product.getID(), (i+1)))
+                    new File(productTable.getProductImageFilePath(product.getID(), (i+1)))
             );
         }
         return imageFiles;
@@ -789,7 +795,8 @@ public class ProductControl {
 
     public ArrayList<Product> getAllOffProductsByOffID(String offID, boolean isEditing) {
         try {
-            return convertIDsToProducts((!isEditing ? OffTable.getSpecificOff(offID).getProductIDs() : OffTable.getSpecificEditingOff(offID).getProductIDs()));
+            OffTable offTable = OffTable.getInstance();
+            return convertIDsToProducts((!isEditing ? offTable.getSpecificOff(offID).getProductIDs() : offTable.getSpecificEditingOff(offID).getProductIDs()));
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -798,7 +805,7 @@ public class ProductControl {
 
     public Off getOffByID(String offID) {
         try {
-            return OffTable.getSpecificOff(offID);
+            return OffTable.getInstance().getSpecificOff(offID);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -807,7 +814,7 @@ public class ProductControl {
 
     public boolean isThereOffWithID(String offID) {
         try {
-            return OffTable.isThereOffWithID(offID);
+            return OffTable.getInstance().isThereOffWithID(offID);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -816,7 +823,7 @@ public class ProductControl {
 
     public boolean isOffEditing(String offID) {
         try {
-            return OffTable.isThereEditingOffWithID(offID);
+            return OffTable.getInstance().isThereEditingOffWithID(offID);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -824,18 +831,22 @@ public class ProductControl {
     }
 
     public File getEditingOffImageFileByID(String offID) {
+
+        OffTable offTable = OffTable.getInstance();
         if(doesEditingOffHaveImage(offID)) {
-            return new File(OffTable.getEditingOffImageFilePath(offID));
+            return new File(offTable.getEditingOffImageFilePath(offID));
         } else
-            return new File(OffTable.getOffImageFilePath("1"));
+            return new File(offTable.getOffImageFilePath("1"));
     }
 
     public FileInputStream getEditingOffImageFileInputStreamByID(String offID) {
         try {
+
+            OffTable offTable = OffTable.getInstance();
             if(doesEditingOffHaveImage(offID)) {
-                return OffTable.getEditingOffImageInputStream(offID);
+                return offTable.getEditingOffImageInputStream(offID);
             } else
-                return OffTable.getOffImageInputStream("1");
+                return offTable.getOffImageInputStream("1");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -844,7 +855,7 @@ public class ProductControl {
 
     public Off getEditingOffByID(String offID) {
         try {
-            return OffTable.getSpecificEditingOff(offID);
+            return OffTable.getInstance().getSpecificEditingOff(offID);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -852,24 +863,24 @@ public class ProductControl {
     }
 
     public String getProductImageExtensionByNumber(String productID, int imageNumber) {
-        return ProductTable.getProductImageFileExtension(productID, imageNumber);
+        return ProductTable.getInstance().getProductImageFileExtension(productID, imageNumber);
     }
 
     public String getEditingProductImageExtensionByNumber(String productID, int imageNumber) {
-        return EditingProductTable.getEditingProductImageFileExtension(productID, imageNumber);
+        return EditingProductTable.getInstance().getEditingProductImageFileExtension(productID, imageNumber);
     }
 
     public String getOffImageExtensionByID(String ID) {
-        return OffTable.getOffImageExtensionByID(ID);
+        return OffTable.getInstance().getOffImageExtensionByID(ID);
     }
 
     public String getEditingOffImageExtensionByID(String ID) {
-        return OffTable.getEditingOffImageExtensionByID(ID);
+        return OffTable.getInstance().getEditingOffImageExtensionByID(ID);
     }
 
     public FileOutputStream getEditingOffPictureOutputStream(String offID, String fileExtension) {
         try {
-            return OffTable.getEditingOffImageOutputStream(offID, fileExtension);
+            return OffTable.getInstance().getEditingOffImageOutputStream(offID, fileExtension);
         } catch (IOException e) {
             e.printStackTrace();
         }

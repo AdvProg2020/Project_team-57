@@ -6,10 +6,12 @@ import java.util.Calendar;
 
 public class Database {
     private static boolean isDBInit = false;
-    private static Connection connection = null;
     private static final String localDBUrl = "jdbc:sqlite:database\\database.sqlite";
 
-    protected static Connection getConnection() throws SQLException, ClassNotFoundException {
+    private Connection connection = null;
+
+
+    protected Connection getConnection() throws SQLException, ClassNotFoundException {
         if(!isDBInit)
             initDB();
         Class.forName("org.sqlite.JDBC");
@@ -57,7 +59,7 @@ public class Database {
                     "primary key(ID)" +
                     ");");
             String sql = "INSERT INTO TimeLapse(ID, StartDate, FinishDate) VALUES(?,?,?)";
-            PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
+            PreparedStatement preparedStatement = statement.getConnection().prepareStatement(sql);
             preparedStatement.setString(1, "Ya Zahra");
             Date date = new Date(new java.util.Date(120, Calendar.MAY,21,0,0,0).getTime());
             preparedStatement.setDate(2, date);
@@ -208,7 +210,7 @@ public class Database {
                     "Features varchar(100)," +
                     "ParentCategory varchar(100));");
             String SQL = "INSERT INTO Categories(Name, Features, ParentCategory) VALUES(?, ?, ?)";
-            PreparedStatement preparedStatement = getConnection().prepareStatement(SQL);
+            PreparedStatement preparedStatement = statement.getConnection().prepareStatement(SQL);
             preparedStatement.setString(1, "All Products");
             preparedStatement.setString(2, "This category contains whole products that exist in store");
             preparedStatement.setString(3, null);

@@ -29,15 +29,17 @@ public class VendorControl extends AccountControl{
                 String productID = null;
                 while (true) {
                     productID = generateProductID();
-                    if (ProductTable.isIDFree(productID)) {
+                    if (ProductTable.getInstance().isIDFree(productID)) {
                         product.setID(productID);
                         break;
                     }
                 }
+                VendorTable vendorTable = VendorTable.getInstance();
+
                 if (product.isCountable())
-                    VendorTable.addCountableProduct(product, username);
+                    vendorTable.addCountableProduct(product, username);
                 else
-                    VendorTable.addUnCountableProduct(product, username);
+                    vendorTable.addUnCountableProduct(product, username);
 
                 addingProductNotifications.add(Notification.ADD_PRODUCT);
                 return productID;
@@ -58,7 +60,7 @@ public class VendorControl extends AccountControl{
             checkNotifications.add(Notification.EMPTY_PRODUCT_NAME);
         } if(product.getCategory() == null || product.getCategory().isEmpty()) {
             product.setCategory("All Products");
-        } if(product.getCategory() != null && !CategoryTable.isThereCategoryWithName(product.getCategory())) {
+        } if(product.getCategory() != null && !CategoryTable.getInstance().isThereCategoryWithName(product.getCategory())) {
             checkNotifications.add(Notification.INVALID_PRODUCT_CATEGORY);
         } if(product.isCountable() && product.getCount() == 0) {
             checkNotifications.add(Notification.EMPTY_PRODUCT_COUNT);
@@ -82,14 +84,16 @@ public class VendorControl extends AccountControl{
             if (editProductNotification == null) {
                 editingProduct.setStatus(3);
                 editingProduct.setSellerUserName(username);
-                ProductTable.setProductStatus(editingProduct.getID(), 3);
-                if (EditingProductTable.isIDFree(editingProduct.getID())) {
-                    EditingProductTable.addProduct(editingProduct);
+                ProductTable.getInstance().setProductStatus(editingProduct.getID(), 3);
+
+                EditingProductTable editingProductTable = EditingProductTable.getInstance();
+                if (editingProductTable.isIDFree(editingProduct.getID())) {
+                    editingProductTable.addProduct(editingProduct);
                 } else {
                     if (editingProduct.isCountable())
-                        EditingProductTable.updateCountableProduct(editingProduct);
+                        editingProductTable.updateCountableProduct(editingProduct);
                     else
-                        EditingProductTable.updateUnCountableProduct(editingProduct);
+                        editingProductTable.updateUnCountableProduct(editingProduct);
                 }
                 editProductNotification = Notification.EDIT_PRODUCT;
             }
@@ -110,7 +114,7 @@ public class VendorControl extends AccountControl{
 
         if(editingProduct.getCategory() == null || editingProduct.getCategory().isEmpty())
             editingProduct.setCategory(currentProduct.getCategory());
-        else if(editingProduct.getCategory() != null && !CategoryTable.isThereCategoryWithName(editingProduct.getCategory()))
+        else if(editingProduct.getCategory() != null && !CategoryTable.getInstance().isThereCategoryWithName(editingProduct.getCategory()))
             return Notification.INVALID_PRODUCT_CATEGORY;
 
         if(editingProduct.isCountable() && editingProduct.getCount() == 0)
@@ -140,10 +144,8 @@ public class VendorControl extends AccountControl{
 
     public boolean isThereCategoryWithName(String categoryName) {
         try {
-            return CategoryTable.isThereCategoryWithName(categoryName);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            return CategoryTable.getInstance().isThereCategoryWithName(categoryName);
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return false;
@@ -151,17 +153,16 @@ public class VendorControl extends AccountControl{
 
     public ArrayList<Off> getAllOffs(String usernameByAuth) {
         try {
-            OffTable.removeOutDatedOffs();
-            return OffTable.getVendorOffs(usernameByAuth);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            OffTable offTable = OffTable.getInstance();
+            offTable.removeOutDatedOffs();
+            return offTable.getVendorOffs(usernameByAuth);
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
     }
 
-    public Notification addOff(Off off, String username){
+    public Notification addOff(Off off, String username) {
         if (off.getOffName() == null)
             return Notification.UNCOMPLETED_OFF_NAME;
         if (off.getFinishDate() == null)
@@ -174,16 +175,15 @@ public class VendorControl extends AccountControl{
             return Notification.START_DATE_AFTER_FINISH_DATE;
         off.setVendorUsername(username);
         try {
+            OffTable offTable = OffTable.getInstance();
             do {
                 off.setOffID(setOffID());
-            } while (OffTable.isThereOffWithID(off.getOffID()));
+            } while (offTable.isThereOffWithID(off.getOffID()));
             off.setStatus(2);
 
-            OffTable.addOff(off);
+            offTable.addOff(off);
             return Notification.ADD_OFF;
-        } catch (SQLException e) {
-            return Notification.UNKNOWN_ERROR;
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
     }
@@ -201,16 +201,17 @@ public class VendorControl extends AccountControl{
     public ArrayList<Product> getNonOffProducts(String username, String... exceptions) {
         ArrayList<Product> nonOffProducts = new ArrayList<>();
         try {
-            OffTable.removeOutDatedOffs();
+            OffTable offTable = OffTable.getInstance();
+            offTable.removeOutDatedOffs();
             if(exceptions != null && exceptions.length > 0) {
                 for (String exception : exceptions) {
-                    for (String productID : OffTable.getSpecificOff(exception).getProductIDs()) {
-                        nonOffProducts.add(ProductTable.getProductByID(productID));
+                    for (String productID : offTable.getSpecificOff(exception).getProductIDs()) {
+                        nonOffProducts.add(ProductTable.getInstance().getProductByID(productID));
                     }
                 }
             }
-            for (Product product : VendorTable.getProductsWithUsername(username)) {
-                if(!OffTable.isThereProductInOffIgnoreStatus(product.getID()) && product.getStatus() != 2)
+            for (Product product : VendorTable.getInstance().getProductsWithUsername(username)) {
+                if(!offTable.isThereProductInOffIgnoreStatus(product.getID()) && product.getStatus() != 2)
                     nonOffProducts.add(product);
             }
         } catch (SQLException | ClassNotFoundException e) {
@@ -221,10 +222,8 @@ public class VendorControl extends AccountControl{
 
     public ArrayList<Log> getAllVendorLogs(String username) {
         try {
-            return LogTable.getAllVendorLogs(username);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            return LogTable.getInstance().getAllVendorLogs(username);
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
@@ -233,12 +232,10 @@ public class VendorControl extends AccountControl{
     public ArrayList<Account> getProductBuyers(String productID) {
         ArrayList<Account> customers = new ArrayList<>();
         try {
-            for (String account : LogTable.getAllCustomerUsernamesForProduct(productID)) {
-                customers.add(AccountTable.getAccountByUsername(account));
+            for (String account : LogTable.getInstance().getAllCustomerUsernamesForProduct(productID)) {
+                customers.add(AccountTable.getInstance().getAccountByUsername(account));
             }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return customers;
@@ -246,10 +243,8 @@ public class VendorControl extends AccountControl{
 
     public double getMaxSale(String productID) {
         try {
-            return LogTable.getMaxSaleByID(productID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            return LogTable.getInstance().getMaxSaleByID(productID);
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return 0;
@@ -257,10 +252,8 @@ public class VendorControl extends AccountControl{
 
     public int getMaxCountOfSale(String productID) {
         try {
-            return LogTable.getMaxCountOfSaleByProductID(productID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            return LogTable.getInstance().getMaxCountOfSaleByProductID(productID);
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return 0;
@@ -268,10 +261,8 @@ public class VendorControl extends AccountControl{
 
     public double getMaxAmountOfSale(String productID) {
         try {
-            return LogTable.getMaxAmountOfSaleByProductID(productID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            return LogTable.getInstance().getMaxAmountOfSaleByProductID(productID);
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return 0;
@@ -279,11 +270,9 @@ public class VendorControl extends AccountControl{
 
     public ArrayList<Product> getAllProducts(String username) {
         try {
-            OffTable.removeOutDatedOffs();
-            return VendorTable.getProductsWithUsername(username);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            OffTable.getInstance().removeOutDatedOffs();
+            return VendorTable.getInstance().getProductsWithUsername(username);
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
@@ -302,17 +291,19 @@ public class VendorControl extends AccountControl{
         if(off.getStartDate().compareTo(off.getFinishDate()) > -1)
             return Notification.START_DATE_AFTER_FINISH_DATE;
         try {
+            OffTable offTable = OffTable.getInstance();
+
             off.setStatus(3);
             if(offImageFile != null) {
                 ProductControl.getController().setEditingOffPicture(off.getOffID(), offImageFile);
             } else {
                 ProductControl.getController().deleteEditingOffPicture(off.getOffID());
             }
-            OffTable.changeOffStatus(off.getOffID(), 3);
+            offTable.changeOffStatus(off.getOffID(), 3);
             if(ProductControl.getController().isOffEditing(off.getOffID())) {
-                OffTable.removeEditingOff(off.getOffID());
+                offTable.removeEditingOff(off.getOffID());
             }
-            OffTable.addEditingOff(off);
+            offTable.addEditingOff(off);
             return Notification.EDIT_OFF;
         } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
@@ -331,12 +322,14 @@ public class VendorControl extends AccountControl{
         if(off.getStartDate().compareTo(off.getFinishDate()) > -1)
             return Notification.START_DATE_AFTER_FINISH_DATE;
         try {
+            OffTable offTable = OffTable.getInstance();
+
             off.setStatus(3);
-            OffTable.changeOffStatus(off.getOffID(), 3);
+            offTable.changeOffStatus(off.getOffID(), 3);
             if(ProductControl.getController().isOffEditing(off.getOffID())) {
-                OffTable.removeEditingOff(off.getOffID());
+                offTable.removeEditingOff(off.getOffID());
             }
-            OffTable.addEditingOff(off);
+            offTable.addEditingOff(off);
             return Notification.EDIT_OFF;
         } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
