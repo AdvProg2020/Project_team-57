@@ -8,6 +8,7 @@ import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
 import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
+import server.model.db.AccountTable;
 import server.model.existence.Account;
 import server.model.existence.Log;
 import server.server.Response;
@@ -201,7 +202,7 @@ public class AccountHandler extends Handler {
         String username = server.getUsernameByAuth(command.getAuthToken());
         double currentMoney = accountControl.getCredit(username);
         Notification notification = Notification.LACK_BALANCE_ERROR;
-        if(currentMoney >= getDouble(command.getDatum())) {
+        if(currentMoney - getDouble(command.getDatum()) >= adminControl.getMinimumWallet()) {
             notification = doWithDraw(command.getData(1), command.getData(2), command.getData(3), command.getData(0));
             if(notification == Notification.SUCCESSFUL_TRANSACTION) {
                 notification = accountControl.getMoney(username, getDouble(command.getDatum()));
