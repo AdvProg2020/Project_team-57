@@ -87,9 +87,38 @@ public class AccountHandler extends Handler {
                 return getMinimumWallet();
             case "can purchase":
                 return canPurchase();
+            case "is online":
+                return isAccountOnline();
+            case "log out if can":
+                return logOutIfCan();
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String logOutIfCan() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if(command.getAuthToken() != null && server.getAuthTokens().containsKey(command.getAuthToken())) {
+            System.err.println("auth token deleted");
+            server.getAuthTokens().remove(command.getAuthToken());
+        }
+        return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+    }
+
+    private String isAccountOnline() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            Boolean result = false;
+            for (String auth : server.getAuthTokens().keySet()) {
+                if(server.getAuthTokens().get(auth).equals(command.getDatum())) {
+                    result = true;
+                    break;
+                }
+            }
+            Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, result);
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String canPurchase() {

@@ -101,11 +101,15 @@ public class TableViewProcessor<T> extends Processor {
     public Rectangle rightRectangle;
     public Rectangle leftRectangle;
     public ImageView logsImageView;
+    public Circle periodSpot;
     private TableViewType tableViewType;
     private T selectedItem;
     private String searchedUsername;
     private Pane tableViewPane;
     private Log selectedLog;
+
+    private static final String PERIOD_COLOR = "#c62828";
+    private static final String JUNGLE_PERIOD_COLOR = "#2e7d32";
 
     public static enum TableViewType {
         CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN),
@@ -276,11 +280,12 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private void initAccountColumns() {
-        TableColumn<T, String> usernameColumn = makeColumn("Username", "username", 0.23);
-        TableColumn<T, String> firstNameColumn = makeColumn("First Name", "firstName", 0.30);
-        TableColumn<T, String> lastNameColumn = makeColumn("Last Name", "lastName", 0.30);
+        TableColumn<T, String> usernameColumn = makeColumn("Username", "username", 0.21);
+        TableColumn<T, String> firstNameColumn = makeColumn("First Name", "firstName", 0.25);
+        TableColumn<T, String> lastNameColumn = makeColumn("Last Name", "lastName", 0.25);
         TableColumn<T, String> approvalColumn = makeColumn("Approval", "isApproved", 0.15);
-        tableView.getColumns().addAll(usernameColumn, firstNameColumn, lastNameColumn, approvalColumn);
+        TableColumn<T, String> status = makeColumn("Status", "onlineStatus", 0.12);
+        tableView.getColumns().addAll(usernameColumn, firstNameColumn, lastNameColumn, approvalColumn, status);
     }
 
     private<E> TableColumn<T, E> makeColumn(String text, String property, double sizePercentage){
@@ -411,7 +416,16 @@ public class TableViewProcessor<T> extends Processor {
         Command<Account.AccountType> command = new Command<>("modified accounts", Command.HandleType.ACCOUNT, accountType);
         Response<Account> response = client.postAndGet(command, Response.class, (Class<Account>) Account.class);
         ArrayList<Account> accounts = new ArrayList<>(response.getData());
+        for (Account account : accounts) {
+            account.setOnlineStatus(getAccountOnlineStatus(account.getUsername()));
+        }
         return accounts;
+    }
+
+    private String getAccountOnlineStatus(String username) {
+        Command<String> command = new Command<>("is online", Command.HandleType.ACCOUNT, username);
+        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+        return (response.getDatum() ? "Online" : "Offline");
     }
 
     private void initOptions() {
@@ -743,6 +757,7 @@ public class TableViewProcessor<T> extends Processor {
             }
             if(selectedItem != null) {
                 Account account = (Account)selectedItem;
+                processor.periodSpot.setFill(Color.valueOf((account.getOnlineStatus().equalsIgnoreCase("online") ? JUNGLE_PERIOD_COLOR : PERIOD_COLOR)));
                 processor.nameLabel.setText(account.getFirstName() + " " + account.getLastName());
                 processor.typeLabel.setText(account.getType());
                 processor.imageCircle.setFill

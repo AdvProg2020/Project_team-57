@@ -12,11 +12,6 @@
       <Circle fx:id="imageCircle" fill="#4db6ac" layoutX="115.0" layoutY="163.0" radius="75.0" stroke="#4db6ac" strokeType="INSIDE" strokeWidth="2.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="41.0" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4db6ac" height="10.0" layoutX="189.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="41.0" />
-      <Label fx:id="nameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="252.0" prefWidth="210.0" text="Username">
-         <font>
-            <Font name="Calibri" size="17.0" />
-         </font>
-      </Label>
       <JFXButton fx:id="showProfileButton" buttonType="RAISED" disable="true" layoutX="63.0" layoutY="321.0" onAction="#showProfile" onMouseEntered="#onMouse" onMouseExited="#outMouse" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Profile">
          <font>
             <Font size="14.0" />
@@ -32,7 +27,7 @@
             <Font size="14.0" />
          </font>
       </JFXButton>
-      <Label fx:id="typeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="273.0" prefWidth="210.0" text="Type">
+      <Label fx:id="typeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="282.0" prefWidth="210.0" text="Type">
          <font>
             <Font name="Calibri" size="17.0" />
          </font>
@@ -42,5 +37,11 @@
             <Font size="14.0" />
          </font>
       </JFXButton>
+      <Circle fx:id="periodSpot" fill="#c62828" layoutX="159.0" layoutY="225.0" radius="12.5" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+      <Label fx:id="nameLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="259.0" prefHeight="21.0" prefWidth="210.0" text="Username">
+         <font>
+            <Font name="Calibri" size="17.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

@@ -1,11 +1,14 @@
 package client.view;
 
+import client.api.Client;
+import client.api.Command;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import server.server.Response;
 
 public class Main extends Application {
     private static Stage stage;
