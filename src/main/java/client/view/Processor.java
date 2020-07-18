@@ -163,10 +163,9 @@ public abstract class Processor {
                 //Todo Checking
 
                 int newValueLength = newValue.length(), maxValueLength = Integer.toString(maxValue).length();
-
                 if (!newValue.matches("\\d+")) {
                     textField.setText(newValue.replaceAll("[^\\d]", ""));
-                } else if(newValue.matches("\\d+") && (newValueLength > maxValueLength ||
+                } else if (newValue.matches("\\d+") && (newValueLength > maxValueLength ||
                         (newValueLength == maxValueLength && newValue.compareTo(Integer.toString(maxValue)) >= 0))) {
                     textField.setText(oldValue);
                 }

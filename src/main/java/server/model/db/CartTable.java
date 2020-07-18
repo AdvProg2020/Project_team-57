@@ -141,4 +141,8 @@ public class CartTable extends Database{
         preparedStatement.setString(1, username);
         preparedStatement.execute();
     }
+
+    public static void removeMoreThanStockCartProducts() {
+
+    }
 }

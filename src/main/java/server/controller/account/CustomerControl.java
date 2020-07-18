@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class CustomerControl extends AccountControl{
     private static CustomerControl customerControl = null;
-
+    public static final Object purchaseLock = new Object();
     public static CustomerControl getController() {
         if (customerControl == null)
             customerControl = new CustomerControl();
@@ -24,6 +24,12 @@ public class CustomerControl extends AccountControl{
         try {
             DiscountTable.removeOutDatedDiscounts();
             OffTable.removeOutDatedOffs();
+            ArrayList<Product> cartProducts = CartTable.getAllCartWithUsername(username);
+            for (Product cartProduct : cartProducts) {
+                Product stockProduct = ProductTable.getProductByID(cartProduct.getID());
+                if(cartProduct.getCount() > stockProduct.getCount() || cartProduct.getAmount() > stockProduct.getAmount())
+                    CartTable.deleteCartProduct(username, cartProduct.getID());
+            }
             return CartTable.getAllCartWithUsername(username);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -128,32 +134,33 @@ public class CustomerControl extends AccountControl{
     public Notification purchase(String username, Property property)
     {
         try {
-            double initPrice = 0; double offPrice = 0; double finalPrice;
-            for (Product product : CartTable.getAllCartWithUsername(username)) {
-                if(product.getStatus() != 1)
-                    return Notification.UNAVAILABLE_CART_PRODUCT;
-                if(product.isCountable()) {
-                    if(product.getCount() > ProductTable.getProductByID(product.getID()).getCount())
-                        return Notification.CART_PRODUCT_OUT_OF_STOCK;
-                } else {
-                    if(product.getAmount() > ProductTable.getProductByID(product.getID()).getAmount())
-                        return Notification.CART_PRODUCT_OUT_OF_STOCK;
+            synchronized (purchaseLock) {
+                double initPrice = 0; double offPrice = 0; double finalPrice;
+                for (Product product : CartTable.getAllCartWithUsername(username)) {
+                    if(product.getStatus() != 1)
+                        return Notification.UNAVAILABLE_CART_PRODUCT;
+                    if(product.isCountable()) {
+                        if(product.getCount() > ProductTable.getProductByID(product.getID()).getCount())
+                            return Notification.CART_PRODUCT_OUT_OF_STOCK;
+                    } else {
+                        if(product.getAmount() > ProductTable.getProductByID(product.getID()).getAmount())
+                            return Notification.CART_PRODUCT_OUT_OF_STOCK;
+                    }
+                    if(OffTable.isThereProductInOff(product.getID())) {
+                        offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100))
+                                * product.getPrice() * product.getCount();
+                        offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100))
+                                * product.getPrice() * product.getAmount();
+                    } else {
+                        offPrice += product.getPrice() * product.getAmount();
+                        offPrice += product.getPrice() * product.getCount();
+                    }
+                    initPrice += product.getPrice() * product.getAmount();
+                    initPrice += product.getPrice() * product.getCount();
                 }
-                if(OffTable.isThereProductInOff(product.getID())) {
-                    offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100))
-                            * product.getPrice() * product.getCount();
-                    offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100))
-                            * product.getPrice() * product.getAmount();
-                } else {
-                    offPrice += product.getPrice() * product.getAmount();
-                    offPrice += product.getPrice() * product.getCount();
-                }
-                initPrice += product.getPrice() * product.getAmount();
-                initPrice += product.getPrice() * product.getCount();
+                finalPrice = calculateFinalPrice(property.hasDiscount(), property.getDiscount(), offPrice);
+                return affordability(initPrice, offPrice, finalPrice, username, property);
             }
-            finalPrice = calculateFinalPrice(property.hasDiscount(), property.getDiscount(), offPrice);
-            return affordability(initPrice, offPrice, finalPrice, username, property);
-
         } catch (SQLException e) {
             //:)
         } catch (ClassNotFoundException e) {
