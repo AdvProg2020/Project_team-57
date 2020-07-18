@@ -14,6 +14,7 @@ import server.server.Response;
 import server.server.Server;
 
 import java.io.*;
+import java.util.List;
 
 public class AccountHandler extends Handler {
     private final IOControl ioControl = IOControl.getController();
@@ -164,15 +165,57 @@ public class AccountHandler extends Handler {
     private String subtractMoney() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
         String username = server.getUsernameByAuth(command.getAuthToken());
-        Response response = new Response(accountControl.getMoney(username, getDouble(command.getDatum())));
+        double currentMoney = accountControl.getCredit(username);
+        Notification notification = Notification.LACK_BALANCE_ERROR;
+        if(currentMoney >= getDouble(command.getDatum())) {
+            notification = doWithDraw(command.getData(1), command.getData(2), command.getData(3), command.getData(0));
+            if(notification == Notification.SUCCESSFUL_TRANSACTION) {
+                notification = accountControl.getMoney(username, getDouble(command.getDatum()));
+            }
+        }
+        Response response = new Response(notification);
         return gson.toJson(response);
+    }
+
+    private Notification doWithDraw(String username, String password, String bankNumber, String moneyString) {
+        String bankAuthToken = server.getBankAuthToken(username, password);
+        if(bankAuthToken.equals("invalid username or password")) {
+            return Notification.INVALID_TRANSACTION_INFO;
+        }
+
+        String receiptID = server.getReceipt(bankAuthToken, "move", moneyString, "Fuck", Server.MARKET_BANK_ACCOUNT_NUMBER, bankNumber);
+        if(receiptID.equals("source account id is invalid")) {
+            return Notification.INVALID_TRANSACTION_INFO;
+        }
+        server.payReceipt(receiptID);
+        return Notification.SUCCESSFUL_TRANSACTION;
     }
 
     private String addMoney() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
         String username = server.getUsernameByAuth(command.getAuthToken());
-        Response response = new Response(accountControl.addMoney(username, getDouble(command.getDatum())));
+        Notification notification = doDeposit(command.getData(1), command.getData(2), command.getData(3), command.getData(0));
+        if(notification == Notification.SUCCESSFUL_TRANSACTION) {
+            notification = accountControl.addMoney(username, getDouble(command.getDatum()));
+        }
+        Response response = new Response(notification);
         return gson.toJson(response);
+    }
+
+    private Notification doDeposit(String username, String password, String bankNumber, String moneyString) {
+        String bankAuthToken = server.getBankAuthToken(username, password);
+        if(bankAuthToken.equals("invalid username or password")) {
+            return Notification.INVALID_TRANSACTION_INFO;
+        }
+
+        String receiptID = server.getReceipt(bankAuthToken, "move", moneyString, "Fuck", bankNumber, Server.MARKET_BANK_ACCOUNT_NUMBER);
+        if(receiptID.equals("dest account id is invalid")) {
+            return Notification.INVALID_TRANSACTION_INFO;
+        }
+        if(server.payReceipt(receiptID).equals("done successfully")) {
+            return Notification.SUCCESSFUL_TRANSACTION;
+        }
+        return Notification.NOT_ENOUGH_MONEY_BANK;
     }
 
     private double getDouble(String string) {
@@ -265,4 +308,5 @@ public class AccountHandler extends Handler {
         Response response = new Response(ioControl.register(account));
         return gson.toJson(response);
     }
+
 }

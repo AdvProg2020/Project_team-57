@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import notification.Notification;
+import server.model.existence.Account;
+import server.server.bank.BankAPI;
 import server.server.handler.*;
 
 import java.io.*;
@@ -22,6 +24,10 @@ public class Server {
     private Gson gson;
     private HashMap<String, String> authTokens;
     private HashMap<String, Property> relics;
+
+    public static final String MARKET_BANK_USERNAME = "boosmarket";
+    public static final String MARKET_BANK_PASSWORD = "a1234567";
+    public static final String MARKET_BANK_ACCOUNT_NUMBER = "10001";
 
     public Server() {
         try {
@@ -163,5 +169,42 @@ public class Server {
             System.err.println("Shit. Error IN Get Property");
         }
         return null;
+    }
+
+
+    //Bank Part
+    public String getBankAuthToken(String username, String password) {
+        String bankCommand = "get_token " + username + " " + password;
+        return BankAPI.getInstance().postAndGet(bankCommand);
+    }
+
+    public String getReceipt(String token, String receiptType, String moneyString, String description, String... accountIDs) {
+        String sourceID = null, destID = null;
+
+        switch (receiptType) {
+            case "deposit":
+                sourceID = "-1";
+                destID = accountIDs[0];
+                break;
+            case "withdraw":
+                sourceID = accountIDs[0];
+                destID = "-1";
+                break;
+            case "move":
+                sourceID = accountIDs[0];
+                destID = accountIDs[1];
+                break;
+            default:
+                System.err.println("Error In #getReceipt. WrongType");
+                return null;
+        }
+
+        String bankCommand = "create_receipt " + token + " " + receiptType + " " + moneyString + " " + sourceID + " " + destID + " " + description;
+        return BankAPI.getInstance().postAndGet(bankCommand);
+    }
+
+    public String payReceipt(String receiptID) {
+        String bankCommand = "pay " + receiptID;
+        return BankAPI.getInstance().postAndGet(bankCommand);
     }
 }

@@ -21,7 +21,7 @@ public class Client {
     private static final String CACHE_FOLDER_URL = "cache\\";
     private static int PORT = 53392;
     private static Client client = null;
-    private final static String HOME = "127.0.0.1";
+    private final static String IP = "127.0.0.1";
     private Socket mySocket;
     private DataOutputStream outStream;
     private DataInputStream inStream;
@@ -223,7 +223,7 @@ public class Client {
     }
 
     private void makeConnection() throws IOException {
-        mySocket = new Socket(HOME, PORT);
+        mySocket = new Socket(IP, PORT);
         inStream = new DataInputStream(new BufferedInputStream(mySocket.getInputStream()));
         outStream = new DataOutputStream(new BufferedOutputStream(mySocket.getOutputStream()));
     }

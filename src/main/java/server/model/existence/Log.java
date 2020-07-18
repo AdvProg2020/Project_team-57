@@ -83,9 +83,7 @@ public class Log {
             this.vendorUsername = vendorUsername;
             try {
                 this.productName = ProductTable.getProductByID(productID).getName();
-            } catch (SQLException e) {
-                //:)
-            } catch (ClassNotFoundException e) {
+            } catch (SQLException | ClassNotFoundException e) {
                 //:)
             }
             setQuantityStr();
@@ -98,6 +96,7 @@ public class Log {
             this.amount = product.getAmount();
             this.initPrice = product.getPrice();
             this.vendorUsername = product.getSellerUserName();
+
             if(OffTable.isThereProductInOff(product.getID())) {
                 this.offPrice = (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100)) * product.getPrice();
             } else {
@@ -105,9 +104,7 @@ public class Log {
             }
             try {
                 this.productName = ProductTable.getProductByID(productID).getName();
-            } catch (SQLException e) {
-                //:)
-            } catch (ClassNotFoundException e) {
+            } catch (SQLException | ClassNotFoundException e) {
                 //:)
             }
             setQuantityStr();

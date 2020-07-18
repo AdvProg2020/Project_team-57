@@ -189,7 +189,10 @@ public enum Notification {
     ADD_TO_CART("",null , "","" ),
     MORE_THAN_INVENTORY_UNCOUNTABLE("",null , "","" ),
     PACKET_NOTIFICATION("", null, "", ""),
-    FUCK_YOU("Fuck You", Alert.AlertType.ERROR, "MotherFucker", "You Son Of A Bitch");
+    FUCK_YOU("Fuck You", Alert.AlertType.ERROR, "MotherFucker", "You Son Of A Bitch"),
+    INVALID_TRANSACTION_INFO("Invalid Transaction Info", Alert.AlertType.ERROR, "Error", "Invalid Info"),
+    SUCCESSFUL_TRANSACTION("Transaction Successful", Alert.AlertType.INFORMATION, "Successful", "Transaction"),
+    NOT_ENOUGH_MONEY_BANK("Your Bank Account Doesn't Have Enough Money", Alert.AlertType.ERROR, "Error", "Bank Account");
 
 
     private String message;

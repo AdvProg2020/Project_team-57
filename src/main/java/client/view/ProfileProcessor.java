@@ -55,6 +55,9 @@ public class ProfileProcessor extends Processor {
     public Rectangle rightLine, rightLine1;
 
     public JFXTextField currentCreditField, additionCreditField;
+    public JFXTextField bankUsername;
+    public JFXTextField bankPassword;
+    public JFXTextField accountNumber;
     public JFXButton subButton, addButton;
 
     public JFXPasswordField oldPasswordField, newPasswordField;
@@ -164,6 +167,10 @@ public class ProfileProcessor extends Processor {
 
         if(!account.getUsername().equals(super.getUsername())) {
             profileCreditPane.getChildren().remove(addButton);
+            profileCreditPane.getChildren().remove(subButton);
+        }
+
+        if(getType().equals("Customer")) {
             profileCreditPane.getChildren().remove(subButton);
         }
 
@@ -321,7 +328,8 @@ public class ProfileProcessor extends Processor {
 
     public void addMoneyMouseClicked(MouseEvent mouseEvent) {
 //        Notification notification = accountControl.addMoney(additionCreditField.getText());
-        Command<String> command = new Command<>("add money", Command.HandleType.ACCOUNT, additionCreditField.getText());
+        Command<String> command = new Command<>("add money", Command.HandleType.ACCOUNT,
+                additionCreditField.getText(), bankUsername.getText(), bankPassword.getText(), accountNumber.getText());
         Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
         Notification notification = response.getMessage();
 
@@ -336,7 +344,8 @@ public class ProfileProcessor extends Processor {
 
     public void subtractMoneyMouseClicked(MouseEvent mouseEvent) {
 //        Notification notification = accountControl.getMoney(additionCreditField.getText());
-        Command<String> command = new Command<>("subtract money", Command.HandleType.ACCOUNT, additionCreditField.getText());
+        Command<String> command = new Command<>("subtract money", Command.HandleType.ACCOUNT,
+                additionCreditField.getText(), bankUsername.getText(), bankPassword.getText(), accountNumber.getText());
         Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
         Notification notification = response.getMessage();
 
