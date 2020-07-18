@@ -85,9 +85,18 @@ public class AccountHandler extends Handler {
                 return getWage();
             case "get minimum wallet":
                 return getMinimumWallet();
+            case "can purchase":
+                return canPurchase();
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String canPurchase() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        String username = server.getUsernameByAuth(command.getAuthToken());
+        Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, customerControl.canPurchase(username, server.getPropertyByRelic(command.getRelic())));
+        return gson.toJson(response);
     }
 
     private String getMinimumWallet() {
@@ -219,11 +228,13 @@ public class AccountHandler extends Handler {
         }
 
         String receiptID = server.getReceipt(bankAuthToken, "move", moneyString, "Fuck", Server.MARKET_BANK_ACCOUNT_NUMBER, bankNumber);
-        if(receiptID.equals("source account id is invalid")) {
+        if(receiptID.equals("dest account id is invalid")) {
             return Notification.INVALID_TRANSACTION_INFO;
         }
-        server.payReceipt(receiptID);
-        return Notification.SUCCESSFUL_TRANSACTION;
+        if(server.payReceipt(receiptID).equals("done successfully")) {
+            return Notification.SUCCESSFUL_TRANSACTION;
+        }
+        return Notification.MARKET_NOT_ENOUGH_MONEY;
     }
 
     private String addMoney() {
@@ -244,10 +255,11 @@ public class AccountHandler extends Handler {
         }
 
         String receiptID = server.getReceipt(bankAuthToken, "move", moneyString, "Fuck", bankNumber, Server.MARKET_BANK_ACCOUNT_NUMBER);
-        if(receiptID.equals("dest account id is invalid")) {
+        if(receiptID.equals("source account id is invalid")) {
             return Notification.INVALID_TRANSACTION_INFO;
         }
-        if(server.payReceipt(receiptID).equals("done successfully")) {
+        String payResult = server.payReceipt(receiptID);
+        if(payResult.equals("done successfully")) {
             return Notification.SUCCESSFUL_TRANSACTION;
         }
         return Notification.NOT_ENOUGH_MONEY_BANK;

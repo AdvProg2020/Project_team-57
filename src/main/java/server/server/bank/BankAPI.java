@@ -17,6 +17,7 @@ public class BankAPI {
     public String postAndGet(String command) {
         try {
             makeConnection();
+            inStream.readUTF();
             outStream.writeUTF(command);
             outStream.flush();
             String result = inStream.readUTF();
@@ -30,6 +31,8 @@ public class BankAPI {
     }
 
     private void closeConnection() throws IOException {
+        outStream.writeUTF("exit");
+        outStream.flush();
         inStream.close();
         outStream.close();
         mySocket.close();

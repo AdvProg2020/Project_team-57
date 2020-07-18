@@ -161,9 +161,7 @@ public class CustomerControl extends AccountControl{
                 finalPrice = calculateFinalPrice(property.hasDiscount(), property.getDiscount(), offPrice);
                 return affordability(initPrice, offPrice, finalPrice, username, property);
             }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return Notification.UNKNOWN_ERROR;
@@ -172,7 +170,7 @@ public class CustomerControl extends AccountControl{
     private Notification affordability(double initPrice, double offPrice, double finalPrice, String username, Property property) {
         try {
             Account customer = AccountTable.getAccountByUsername(username);
-            if(finalPrice > customer.getCredit())
+            if(finalPrice - customer.getCredit() > getMinimumWallet())
                 return Notification.CANT_AFFORD_CART;
             AccountTable.changeCredit(customer.getUsername(),((-1) * finalPrice));
             giveCreditToVendors(customer.getUsername());
@@ -192,9 +190,7 @@ public class CustomerControl extends AccountControl{
                 default:
                     return Notification.PURCHASED_SUCCESSFULLY;
             }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return Notification.UNKNOWN_ERROR;
@@ -217,6 +213,7 @@ public class CustomerControl extends AccountControl{
 
     private void giveCreditToVendors(String customerUsername) {
         try {
+            double wage = getWage();
             for (Product product : CartTable.getAllCartWithUsername(customerUsername)) {
                 double price = 0;
                 if(OffTable.isThereProductInOff(product.getID())) {
@@ -226,11 +223,9 @@ public class CustomerControl extends AccountControl{
                     price += product.getPrice() * product.getCount();
                     price += product.getPrice() * product.getAmount();
                 }
-                AccountTable.changeCredit(product.getSellerUserName(), price);
+                AccountTable.changeCredit(product.getSellerUserName(), price * (1 - wage / 100.00));
             }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
     }
@@ -407,4 +402,30 @@ public class CustomerControl extends AccountControl{
         return new ArrayList<>();
     }
 
+    public Boolean canPurchase(String username, Property property) {
+        try {
+            double price = 0;
+            for (Product product : CartTable.getAllCartWithUsername(username)) {
+                if(product.isOnSale()) {
+                    price += (product.getCount() + product.getAmount()) * product.getOffPrice();
+                } else {
+                    price += (product.getCount() + product.getAmount()) * product.getPrice();
+                }
+            }
+            System.err.println("Price Before : " + price);
+            if(property.hasDiscount()) {
+                double priceSubtract = price * property.getDiscount().getDiscountPercent() / 100;
+                price -= Math.min(priceSubtract, property.getDiscount().getMaxDiscount());
+            }
+            System.err.println("Price : " + price);
+            System.err.println("Has Discount : " + property.hasDiscount());
+            System.err.println("Discount : " + property.getDiscount());
+
+            return price <= (getCredit(username) - getMinimumWallet());
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }

@@ -193,7 +193,8 @@ public enum Notification {
     INVALID_TRANSACTION_INFO("Invalid Transaction Info", Alert.AlertType.ERROR, "Error", "Invalid Info"),
     SUCCESSFUL_TRANSACTION("Transaction Successful", Alert.AlertType.INFORMATION, "Successful", "Transaction"),
     NOT_ENOUGH_MONEY_BANK("Your Bank Account Doesn't Have Enough Money", Alert.AlertType.ERROR, "Error", "Bank Account"),
-    CHANGED_SUCCESSFUL("Successfully Modified", Alert.AlertType.INFORMATION, "Information", "Market Credit");
+    CHANGED_SUCCESSFUL("Successfully Modified", Alert.AlertType.INFORMATION, "Information", "Market Credit"),
+    MARKET_NOT_ENOUGH_MONEY("Market Doesn't Have Enough Money", Alert.AlertType.ERROR, "Yeah, We Can", "Ha Ha Ha Ha");
 
 
     private String message;

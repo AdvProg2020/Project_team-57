@@ -5,7 +5,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXToggleButton;
-import server.controller.account.AdminControl;
 import server.controller.account.CustomerControl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -962,20 +961,40 @@ public class ProductsProcessor extends Processor{
     private void purchase() throws IOException {
         CustomerControl customerControl = CustomerControl.getController();
 
-        if (getCartSize() == 0) {
-            new Alert(Alert.AlertType.ERROR, "Your Cart Is Empty. At Some Products First Dude :/").show();
-            return;
-        }
         setHasDiscount(selectedListCell != null);
         setDiscount((selectedListCell == null ? null : selectedListCell.getItem().getID()));
+        if(canPurchase()) {
+            if (getCartSize() == 0) {
+                new Alert(Alert.AlertType.ERROR, "Your Cart Is Empty. At Some Products First Dude :/").show();
+                return;
+            }
 
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Purchase.fxml"));
-        Parent root = fxmlLoader.load();
-        CustomerProfileProcessor customerProfileProcessor = fxmlLoader.getController();
-        customerProfileProcessor.parentProcessor = parentProcessor;
-        customerProfileProcessor.setMyStage(myStage);
-        myStage.setScene(new Scene(root));
-        myStage.setTitle("Purchase Menu");
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Purchase.fxml"));
+            Parent root = fxmlLoader.load();
+            CustomerProfileProcessor customerProfileProcessor = fxmlLoader.getController();
+            customerProfileProcessor.parentProcessor = parentProcessor;
+            customerProfileProcessor.setMyStage(myStage);
+            myStage.setScene(new Scene(root));
+            myStage.setTitle("Purchase Menu");
+        } else {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ProfileMenu.fxml"));
+            Parent root = fxmlLoader.load();
+            ProfileProcessor profileProcessor = fxmlLoader.getController();
+            profileProcessor.init(getAccountByUsername(getUsername()), "ProfileMenu");
+            profileProcessor.changeButtonBackGroundColor(profileProcessor.profileCreditButton);
+            profileProcessor.changeCenterPane("profileCreditMenu");
+            stage.setScene(new Scene(root));
+            stage.setTitle("add money for purchase");
+            addSubStage(stage);
+            stage.show();
+        }
+    }
+
+    private boolean canPurchase() {
+        Command command = new Command("can purchase", ACCOUNT);
+        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+        return response.getDatum();
     }
 
     private void setDiscount(String discountID) {
@@ -1059,10 +1078,10 @@ public class ProductsProcessor extends Processor{
 
     private void showDiscountEffect(Discount discount) {
         if(totalPriceLabel.getPrefWidth() == 157) {
-            setPriceWithDiscountLabel(calculatePriceWithDiscount(discount.getDiscountPercent()));
+            setPriceWithDiscountLabel(calculatePriceWithDiscount(discount));
             setDiscountPriceArrow();
         } else {
-            discountPriceLabel.setText(calculatePriceWithDiscount(discount.getDiscountPercent()) + " $");
+            discountPriceLabel.setText(calculatePriceWithDiscount(discount) + " $");
         }
     }
 
@@ -1104,8 +1123,9 @@ public class ProductsProcessor extends Processor{
         this.discountPriceLabel = discountPriceLabel;
     }
 
-    private double calculatePriceWithDiscount(double discountPercent) {
-        return (1 - discountPercent / 100) * Double.parseDouble(totalPriceLabel.getText().replace(" $", ""));
+    private double calculatePriceWithDiscount(Discount discount) {
+        double price1 = Double.parseDouble(totalPriceLabel.getText().replace(" $", ""));
+        return price1 - Math.min(price1 * discount.getDiscountPercent() / 100, discount.getMaxDiscount());
     }
 
     //Price Part

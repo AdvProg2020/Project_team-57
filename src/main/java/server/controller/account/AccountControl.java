@@ -442,6 +442,25 @@ public class AccountControl implements IOValidity {
         return accounts;
     }
 
+    public Double getWage() {
+        try {
+            return AccountTable.getWage();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    public Double getMinimumWallet() {
+        try {
+            return AccountTable.getMinimumWallet();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+
     //TODO(FOR MEDIA)
     /*public static class Audio {
         private static ArrayList<Audio> adminAudios;

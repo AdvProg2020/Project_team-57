@@ -235,7 +235,7 @@ public class ProfileProcessor extends Processor {
             mainPane.setBottom(subRoot);
             Pane pane = (Pane) mainPane.getBottom();
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
     }
 
