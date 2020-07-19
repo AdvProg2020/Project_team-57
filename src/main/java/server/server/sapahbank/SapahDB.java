@@ -82,7 +82,6 @@ public class SapahDB {
     }
     //Finish Init
 
-
     public static void createAccount(String accountID, String firstName, String lastName, String username, String password) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Accounts (AccountID, Username, Password, FirstName, LastName, Balance) Values (?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -223,23 +222,22 @@ public class SapahDB {
     }
 
     public static double getMoneyWithAccountID(String accountID) throws SQLException, ClassNotFoundException {
-        String command = "SELECT Balance FROM Accounts WHERE ReceiptID = ?;";
+        String command = "SELECT Balance FROM Accounts WHERE AccountID = ?;";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, accountID);
         return preparedStatement.executeQuery().getDouble("Balance");
     }
 
     public static void addMoney(String accountID, double money) throws SQLException, ClassNotFoundException {
-        String command = "UPDATE Accounts SET Money = ? WHERE AccountID = ?";
+        String command = "UPDATE Accounts SET Balance = ? WHERE AccountID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDouble(1, getMoneyWithAccountID(accountID) + money);
         preparedStatement.setString(2, accountID);
         preparedStatement.execute();
     }
 
-
     public static void subtractMoney(String accountID, double money) throws SQLException, ClassNotFoundException {
-        String command = "UPDATE Accounts SET Money = ? WHERE AccountID = ?";
+        String command = "UPDATE Accounts SET Balance = ? WHERE AccountID = ?";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setDouble(1, getMoneyWithAccountID(accountID) - money);
         preparedStatement.setString(2, accountID);

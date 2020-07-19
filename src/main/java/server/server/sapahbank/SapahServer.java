@@ -72,13 +72,26 @@ public class SapahServer {
 
         private void initFunctions() {
             functions = new HashMap<>();
-            functions.put("^create_account (\\S){1,25} (\\S){1,25} (\\S){1,16} (\\S){1,16} (\\S){1,16}$", args -> createAccount(args[0], args[1], args[2], args[3], args[4]));
-            functions.put("^get_token (\\S){1,16} (\\S){1,16}$", args -> getAuthToken(args[0], args[1]));
-            functions.put("^create_receipt (\\S){1, 20} (\\S){1,16} (\\S+) (\\S){1,16} (\\S){1,16} (\\S){1,100}$", args -> createReceipt(args[0], args[1], args[2], args[3], args[4], args[5]));
-            functions.put("^get_transactions (\\S){1, 20} (\\S){1,15}$", args -> getTransactions(args[0], args[1]));
-            functions.put("^pay (\\S){1, 15}$", args -> payReceipt(args[0]));
+            functions.put("^create_account (\\S{1,25}) (\\S{1,25}) (\\S{1,16}) (\\S{1,16}) (\\S{1,16})$", args -> createAccount(args[0], args[1], args[2], args[3], args[4]));
+            functions.put("^get_token (\\S{1,16}) (\\S{1,16})$", args -> getAuthToken(args[0], args[1]));
+            functions.put("^create_receipt (\\S{1,20}) (\\S{1,16}) (\\S+) (\\S{1,16}) (\\S{1,16}) (.{1,100})$", args -> createReceipt(args[0], args[1], args[2], args[3], args[4], args[5]));
+            functions.put("^get_transactions (\\S{1,20}) (\\S{1,15})$", args -> getTransactions(args[0], args[1]));
+            functions.put("^pay (\\S{1,15})$", args -> payReceipt(args[0]));
+            functions.put("^get_balance (\\S{1,25})$", args -> getBalance(args[0]));
         }
 
+        private String getBalance(String auth) {
+            try {
+                if(!SapahDB.isThereAuth(auth))
+                    return "token is invalid";
+                if(isAuthExpired(auth))
+                    return "token expired";
+                return "" + SapahDB.getMoneyWithAccountID(SapahDB.getAccountIDWithAuth(auth));
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return "database error";
+        }
 
         private String createAccount(String firstName, String lastName, String username, String password, String repeatPassword) {
             try {
@@ -106,7 +119,7 @@ public class SapahServer {
 
         private String getAuthToken(String username, String password) {
             try {
-                if(!SapahDB.isThereAccountWithUsername(username) || !SapahDB.getPasswordWithUsername(password).equals(password)) {
+                if(!SapahDB.isThereAccountWithUsername(username) || !SapahDB.getPasswordWithUsername(username).equals(password)) {
                     return "invalid username or password";
                 }
                 String authToken = generateRandomString(20, s -> {
@@ -122,11 +135,12 @@ public class SapahServer {
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            return "";
+            return "database error";
         }
 
         private String createReceipt(String token, String receiptType, String money, String sourceID, String destID, String description) {
             try {
+                System.err.println(token + " " + receiptType + " " + money + " " + sourceID + " " + destID + " " + description);
                 if(!receiptType.equals("deposit") && !receiptType.equals("withdraw") && !receiptType.equals("move"))
                     return "invalid receipt type";
 
@@ -166,7 +180,7 @@ public class SapahServer {
                     return false;
                 });
                 SapahDB.createReceipt(receiptID, receiptType, money, sourceID, destID, description);
-
+                return receiptID;
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -247,7 +261,7 @@ public class SapahServer {
                 if(!SapahDB.isThereReceiptWithID(receiptID))
                     return "invalid receipt id";
 
-                if(!SapahDB.isReceiptPaid(receiptID))
+                if(SapahDB.isReceiptPaid(receiptID))
                     return "receipt is paid before";
 
                 Receipt receipt = SapahDB.getReceiptWithID(receiptID);
@@ -255,7 +269,9 @@ public class SapahServer {
                 if(!receipt.getType().equals("deposit") && receipt.getMoney() > SapahDB.getMoneyWithAccountID(receipt.getSource()))
                     return "source account does not have enough money";
 
-                if(!SapahDB.isAccountIDValid(receipt.getSource()) || !SapahDB.isAccountIDValid(receipt.getDestination()))
+                if((receipt.getType().equals("deposit") && !SapahDB.isAccountIDValid(receipt.getDestination())) || receipt.getType().equals("withdraw") && !SapahDB.isAccountIDValid(receipt.getSource()))
+                    return "invalid account id";
+                if(receipt.getType().equals("move") && (!SapahDB.isAccountIDValid(receipt.getSource()) || !SapahDB.isAccountIDValid(receipt.getDestination())))
                     return "invalid account id";
 
                 switch (receipt.getType()) {
@@ -290,13 +306,22 @@ public class SapahServer {
                     for (String regex : functions.keySet()) {
                         Matcher matcher = getMatcher(regex, command);
                         if(matcher.matches()) {
+                            System.out.println("Client Asked: " + command);
                             outStream.writeUTF(functions.get(regex).apply(getMatcherSet(matcher)));
                             outStream.flush();
+                            System.out.println(new java.util.Date());
                             continue Jesus;
                         }
                     }
+                    if(command.equals("exit")) {
+                        System.out.println("Client Asked: " + command);
+                        System.out.println(new java.util.Date());
+                        break;
+                    }
                     outStream.writeUTF("invalid input");
+                    System.err.println("Client Asked: Invalid Command");
                     outStream.flush();
+                    System.out.println(new java.util.Date());
                 }
             } catch (IOException e) {
                 e.printStackTrace();
