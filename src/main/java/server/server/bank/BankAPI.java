@@ -17,7 +17,6 @@ public class BankAPI {
     public String postAndGet(String command) {
         try {
             makeConnection();
-            inStream.readUTF();
             outStream.writeUTF(command);
             outStream.flush();
             String result = inStream.readUTF();

@@ -1,4 +1,4 @@
-package server.server.sapahbank;
+package server.server.bank.sapahbank;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -23,16 +23,12 @@ interface SapahFunction {
 public class SapahServer {
     public static int SERVER_PORT;
     private ServerSocket serverSocket;
-    private ObjectMapper mapper;
-    private Gson gson;
 
     public SapahServer() {
         try {
             serverSocket = new ServerSocket(0);
             SERVER_PORT = serverSocket.getLocalPort();
             System.out.println("PORT: " + SERVER_PORT);
-            mapper = new ObjectMapper();
-            gson = new GsonBuilder().setPrettyPrinting().create();
             run();
         } catch (IOException e) {
             e.printStackTrace();
@@ -44,7 +40,7 @@ public class SapahServer {
             System.out.println("Sapah Listening...");
             Socket clientSocket = serverSocket.accept();
             System.out.println("Client Accepted");
-            new BankHandler(clientSocket, this).start();
+            new BankHandler(clientSocket).start();
         }
     }
 
@@ -58,15 +54,13 @@ public class SapahServer {
         private DataOutputStream outStream;
         private DataInputStream inStream;
         private Gson gson;
-        private SapahServer server;
         private HashMap<String, SapahFunction> functions;
 
-        public BankHandler(Socket client, SapahServer server) throws IOException {
+        public BankHandler(Socket client) throws IOException {
             this.client = client;
             this.outStream = new DataOutputStream(new BufferedOutputStream(client.getOutputStream()));
             this.inStream = new DataInputStream(new BufferedInputStream(client.getInputStream()));
             this.gson = new GsonBuilder().setPrettyPrinting().create();
-            this.server = server;
             initFunctions();
         }
 
@@ -294,7 +288,6 @@ public class SapahServer {
             }
             return "database error";
         }
-
 
         @Override
         public void run() {

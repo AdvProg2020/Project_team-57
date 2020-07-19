@@ -1,4 +1,4 @@
-package server.server.sapahbank;
+package server.server.bank.sapahbank;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

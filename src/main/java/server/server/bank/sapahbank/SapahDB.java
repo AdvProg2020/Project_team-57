@@ -1,4 +1,4 @@
-package server.server.sapahbank;
+package server.server.bank.sapahbank;
 
 import java.io.File;
 import java.sql.*;
