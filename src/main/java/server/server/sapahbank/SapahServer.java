@@ -140,7 +140,6 @@ public class SapahServer {
 
         private String createReceipt(String token, String receiptType, String money, String sourceID, String destID, String description) {
             try {
-                System.err.println(token + " " + receiptType + " " + money + " " + sourceID + " " + destID + " " + description);
                 if(!receiptType.equals("deposit") && !receiptType.equals("withdraw") && !receiptType.equals("move"))
                     return "invalid receipt type";
 
@@ -149,7 +148,7 @@ public class SapahServer {
 
                 if(!SapahDB.isThereAuth(token))
                     return "token is invalid";
-                if(receiptType.equals("withdraw") && !SapahDB.getAccountIDWithAuth(token).equals(sourceID))
+                if(!receiptType.equals("deposit") && !SapahDB.getAccountIDWithAuth(token).equals(sourceID))
                     return "token is invalid";
                 if(isAuthExpired(token))
                     return "token expired";
