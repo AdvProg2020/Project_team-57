@@ -2,6 +2,7 @@ package server.server.sapahbank;
 
 import java.io.File;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class SapahDB {
     private static boolean isDBInit = false;
@@ -159,7 +160,7 @@ public class SapahDB {
         return preparedStatement.executeQuery().getString("AccountID");
     }
 
-    public static void createReceipt(String receiptID, String token, String receiptType, String money, String sourceID, String destID, String description) throws SQLException, ClassNotFoundException {
+    public static void createReceipt(String receiptID, String receiptType, String money, String sourceID, String destID, String description) throws SQLException, ClassNotFoundException {
         String command = "INSERT INTO Receipts (ReceiptID, ReceiptType, Description, Money, SourceID, DestID, Paid) Values (?, ?, ?, ?, ?, ?, ?);";
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, receiptID);
@@ -168,7 +169,7 @@ public class SapahDB {
         preparedStatement.setDouble(4, Double.parseDouble(money));
         preparedStatement.setString(5, sourceID);
         preparedStatement.setString(6, destID);
-        preparedStatement.setBoolean(7, false));
+        preparedStatement.setBoolean(7, false);
         preparedStatement.execute();
     }
 
@@ -177,5 +178,71 @@ public class SapahDB {
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, receiptID);
         return preparedStatement.executeQuery().next();
+    }
+
+    public static Receipt getReceiptWithID(String receiptID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Receipts WHERE ReceiptID = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, receiptID);
+        return new Receipt(preparedStatement.executeQuery());
+    }
+
+    public static ArrayList<Receipt> getDestIDReceipts(String accountID) throws SQLException, ClassNotFoundException {
+        ArrayList<Receipt> receipts = new ArrayList<>();
+        String command = "SELECT * FROM Receipts WHERE DestID = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, accountID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            receipts.add(new Receipt(resultSet));
+        }
+
+        return receipts;
+    }
+
+    public static ArrayList<Receipt> getSourceIDReceipts(String accountID) throws SQLException, ClassNotFoundException {
+        ArrayList<Receipt> receipts = new ArrayList<>();
+        String command = "SELECT * FROM Receipts WHERE SourceID = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, accountID);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()) {
+            receipts.add(new Receipt(resultSet));
+        }
+
+        return receipts;
+    }
+
+    public static boolean isReceiptPaid(String receiptID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT Paid FROM Receipts WHERE ReceiptID = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, receiptID);
+        return preparedStatement.executeQuery().getBoolean("Paid");
+    }
+
+    public static double getMoneyWithAccountID(String accountID) throws SQLException, ClassNotFoundException {
+        String command = "SELECT Balance FROM Accounts WHERE ReceiptID = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, accountID);
+        return preparedStatement.executeQuery().getDouble("Balance");
+    }
+
+    public static void addMoney(String accountID, double money) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Accounts SET Money = ? WHERE AccountID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setDouble(1, getMoneyWithAccountID(accountID) + money);
+        preparedStatement.setString(2, accountID);
+        preparedStatement.execute();
+    }
+
+
+    public static void subtractMoney(String accountID, double money) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Accounts SET Money = ? WHERE AccountID = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setDouble(1, getMoneyWithAccountID(accountID) - money);
+        preparedStatement.setString(2, accountID);
+        preparedStatement.execute();
     }
 }

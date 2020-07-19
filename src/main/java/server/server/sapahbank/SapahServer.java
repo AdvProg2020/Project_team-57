@@ -75,7 +75,8 @@ public class SapahServer {
             functions.put("^create_account (\\S){1,25} (\\S){1,25} (\\S){1,16} (\\S){1,16} (\\S){1,16}$", args -> createAccount(args[0], args[1], args[2], args[3], args[4]));
             functions.put("^get_token (\\S){1,16} (\\S){1,16}$", args -> getAuthToken(args[0], args[1]));
             functions.put("^create_receipt (\\S){1, 20} (\\S){1,16} (\\S+) (\\S){1,16} (\\S){1,16} (\\S){1,100}$", args -> createReceipt(args[0], args[1], args[2], args[3], args[4], args[5]));
-
+            functions.put("^get_transactions (\\S){1, 20} (\\S){1,15}$", args -> getTransactions(args[0], args[1]));
+            functions.put("^pay (\\S){1, 15}$", args -> payReceipt(args[0]));
         }
 
 
@@ -164,7 +165,7 @@ public class SapahServer {
                     }
                     return false;
                 });
-                SapahDB.createReceipt(receiptID, token, receiptType, money, sourceID, destID, description);
+                SapahDB.createReceipt(receiptID, receiptType, money, sourceID, destID, description);
 
             } catch (SQLException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -212,15 +213,20 @@ public class SapahServer {
                 ArrayList<Receipt> receipts;
                 switch (type) {
                     case "+":
+                        receipts = SapahDB.getDestIDReceipts(SapahDB.getAccountIDWithAuth(token));
                         break;
                     case "-":
+                        receipts = SapahDB.getSourceIDReceipts(SapahDB.getAccountIDWithAuth(token));
                         break;
                     case "*":
+                        receipts = SapahDB.getSourceIDReceipts(SapahDB.getAccountIDWithAuth(token));
+                        receipts.addAll(SapahDB.getDestIDReceipts(SapahDB.getAccountIDWithAuth(token)));
                         break;
                     default:
-                        if(!SapahDB.isAccountIDValid(type))
+                        if(!SapahDB.isThereReceiptWithID(type))
                             return "invalid receipt id";
-
+                        receipts = new ArrayList<>();
+                        receipts.add(SapahDB.getReceiptWithID(type));
                 }
 
                 StringBuilder stringBuilder = new StringBuilder("");
@@ -235,6 +241,45 @@ public class SapahServer {
             }
             return "database error";
         }
+
+        private String payReceipt(String receiptID) {
+            try {
+                if(!SapahDB.isThereReceiptWithID(receiptID))
+                    return "invalid receipt id";
+
+                if(!SapahDB.isReceiptPaid(receiptID))
+                    return "receipt is paid before";
+
+                Receipt receipt = SapahDB.getReceiptWithID(receiptID);
+
+                if(!receipt.getType().equals("deposit") && receipt.getMoney() > SapahDB.getMoneyWithAccountID(receipt.getSource()))
+                    return "source account does not have enough money";
+
+                if(!SapahDB.isAccountIDValid(receipt.getSource()) || !SapahDB.isAccountIDValid(receipt.getDestination()))
+                    return "invalid account id";
+
+                switch (receipt.getType()) {
+                    case "deposit":
+                        SapahDB.addMoney(receipt.getDestination(), receipt.getMoney());
+                        break;
+                    case "withdraw":
+                        SapahDB.subtractMoney(receipt.getSource(), receipt.getMoney());
+                        break;
+                    case "move":
+                        SapahDB.addMoney(receipt.getDestination(), receipt.getMoney());
+                        SapahDB.subtractMoney(receipt.getSource(), receipt.getMoney());
+                        break;
+                    default:
+                        System.err.println("Error In Pay Receipt. #Type");
+                }
+
+                return "done successfully";
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return "database error";
+        }
+
 
         @Override
         public void run() {
