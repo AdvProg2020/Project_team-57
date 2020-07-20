@@ -444,5 +444,32 @@ public class ProductTable extends Database {
         json = new StringBuilder(json.substring(0, json.length() - 1));
         return json.toString();
     }
+
+    public static String getProductFilePath(String productID) {
+        String fileName = "database\\Files\\Products\\" + productID;
+        String[] validFileExtensions = {"jpg" , "jpeg" , "png", "bmp", "mp4", "mkv", "wmv", "exe", "pdf", "jar"};
+        for (String validFileExtension : validFileExtensions) {
+            String filePath = fileName + "." + validFileExtension;
+            if(new File(filePath).exists())
+                return filePath;
+        }
+        return null;
+    }
+
+    public static String getProductFileExtension(String productID) {
+        String fileName = "database\\Files\\Products\\" + productID;
+        String[] validFileExtensions = {"jpg" , "jpeg" , "png", "bmp", "mp4", "mkv", "wmv", "exe", "pdf", "jar"};
+        for (String validFileExtension : validFileExtensions) {
+            String filePath = fileName + "." + validFileExtension;
+            if(new File(filePath).exists())
+                return validFileExtension;
+        }
+
+        return null;
+    }
+
+    public static FileInputStream getProductFileInputStream(String productID) throws FileNotFoundException {
+        return new FileInputStream(getProductFilePath(productID));
+    }
 }
 

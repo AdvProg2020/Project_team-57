@@ -99,10 +99,26 @@ public class ProductHandler extends Handler {
                 return purchase();
             case "add product file info":
                 return addProductFileInfo();
+            case "get product file info":
+                return getProductFileInfo();
+            case "does product have file":
+                return doesProductHaveFile();
             default:
                 System.err.println("Serious Error In Product Handler");
                 return null;
         }
+    }
+
+    private String doesProductHaveFile() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, productControl.doesProductHaveFile(command.getDatum()));
+        return gson.toJson(response);
+    }
+
+    private String getProductFileInfo() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        Response<Product.ProductFileInfo> response = new Response<>(Notification.PACKET_NOTIFICATION, productControl.getProductFileInfo(command.getDatum()));
+        return gson.toJson(response);
     }
 
     private String addProductFileInfo() {

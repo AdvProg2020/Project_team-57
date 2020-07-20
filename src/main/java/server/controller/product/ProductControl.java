@@ -895,7 +895,7 @@ public class ProductControl implements RandomGenerator {
         return null;
     }
 
-    private Product.ProductFileInfo getProductFileInfo(String productID) {
+    public Product.ProductFileInfo getProductFileInfo(String productID) {
         try {
             String productFileInfoJson = ProductTable.getProductFileInfo(productID);
             return gson.fromJson(productFileInfoJson, Product.ProductFileInfo.class);
@@ -903,5 +903,22 @@ public class ProductControl implements RandomGenerator {
             e.printStackTrace();
         }
         return new Product.ProductFileInfo();
+    }
+
+    public boolean doesProductHaveFile(String productID) {
+        return ProductTable.getProductFilePath(productID) != null;
+    }
+
+    public String getProductFileExtension(String productID) {
+        return ProductTable.getProductFileExtension(productID);
+    }
+
+    public FileInputStream getProductFileInputStreamByID(String productID) {
+        try {
+            return ProductTable.getProductFileInputStream(productID);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

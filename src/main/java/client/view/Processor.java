@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import static client.api.Command.HandleType.GENERAL;
+import static client.api.Command.HandleType.PRODUCT;
 
 public abstract class Processor {
     protected static final String IMAGE_FOLDER_URL = "client\\Images\\";
@@ -359,6 +360,11 @@ public abstract class Processor {
         Response<Double> response = client.postAndGet(command, Response.class, (Class<Double>)Double.class);
         System.out.println(response.getDatum());
         return getSmoothDoubleFormat(response.getDatum());
+    }
+
+    protected boolean doesProductHaveFile(String productID) {
+        Command<String> command = new Command<>("does product have file", PRODUCT, productID);
+        return client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class).getDatum();
     }
 
 }

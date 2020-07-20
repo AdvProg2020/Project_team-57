@@ -128,13 +128,13 @@ public class PictureHandler extends Handler {
     }
 
     private void getPicture() throws IOException {
-        FileInputStream imageInputStream = null;
+        FileInputStream inputStream = null;
 
         switch (message) {
             case "get user image":
                 outStream.writeUTF("Yeah, Bitch");
                 outStream.flush();
-                imageInputStream = getUserImageInputStream();
+                inputStream = getUserImageInputStream();
                 break;
             case "get product image-1":
             case "get product image-2":
@@ -143,7 +143,7 @@ public class PictureHandler extends Handler {
             case "get product image-5":
             case "get product image-6":
                 sendExtension("product");
-                imageInputStream = getProductImageInputStream();
+                inputStream = getProductImageInputStream();
                 break;
             case "get edit product image-1":
             case "get edit product image-2":
@@ -152,29 +152,37 @@ public class PictureHandler extends Handler {
             case "get edit product image-5":
             case "get edit product image-6":
                 sendExtension("editing product");
-                imageInputStream = getEditProductImageInputStream();
+                inputStream = getEditProductImageInputStream();
                 break;
             case "get off image":
                 sendExtension("off");
-                imageInputStream = getOffImageInputStream();
+                inputStream = getOffImageInputStream();
                 break;
             case "get editing off image":
                 sendExtension("editing off");
-                imageInputStream = getEditingOffImageInputStream();
+                inputStream = getEditingOffImageInputStream();
+                break;
+            case "get product file":
+                sendExtension("product file");
+                inputStream = getProductFileInputStream();
                 break;
             default:
                 System.err.println("Serious Error In Sending ");
         }
 
         int i;
-        while ((i = imageInputStream.read()) > -1) {
+        while ((i = inputStream.read()) > -1) {
             outStream.write(i);
             outStream.flush();
         }
 
-        imageInputStream.close();
+        inputStream.close();
         outStream.close();
         System.out.println(new Date());
+    }
+
+    private FileInputStream getProductFileInputStream() {
+        return productControl.getProductFileInputStreamByID(commandParser.parseDatum(Command.class, (Class<String>)String.class));
     }
 
     private FileInputStream getEditingOffImageInputStream() {
@@ -210,6 +218,10 @@ public class PictureHandler extends Handler {
             case "editing off":
                 ID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
                 extension = productControl.getEditingOffImageExtensionByID(ID);
+                break;
+            case "product file":
+                ID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+                extension = productControl.getProductFileExtension(ID);
                 break;
             default:
                 System.err.println("Error In #sendExtension");

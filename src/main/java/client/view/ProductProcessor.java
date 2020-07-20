@@ -88,10 +88,13 @@ public class ProductProcessor extends Processor {
         downloadFileButton.setDisable(!bool);
         deleteFileButton.setDisable(!bool);
         if(((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_ADD) {
-            //TODO(Get File Info From Server);
-        } else {
-            downloadFileButton.setDisable(true);
+            ((ProductProcessor)parentProcessor).productFileInfo = getProductFileInfo(((ProductProcessor)parentProcessor).product.getID());
         }
+
+        if(((ProductProcessor)parentProcessor).menuType == ProductMenuType.VENDOR_EDIT_UNAPPROVED || ((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_ADD)
+            downloadFileButton.setDisable(true);
+
+        initFileInfo(((ProductProcessor)parentProcessor).productFileInfo);
         if(((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_ADD && ((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_EDIT) {
             fileNameField.setEditable(false);
             fileCreatorField.setEditable(false);
@@ -101,8 +104,23 @@ public class ProductProcessor extends Processor {
         }
     }
 
+    private Product.ProductFileInfo getProductFileInfo(String productID) {
+        Command<String> command = new Command<>("get product file info", Command.HandleType.PRODUCT, productID);
+        Response<Product.ProductFileInfo> response = client.postAndGet(command, Response.class, (Class<Product.ProductFileInfo>)Product.ProductFileInfo.class);
+        return response.getDatum();
+    }
+
+    private void initFileInfo(Product.ProductFileInfo productFileInfo) {
+        if(productFileInfo != null) {
+            fileNameField.setText(productFileInfo.getName());
+            fileCreatorField.setText(productFileInfo.getCreator());
+            fileExtensionComboBox.getSelectionModel().select(productFileInfo.getExtension());
+            fileDescriptionArea.setText(productFileInfo.getExtension());
+        }
+    }
+
     private void initFileExtensions() {
-        ObservableList<String> availableExtensions = FXCollections.observableArrayList("PNG", "JPEG", "JPG", "BMP", "MP4", "MKV", "WMV" ,"EXE", "PDF");
+        ObservableList<String> availableExtensions = FXCollections.observableArrayList("PNG", "JPEG", "JPG", "BMP", "MP4", "MKV", "WMV" ,"EXE", "PDF", "JAR");
         fileExtensionComboBox.getItems().addAll(availableExtensions);
     }
 
@@ -146,9 +164,13 @@ public class ProductProcessor extends Processor {
     public void downloadFile(MouseEvent mouseEvent) {
         try {
             Product product = ((ProductProcessor)parentProcessor).product;
+            if(!(((ProductProcessor)parentProcessor).menuType == ProductMenuType.ADMIN) && !(((ProductProcessor)parentProcessor).menuType == ProductMenuType.VENDOR_EDIT) && !(((ProductProcessor)parentProcessor).menuType == ProductMenuType.PRODUCTS_VENDOR) && !((((ProductProcessor)parentProcessor).menuType == ProductMenuType.PRODUCTS_CUSTOMER) && didCustomerBuyProduct(getUsername(), product.getID()))) {
+                new Alert(Alert.AlertType.ERROR, "You Cant Download This Product You Piece Of Shit").show();
+                return;
+            }
             File productFile = ((ProductProcessor)parentProcessor).productFile;
             if(productFile == null)
-                productFile = getProductFileFromServer();
+                productFile = getProductFileFromServer(product.getID());
             File productFolder = new File(DOWNLOAD_FOLDER_URL  + product.getID() + "-" + product.getName());
             productFolder.mkdirs();
             FileInputStream inputStream = new FileInputStream(productFile);
@@ -166,10 +188,14 @@ public class ProductProcessor extends Processor {
         }
     }
 
-    private File getProductFileFromServer() {
-        //TODO
-        System.out.println("TODO Download File From Server...");
-        return new File(DOWNLOAD_FOLDER_URL);
+    private boolean didCustomerBuyProduct(String username, String productID) {
+        Command<String> command = new Command<>("did customer buy", Command.HandleType.PRODUCT, productID, username);
+        return client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class).getDatum();
+    }
+
+    private File getProductFileFromServer(String productID) {
+        Command<String> command = new Command<>("get product file", Command.HandleType.PICTURE_GET, productID);
+        return client.getFile(command);
     }
 
     public void backToImageMenu(MouseEvent mouseEvent) {
@@ -518,6 +544,9 @@ public class ProductProcessor extends Processor {
             }
             processor.productImageFiles = new ArrayList<>();
             processor.imagePanelProduct = product;
+            if(menuType != ProductMenuType.VENDOR_ADD && !doesProductHaveFile(product.getID())) {
+                processor.imagePane.getChildren().remove(processor.fileButton);
+            }
             processor.getImages();
             upBorderPane.setLeft(root);
         } catch (IOException e) {
@@ -856,7 +885,6 @@ public class ProductProcessor extends Processor {
 
     protected void stopTimer() {
         if(mainTimer != null) {
-            System.out.println("Yay!!");
             mainTimer.stop();
         }
     }
