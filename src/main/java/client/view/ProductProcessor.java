@@ -50,8 +50,13 @@ import java.util.concurrent.ConcurrentMap;
 
 public class ProductProcessor extends Processor {
 
+    public ImageView fileButton;
+
     public void setMenuType(ProductMenuType menuType) {
         this.menuType = menuType;
+    }
+
+    public void openFileMenu(MouseEvent mouseEvent) {
     }
 
 //    public void similarProductsMouseClicked(MouseEvent mouseEvent) {
