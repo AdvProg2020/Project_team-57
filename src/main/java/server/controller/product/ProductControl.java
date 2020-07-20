@@ -911,13 +911,13 @@ public class ProductControl implements RandomGenerator {
     }
 
     public String getProductFileExtension(String productID) {
-        return ProductTable.getProductFileExtension(productID);
+        return getProductFileInfo(productID).getExtension().toLowerCase();
     }
 
     public FileInputStream getProductFileInputStreamByID(String productID) {
         try {
             Product.ProductFileInfo productFileInfo = getProductFileInfo(productID);
-            return ProductTable.getProductFileInputStream(productID, productFileInfo.getName(), productFileInfo.getExtension());
+            return ProductTable.getProductFileInputStream(productID, productFileInfo.getName(), productFileInfo.getExtension().toLowerCase());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

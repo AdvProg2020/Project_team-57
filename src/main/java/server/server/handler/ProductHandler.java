@@ -111,7 +111,6 @@ public class ProductHandler extends Handler {
     private String doesProductHaveFile() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
         Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, productControl.doesProductHaveFile(command.getDatum()));
-        System.err.println("Does : " + response.getDatum());
         return gson.toJson(response);
     }
 

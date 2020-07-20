@@ -91,17 +91,18 @@ public class ProductProcessor extends Processor {
             ((ProductProcessor)parentProcessor).productFileInfo = getProductFileInfo(((ProductProcessor)parentProcessor).product.getID());
         }
 
-        if(((ProductProcessor)parentProcessor).menuType == ProductMenuType.VENDOR_EDIT_UNAPPROVED || ((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_ADD)
+        if(((ProductProcessor)parentProcessor).menuType == ProductMenuType.VENDOR_EDIT_UNAPPROVED || ((ProductProcessor)parentProcessor).menuType == ProductMenuType.VENDOR_ADD)
             downloadFileButton.setDisable(true);
 
         initFileInfo(((ProductProcessor)parentProcessor).productFileInfo);
         if(((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_ADD && ((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_EDIT) {
             fileNameField.setEditable(false);
             fileCreatorField.setEditable(false);
-            fileExtensionComboBox.setEditable(false);
+            fileExtensionComboBox.setMouseTransparent(true);
             fileDescriptionArea.setEditable(false);
             optionsPane.getChildren().removeAll(deleteFileButton, addFileButton);
         }
+
     }
 
     private Product.ProductFileInfo getProductFileInfo(String productID) {
@@ -173,8 +174,9 @@ public class ProductProcessor extends Processor {
                 productFile = getProductFileFromServer(product.getID());
             File productFolder = new File(DOWNLOAD_FOLDER_URL  + product.getID() + "-" + product.getName());
             productFolder.mkdirs();
+            File download = new File(DOWNLOAD_FOLDER_URL  + product.getID() + "-" + product.getName() + "\\" + ((ProductProcessor)parentProcessor).productFileInfo.getName() + "." + ((ProductProcessor)parentProcessor).productFileInfo.getExtension().toLowerCase());
             FileInputStream inputStream = new FileInputStream(productFile);
-            FileOutputStream outputStream = new FileOutputStream(productFile);
+            FileOutputStream outputStream = new FileOutputStream(download);
             int i;
             while ( (i = inputStream.read()) > -1) {
                 outputStream.write(i);
@@ -182,6 +184,7 @@ public class ProductProcessor extends Processor {
             outputStream.flush();
             outputStream.close();
             inputStream.close();
+            productFile.delete();
             new Alert(Alert.AlertType.INFORMATION, "You Successfully Downloaded Your File Into \"Downloads\" Folder").show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -189,7 +192,7 @@ public class ProductProcessor extends Processor {
     }
 
     private boolean didCustomerBuyProduct(String username, String productID) {
-        Command<String> command = new Command<>("did customer buy", Command.HandleType.PRODUCT, productID, username);
+        Command<String> command = new Command<>("is product purchased by customer", Command.HandleType.PRODUCT, productID, username);
         return client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class).getDatum();
     }
 
@@ -200,20 +203,24 @@ public class ProductProcessor extends Processor {
 
     public void backToImageMenu(MouseEvent mouseEvent) {
         Optional<ButtonType> buttonType;
-        if(((ProductProcessor)parentProcessor).isFileAdded) {
-            if(!(fileNameField.getText().isEmpty() || fileCreatorField.getText().isEmpty() || fileExtensionComboBox.getSelectionModel().getSelectedItem() == null || fileDescriptionArea.getText().isEmpty())) {
-                buttonType = new Alert(Alert.AlertType.CONFIRMATION, "You Added One File With Name: " + fileNameField.getText() +" And Format: " + fileExtensionComboBox.getSelectionModel().getSelectedItem() + ". Do You Wish To Proceed?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if(menuType == ProductMenuType.VENDOR_ADD || menuType == ProductMenuType.VENDOR_EDIT) {
+            if(((ProductProcessor)parentProcessor).isFileAdded) {
+                if(!(fileNameField.getText().isEmpty() || fileCreatorField.getText().isEmpty() || fileExtensionComboBox.getSelectionModel().getSelectedItem() == null || fileDescriptionArea.getText().isEmpty())) {
+                    buttonType = new Alert(Alert.AlertType.CONFIRMATION, "You Added One File With Name: " + fileNameField.getText() +" And Format: " + fileExtensionComboBox.getSelectionModel().getSelectedItem() + ". Do You Wish To Proceed?", ButtonType.YES, ButtonType.NO).showAndWait();
+                } else {
+                    highlightTheEmptyField();
+                    return;
+                }
             } else {
-                highlightTheEmptyField();
-                return;
+                buttonType = new Alert(Alert.AlertType.CONFIRMATION, "You Didn't Add Any File To Your Product. Do You Wish To Proceed?", ButtonType.YES, ButtonType.NO).showAndWait();
             }
-        } else {
-            buttonType = new Alert(Alert.AlertType.CONFIRMATION, "You Didn't Add Any File To Your Product. Do You Wish To Proceed?", ButtonType.YES, ButtonType.NO).showAndWait();
-        }
-        if(buttonType.get() == ButtonType.YES) {
-            ((ProductProcessor) parentProcessor).productFileInfo = new Product.ProductFileInfo(((ProductProcessor) parentProcessor).product.getID(), fileNameField.getText(), fileCreatorField.getText(), fileExtensionComboBox.getSelectionModel().getSelectedItem(), fileDescriptionArea.getText());
+            if(buttonType.get() == ButtonType.YES) {
+                ((ProductProcessor) parentProcessor).productFileInfo = new Product.ProductFileInfo(((ProductProcessor) parentProcessor).product.getID(), fileNameField.getText(), fileCreatorField.getText(), fileExtensionComboBox.getSelectionModel().getSelectedItem(), fileDescriptionArea.getText());
+                ((ProductProcessor) parentProcessor).initImagePanel();
+            }
+        } else
             ((ProductProcessor) parentProcessor).initImagePanel();
-        }
+
     }
 
     public void removeStyle(MouseEvent mouseEvent) {
@@ -405,7 +412,6 @@ public class ProductProcessor extends Processor {
             case PRODUCTS_VENDOR:
             case ADMIN:
             case PRODUCTS:
-                System.err.println("ID : " + product.getID());
                 setComparingProduct(product.getID(), 1);
                 similarProducts = new ArrayList<>(getAllComparingProducts());
                 if(similarProducts.isEmpty()) {
@@ -545,9 +551,10 @@ public class ProductProcessor extends Processor {
             }
             processor.productImageFiles = new ArrayList<>();
             processor.imagePanelProduct = product;
-            System.err.println("Dees : " + doesProductHaveFile(product.getID()));
             if(menuType != ProductMenuType.VENDOR_ADD && !doesProductHaveFile(product.getID())) {
                 processor.imagePane.getChildren().remove(processor.fileButton);
+            } else if(menuType != ProductMenuType.VENDOR_ADD && doesProductHaveFile(product.getID())){
+                isFileAdded = true;
             }
             processor.getImages();
             upBorderPane.setLeft(root);
@@ -557,9 +564,9 @@ public class ProductProcessor extends Processor {
     }
 
     private void getImages() {
-        System.err.println("Memory Image Files : " + ((ProductProcessor)parentProcessor).memoryImageFiles);
         if(((ProductProcessor)parentProcessor).memoryImageFiles != null && !((ProductProcessor)parentProcessor).memoryImageFiles.isEmpty()) {
             productImageFiles = ((ProductProcessor)parentProcessor).memoryImageFiles;
+            updateImages();
         } else {
             switch (((ProductProcessor)parentProcessor).menuType) {
                 case VENDOR_EDIT:
@@ -567,19 +574,15 @@ public class ProductProcessor extends Processor {
                     break;
                 case ADMIN:
                     if(((ProductProcessor)parentProcessor).isNonEdited) {
-                        System.err.println("Dele Dakete");
                         productImageFiles = getProductNonEditedImageFiles(imagePanelProduct);
                     }
                     else {
-                        System.err.println("Inje");
                         productImageFiles = getProductImageFiles(imagePanelProduct);
                     }
                     break;
                 default:
                     productImageFiles = getProductNonEditedImageFiles(imagePanelProduct);
             }
-            System.err.println("Product Image Files : " + productImageFiles);
-            System.err.println("Size: " + productImageFiles.size());
             updateImages();
         }
 
@@ -592,7 +595,6 @@ public class ProductProcessor extends Processor {
         Command<String> integerCommand = new Command<>("get edit product image count", Command.HandleType.PRODUCT, product.getID());
         Response<Integer> integerResponse = client.postAndGet(integerCommand, Response.class, (Class<Integer>)Integer.class);
         int bound = integerResponse.getDatum();
-        System.err.println("Bound : " + bound);
         for (int i = 0; i < bound; i++) {
             Command<String> command = new Command<>("get edit product image-" + (i + 1), Command.HandleType.PICTURE_GET, product.getID());
             imageFiles.add(client.getFile(command));
@@ -605,7 +607,6 @@ public class ProductProcessor extends Processor {
         Command<String> integerCommand = new Command<>("get product image count", Command.HandleType.PRODUCT, product.getID());
         Response<Integer> integerResponse = client.postAndGet(integerCommand, Response.class, (Class<Integer>)Integer.class);
         int bound = integerResponse.getDatum();
-        System.err.println("Bound : " + bound);
         for (int i = 0; i < bound; i++) {
             Command<String> command = new Command<>("get product image-" + (i + 1), Command.HandleType.PICTURE_GET, product.getID());
             imageFiles.add(client.getFile(command));

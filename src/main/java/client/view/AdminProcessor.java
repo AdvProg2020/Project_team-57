@@ -314,7 +314,6 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 newStage.setResizable(false);
                 newStage.setTitle("Manage Cash Stats");
                 parentProcessor.addSubStage(newStage);
-                System.out.println(Main.class.getResourceAsStream("Statistics Icon.png"));
                 newStage.getIcons().add(new Image(Main.class.getResourceAsStream("Statistics Icon.png")));
                 newStage.show();
             } catch (IOException e) {

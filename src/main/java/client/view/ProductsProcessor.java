@@ -533,8 +533,6 @@ public class ProductsProcessor extends Processor{
 
     private Pane getAdminProductRequestsProductPane(int productNumberInPage) throws IOException {
         Product product = allProducts.get(pageNumber * pageSize + productNumberInPage);
-        System.err.println("Product Name : " + product.getName());
-        System.err.println("ProductID : " + product.getID());
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductPaneAdmin.fxml"));
         Pane productPane = loader.load();
         ProductsProcessor paneProcessor = loader.getController();
@@ -697,10 +695,6 @@ public class ProductsProcessor extends Processor{
                 Parent root = loader.load();
                 ProductProcessor processor = loader.getController();
                 processor.setParentProcessor(parentProcessor);
-
-                System.err.println("Product Name : " + product.getName());
-                System.err.println("ProductID : " + product.getID());
-
                 processor.initProcessor(product, productMenuType);
                 Stage stage = new Stage();
                 stage.setScene(new Scene(root));

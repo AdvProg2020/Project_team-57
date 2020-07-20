@@ -223,7 +223,6 @@ public class SaleHandler extends Handler {
     }
 
     private String addOff() {
-        System.err.println("Hadeaghal ta inja oomad");
         Command<Off> command = commandParser.parseToCommand(Command.class, (Class<Off>)Off.class);
         if(canChangeOff(command.getDatum().getOffID(), command.getAuthToken())) {
             Off off = command.getDatum();

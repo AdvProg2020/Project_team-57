@@ -118,7 +118,6 @@ public class Log {
 
         private void setQuantityStr() {
             quantityStr = "" + (isCountable ? Integer.toString(count) : getSmoothDoubleFormat(amount));
-            System.out.println("quantityStr: " + quantityStr);
         }
 
         public ProductOfLog() {

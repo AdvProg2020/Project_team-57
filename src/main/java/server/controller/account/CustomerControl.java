@@ -412,14 +412,10 @@ public class CustomerControl extends AccountControl{
                     price += (product.getCount() + product.getAmount()) * product.getPrice();
                 }
             }
-            System.err.println("Price Before : " + price);
             if(property.hasDiscount()) {
                 double priceSubtract = price * property.getDiscount().getDiscountPercent() / 100;
                 price -= Math.min(priceSubtract, property.getDiscount().getMaxDiscount());
             }
-            System.err.println("Price : " + price);
-            System.err.println("Has Discount : " + property.hasDiscount());
-            System.err.println("Discount : " + property.getDiscount());
 
             return price <= (getCredit(username) - getMinimumWallet());
         } catch (SQLException | ClassNotFoundException e) {

@@ -455,18 +455,6 @@ public class ProductTable extends Database {
         return file.list() != null && file.list().length != 0;
     }
 
-    public static String getProductFileExtension(String productID) {
-        String fileName = "database\\Files\\Products\\" + productID;
-        String[] validFileExtensions = {"jpg" , "jpeg" , "png", "bmp", "mp4", "mkv", "wmv", "exe", "pdf", "jar"};
-        for (String validFileExtension : validFileExtensions) {
-            String filePath = fileName + "." + validFileExtension;
-            if(new File(filePath).exists())
-                return validFileExtension;
-        }
-
-        return null;
-    }
-
     public static FileInputStream getProductFileInputStream(String productID, String name, String extension) throws FileNotFoundException {
         return new FileInputStream(getProductFilePath(productID, name, extension));
     }
