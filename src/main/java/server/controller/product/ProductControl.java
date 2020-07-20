@@ -341,6 +341,7 @@ public class ProductControl implements RandomGenerator {
     public ArrayList <Product> getAllComparingProducts(Property property) {
         try {
             OffTable.removeOutDatedOffs();
+            System.err.println("Comparing Product : " + property.getComparingProducts(0));
             String firstProductCategory = ProductTable.getProductByID(property.getComparingProducts(0).getID()).getCategory();
             while (CategoryTable.getParentCategory(firstProductCategory) != null &&
                     !CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
@@ -906,7 +907,7 @@ public class ProductControl implements RandomGenerator {
     }
 
     public boolean doesProductHaveFile(String productID) {
-        return ProductTable.getProductFilePath(productID) != null;
+        return ProductTable.doesProductHaveFile(productID);
     }
 
     public String getProductFileExtension(String productID) {
@@ -915,7 +916,8 @@ public class ProductControl implements RandomGenerator {
 
     public FileInputStream getProductFileInputStreamByID(String productID) {
         try {
-            return ProductTable.getProductFileInputStream(productID);
+            Product.ProductFileInfo productFileInfo = getProductFileInfo(productID);
+            return ProductTable.getProductFileInputStream(productID, productFileInfo.getName(), productFileInfo.getExtension());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

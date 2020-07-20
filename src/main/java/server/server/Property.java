@@ -69,6 +69,7 @@ public class Property {
     public void setFirstComparingProduct(String productID)
     {
         try {
+            System.err.println("ID : " + productID);
             this.comparingProducts[0] = ProductTable.getProductByID(productID);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();

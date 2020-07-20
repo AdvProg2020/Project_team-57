@@ -164,7 +164,7 @@ public class ProductProcessor extends Processor {
     public void downloadFile(MouseEvent mouseEvent) {
         try {
             Product product = ((ProductProcessor)parentProcessor).product;
-            if(!(((ProductProcessor)parentProcessor).menuType == ProductMenuType.ADMIN) && !(((ProductProcessor)parentProcessor).menuType == ProductMenuType.VENDOR_EDIT) && !(((ProductProcessor)parentProcessor).menuType == ProductMenuType.PRODUCTS_VENDOR) && !((((ProductProcessor)parentProcessor).menuType == ProductMenuType.PRODUCTS_CUSTOMER) && didCustomerBuyProduct(getUsername(), product.getID()))) {
+            if(!(((ProductProcessor)parentProcessor).menuType == ProductMenuType.VENDOR_EDIT_UNAPPROVED) && !(((ProductProcessor)parentProcessor).menuType == ProductMenuType.ADMIN) && !(((ProductProcessor)parentProcessor).menuType == ProductMenuType.VENDOR_EDIT) && !(((ProductProcessor)parentProcessor).menuType == ProductMenuType.PRODUCTS_VENDOR) && !((((ProductProcessor)parentProcessor).menuType == ProductMenuType.PRODUCTS_CUSTOMER) && didCustomerBuyProduct(getUsername(), product.getID()))) {
                 new Alert(Alert.AlertType.ERROR, "You Cant Download This Product You Piece Of Shit").show();
                 return;
             }
@@ -405,6 +405,7 @@ public class ProductProcessor extends Processor {
             case PRODUCTS_VENDOR:
             case ADMIN:
             case PRODUCTS:
+                System.err.println("ID : " + product.getID());
                 setComparingProduct(product.getID(), 1);
                 similarProducts = new ArrayList<>(getAllComparingProducts());
                 if(similarProducts.isEmpty()) {
@@ -544,6 +545,7 @@ public class ProductProcessor extends Processor {
             }
             processor.productImageFiles = new ArrayList<>();
             processor.imagePanelProduct = product;
+            System.err.println("Dees : " + doesProductHaveFile(product.getID()));
             if(menuType != ProductMenuType.VENDOR_ADD && !doesProductHaveFile(product.getID())) {
                 processor.imagePane.getChildren().remove(processor.fileButton);
             }
@@ -555,6 +557,7 @@ public class ProductProcessor extends Processor {
     }
 
     private void getImages() {
+        System.err.println("Memory Image Files : " + ((ProductProcessor)parentProcessor).memoryImageFiles);
         if(((ProductProcessor)parentProcessor).memoryImageFiles != null && !((ProductProcessor)parentProcessor).memoryImageFiles.isEmpty()) {
             productImageFiles = ((ProductProcessor)parentProcessor).memoryImageFiles;
         } else {
@@ -563,26 +566,33 @@ public class ProductProcessor extends Processor {
                     productImageFiles = getProductImageFiles(imagePanelProduct);
                     break;
                 case ADMIN:
-                    if(((ProductProcessor)parentProcessor).isNonEdited)
+                    if(((ProductProcessor)parentProcessor).isNonEdited) {
+                        System.err.println("Dele Dakete");
                         productImageFiles = getProductNonEditedImageFiles(imagePanelProduct);
-                    else
+                    }
+                    else {
+                        System.err.println("Inje");
                         productImageFiles = getProductImageFiles(imagePanelProduct);
+                    }
                     break;
                 default:
                     productImageFiles = getProductNonEditedImageFiles(imagePanelProduct);
             }
+            System.err.println("Product Image Files : " + productImageFiles);
+            System.err.println("Size: " + productImageFiles.size());
             updateImages();
         }
 
     }
 
     public ArrayList<File> getProductImageFiles(Product product) {
-        if(product.getStatus() == 1)
+        if(product.getStatus() != 3)
             return getProductNonEditedImageFiles(product);
         ArrayList<File> imageFiles = new ArrayList<>();
         Command<String> integerCommand = new Command<>("get edit product image count", Command.HandleType.PRODUCT, product.getID());
         Response<Integer> integerResponse = client.postAndGet(integerCommand, Response.class, (Class<Integer>)Integer.class);
         int bound = integerResponse.getDatum();
+        System.err.println("Bound : " + bound);
         for (int i = 0; i < bound; i++) {
             Command<String> command = new Command<>("get edit product image-" + (i + 1), Command.HandleType.PICTURE_GET, product.getID());
             imageFiles.add(client.getFile(command));
@@ -595,6 +605,7 @@ public class ProductProcessor extends Processor {
         Command<String> integerCommand = new Command<>("get product image count", Command.HandleType.PRODUCT, product.getID());
         Response<Integer> integerResponse = client.postAndGet(integerCommand, Response.class, (Class<Integer>)Integer.class);
         int bound = integerResponse.getDatum();
+        System.err.println("Bound : " + bound);
         for (int i = 0; i < bound; i++) {
             Command<String> command = new Command<>("get product image-" + (i + 1), Command.HandleType.PICTURE_GET, product.getID());
             imageFiles.add(client.getFile(command));

@@ -37,7 +37,6 @@ public class ProductHandler extends Handler {
         switch (message) {
             case "add product":
             case "edit product":
-                System.err.println("dele dakete");
                 return sendProduct(message.substring(0, message.length() - 8));
             case "get product":
             case "get editing product":
@@ -112,6 +111,7 @@ public class ProductHandler extends Handler {
     private String doesProductHaveFile() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
         Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, productControl.doesProductHaveFile(command.getDatum()));
+        System.err.println("Does : " + response.getDatum());
         return gson.toJson(response);
     }
 

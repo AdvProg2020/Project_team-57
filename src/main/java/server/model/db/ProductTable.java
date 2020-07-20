@@ -445,15 +445,14 @@ public class ProductTable extends Database {
         return json.toString();
     }
 
-    public static String getProductFilePath(String productID) {
+    public static String getProductFilePath(String productID, String productName, String fileExtension) {
+        return "database\\Files\\Products\\" + productID + "\\" + productName + "." + fileExtension;
+    }
+
+    public static boolean doesProductHaveFile(String productID) {
         String fileName = "database\\Files\\Products\\" + productID;
-        String[] validFileExtensions = {"jpg" , "jpeg" , "png", "bmp", "mp4", "mkv", "wmv", "exe", "pdf", "jar"};
-        for (String validFileExtension : validFileExtensions) {
-            String filePath = fileName + "." + validFileExtension;
-            if(new File(filePath).exists())
-                return filePath;
-        }
-        return null;
+        File file = new File(fileName);
+        return file.list() != null && file.list().length != 0;
     }
 
     public static String getProductFileExtension(String productID) {
@@ -468,8 +467,8 @@ public class ProductTable extends Database {
         return null;
     }
 
-    public static FileInputStream getProductFileInputStream(String productID) throws FileNotFoundException {
-        return new FileInputStream(getProductFilePath(productID));
+    public static FileInputStream getProductFileInputStream(String productID, String name, String extension) throws FileNotFoundException {
+        return new FileInputStream(getProductFilePath(productID, name, extension));
     }
 }
 

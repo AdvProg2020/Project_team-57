@@ -30,13 +30,12 @@ public class VendorControl extends AccountControl{
                 String productID = "p" + generateRandomNumber(7, s -> {
                     try {
                         return !ProductTable.isIDFree(s);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
+                    } catch (SQLException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                     return false;
                 });
+                product.setID(productID);
                 if (product.isCountable())
                     VendorTable.addCountableProduct(product, username);
                 else
