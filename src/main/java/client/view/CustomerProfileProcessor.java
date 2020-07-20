@@ -63,8 +63,8 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
                 name.setText(loggedInAccount.getFirstName() + " " + loggedInAccount.getLastName());
         } else {
             loggedInAccount = getLoggedInAccount();
-            //TODO(FOR MEDIA)
-            //initMusicPlayer();
+            initAudios();
+            initMusicPlayer();
             profileButton.setText(loggedInAccount.getUsername());
         }
     }
@@ -150,8 +150,6 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     }
 
     private void doThePurchase() {
-        //TODO(???)
-
         Notification notification = purchaseAndGetResult()/*CustomerControl.getController().purchase()*/;
         Optional<ButtonType> buttonType = notification.getAlert().showAndWait();
 

@@ -44,8 +44,8 @@ public class VendorProcessor extends AccountProcessor implements Initializable {
         Pane pane = (Pane) mainPane.getChildren().get(1);
         Label label = (Label) pane.getChildren().get(1);
         label.setText(loggedInAccount.getUsername());
-        //TODO(FOR MEDIA)
-        //initMusicPlayer();
+        initAudios();
+        initMusicPlayer();
     }
 
     public void showProducts() {

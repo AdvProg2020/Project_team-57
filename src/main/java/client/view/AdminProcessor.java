@@ -64,8 +64,8 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             loader.setController(this);
             mainPane.setCenter(subRoot);
             client.postAndGet(new Command("create discount added users", Command.HandleType.GENERAL), Response.class, (Class<Object>)Object.class);
-            //TODO(FOR MEDIA)
-            //initMusicPlayer();
+            initAudios();
+            initMusicPlayer();
         } else if(location.toString().contains("AdminCashStats")){
             setDoubleFields(wageField, 100.0);
             setDoubleFields(minimumWalletField, Double.MAX_VALUE);

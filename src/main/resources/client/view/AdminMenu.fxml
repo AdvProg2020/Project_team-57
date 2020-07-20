@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXProgressBar?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -72,7 +73,35 @@
                </children>
             </Pane>
             <Pane prefHeight="60.0" prefWidth="220.0" />
-            <Pane prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #ffffff;" />
+            <Pane prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #ffffff;">
+               <children>
+                  <ImageView fx:id="startMediaButton" fitHeight="40.0" fitWidth="40.0" layoutX="90.0" layoutY="15.0" onMouseClicked="#modifyPlayingMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
+                     <image>
+                        <Image url="@../Images/Icons/MediaIcons/Admin%20Start.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="nextMediaButton" fitHeight="25.0" fitWidth="25.0" layoutX="137.0" layoutY="23.0" onMouseClicked="#changeMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
+                     <image>
+                        <Image url="@../Images/Icons/MediaIcons/Admin%20Next.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="previousMediaButton" fitHeight="25.0" fitWidth="25.0" layoutX="59.0" layoutY="23.0" onMouseClicked="#changeMusic" pickOnBounds="true" preserveRatio="true" styleClass="media_button">
+                     <image>
+                        <Image url="@../Images/Icons/MediaIcons/Admin%20Previous.png" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="mediaArtistLabel" alignment="CENTER" layoutX="17.0" layoutY="59.0" prefHeight="21.0" prefWidth="187.0" text="Music Artist" wrapText="true">
+                     <font>
+                        <Font name="Calibri" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXProgressBar fx:id="mediaProgressBar" layoutX="35.0" layoutY="114.0" prefWidth="150.0" progress="0.0" style="-fx-accent: BLACK;" />
+                  <Label fx:id="mediaNameLabel" alignment="CENTER" layoutX="17.0" layoutY="81.0" prefHeight="21.0" prefWidth="187.0" text="Music Name" wrapText="true">
+                     <font>
+                        <Font name="Calibri" size="15.0" />
+                     </font>
+                  </Label>
+               </children></Pane>
             <Pane prefHeight="80.0" prefWidth="220.0" style="-fx-background-color: #ffffff;">
                <children>
                   <JFXButton fx:id="mainMenuButton" onAction="#backToMainMenu" prefHeight="80.0" prefWidth="220.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff;" styleClass="hover_button" text="Main Menu">
