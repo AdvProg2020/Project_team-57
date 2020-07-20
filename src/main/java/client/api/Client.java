@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 public class Client {
     private static final String CACHE_FOLDER_URL = "cache\\";
-    private static int PORT = 51795;
+    private static int PORT = 54564;
     private static Client client = null;
     private final static String IP = "127.0.0.1";
     private Socket mySocket;
@@ -179,6 +179,22 @@ public class Client {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public <E> void sendFile(Command<E> command, File file) {
+        try {
+            makeConnection();
+            post(command);
+            FileInputStream imageFileInputStream = new FileInputStream(file);
+            int i;
+            while ((i = imageFileInputStream.read()) > -1) {
+                outStream.write(i);
+                outStream.flush();
+            }
+            closeConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private String getFileName(String extension) {

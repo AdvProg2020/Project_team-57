@@ -58,6 +58,7 @@ public class ProductProcessor extends Processor {
     public Pane optionsPane;
     private boolean isFileAdded = false;
     private File productFile;
+    private Product.ProductFileInfo productFileInfo;
     private ArrayList<File> memoryImageFiles = null;
 
     public void setMenuType(ProductMenuType menuType) {
@@ -66,12 +67,12 @@ public class ProductProcessor extends Processor {
 
     public void openFileMenu(MouseEvent mouseEvent) {
         try {
+            this.stopTimer();
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuFiles.fxml"));
             Parent root = loader.load();
             ProductProcessor productProcessor = loader.getController();
             productProcessor.setParentProcessor(parentProcessor);
-            ((ProductProcessor)parentProcessor).subProcessors.add(productProcessor);
-            productProcessor.initFileMenu();
+            productProcessor.initFileMenu(true);
             ((ProductProcessor)parentProcessor).memoryImageFiles = productImageFiles;
             ((ProductProcessor)parentProcessor).upBorderPane.setLeft(root);
         } catch (IOException e) {
@@ -79,8 +80,9 @@ public class ProductProcessor extends Processor {
         }
     }
 
-    private void initFileMenu() {
-        initFileExtensions();
+    private void initFileMenu(boolean initFileExtension) {
+        if(initFileExtension)
+            initFileExtensions();
         boolean bool = ((ProductProcessor)parentProcessor).isFileAdded;
         addFileButton.setDisable(bool);
         downloadFileButton.setDisable(!bool);
@@ -109,6 +111,7 @@ public class ProductProcessor extends Processor {
         if(buttonType.get() == ButtonType.YES) {
             isFileAdded = false;
             ((ProductProcessor)parentProcessor).productFile = null;
+            initFileMenu(false);
         }
     }
 
@@ -120,6 +123,7 @@ public class ProductProcessor extends Processor {
             if(file != null) {
                 ((ProductProcessor)parentProcessor).productFile = file;
                 ((ProductProcessor)parentProcessor).isFileAdded = true;
+                initFileMenu(false);
             }
         } else {
             highlightTheEmptyField();
@@ -181,6 +185,7 @@ public class ProductProcessor extends Processor {
             buttonType = new Alert(Alert.AlertType.CONFIRMATION, "You Didn't Add Any File To Your Product. Do You Wish To Proceed?", ButtonType.YES, ButtonType.NO).showAndWait();
         }
         if(buttonType.get() == ButtonType.YES) {
+            ((ProductProcessor) parentProcessor).productFileInfo = new Product.ProductFileInfo(((ProductProcessor) parentProcessor).product.getID(), fileNameField.getText(), fileCreatorField.getText(), fileExtensionComboBox.getSelectionModel().getSelectedItem(), fileDescriptionArea.getText());
             ((ProductProcessor) parentProcessor).initImagePanel();
         }
     }
@@ -223,6 +228,7 @@ public class ProductProcessor extends Processor {
     private static CustomerControl customerControl = CustomerControl.getController();
 
     protected ArrayList<ProductProcessor> subProcessors;
+    protected ProductProcessor imageSubProcessor;
 
     ///Single Product Menu///
 
@@ -492,7 +498,7 @@ public class ProductProcessor extends Processor {
             Parent root = loader.load();
             ProductProcessor processor = loader.getController();
             processor.setParentProcessor(this);
-            subProcessors.add(processor);
+            imageSubProcessor = processor;
             processor.imageNumberLabel.setText("1");
             processor.changePictureTimer = -1;
             processor.mainTimer = new AnimationTimer() {
@@ -766,11 +772,11 @@ public class ProductProcessor extends Processor {
     private void sendProduct() {
         Product product = null;
 
-        ProductProcessor imageProcessor = subProcessors.get(0);
+        ProductProcessor imageProcessor = imageSubProcessor;
         imageProcessor.stopTimer();
         //sep
-        ProductProcessor generalFieldProcessor = subProcessors.get(1);
-        ProductProcessor specialFieldProcessor = subProcessors.get(3);
+        ProductProcessor generalFieldProcessor = subProcessors.get(0);
+        ProductProcessor specialFieldProcessor = subProcessors.get(2);
 
         List<Notification> productNotifications = new ArrayList<>();
 
@@ -779,7 +785,7 @@ public class ProductProcessor extends Processor {
                 product = this.product;
                 specialFieldProcessor.setProductSpecialFields(product);
                 generalFieldProcessor.setProductGeneralFields(product);
-                productNotifications = sendProduct(imageProcessor.productImageFiles, "add", product);
+                productNotifications = sendProduct(imageProcessor.productImageFiles, "add", productFile, product);
                 break;
             case VENDOR_EDIT:
                 product = new Product();
@@ -788,7 +794,7 @@ public class ProductProcessor extends Processor {
                 product.setSellerUserName(product.getSellerUserName());
                 specialFieldProcessor.setProductSpecialFields(product);
                 generalFieldProcessor.setProductGeneralFields(product);
-                productNotifications = sendProduct(imageProcessor.productImageFiles, "edit", this.product, product);
+                productNotifications = sendProduct(imageProcessor.productImageFiles, "edit", productFile,this.product, product);
                 break;
         }
 
@@ -814,7 +820,7 @@ public class ProductProcessor extends Processor {
 
     }
 
-    private List<Notification> sendProduct(ArrayList<File> productImageFiles, String sendType, Product... products) {
+    private List<Notification> sendProduct(ArrayList<File> productImageFiles, String sendType, File productFile, Product... products) {
         Command<Product> productCommand = new Command<>(sendType + " product", Command.HandleType.PRODUCT, products);
         Response<Notification> productResponse = client.postAndGet(productCommand, Response.class, (Class<Notification>)Notification.class);
 
@@ -822,8 +828,11 @@ public class ProductProcessor extends Processor {
             Command<String> command = new Command<>("delete editing product pictures", Command.HandleType.PRODUCT, product.getID());
             client.postAndGet(command, Response.class, (Class<Object>)Object.class);
         } else {
-            if(productResponse.getData().size() != 0 && productResponse.getDatum() == Notification.ADD_PRODUCT)
+            if(productResponse.getData().size() != 0 && productResponse.getDatum() == Notification.ADD_PRODUCT) {
+                System.err.println("Yes Here");
+                System.err.println("productID: " + productResponse.getAdditionalString());
                 product.setID(productResponse.getAdditionalString());
+            }
         }
 
         for (File productImageFile : productImageFiles) {
@@ -833,11 +842,23 @@ public class ProductProcessor extends Processor {
             client.sendImage(imageCommand, productImageFile);
         }
 
+        if(isFileAdded) {
+            if(sendType.equals("add"))
+                productFileInfo.setProductID(product.getID());
+            Command<Product.ProductFileInfo> command = new Command<>(sendType + " product file info", Command.HandleType.PRODUCT, productFileInfo);
+            client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+            String[] splitPath = productFile.getPath().split("\\.");
+            String fileExtension = splitPath[splitPath.length - 1];
+            Command<String> fileCommand = new Command<>(sendType + " product file", Command.HandleType.PICTURE_SEND, product.getID(), fileExtension);
+            client.sendFile(fileCommand, productFile);
+        }
+
         return productResponse.getData();
     }
 
     protected void stopTimer() {
         if(mainTimer != null) {
+            System.out.println("Yay!!");
             mainTimer.stop();
         }
     }
@@ -857,7 +878,7 @@ public class ProductProcessor extends Processor {
         Alert alert = removeProductByID(product.getID(), "product").getMessage().getAlert();
         Optional<ButtonType> optionalButtonType = alert.showAndWait();
         if(optionalButtonType.get() == ButtonType.OK) {
-            ProductProcessor imageProcessor = subProcessors.get(0);
+            ProductProcessor imageProcessor = imageSubProcessor;
             imageProcessor.stopTimer();
             closeSubStage(myStage, parentProcessor);
             updateParentProcessor();

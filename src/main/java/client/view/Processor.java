@@ -61,7 +61,10 @@ public abstract class Processor {
         this.myStage = myStage;
         this.myStage.setOnCloseRequest(event -> {
             if(this instanceof ProductProcessor) {
-                ((ProductProcessor) this).subProcessors.get(0).stopTimer();
+                for(ProductProcessor productProcessor : ((ProductProcessor) this).subProcessors) {
+                    productProcessor.stopTimer();
+                }
+                ((ProductProcessor) this).imageSubProcessor.stopTimer();
             }
             for (Stage subStage : this.subStages) {
                 subStage.close();
@@ -77,7 +80,10 @@ public abstract class Processor {
         if(parentProcessor == null){
             subStage.setOnCloseRequest(event -> {
                 if(this instanceof ProductProcessor) {
-                    ((ProductProcessor) this).subProcessors.get(0).stopTimer();
+                    for(ProductProcessor productProcessor : ((ProductProcessor) this).subProcessors) {
+                        productProcessor.stopTimer();
+                    }
+                    ((ProductProcessor) this).imageSubProcessor.stopTimer();
                 }
                 this.removeSubStage(subStage);
             });

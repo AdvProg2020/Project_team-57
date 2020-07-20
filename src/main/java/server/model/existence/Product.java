@@ -232,4 +232,63 @@ public class Product {
     public void setCategoryFeatures(String categoryFeatures) {
         this.categoryFeatures = categoryFeatures;
     }
+
+    public static class ProductFileInfo {
+        private String productID;
+        private String name;
+        private String creator;
+        private String extension;
+        private String description;
+
+        public ProductFileInfo(String productID, String name, String creator, String extension, String description) {
+            this.productID = productID;
+            this.name = name;
+            this.creator = creator;
+            this.extension = extension;
+            this.description = description;
+        }
+
+        public ProductFileInfo() {
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getCreator() {
+            return creator;
+        }
+
+        public void setCreator(String creator) {
+            this.creator = creator;
+        }
+
+        public String getExtension() {
+            return extension;
+        }
+
+        public void setExtension(String extension) {
+            this.extension = extension;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getProductID() {
+            return productID;
+        }
+
+        public void setProductID(String productID) {
+            this.productID = productID;
+        }
+    }
 }

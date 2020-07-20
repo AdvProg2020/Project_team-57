@@ -96,10 +96,21 @@ public class ProductHandler extends Handler {
                 return getCartSize();
             case "purchase":
                 return purchase();
+            case "add product file info":
+                return addProductFileInfo();
             default:
                 System.err.println("Serious Error In Product Handler");
                 return null;
         }
+    }
+
+    private String addProductFileInfo() {
+        Command<Product.ProductFileInfo> command = commandParser.parseToCommand(Command.class, (Class<Product.ProductFileInfo>)Product.ProductFileInfo.class);
+        if (!server.getAuthTokens().containsKey(command.getAuthToken()) || accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Vendor")) {
+            productControl.addProductFileInfo(command.getDatum().getProductID(), gson.toJson(command.getDatum()));
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String purchase() {
@@ -295,13 +306,16 @@ public class ProductHandler extends Handler {
     }
 
     private String sendProduct(String sendType) {
+        System.err.println(1);
         Command<Product> command = commandParser.parseToCommand(Command.class, (Class<Product>)Product.class);
 
         if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            System.err.println(2);
             String username = server.getUsernameByAuth(command.getAuthToken()), productID = null;
             ArrayList<Notification> notifications = new ArrayList<>();
             switch (sendType) {
                 case "add":
+                    System.err.println(3);
                     Product product = command.getDatum();
                     productID = vendorControl.addProduct(product, notifications, username);
                     break;
@@ -321,6 +335,7 @@ public class ProductHandler extends Handler {
             Notification[] notificationsArray = notifications.toArray(new Notification[0]);
             Response<Notification> response = new Response<>(Notification.PACKET_NOTIFICATION, notificationsArray);
             response.setAdditionalString(productID);
+            System.err.println("ProductID: " + productID);
             return gson.toJson(response);
         } else {
             return gson.toJson(HACK_RESPONSE);

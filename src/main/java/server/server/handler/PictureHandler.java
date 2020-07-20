@@ -40,26 +40,29 @@ public class PictureHandler extends Handler {
 
     private void savePicture() {
         try {
-            FileOutputStream pictureOutputStream = null;
+            FileOutputStream outputStream = null;
 
             switch (message) {
                 case "send user image":
                     List<String> data = commandParser.parseData(Command.class, (Class<String>)String.class);
                     String username = data.get(0), pictureExtension = data.get(1);
-                    pictureOutputStream = accountControl.getAccountPictureOutputStream(username, pictureExtension);
+                    outputStream = accountControl.getAccountPictureOutputStream(username, pictureExtension);
                     break;
                     //Todo
                 case "add product image":
-                    pictureOutputStream = getProductImageOutputStream("add");
+                    outputStream = getProductImageOutputStream("add");
                     break;
                 case "edit product image":
-                    pictureOutputStream = getProductImageOutputStream("edit");
+                    outputStream = getProductImageOutputStream("edit");
                     break;
                 case "send off image":
-                    pictureOutputStream = getOffImageOutputStream("add");
+                    outputStream = getOffImageOutputStream("add");
                     break;
                 case "send editing off image":
-                    pictureOutputStream = getOffImageOutputStream("edit");
+                    outputStream = getOffImageOutputStream("edit");
+                    break;
+                case "add product file":
+                    outputStream = getProductFileOutPutStream("add");
                     break;
                 default:
                     System.err.println("Error In #sendPicture");
@@ -68,15 +71,30 @@ public class PictureHandler extends Handler {
 
             int i;
             while ( (i = inStream.read()) > -1) {
-                pictureOutputStream.write(i);
+                outputStream.write(i);
             }
 
-            pictureOutputStream.flush();
-            pictureOutputStream.close();
+            outputStream.flush();
+            outputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private FileOutputStream getProductFileOutPutStream(String type) {
+        List<String> data = commandParser.parseData(Command.class, (Class<String>)String.class);
+        String productID = data.get(0), fileExtension = data.get(1);
+
+        switch (type) {
+            case "add":
+                return productControl.getProductFileOutputStream(productID, fileExtension);
+            case "edit":
+                //TODO
+                default:
+                System.err.println("Error In #getProductImageOutputStream");
+                return null;
+        }
     }
 
     private FileOutputStream getOffImageOutputStream(String type) {

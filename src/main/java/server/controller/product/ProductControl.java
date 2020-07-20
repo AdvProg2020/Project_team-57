@@ -1,5 +1,7 @@
 package server.controller.product;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import server.model.db.*;
@@ -19,6 +21,7 @@ import java.util.Collections;
 
 public class ProductControl implements RandomGenerator {
     private static ProductControl productControl = null;
+    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Deprecated
     public void setProductOffPrice(Product product) throws SQLException, ClassNotFoundException {
@@ -874,4 +877,31 @@ public class ProductControl implements RandomGenerator {
         return null;
     }
 
+    public void addProductFileInfo(String productID, String productFileInfoJson) {
+        try {
+            ProductTable.addProductFileInfo(productID, productFileInfoJson);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public FileOutputStream getProductFileOutputStream(String productID, String fileExtension) {
+        try {
+            Product.ProductFileInfo productFileInfo = getProductFileInfo(productID);
+            return ProductTable.getProductFileOutputStream(productID, productFileInfo.getName(), fileExtension);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Product.ProductFileInfo getProductFileInfo(String productID) {
+        try {
+            String productFileInfoJson = ProductTable.getProductFileInfo(productID);
+            return gson.fromJson(productFileInfoJson, Product.ProductFileInfo.class);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new Product.ProductFileInfo();
+    }
 }

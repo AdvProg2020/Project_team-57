@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class ProductTable extends Database {
     public static ArrayList<Product> getAllProducts() throws SQLException, ClassNotFoundException {
@@ -413,6 +414,35 @@ public class ProductTable extends Database {
             System.err.println("Error IN #getProductImageOutputStream");
             return null;
         }
+    }
+
+    public static void addProductFileInfo(String productID, String productFileInfoJson) throws IOException {
+        new File("database\\Files\\Products\\" + productID).mkdirs();
+        File file = new File("database\\Files\\Products\\" + productID + "\\Info.json" );
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write(productFileInfoJson);
+        fileWriter.flush();
+        fileWriter.close();
+    }
+
+    public static FileOutputStream getProductFileOutputStream(String productID, String fileName, String fileExtension) throws FileNotFoundException {
+        new File("database\\Files\\Products\\" + productID).mkdirs();
+        File file = new File("database\\Files\\Products\\" + productID + "\\" + fileName + "." + fileExtension);
+        return new FileOutputStream(file);
+    }
+
+    public static String getProductFileInfo(String productID) throws FileNotFoundException {
+        File file = new File("database\\Files\\Products\\" + productID + "\\Info.json");
+        Scanner fileScanner = new Scanner(file);
+        StringBuilder json = new StringBuilder();
+
+        while (fileScanner.hasNextLine()){
+            json.append(fileScanner.nextLine());
+            json.append("\n");
+        }
+
+        json = new StringBuilder(json.substring(0, json.length() - 1));
+        return json.toString();
     }
 }
 
