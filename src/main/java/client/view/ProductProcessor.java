@@ -4,7 +4,6 @@ import client.api.Command;
 import com.jfoenix.controls.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.input.KeyEvent;
 import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
 import javafx.animation.AnimationTimer;
@@ -37,16 +36,13 @@ import notification.Notification;
 import org.controlsfx.control.Rating;
 import server.server.Response;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentMap;
 
 public class ProductProcessor extends Processor {
 
@@ -62,6 +58,7 @@ public class ProductProcessor extends Processor {
     public Pane optionsPane;
     private boolean isFileAdded = false;
     private File productFile;
+    private ArrayList<File> memoryImageFiles = null;
 
     public void setMenuType(ProductMenuType menuType) {
         this.menuType = menuType;
@@ -75,6 +72,7 @@ public class ProductProcessor extends Processor {
             productProcessor.setParentProcessor(parentProcessor);
             ((ProductProcessor)parentProcessor).subProcessors.add(productProcessor);
             productProcessor.initFileMenu();
+            ((ProductProcessor)parentProcessor).memoryImageFiles = productImageFiles;
             ((ProductProcessor)parentProcessor).upBorderPane.setLeft(root);
         } catch (IOException e) {
             e.printStackTrace();
@@ -83,8 +81,14 @@ public class ProductProcessor extends Processor {
 
     private void initFileMenu() {
         initFileExtensions();
+        boolean bool = ((ProductProcessor)parentProcessor).isFileAdded;
+        addFileButton.setDisable(bool);
+        downloadFileButton.setDisable(!bool);
+        deleteFileButton.setDisable(!bool);
         if(((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_ADD) {
             //TODO(Get File Info From Server);
+        } else {
+            downloadFileButton.setDisable(true);
         }
         if(((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_ADD && ((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_EDIT) {
             fileNameField.setEditable(false);
@@ -101,16 +105,99 @@ public class ProductProcessor extends Processor {
     }
 
     public void deleteFile(MouseEvent mouseEvent) {
+        Optional<ButtonType> buttonType = new Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Delete File That Just Uploaded?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if(buttonType.get() == ButtonType.YES) {
+            isFileAdded = false;
+            ((ProductProcessor)parentProcessor).productFile = null;
+        }
     }
 
     public void uploadFile(MouseEvent mouseEvent) {
+        if(!(fileNameField.getText().isEmpty() || fileCreatorField.getText().isEmpty() || fileExtensionComboBox.getSelectionModel().getSelectedItem() == null || fileDescriptionArea.getText().isEmpty())){
+            HashMap<String, String> availableFileExtensions = new HashMap<>();
+            availableFileExtensions.put(fileExtensionComboBox.getSelectionModel().getSelectedItem() + " Files", "*." + fileExtensionComboBox.getSelectionModel().getSelectedItem());
+            File file = getFileChooser(availableFileExtensions).showOpenDialog(null);
+            if(file != null) {
+                ((ProductProcessor)parentProcessor).productFile = file;
+                ((ProductProcessor)parentProcessor).isFileAdded = true;
+            }
+        } else {
+            highlightTheEmptyField();
+        }
     }
 
+    private void highlightTheEmptyField() {
+        if(fileNameField.getText().isEmpty())
+            fileNameField.setStyle(errorTextFieldStyle);
+        if(fileCreatorField.getText().isEmpty())
+            fileCreatorField.setStyle(errorTextFieldStyle);
+        if(fileDescriptionArea.getText().isEmpty())
+            fileDescriptionArea.setStyle(errorTextFieldStyle);
+        if(fileExtensionComboBox.getSelectionModel().getSelectedItem() == null)
+            fileExtensionComboBox.setStyle(errorTextFieldStyle);
+
+    }
+
+
     public void downloadFile(MouseEvent mouseEvent) {
+        try {
+            Product product = ((ProductProcessor)parentProcessor).product;
+            File productFile = ((ProductProcessor)parentProcessor).productFile;
+            if(productFile == null)
+                productFile = getProductFileFromServer();
+            File productFolder = new File(DOWNLOAD_FOLDER_URL  + product.getID() + "-" + product.getName());
+            productFolder.mkdirs();
+            FileInputStream inputStream = new FileInputStream(productFile);
+            FileOutputStream outputStream = new FileOutputStream(productFile);
+            int i;
+            while ( (i = inputStream.read()) > -1) {
+                outputStream.write(i);
+            }
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+            new Alert(Alert.AlertType.INFORMATION, "You Successfully Downloaded Your File Into \"Downloads\" Folder").show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private File getProductFileFromServer() {
+        //TODO
+        System.out.println("TODO Download File From Server...");
+        return new File(DOWNLOAD_FOLDER_URL);
     }
 
     public void backToImageMenu(MouseEvent mouseEvent) {
-        ((ProductProcessor)parentProcessor).initImagePanel();
+        Optional<ButtonType> buttonType;
+        if(((ProductProcessor)parentProcessor).isFileAdded) {
+            if(!(fileNameField.getText().isEmpty() || fileCreatorField.getText().isEmpty() || fileExtensionComboBox.getSelectionModel().getSelectedItem() == null || fileDescriptionArea.getText().isEmpty())) {
+                buttonType = new Alert(Alert.AlertType.CONFIRMATION, "You Added One File With Name: " + fileNameField.getText() +" And Format: " + fileExtensionComboBox.getSelectionModel().getSelectedItem() + ". Do You Wish To Proceed?", ButtonType.YES, ButtonType.NO).showAndWait();
+            } else {
+                highlightTheEmptyField();
+                return;
+            }
+        } else {
+            buttonType = new Alert(Alert.AlertType.CONFIRMATION, "You Didn't Add Any File To Your Product. Do You Wish To Proceed?", ButtonType.YES, ButtonType.NO).showAndWait();
+        }
+        if(buttonType.get() == ButtonType.YES) {
+            ((ProductProcessor) parentProcessor).initImagePanel();
+        }
+    }
+
+    public void removeStyle(MouseEvent mouseEvent) {
+        Object source = mouseEvent.getSource();
+        if(source instanceof JFXTextField)
+            ((JFXTextField)source).setStyle(null);
+        else if(source instanceof ComboBox)
+            ((ComboBox) source).setStyle(null);
+        else if(source instanceof JFXTextArea)
+            ((JFXTextArea) source).setStyle(null);
+    }
+
+    public void fileExtensionComboBoxOnAction(ActionEvent actionEvent) {
+        ((ProductProcessor)parentProcessor).productFile = null;
+        ((ProductProcessor)parentProcessor).isFileAdded = true;
     }
 
 //    public void similarProductsMouseClicked(MouseEvent mouseEvent) {
@@ -433,20 +520,25 @@ public class ProductProcessor extends Processor {
     }
 
     private void getImages() {
-        switch (((ProductProcessor)parentProcessor).menuType) {
-            case VENDOR_EDIT:
-                productImageFiles = getProductImageFiles(imagePanelProduct);
-                break;
-            case ADMIN:
-                if(((ProductProcessor)parentProcessor).isNonEdited)
-                    productImageFiles = getProductNonEditedImageFiles(imagePanelProduct);
-                else
+        if(((ProductProcessor)parentProcessor).memoryImageFiles != null && !((ProductProcessor)parentProcessor).memoryImageFiles.isEmpty()) {
+            productImageFiles = ((ProductProcessor)parentProcessor).memoryImageFiles;
+        } else {
+            switch (((ProductProcessor)parentProcessor).menuType) {
+                case VENDOR_EDIT:
                     productImageFiles = getProductImageFiles(imagePanelProduct);
-                break;
-            default:
-                productImageFiles = getProductNonEditedImageFiles(imagePanelProduct);
+                    break;
+                case ADMIN:
+                    if(((ProductProcessor)parentProcessor).isNonEdited)
+                        productImageFiles = getProductNonEditedImageFiles(imagePanelProduct);
+                    else
+                        productImageFiles = getProductImageFiles(imagePanelProduct);
+                    break;
+                default:
+                    productImageFiles = getProductNonEditedImageFiles(imagePanelProduct);
+            }
+            updateImages();
         }
-        updateImages();
+
     }
 
     public ArrayList<File> getProductImageFiles(Product product) {
@@ -620,8 +712,14 @@ public class ProductProcessor extends Processor {
     }
 
     public void addNewImage(MouseEvent mouseEvent) {
+        HashMap<String, String> availableImageExtensions = new HashMap<>();
+        availableImageExtensions.put("JPG Files", "*.JPG");
+        availableImageExtensions.put("JPEG Files", "*.JPEG");
+        availableImageExtensions.put("PNG Files", "*.PNG");
+        availableImageExtensions.put("BMP Files", "*.BMP");
+
         if(productImageFiles.size() < 6) {
-            File pictureFile = getImageChooser().showOpenDialog(null);
+            File pictureFile = getFileChooser(availableImageExtensions).showOpenDialog(null);
             if (pictureFile != null) {
                 productImageFiles.add(pictureFile);
                 imageNumberLabel.setText("1");
@@ -633,7 +731,13 @@ public class ProductProcessor extends Processor {
     }
 
     public void editImage(MouseEvent mouseEvent) {
-        File pictureFile = getImageChooser().showOpenDialog(null);
+        HashMap<String, String> availableImageExtensions = new HashMap<>();
+        availableImageExtensions.put("JPG Files", "*.JPG");
+        availableImageExtensions.put("JPEG Files", "*.JPEG");
+        availableImageExtensions.put("PNG Files", "*.PNG");
+        availableImageExtensions.put("BMP Files", "*.BMP");
+
+        File pictureFile = getFileChooser(availableImageExtensions).showOpenDialog(null);
         if(pictureFile != null) {
             int number = Integer.parseInt(imageNumberLabel.getText());
             productImageFiles.remove(number - 1);
@@ -643,20 +747,13 @@ public class ProductProcessor extends Processor {
         }
     }
 
-    private FileChooser getImageChooser() {
-        FileChooser pictureChooser = new FileChooser();
-
-        FileChooser.ExtensionFilter jpgExtensionFilter = new FileChooser.ExtensionFilter("JPG Files", "*.JPG");
-        FileChooser.ExtensionFilter jpegExtensionFilter = new FileChooser.ExtensionFilter("JPEG Files", "*.JPEG");
-        FileChooser.ExtensionFilter pngExtensionFilter = new FileChooser.ExtensionFilter("PNG Files", "*.PNG");
-        FileChooser.ExtensionFilter bmpExtensionFilter = new FileChooser.ExtensionFilter("BMP Files", "*.BMP");
-
-        pictureChooser.getExtensionFilters().add(jpgExtensionFilter);
-        pictureChooser.getExtensionFilters().add(jpegExtensionFilter);
-        pictureChooser.getExtensionFilters().add(pngExtensionFilter);
-        pictureChooser.getExtensionFilters().add(bmpExtensionFilter);
-
-        return pictureChooser;
+    private FileChooser getFileChooser(HashMap<String, String> fileExtensionsWithDescription) {
+        FileChooser fileChooser = new FileChooser();
+        for (String description : fileExtensionsWithDescription.keySet()) {
+            FileChooser.ExtensionFilter extension = new FileChooser.ExtensionFilter(description, fileExtensionsWithDescription.get(description));
+            fileChooser.getExtensionFilters().add(extension);
+        }
+        return fileChooser;
     }
 
     public void setNonEdited(boolean nonEdited) {

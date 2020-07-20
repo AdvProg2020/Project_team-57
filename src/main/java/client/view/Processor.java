@@ -33,7 +33,8 @@ import java.util.function.Function;
 import static client.api.Command.HandleType.GENERAL;
 
 public abstract class Processor {
-    protected final String IMAGE_FOLDER_URL = "client\\Images\\";
+    protected static final String IMAGE_FOLDER_URL = "client\\Images\\";
+    protected static final String DOWNLOAD_FOLDER_URL = "Downloads\\";
     protected Stage myStage;
     protected Processor parentProcessor;
     protected ArrayList<Stage> subStages = new ArrayList<>();

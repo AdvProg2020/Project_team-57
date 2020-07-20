@@ -22,10 +22,10 @@
                   <Image url="@../Images/Icons/ProductMenu/Add%20Media.png" />
                </image>
             </ImageView>
-            <JFXTextField fx:id="fileNameField" layoutX="29.0" layoutY="28.0" promptText=" File Name" />
-            <JFXTextField fx:id="fileCreatorField" layoutX="29.0" layoutY="73.0" promptText=" File Creator" />
-            <JFXComboBox fx:id="fileExtensionComboBox" layoutX="29.0" layoutY="118.0" prefHeight="31.0" prefWidth="168.0" promptText=" File Extension" />
-            <JFXTextArea fx:id="fileDescriptionArea" layoutX="29.0" layoutY="165.0" prefHeight="174.0" prefWidth="168.0" promptText=" File Description" />
+            <JFXTextField fx:id="fileNameField" layoutX="29.0" layoutY="28.0" onMouseClicked="#removeStyle" promptText=" File Name" />
+            <JFXTextField fx:id="fileCreatorField" layoutX="29.0" layoutY="73.0" onMouseClicked="#removeStyle" promptText=" File Creator" />
+            <JFXComboBox fx:id="fileExtensionComboBox" layoutX="29.0" layoutY="118.0" onAction="#fileExtensionComboBoxOnAction" onMouseClicked="#removeStyle" prefHeight="31.0" prefWidth="168.0" promptText=" File Extension" />
+            <JFXTextArea fx:id="fileDescriptionArea" layoutX="29.0" layoutY="165.0" onMouseClicked="#removeStyle" prefHeight="132.0" prefWidth="168.0" promptText=" File Description" />
             <Pane fx:id="downloadFileButton" layoutX="233.0" layoutY="50.0" onMouseClicked="#downloadFile" onMouseEntered="#upperButtonsOnMouse" onMouseExited="#upperButtonsOutMouse" opacity="0.8" prefHeight="200.0" prefWidth="267.0" style="-fx-background-color: #fafafa; -fx-background-radius: 10 10 10 10;">
                <children>
                   <ImageView disable="true" fitHeight="100.0" fitWidth="100.0" layoutX="84.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
