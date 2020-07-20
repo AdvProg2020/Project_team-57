@@ -1,10 +1,10 @@
 package client.view;
 
 import client.api.Command;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.controls.JFXToggleButton;
+import com.jfoenix.controls.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.input.KeyEvent;
 import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
 import javafx.animation.AnimationTimer;
@@ -50,13 +50,67 @@ import java.util.concurrent.ConcurrentMap;
 
 public class ProductProcessor extends Processor {
 
+    //File Menu
     public ImageView fileButton;
+    public ImageView deleteFileButton;
+    public ImageView addFileButton;
+    public JFXTextField fileNameField;
+    public JFXTextField fileCreatorField;
+    public JFXComboBox<String> fileExtensionComboBox;
+    public JFXTextArea fileDescriptionArea;
+    public Pane downloadFileButton;
+    public Pane optionsPane;
+    private boolean isFileAdded = false;
+    private File productFile;
 
     public void setMenuType(ProductMenuType menuType) {
         this.menuType = menuType;
     }
 
     public void openFileMenu(MouseEvent mouseEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuFiles.fxml"));
+            Parent root = loader.load();
+            ProductProcessor productProcessor = loader.getController();
+            productProcessor.setParentProcessor(parentProcessor);
+            ((ProductProcessor)parentProcessor).subProcessors.add(productProcessor);
+            productProcessor.initFileMenu();
+            ((ProductProcessor)parentProcessor).upBorderPane.setLeft(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initFileMenu() {
+        initFileExtensions();
+        if(((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_ADD) {
+            //TODO(Get File Info From Server);
+        }
+        if(((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_ADD && ((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_EDIT) {
+            fileNameField.setEditable(false);
+            fileCreatorField.setEditable(false);
+            fileExtensionComboBox.setEditable(false);
+            fileDescriptionArea.setEditable(false);
+            optionsPane.getChildren().removeAll(deleteFileButton, addFileButton);
+        }
+    }
+
+    private void initFileExtensions() {
+        ObservableList<String> availableExtensions = FXCollections.observableArrayList("PNG", "JPEG", "JPG", "BMP", "MP4", "MKV", "WMV" ,"EXE", "PDF");
+        fileExtensionComboBox.getItems().addAll(availableExtensions);
+    }
+
+    public void deleteFile(MouseEvent mouseEvent) {
+    }
+
+    public void uploadFile(MouseEvent mouseEvent) {
+    }
+
+    public void downloadFile(MouseEvent mouseEvent) {
+    }
+
+    public void backToImageMenu(MouseEvent mouseEvent) {
+        ((ProductProcessor)parentProcessor).initImagePanel();
     }
 
 //    public void similarProductsMouseClicked(MouseEvent mouseEvent) {
@@ -453,15 +507,30 @@ public class ProductProcessor extends Processor {
     }
 
     public void upperButtonsOnMouse(MouseEvent mouseEvent) {
-        ImageView button = (ImageView) mouseEvent.getSource();
-        String style ="-fx-cursor: hand; -fx-opacity: 1";
-        button.setStyle(style);
+        if(mouseEvent.getSource() instanceof ImageView) {
+            ImageView button = (ImageView) mouseEvent.getSource();
+            String style ="-fx-cursor: hand; -fx-opacity: 1";
+            button.setStyle(style);
+        }
+        else if(mouseEvent.getSource() instanceof Pane) {
+            Pane button = (Pane) mouseEvent.getSource();
+            String style ="-fx-cursor: hand; -fx-opacity: 1; -fx-background-color:  #fafafa; -fx-background-radius: 10 10 10 10;";
+            button.setStyle(style);
+        }
     }
 
     public void upperButtonsOutMouse(MouseEvent mouseEvent) {
-        ImageView button = (ImageView) mouseEvent.getSource();
-        String style ="-fx-opacity: 0.8";
-        button.setStyle(style);
+        if(mouseEvent.getSource() instanceof ImageView) {
+            ImageView button = (ImageView) mouseEvent.getSource();
+            String style ="-fx-opacity: 0.8";
+            button.setStyle(style);
+        }
+        else if(mouseEvent.getSource() instanceof Pane) {
+            Pane button = (Pane) mouseEvent.getSource();
+            String style ="-fx-opacity: 0.8;  -fx-background-color:  #fafafa; -fx-background-radius: 10 10 10 10;";
+            button.setStyle(style);
+        }
+
     }
 
     public void previousImage(MouseEvent mouseEvent) {
