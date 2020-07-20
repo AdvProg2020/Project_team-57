@@ -37,6 +37,7 @@ public class ProductHandler extends Handler {
         switch (message) {
             case "add product":
             case "edit product":
+                System.err.println("dele dakete");
                 return sendProduct(message.substring(0, message.length() - 8));
             case "get product":
             case "get editing product":
@@ -306,16 +307,12 @@ public class ProductHandler extends Handler {
     }
 
     private String sendProduct(String sendType) {
-        System.err.println(1);
         Command<Product> command = commandParser.parseToCommand(Command.class, (Class<Product>)Product.class);
-
-        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
-            System.err.println(2);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Vendor")) {
             String username = server.getUsernameByAuth(command.getAuthToken()), productID = null;
             ArrayList<Notification> notifications = new ArrayList<>();
             switch (sendType) {
                 case "add":
-                    System.err.println(3);
                     Product product = command.getDatum();
                     productID = vendorControl.addProduct(product, notifications, username);
                     break;
@@ -335,7 +332,6 @@ public class ProductHandler extends Handler {
             Notification[] notificationsArray = notifications.toArray(new Notification[0]);
             Response<Notification> response = new Response<>(Notification.PACKET_NOTIFICATION, notificationsArray);
             response.setAdditionalString(productID);
-            System.err.println("ProductID: " + productID);
             return gson.toJson(response);
         } else {
             return gson.toJson(HACK_RESPONSE);

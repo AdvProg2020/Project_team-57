@@ -829,8 +829,6 @@ public class ProductProcessor extends Processor {
             client.postAndGet(command, Response.class, (Class<Object>)Object.class);
         } else {
             if(productResponse.getData().size() != 0 && productResponse.getDatum() == Notification.ADD_PRODUCT) {
-                System.err.println("Yes Here");
-                System.err.println("productID: " + productResponse.getAdditionalString());
                 product.setID(productResponse.getAdditionalString());
             }
         }
