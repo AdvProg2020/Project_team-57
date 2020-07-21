@@ -973,6 +973,7 @@ public class ProductControl implements RandomGenerator {
         try {
             ProductTable.setProductCountability(productID, true);
             ProductTable.setProductCount(productID, 1);
+            ProductTable.setProductAmount(productID, 0);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

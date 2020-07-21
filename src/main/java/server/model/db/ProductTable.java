@@ -498,5 +498,13 @@ public class ProductTable extends Database {
         preparedStatement.execute();
     }
 
+    public static void setProductAmount(String productID, double amount) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Products SET Amount = ? WHERE ID = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setDouble(1, amount);
+        preparedStatement.setString(2, productID);
+        preparedStatement.execute();
+    }
+
 }
 
