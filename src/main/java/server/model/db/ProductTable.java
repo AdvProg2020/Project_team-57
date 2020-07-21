@@ -481,5 +481,22 @@ public class ProductTable extends Database {
         File saveImage = new File("database\\Files\\Products\\" + productID + "\\" + productFile.getName().substring(0, productFile.getName().lastIndexOf('.')) + "." + fileExtension);
         Files.copy(productFile.toPath(), saveImage.toPath());
     }
+
+    public static void setProductCountability(String productID, boolean isCountable) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Products SET IsCountable = ? WHERE ID = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setBoolean(1, isCountable);
+        preparedStatement.setString(2, productID);
+        preparedStatement.execute();
+    }
+
+    public static void setProductCount(String productID, int count) throws SQLException, ClassNotFoundException {
+        String command = "UPDATE Products SET Count = ? WHERE ID = ?;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setInt(1, count);
+        preparedStatement.setString(2, productID);
+        preparedStatement.execute();
+    }
+
 }
 

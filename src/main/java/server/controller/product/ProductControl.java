@@ -968,4 +968,14 @@ public class ProductControl implements RandomGenerator {
         }
         return null;
     }
+
+    public void initProductFileCountability(String productID) {
+        try {
+            ProductTable.setProductCountability(productID, true);
+            ProductTable.setProductCount(productID, 1);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

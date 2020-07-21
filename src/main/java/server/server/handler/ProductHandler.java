@@ -104,10 +104,21 @@ public class ProductHandler extends Handler {
                 return editProductFileInfo();
             case "get edit product file info":
                 return getEditingProductFileInfo();
+            case "init product file countability":
+                return initProductFileCountability();
             default:
                 System.err.println("Serious Error In Product Handler");
                 return null;
         }
+    }
+
+    private String initProductFileCountability() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
+        if (!server.getAuthTokens().containsKey(command.getAuthToken()) || accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Vendor")) {
+            productControl.initProductFileCountability(command.getDatum());
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
 

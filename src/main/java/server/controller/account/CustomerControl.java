@@ -20,7 +20,7 @@ public class CustomerControl extends AccountControl{
         return customerControl;
     }
 
-    public ArrayList<Product> getAllCartProducts(String username){
+    public ArrayList<Product> getAllCartProducts(String username) {
         try {
             DiscountTable.removeOutDatedDiscounts();
             OffTable.removeOutDatedOffs();
@@ -172,6 +172,7 @@ public class CustomerControl extends AccountControl{
             Account customer = AccountTable.getAccountByUsername(username);
             if(finalPrice - customer.getCredit() > getMinimumWallet())
                 return Notification.CANT_AFFORD_CART;
+
             AccountTable.changeCredit(customer.getUsername(),((-1) * finalPrice));
             giveCreditToVendors(customer.getUsername());
             int giftState = createLog(customer, property);
@@ -199,14 +200,14 @@ public class CustomerControl extends AccountControl{
     private void reduceProductFromStock(String username) {
         try {
             for (Product product : CartTable.getAllCartWithUsername(username)) {
-                if(product.isCountable())
-                    ProductTable.reduceProductCount(product.getID(), product.getCount());
-                else
-                    ProductTable.reduceProductAmount(product.getID(), product.getAmount());
+                if(!ProductTable.doesProductHaveFile(product.getID())) {
+                    if(product.isCountable())
+                        ProductTable.reduceProductCount(product.getID(), product.getCount());
+                    else
+                        ProductTable.reduceProductAmount(product.getID(), product.getAmount());
+                }
             }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
     }

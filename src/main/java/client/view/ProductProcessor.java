@@ -964,8 +964,11 @@ public class ProductProcessor extends Processor {
         }
 
         if(isFileAdded) {
-            if(sendType.equals("add"))
+            if(sendType.equals("add")) {
                 productFileInfo.setProductID(product.getID());
+                Command<String> command = new Command<>("init product file countability", Command.HandleType.PRODUCT, product.getID());
+                client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+            }
             Command<Product.ProductFileInfo> command = new Command<>(sendType + " product file info", Command.HandleType.PRODUCT, productFileInfo);
             client.postAndGet(command, Response.class, (Class<Object>)Object.class);
             String[] splitPath = productFile.getPath().split("\\.");
@@ -1140,6 +1143,10 @@ public class ProductProcessor extends Processor {
         }
 
         if(menuType == ProductMenuType.VENDOR_EDIT) {
+            if(doesProductHaveFile(product.getID())) {
+                countTextField.setEditable(false);
+            }
+
             countableToggleButton.setDisable(true);
             changeCountableField(null);
         }
