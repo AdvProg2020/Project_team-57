@@ -289,10 +289,8 @@ public class ProductProcessor extends Processor {
                 buttonType = new Alert(Alert.AlertType.CONFIRMATION, "You Didn't Add Any File To Your Product. Do You Wish To Proceed?", ButtonType.YES, ButtonType.NO).showAndWait();
             }
             if(buttonType.get() == ButtonType.YES) {
-                if(((ProductProcessor) parentProcessor).menuType == ProductMenuType.VENDOR_EDIT && ((ProductProcessor)parentProcessor).isFileAdded) {
-                    (((ProductProcessor) parentProcessor).subProcessors.get(2)).tickImage.setDisable(false);
-                    (((ProductProcessor) parentProcessor).subProcessors.get(2)).tickImage.setOpacity(1);
-                }
+                (((ProductProcessor) parentProcessor).subProcessors.get(2)).tickImage.setDisable(false);
+                (((ProductProcessor) parentProcessor).subProcessors.get(2)).tickImage.setOpacity(1);
                 ((ProductProcessor) parentProcessor).productFileInfo = new Product.ProductFileInfo(((ProductProcessor) parentProcessor).product.getID(), fileNameField.getText(), fileCreatorField.getText(), fileExtensionComboBox.getSelectionModel().getSelectedItem(), fileDescriptionArea.getText());
                 ((ProductProcessor) parentProcessor).initImagePanel();
             }
