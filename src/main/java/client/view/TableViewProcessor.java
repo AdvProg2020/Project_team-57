@@ -350,7 +350,7 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private ArrayList<Log> getAllLogs(String type) {
-        Command command = new Command("get " + type.toLowerCase() + "logs", Command.HandleType.ACCOUNT);
+        Command command = new Command("get " + type.toLowerCase() + " logs", Command.HandleType.ACCOUNT);
         Response<Log> response = client.postAndGet(command, Response.class, (Class<Log>)Log.class);
         return new ArrayList<>(response.getData());
     }
@@ -587,6 +587,9 @@ public class TableViewProcessor<T> extends Processor {
             }
             if(selectedItem != null) {
                 Log log = (Log)selectedItem;
+                if(log.getStatus() != 1)
+                    processor.sendProductsButton.setDisable(true);
+
                 java.util.Date date = new java.util.Date(log.getDate().getTime());
                 processor.logDateLabel.setText(date.toString());
                 processor.logInitialPrice.setText(getSmoothDoubleFormat(log.getInitialPrice()) + " $");
@@ -815,7 +818,7 @@ public class TableViewProcessor<T> extends Processor {
                 terminateVendorOffOptions();
                 break;
             case LOGS:
-                terminateVendorSellLogOptions();
+                terminateLogOptions();
                 break;
         }
     }
@@ -826,7 +829,8 @@ public class TableViewProcessor<T> extends Processor {
         offNameLabel.setText("Off Name");
     }
 
-    private void terminateVendorSellLogOptions() {
+    private void terminateLogOptions() {
+        sendProductsButton.setDisable(true);
         showLogProduct.setDisable(true);
         logDateLabel.setText("Log Date");
     }
@@ -1342,7 +1346,14 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void sendProducts(ActionEvent actionEvent) {
-        //TODO
-        System.err.println("TODO");
+        Log log = (Log) ((TableViewProcessor)parentProcessor).selectedItem;
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do You Really Wanna Send This Product? It's Cheap, Man", ButtonType.YES, ButtonType.NO);
+        Optional<ButtonType> buttonType = alert.showAndWait();
+        if(buttonType.get() == ButtonType.YES) {
+            Command<String> command = new Command<>("modify log delivery status", Command.HandleType.ACCOUNT, log.getLogID());
+            client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+        }
+        ((TableViewProcessor)parentProcessor).updateTable();
+        ((TableViewProcessor)parentProcessor).updateSelectedItem();
     }
 }

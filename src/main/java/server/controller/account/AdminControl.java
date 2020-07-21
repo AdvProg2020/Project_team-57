@@ -610,4 +610,12 @@ public class AdminControl extends AccountControl{
         }
         return new ArrayList<>();
     }
+
+    public void modifyLogDeliveryStatus(String logID, int status) {
+        try {
+            LogTable.setLogDeliveryStatus(logID, status);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -147,4 +147,11 @@ public class LogTable extends Database {
                 return maxAmount;
         }
 
+        public static void setLogDeliveryStatus(String logID, int status) throws SQLException, ClassNotFoundException {
+                String command = "UPDATE Logs SET Status = ? WHERE LogID = ?;";
+                PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+                preparedStatement.setInt(1, status);
+                preparedStatement.setString(2, logID);
+                preparedStatement.execute();
+        }
 }

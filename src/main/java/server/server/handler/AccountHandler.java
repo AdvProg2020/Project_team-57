@@ -8,7 +8,6 @@ import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
 import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
-import server.model.db.AccountTable;
 import server.model.existence.Account;
 import server.model.existence.Log;
 import server.server.Response;
@@ -76,6 +75,8 @@ public class AccountHandler extends Handler {
                 return getAllLogs("Customer");
             case "get admin logs":
                 return getAllLogs("Admin");
+            case "modify log delivery status":
+                return modifyLogDeliveryStatus();
             case "get product buyers":
                 return getProductBuyers();
             case "delete user":
@@ -98,6 +99,14 @@ public class AccountHandler extends Handler {
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String modifyLogDeliveryStatus() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            adminControl.modifyLogDeliveryStatus(command.getDatum(), 2);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String logOutIfCan() {
