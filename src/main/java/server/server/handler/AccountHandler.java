@@ -15,6 +15,7 @@ import server.server.Response;
 import server.server.Server;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AccountHandler extends Handler {
@@ -73,6 +74,8 @@ public class AccountHandler extends Handler {
                 return getAllLogs("Vendor");
             case "get customer logs":
                 return getAllLogs("Customer");
+            case "get admin logs":
+                return getAllLogs("Admin");
             case "get product buyers":
                 return getProductBuyers();
             case "delete user":
@@ -91,6 +94,7 @@ public class AccountHandler extends Handler {
                 return isAccountOnline();
             case "log out if can":
                 return logOutIfCan();
+
             default:
                 return null/*server.getUnknownError()*/;
         }
@@ -183,12 +187,20 @@ public class AccountHandler extends Handler {
     private String getAllLogs(String type) {
         Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
         if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals(type)) {
-            return gson.toJson(new Response<Log>
-                    (Notification.PACKET_NOTIFICATION,
-                            (type.equalsIgnoreCase("vendor") ?
-                            vendorControl.getAllVendorLogs(server.getUsernameByAuth(command.getAuthToken())).toArray(new Log[0])
-                            :
-                            customerControl.getAllLogs(server.getUsernameByAuth(command.getAuthToken())).toArray(new Log[0]))));
+            List<Log> allLogs = new ArrayList<>();
+            switch (type) {
+                case "Vendor":
+                    allLogs = vendorControl.getAllVendorLogs(server.getUsernameByAuth(command.getAuthToken()));
+                    break;
+                case "Customer":
+                    allLogs = customerControl.getAllLogs(server.getUsernameByAuth(command.getAuthToken()));
+                    break;
+                case "Admin":
+                    allLogs = adminControl.getAllLogs();
+                    break;
+            }
+            Response<Log> response = new Response<>(Notification.PACKET_NOTIFICATION, allLogs.toArray(new Log[0]));
+            return gson.toJson(response);
         }
         return gson.toJson(HACK_RESPONSE);
     }

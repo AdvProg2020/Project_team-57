@@ -102,6 +102,7 @@ public class TableViewProcessor<T> extends Processor {
     public Rectangle leftRectangle;
     public ImageView logsImageView;
     public Circle periodSpot;
+    public JFXButton sendProductsButton;
     private TableViewType tableViewType;
     private T selectedItem;
     private String searchedUsername;
@@ -203,7 +204,7 @@ public class TableViewProcessor<T> extends Processor {
                 initVendorOffsColumns();
                 break;
             case LOGS:
-                initVendorSellLogsColumns();
+                initLogsColumns();
                 break;
             case PRODUCTS_OF_LOG:
                 initProductsOfLogColumns();
@@ -230,7 +231,7 @@ public class TableViewProcessor<T> extends Processor {
         tableView.getColumns().addAll(productName, vendorUsername, quantity, initPrice);
     }
 
-    private void initVendorSellLogsColumns() {
+    private void initLogsColumns() {
         TableColumn<T, String> customerUsername = makeColumn("Customer Username", "customerUsername", 0.315);
         TableColumn<T, Date> logDate = makeColumn("Sell Date", "date", 0.25);
         TableColumn<T, Integer> productsCount = makeColumn("Products", "productsCount", 0.23);
@@ -349,7 +350,7 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private ArrayList<Log> getAllLogs(String type) {
-        Command command = new Command((type.equals("Vendor") ? "get vendor logs" : "get customer logs"), Command.HandleType.ACCOUNT);
+        Command command = new Command("get " + type.toLowerCase() + "logs", Command.HandleType.ACCOUNT);
         Response<Log> response = client.postAndGet(command, Response.class, (Class<Log>)Log.class);
         return new ArrayList<>(response.getData());
     }
@@ -522,7 +523,7 @@ public class TableViewProcessor<T> extends Processor {
                 BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
                 processor.optionPane.setBackground(new Background(backgroundFill));
             } else {
-                processor.optionPane.setStyle("-fx-background-color: #ffd180;");
+                processor.optionPane.setStyle((type.equals("Customer") ? "-fx-background-color: #ffd180;" : "-fx-background-color: #e0f2f1;"));
             }
             if(selectedItem != null) {
                 ProductOfLog productOfLog = (ProductOfLog) selectedItem;
@@ -559,19 +560,30 @@ public class TableViewProcessor<T> extends Processor {
             TableViewProcessor processor = loader.getController();
             processor.setParentProcessor(this);
             String type = getType();
-            if(type != null && type.equals("Vendor")) {
-                Stop[] stops = new Stop[] {
-                        new Stop(0, Color.valueOf("#360033")),
-                        new Stop(1, Color.valueOf("#127183"))
-                };
-                LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
-                BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
-                processor.optionPane.setBackground(new Background(backgroundFill));
-            } else {
-                processor.rightRectangle.setFill(Color.valueOf("#f57c00"));
-                processor.leftRectangle.setFill(Color.valueOf("#f57c00"));
-                processor.logsImageView.setImage(new Image(IMAGE_FOLDER_URL + "Icons\\customer invoice.png"));
-                processor.optionPane.setStyle("-fx-background-color: #ffd180;");
+            switch (type) {
+                case "Vendor":
+                    Stop[] stops = new Stop[] {
+                            new Stop(0, Color.valueOf("#360033")),
+                            new Stop(1, Color.valueOf("#127183"))
+                    };
+                    LinearGradient linearGradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+                    BackgroundFill backgroundFill = new BackgroundFill(linearGradient, CornerRadii.EMPTY, Insets.EMPTY);
+                    processor.optionPane.setBackground(new Background(backgroundFill));
+                    processor.optionPane.getChildren().remove(processor.sendProductsButton);
+                    break;
+                case "Customer":
+                    processor.rightRectangle.setFill(Color.valueOf("#f57c00"));
+                    processor.leftRectangle.setFill(Color.valueOf("#f57c00"));
+                    processor.logsImageView.setImage(new Image(IMAGE_FOLDER_URL + "Icons\\customer invoice.png"));
+                    processor.optionPane.setStyle("-fx-background-color: #ffd180;");
+                    processor.optionPane.getChildren().remove(processor.sendProductsButton);
+                    break;
+                case "Admin":
+                    processor.rightRectangle.setFill(Color.valueOf("#4db6ac"));
+                    processor.leftRectangle.setFill(Color.valueOf("#4db6ac"));
+                    processor.logsImageView.setImage(new Image(IMAGE_FOLDER_URL + "Icons\\TableViewMenu\\Logs.png"));
+                    processor.optionPane.setStyle("-fx-background-color: #e0f2f1;");
+                    break;
             }
             if(selectedItem != null) {
                 Log log = (Log)selectedItem;
@@ -1329,4 +1341,8 @@ public class TableViewProcessor<T> extends Processor {
         }
     }
 
+    public void sendProducts(ActionEvent actionEvent) {
+        //TODO
+        System.err.println("TODO");
+    }
 }

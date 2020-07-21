@@ -10,7 +10,10 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AdminControl extends AccountControl{
     private static AdminControl adminControl = null;
@@ -544,9 +547,7 @@ public class AdminControl extends AccountControl{
             ProductTable.setProductStatus(id, 1);
             ProductTable.setProductApprovalDate(id);
             return Notification.ACCEPT_ADDING_PRODUCT;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
 
@@ -601,4 +602,12 @@ public class AdminControl extends AccountControl{
         return Notification.UNKNOWN_ERROR;
     }
 
+    public List<Log> getAllLogs() {
+        try {
+            return LogTable.getAllCustomerLogs().stream().sorted((log1, log2) -> log1.getDate().compareTo(log2.getDate())).collect(Collectors.toList());
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 }

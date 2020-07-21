@@ -48,6 +48,17 @@ public class LogTable extends Database {
                 return allLogs;
         }
 
+        public static ArrayList<Log> getAllCustomerLogs() throws SQLException, ClassNotFoundException {
+                String command = "SELECT DISTINCT LogID FROM Logs";
+                PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                ArrayList<Log> allLogs = new ArrayList<>();
+                while (resultSet.next()) {
+                        allLogs.add(getCustomerLogByID(resultSet.getString("LogID")));
+                }
+                return allLogs;
+        }
+
         public static ArrayList<Log> getAllVendorLogs(String username) throws SQLException, ClassNotFoundException {
                 String command = "SELECT DISTINCT LogID FROM Logs WHERE VendorUsername = ?";
                 PreparedStatement preparedStatement = getConnection().prepareStatement(command);
@@ -135,4 +146,5 @@ public class LogTable extends Database {
 
                 return maxAmount;
         }
+
 }

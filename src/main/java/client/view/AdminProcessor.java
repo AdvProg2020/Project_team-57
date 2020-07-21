@@ -349,4 +349,26 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
                 saveMarketWage(null);
         }
     }
+
+    public void manageLogs(MouseEvent mouseEvent) {
+        if (canOpenSubStage("Manage Logs", parentProcessor)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
+                Parent root = loader.load();
+                TableViewProcessor<Off> tableViewProcessor = loader.getController();
+                tableViewProcessor.setParentProcessor(parentProcessor);
+                tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.LOGS);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.setResizable(false);
+                newStage.setTitle("Manage Logs");
+                parentProcessor.addSubStage(newStage);
+                tableViewProcessor.setMyStage(newStage);
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("Admin Logs.png")));
+                newStage.show();
+            } catch (IOException e) {
+                //:)
+            }
+        }
+    }
 }

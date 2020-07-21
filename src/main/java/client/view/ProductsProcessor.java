@@ -611,10 +611,10 @@ public class ProductsProcessor extends Processor{
         Command<String> productImageCommand = new Command<>("get product image-1", Command.HandleType.PICTURE_GET, product.getID());
         Command<String> editingProductImageCommand = new Command<>("get edit product image-1", Command.HandleType.PICTURE_GET, product.getID());
         if(doesProductHaveFile(product.getID())) {
-            ImageView imageView = new ImageView(new Image(IMAGE_FOLDER_URL + "Icons\\ProductsMenu\\File.png"));
-            imageView.setFitWidth(paneProcessor.productImage.getWidth()/2.5);
-            imageView.setFitHeight(paneProcessor.productImage.getHeight()/2.5);
-            imageView.setLayoutX(paneProcessor.productImageStackPane.getLayoutX()); imageView.setLayoutY(paneProcessor.productImageStackPane.getLayoutY() - 10);
+            ImageView imageView = new ImageView(new Image(IMAGE_FOLDER_URL + "Icons\\ProductsMenu\\File2.png"));
+            imageView.setFitWidth(paneProcessor.productImage.getWidth()/3);
+            imageView.setFitHeight(paneProcessor.productImage.getHeight()/3);
+            imageView.setLayoutX(paneProcessor.productImageStackPane.getLayoutX() + 5); imageView.setLayoutY(paneProcessor.productImageStackPane.getLayoutY());
             productPane.getChildren().add(imageView);
         }
         switch (menuType) {

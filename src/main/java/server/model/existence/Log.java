@@ -39,7 +39,7 @@ public class Log {
                     resultSet.getInt("Count"), resultSet.getDouble("Amount"),
                     resultSet.getDouble("InitPrice"), resultSet.getDouble("OffPrice"), resultSet.getString("VendorUsername")));
         }
-        this.statStr = (this.status == 1 ? "Delivering" : "Delivered");
+        setStatStr();
         this.productsCount = this.allProducts.size();
     }
 
@@ -49,8 +49,22 @@ public class Log {
         this.date = log.getDate();
         this.customerUsername = log.getCustomerUsername();
         this.allProducts.addAll(allProducts);
-        this.statStr = (this.status == 1 ? "Delivering" : "Delivered");
+        setStatStr();
         this.productsCount = this.allProducts.size();
+    }
+
+    private void setStatStr() {
+        switch (this.status) {
+            case 1:
+                this.statStr = "Purchased";
+                break;
+            case 2:
+                this.statStr = "Delivering";
+                break;
+            case 3:
+                this.statStr = "Delivered";
+                break;
+        }
     }
 
     public String getStatStr() {
