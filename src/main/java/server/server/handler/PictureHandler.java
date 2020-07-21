@@ -64,6 +64,9 @@ public class PictureHandler extends Handler {
                 case "add product file":
                     outputStream = getProductFileOutPutStream("add");
                     break;
+                case "edit product file":
+                    outputStream = getProductFileOutPutStream("edit");
+                    break;
                 default:
                     System.err.println("Error In #sendPicture");
                     System.err.println("Message : " + message);
@@ -90,7 +93,7 @@ public class PictureHandler extends Handler {
             case "add":
                 return productControl.getProductFileOutputStream(productID, fileExtension);
             case "edit":
-                //TODO
+                return productControl.getEditingProductFileOutputStream(productID, fileExtension);
                 default:
                 System.err.println("Error In #getProductImageOutputStream");
                 return null;

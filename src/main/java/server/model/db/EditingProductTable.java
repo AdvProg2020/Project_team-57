@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class EditingProductTable extends Database{
 
@@ -234,9 +235,11 @@ public class EditingProductTable extends Database{
         file.mkdir();
         File tempFolder = new File("database\\Images\\EditingProducts\\" + productID);
         String[] entries = tempFolder.list();
-        for(String s: entries){
-            File currentFile = new File(tempFolder.getPath(),s);
-            currentFile.delete();
+        if (entries != null) {
+            for(String s: entries){
+                File currentFile = new File(tempFolder.getPath(),s);
+                currentFile.delete();
+            }
         }
     }
 
@@ -264,5 +267,53 @@ public class EditingProductTable extends Database{
         }
 
         return "png";
+    }
+
+    public static void editProductFileInfo(String productID, String productFileInfoJson) throws IOException {
+        new File("database\\Files\\EditingProducts\\" + productID).mkdirs();
+        File file = new File("database\\Files\\EditingProducts\\" + productID + "\\Info.json" );
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write(productFileInfoJson);
+        fileWriter.flush();
+        fileWriter.close();
+    }
+
+    public static void removeEditingProductFileInfo(String productID) {
+        File file = new File("database\\Files\\EditingProducts\\" + productID + "\\Info.json" );
+        if(file.exists())
+            file.delete();
+    }
+
+    public static void removeEditingProductFile(String productID) {
+        File editingProductFileFolder = new File("database\\Files\\EditingProducts\\" + productID);
+        if(editingProductFileFolder.exists()) {
+            String[] entries = editingProductFileFolder.list();
+            if (entries != null) {
+                for(String s: entries){
+                    File currentFile = new File(editingProductFileFolder.getPath(),s);
+                    currentFile.delete();
+                }
+            }
+        }
+    }
+
+    public static String getEditingProductFileInfo(String productID) throws FileNotFoundException {
+        File file = new File("database\\Files\\EditingProducts\\" + productID + "\\Info.json");
+        Scanner fileScanner = new Scanner(file);
+        StringBuilder json = new StringBuilder();
+
+        while (fileScanner.hasNextLine()){
+            json.append(fileScanner.nextLine());
+            json.append("\n");
+        }
+
+        json = new StringBuilder(json.substring(0, json.length() - 1));
+        return json.toString();
+    }
+
+    public static FileOutputStream getEditingProductFileOutputStream(String productID, String fileName, String fileExtension) throws FileNotFoundException {
+        new File("database\\Files\\EditingProducts\\" + productID).mkdirs();
+        File file = new File("database\\Files\\Products\\" + productID + "\\" + fileName + "." + fileExtension);
+        return new FileOutputStream(file);
     }
 }

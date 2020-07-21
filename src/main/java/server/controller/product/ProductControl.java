@@ -923,4 +923,36 @@ public class ProductControl implements RandomGenerator {
         }
         return null;
     }
+
+    public void editProductFileInfo(String productID, String productFileInfoJson) {
+        try {
+            EditingProductTable.editProductFileInfo(productID, productFileInfoJson);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteEditingProductFile(String productID) {
+        EditingProductTable.removeEditingProductFile(productID);
+    }
+
+    public FileOutputStream getEditingProductFileOutputStream(String productID, String fileExtension) {
+        try {
+            Product.ProductFileInfo editingProductFileInfo = getEditingProductFileInfo(productID);
+            return EditingProductTable.getEditingProductFileOutputStream(productID, editingProductFileInfo.getName(), fileExtension);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Product.ProductFileInfo getEditingProductFileInfo(String productID) {
+        try {
+            String productFileInfoJson = EditingProductTable.getEditingProductFileInfo(productID);
+            return gson.fromJson(productFileInfoJson, Product.ProductFileInfo.class);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new Product.ProductFileInfo();
+    }
 }

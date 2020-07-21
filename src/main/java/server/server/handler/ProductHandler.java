@@ -2,7 +2,6 @@ package server.server.handler;
 
 import client.api.Command;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sun.xml.internal.ws.policy.EffectiveAlternativeSelector;
 import notification.Notification;
 import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
@@ -17,7 +16,6 @@ import server.server.Server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,10 +100,22 @@ public class ProductHandler extends Handler {
                 return getProductFileInfo();
             case "does product have file":
                 return doesProductHaveFile();
+            case "edit product file info":
+                return editProductFileInfo();
             default:
                 System.err.println("Serious Error In Product Handler");
                 return null;
         }
+    }
+
+    private String editProductFileInfo() {
+        Command<Product.ProductFileInfo> command = commandParser.parseToCommand(Command.class, (Class<Product.ProductFileInfo>)Product.ProductFileInfo.class);
+        if (!server.getAuthTokens().containsKey(command.getAuthToken()) || accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Vendor")) {
+            productControl.deleteEditingProductFile(command.getDatum().getProductID());
+            productControl.editProductFileInfo(command.getDatum().getProductID(), gson.toJson(command.getDatum()));
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String doesProductHaveFile() {
