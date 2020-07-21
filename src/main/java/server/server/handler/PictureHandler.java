@@ -65,7 +65,6 @@ public class PictureHandler extends Handler {
                     outputStream = getProductFileOutPutStream("add");
                     break;
                 case "edit product file":
-                    System.err.println("Inje Ham");
                     outputStream = getProductFileOutPutStream("edit");
                     break;
                 default:
@@ -170,6 +169,10 @@ public class PictureHandler extends Handler {
                 sendExtension("product file");
                 inputStream = getProductFileInputStream();
                 break;
+            case "get edit product file":
+                sendExtension("edit product file");
+                inputStream = getEditingProductFileInputStream();
+                break;
             default:
                 System.err.println("Serious Error In Sending ");
         }
@@ -183,6 +186,10 @@ public class PictureHandler extends Handler {
         inputStream.close();
         outStream.close();
         System.out.println(new Date());
+    }
+
+    private FileInputStream getEditingProductFileInputStream() {
+        return productControl.getEditingProductFileInputStreamByID(commandParser.parseDatum(Command.class, (Class<String>)String.class));
     }
 
     private FileInputStream getProductFileInputStream() {
@@ -226,6 +233,10 @@ public class PictureHandler extends Handler {
             case "product file":
                 ID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
                 extension = productControl.getProductFileExtension(ID);
+                break;
+            case "edit product file":
+                ID = commandParser.parseDatum(Command.class, (Class<String>)String.class);
+                extension = productControl.getEditingProductFileExtension(ID);
                 break;
             default:
                 System.err.println("Error In #sendExtension");

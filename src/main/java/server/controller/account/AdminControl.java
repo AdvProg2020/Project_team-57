@@ -511,6 +511,13 @@ public class AdminControl extends AccountControl{
 
     public Notification modifyEditingProductApprove(String productID, boolean approved) {
         try {
+            if(ProductControl.getController().doesProductHaveFile(productID)) {
+                if(approved) {
+                    ProductTable.removeProductFileByID(productID);
+                    EditingProductTable.transferEditingFiles(productID);
+                }
+                EditingProductTable.removeEditingProductFile(productID);
+            }
             if(approved) {
                 EditingProductTable.transferEditingImages(productID);
                 return acceptEditingProductByID(productID);
@@ -520,7 +527,7 @@ public class AdminControl extends AccountControl{
                 return ProductControl.getController().removeEditingProductById(productID);
             }
         } catch (IOException e) {
-            //:)
+            e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;
     }

@@ -440,7 +440,7 @@ public class ProductTable extends Database {
             json.append(fileScanner.nextLine());
             json.append("\n");
         }
-
+        fileScanner.close();
         json = new StringBuilder(json.substring(0, json.length() - 1));
         return json.toString();
     }
@@ -457,6 +457,29 @@ public class ProductTable extends Database {
 
     public static FileInputStream getProductFileInputStream(String productID, String name, String extension) throws FileNotFoundException {
         return new FileInputStream(getProductFilePath(productID, name, extension));
+    }
+
+    public static void removeProductFileByID(String productID) {
+        File editingProductFileFolder = new File("database\\Files\\Products\\" + productID);
+        if(editingProductFileFolder.exists()) {
+            String[] entries = editingProductFileFolder.list();
+            if (entries != null) {
+                for(String s: entries){
+                    File currentFile = new File(editingProductFileFolder.getPath(),s);
+                    currentFile.delete();
+                }
+            }
+        }
+    }
+
+    public static void addFile(String productID, File productFile) throws IOException {
+        File productFolder = new File("database\\Files\\Products\\" + productID );
+        if(!productFolder.exists())
+            productFolder.mkdir();
+        String[] splitPath = productFile.getPath().split("\\.");
+        String fileExtension = splitPath[splitPath.length - 1];
+        File saveImage = new File("database\\Files\\Products\\" + productID + "\\" + productFile.getName().substring(0, productFile.getName().lastIndexOf('.')) + "." + fileExtension);
+        Files.copy(productFile.toPath(), saveImage.toPath());
     }
 }
 

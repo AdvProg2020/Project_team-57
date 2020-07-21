@@ -307,6 +307,7 @@ public class EditingProductTable extends Database{
             json.append("\n");
         }
 
+        fileScanner.close();
         json = new StringBuilder(json.substring(0, json.length() - 1));
         return json.toString();
     }
@@ -315,5 +316,26 @@ public class EditingProductTable extends Database{
         new File("database\\Files\\EditingProducts\\" + productID).mkdirs();
         File file = new File("database\\Files\\EditingProducts\\" + productID + "\\" + fileName + "." + fileExtension);
         return new FileOutputStream(file);
+    }
+
+    public static FileInputStream getEditingProductFileInputStream(String productID, String productName, String fileExtension) throws FileNotFoundException {
+        return new FileInputStream(getEditingProductFilePath(productID, productName, fileExtension));
+    }
+
+    private static String getEditingProductFilePath(String productID, String productName, String fileExtension) {
+        return "database\\Files\\EditingProducts\\" + productID + "\\" + productName + "." + fileExtension;
+
+    }
+
+    public static void transferEditingFiles(String productID) throws IOException {
+        File editingProductFileFolder = new File("database\\Files\\EditingProducts\\" + productID);
+        String[] entries = editingProductFileFolder.list();
+        int i = 0;
+        if (entries != null) {
+            for(String s: entries){
+                File currentFile = new File(editingProductFileFolder.getPath(),s);
+                ProductTable.addFile(productID, currentFile);
+            }
+        }
     }
 }

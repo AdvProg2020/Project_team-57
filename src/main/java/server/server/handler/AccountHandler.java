@@ -99,7 +99,6 @@ public class AccountHandler extends Handler {
     private String logOutIfCan() {
         Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
         if(command.getAuthToken() != null && server.getAuthTokens().containsKey(command.getAuthToken())) {
-            System.err.println("auth token deleted");
             server.getAuthTokens().remove(command.getAuthToken());
         }
         return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));

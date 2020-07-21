@@ -78,7 +78,7 @@ public class ProductProcessor extends Processor {
             ((ProductProcessor)parentProcessor).upBorderPane.setLeft(root);
             if(((ProductProcessor) parentProcessor).menuType == ProductMenuType.VENDOR_EDIT || ((ProductProcessor) parentProcessor).menuType == ProductMenuType.VENDOR_ADD) {
                 (((ProductProcessor) parentProcessor).subProcessors.get(2)).tickImage.setDisable(true);
-                (((ProductProcessor) parentProcessor).subProcessors.get(2)).tickImage.setOpacity(0.7);
+                (((ProductProcessor) parentProcessor).subProcessors.get(2)).tickImage.setOpacity(0.5);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -116,6 +116,30 @@ public class ProductProcessor extends Processor {
     }
 
     private Product.ProductFileInfo getProductFileInfo(String productID) {
+        switch (((ProductProcessor)parentProcessor).menuType) {
+            case VENDOR_EDIT:
+                return getProductFileInfoFromServer(productID);
+            case ADMIN:
+                if(((ProductProcessor)parentProcessor).isNonEdited) {
+                    return getNonEditedProductFileInfoFromServer(productID);
+                }
+                else {
+                    return getProductFileInfoFromServer(productID);
+                }
+            default:
+                return getNonEditedProductFileInfoFromServer(productID);
+        }
+    }
+
+    private Product.ProductFileInfo getProductFileInfoFromServer(String productID) {
+        if(((ProductProcessor)parentProcessor).product.getStatus() != 3)
+            return getNonEditedProductFileInfoFromServer(productID);
+        Command<String> command = new Command<>("get edit product file info", Command.HandleType.PRODUCT, productID);
+        Response<Product.ProductFileInfo> response = client.postAndGet(command, Response.class, (Class<Product.ProductFileInfo>)Product.ProductFileInfo.class);
+        return response.getDatum();
+    }
+
+    private Product.ProductFileInfo getNonEditedProductFileInfoFromServer(String productID) {
         Command<String> command = new Command<>("get product file info", Command.HandleType.PRODUCT, productID);
         Response<Product.ProductFileInfo> response = client.postAndGet(command, Response.class, (Class<Product.ProductFileInfo>)Product.ProductFileInfo.class);
         return response.getDatum();
@@ -126,7 +150,7 @@ public class ProductProcessor extends Processor {
             fileNameField.setText(productFileInfo.getName());
             fileCreatorField.setText(productFileInfo.getCreator());
             fileExtensionComboBox.getSelectionModel().select(productFileInfo.getExtension());
-            fileDescriptionArea.setText(productFileInfo.getExtension());
+            fileDescriptionArea.setText(productFileInfo.getDescription());
         }
     }
 
@@ -188,13 +212,26 @@ public class ProductProcessor extends Processor {
                 return;
             }
             File productFile = ((ProductProcessor)parentProcessor).productFile;
-            if(productFile == null)
-                productFile = getProductFileFromServer(product.getID());
+            if(productFile == null) {
+                switch (((ProductProcessor)parentProcessor).menuType) {
+                    case VENDOR_EDIT:
+                        productFile = getProductFileFromServer(product.getID());
+                        break;
+                    case ADMIN:
+                        if(((ProductProcessor)parentProcessor).isNonEdited) {
+                            productFile = getNonEditedProductFileFromServer(product.getID());
+                        }
+                        else {
+                            productFile = getProductFileFromServer(product.getID());
+                        }
+                        break;
+                    default:
+                        productFile = getNonEditedProductFileFromServer(product.getID());
+                }
+            }
             File productFolder = new File(DOWNLOAD_FOLDER_URL  + product.getID() + "-" + product.getName());
             productFolder.mkdirs();
-            File download = new File(DOWNLOAD_FOLDER_URL  + product.getID() + "-" + product.getName() + "\\" + ((ProductProcessor)parentProcessor).productFileInfo.getName() + "." + ((ProductProcessor)parentProcessor).productFileInfo.getExtension().toLowerCase());
-            System.out.println(productFile);
-            System.out.println(productFile.getPath());
+            File download = new File(DOWNLOAD_FOLDER_URL  + product.getID() + "-" + product.getName() + "\\" + fileNameField.getText() + "." + fileExtensionComboBox.getSelectionModel().getSelectedItem().toLowerCase());
             FileInputStream inputStream = new FileInputStream(productFile);
             FileOutputStream outputStream = new FileOutputStream(download);
             int i;
@@ -212,12 +249,28 @@ public class ProductProcessor extends Processor {
         }
     }
 
+    private File getProductFileFromServer(String productID) {
+        if(((ProductProcessor)parentProcessor).product.getStatus() != 3)
+            return getNonEditedProductFileFromServer(productID);
+        Command<String> command = new Command<>("get edit product file", Command.HandleType.PICTURE_GET, productID);
+        return client.getFile(command);
+        /*ArrayList<File> imageFiles = new ArrayList<>();
+        Command<String> integerCommand = new Command<>("get edit product image count", Command.HandleType.PRODUCT, product.getID());
+        Response<Integer> integerResponse = client.postAndGet(integerCommand, Response.class, (Class<Integer>)Integer.class);
+        int bound = integerResponse.getDatum();
+        for (int i = 0; i < bound; i++) {
+            Command<String> command = new Command<>("get edit product image-" + (i + 1), Command.HandleType.PICTURE_GET, product.getID());
+            imageFiles.add(client.getFile(command));
+        }
+        return imageFiles;*/
+    }
+
     private boolean didCustomerBuyProduct(String username, String productID) {
         Command<String> command = new Command<>("is product purchased by customer", Command.HandleType.PRODUCT, productID, username);
         return client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class).getDatum();
     }
 
-    private File getProductFileFromServer(String productID) {
+    private File getNonEditedProductFileFromServer(String productID) {
         Command<String> command = new Command<>("get product file", Command.HandleType.PICTURE_GET, productID);
         return client.getFile(command);
     }
@@ -260,7 +313,12 @@ public class ProductProcessor extends Processor {
 
     public void fileExtensionComboBoxOnAction(ActionEvent actionEvent) {
         ((ProductProcessor)parentProcessor).productFile = null;
-        ((ProductProcessor)parentProcessor).isFileAdded = true;
+        ((ProductProcessor)parentProcessor).isFileAdded = false;
+        if(((ProductProcessor) parentProcessor).menuType == ProductMenuType.VENDOR_EDIT) {
+            this.ImageButton.setDisable(true);
+            this.ImageButton.setOpacity(0.5);
+        }
+        initFileMenu(false, false);
     }
 
 //    public void similarProductsMouseClicked(MouseEvent mouseEvent) {
@@ -764,7 +822,6 @@ public class ProductProcessor extends Processor {
         return copyRectangle;
     }
 
-
     public void changeSlideShow(ActionEvent actionEvent) {
         if(slideShowToggleButton.isSelected())
             mainTimer.start();
@@ -934,7 +991,6 @@ public class ProductProcessor extends Processor {
             ((ProductsProcessor)parentProcessor).initProductsPage();
         }
     }
-
 
     public void removeProduct() {
 //        Alert alert = productControl.removeProductById(product.getID()).getAlert();

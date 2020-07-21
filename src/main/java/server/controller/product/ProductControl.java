@@ -341,7 +341,6 @@ public class ProductControl implements RandomGenerator {
     public ArrayList <Product> getAllComparingProducts(Property property) {
         try {
             OffTable.removeOutDatedOffs();
-            System.err.println("Comparing Product : " + property.getComparingProducts(0));
             String firstProductCategory = ProductTable.getProductByID(property.getComparingProducts(0).getID()).getCategory();
             while (CategoryTable.getParentCategory(firstProductCategory) != null &&
                     !CategoryTable.getParentCategory(firstProductCategory).equals("All Products"))
@@ -946,7 +945,7 @@ public class ProductControl implements RandomGenerator {
         return null;
     }
 
-    private Product.ProductFileInfo getEditingProductFileInfo(String productID) {
+    public Product.ProductFileInfo getEditingProductFileInfo(String productID) {
         try {
             String productFileInfoJson = EditingProductTable.getEditingProductFileInfo(productID);
             return gson.fromJson(productFileInfoJson, Product.ProductFileInfo.class);
@@ -954,5 +953,19 @@ public class ProductControl implements RandomGenerator {
             e.printStackTrace();
         }
         return new Product.ProductFileInfo();
+    }
+
+    public String getEditingProductFileExtension(String productID) {
+        return getEditingProductFileInfo(productID).getExtension().toLowerCase();
+    }
+
+    public FileInputStream getEditingProductFileInputStreamByID(String productID) {
+        try {
+            Product.ProductFileInfo productFileInfo = getEditingProductFileInfo(productID);
+            return EditingProductTable.getEditingProductFileInputStream(productID, productFileInfo.getName(), productFileInfo.getExtension().toLowerCase());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
