@@ -1,6 +1,7 @@
 package client.view;
 
 import client.api.Command;
+import com.google.gson.GsonBuilder;
 import com.jfoenix.controls.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -856,10 +857,10 @@ public class ProductProcessor extends Processor {
                 product = new Product();
                 product.setID(this.product.getID());
                 product.setSeen(this.product.getSeen());
-                product.setSellerUserName(product.getSellerUserName());
+                product.setSellerUserName(this.product.getSellerUserName());
                 specialFieldProcessor.setProductSpecialFields(product);
                 generalFieldProcessor.setProductGeneralFields(product);
-                productNotifications = sendProduct(imageProcessor.productImageFiles, "edit", productFile,this.product, product);
+                productNotifications = sendProduct(imageProcessor.productImageFiles, "edit", productFile, this.product, product);
                 break;
         }
 

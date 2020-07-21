@@ -65,6 +65,7 @@ public class PictureHandler extends Handler {
                     outputStream = getProductFileOutPutStream("add");
                     break;
                 case "edit product file":
+                    System.err.println("Inje Ham");
                     outputStream = getProductFileOutPutStream("edit");
                     break;
                 default:

@@ -313,7 +313,7 @@ public class EditingProductTable extends Database{
 
     public static FileOutputStream getEditingProductFileOutputStream(String productID, String fileName, String fileExtension) throws FileNotFoundException {
         new File("database\\Files\\EditingProducts\\" + productID).mkdirs();
-        File file = new File("database\\Files\\Products\\" + productID + "\\" + fileName + "." + fileExtension);
+        File file = new File("database\\Files\\EditingProducts\\" + productID + "\\" + fileName + "." + fileExtension);
         return new FileOutputStream(file);
     }
 }
