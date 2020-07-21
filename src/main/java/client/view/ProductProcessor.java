@@ -72,29 +72,38 @@ public class ProductProcessor extends Processor {
             Parent root = loader.load();
             ProductProcessor productProcessor = loader.getController();
             productProcessor.setParentProcessor(parentProcessor);
-            productProcessor.initFileMenu(true);
+            productProcessor.initFileMenu(true, true);
             ((ProductProcessor)parentProcessor).memoryImageFiles = productImageFiles;
             ((ProductProcessor)parentProcessor).upBorderPane.setLeft(root);
+            if(((ProductProcessor) parentProcessor).menuType == ProductMenuType.VENDOR_EDIT || ((ProductProcessor) parentProcessor).menuType == ProductMenuType.VENDOR_ADD) {
+                (((ProductProcessor) parentProcessor).subProcessors.get(2)).tickImage.setDisable(true);
+                (((ProductProcessor) parentProcessor).subProcessors.get(2)).tickImage.setOpacity(0.7);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void initFileMenu(boolean initFileExtension) {
+    private void initFileMenu(boolean initFileExtension, boolean initFileInfo) {
         if(initFileExtension)
             initFileExtensions();
+
         boolean bool = ((ProductProcessor)parentProcessor).isFileAdded;
         addFileButton.setDisable(bool);
         downloadFileButton.setDisable(!bool);
         deleteFileButton.setDisable(!bool);
+
         if(((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_ADD) {
-            ((ProductProcessor)parentProcessor).productFileInfo = getProductFileInfo(((ProductProcessor)parentProcessor).product.getID());
+            if(((ProductProcessor)parentProcessor).productFileInfo == null)
+                ((ProductProcessor)parentProcessor).productFileInfo = getProductFileInfo(((ProductProcessor)parentProcessor).product.getID());
         }
 
         if(((ProductProcessor)parentProcessor).menuType == ProductMenuType.VENDOR_EDIT_UNAPPROVED || ((ProductProcessor)parentProcessor).menuType == ProductMenuType.VENDOR_ADD)
             downloadFileButton.setDisable(true);
 
-        initFileInfo(((ProductProcessor)parentProcessor).productFileInfo);
+        if(initFileInfo)
+            initFileInfo(((ProductProcessor)parentProcessor).productFileInfo);
+
         if(((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_ADD && ((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_EDIT) {
             fileNameField.setEditable(false);
             fileCreatorField.setEditable(false);
@@ -128,9 +137,13 @@ public class ProductProcessor extends Processor {
     public void deleteFile(MouseEvent mouseEvent) {
         Optional<ButtonType> buttonType = new Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Delete File That Just Uploaded?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
-            isFileAdded = false;
+            ((ProductProcessor)parentProcessor).isFileAdded = false;
             ((ProductProcessor)parentProcessor).productFile = null;
-            initFileMenu(false);
+            if(((ProductProcessor) parentProcessor).menuType == ProductMenuType.VENDOR_EDIT) {
+                this.ImageButton.setDisable(true);
+                this.ImageButton.setOpacity(0.5);
+            }
+            initFileMenu(false, false);
         }
     }
 
@@ -142,7 +155,11 @@ public class ProductProcessor extends Processor {
             if(file != null) {
                 ((ProductProcessor)parentProcessor).productFile = file;
                 ((ProductProcessor)parentProcessor).isFileAdded = true;
-                initFileMenu(false);
+                if(((ProductProcessor) parentProcessor).menuType == ProductMenuType.VENDOR_EDIT) {
+                    this.ImageButton.setDisable(false);
+                    this.ImageButton.setOpacity(1);
+                }
+                initFileMenu(false, false);
             }
         } else {
             highlightTheEmptyField();
@@ -175,6 +192,8 @@ public class ProductProcessor extends Processor {
             File productFolder = new File(DOWNLOAD_FOLDER_URL  + product.getID() + "-" + product.getName());
             productFolder.mkdirs();
             File download = new File(DOWNLOAD_FOLDER_URL  + product.getID() + "-" + product.getName() + "\\" + ((ProductProcessor)parentProcessor).productFileInfo.getName() + "." + ((ProductProcessor)parentProcessor).productFileInfo.getExtension().toLowerCase());
+            System.out.println(productFile);
+            System.out.println(productFile.getPath());
             FileInputStream inputStream = new FileInputStream(productFile);
             FileOutputStream outputStream = new FileOutputStream(download);
             int i;
@@ -184,7 +203,8 @@ public class ProductProcessor extends Processor {
             outputStream.flush();
             outputStream.close();
             inputStream.close();
-            productFile.delete();
+            if(((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_EDIT && ((ProductProcessor)parentProcessor).menuType != ProductMenuType.VENDOR_ADD)
+                productFile.delete();
             new Alert(Alert.AlertType.INFORMATION, "You Successfully Downloaded Your File Into \"Downloads\" Folder").show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -203,7 +223,7 @@ public class ProductProcessor extends Processor {
 
     public void backToImageMenu(MouseEvent mouseEvent) {
         Optional<ButtonType> buttonType;
-        if(menuType == ProductMenuType.VENDOR_ADD || menuType == ProductMenuType.VENDOR_EDIT) {
+        if(((ProductProcessor) parentProcessor).menuType == ProductMenuType.VENDOR_ADD || ((ProductProcessor) parentProcessor).menuType == ProductMenuType.VENDOR_EDIT) {
             if(((ProductProcessor)parentProcessor).isFileAdded) {
                 if(!(fileNameField.getText().isEmpty() || fileCreatorField.getText().isEmpty() || fileExtensionComboBox.getSelectionModel().getSelectedItem() == null || fileDescriptionArea.getText().isEmpty())) {
                     buttonType = new Alert(Alert.AlertType.CONFIRMATION, "You Added One File With Name: " + fileNameField.getText() +" And Format: " + fileExtensionComboBox.getSelectionModel().getSelectedItem() + ". Do You Wish To Proceed?", ButtonType.YES, ButtonType.NO).showAndWait();
@@ -215,6 +235,10 @@ public class ProductProcessor extends Processor {
                 buttonType = new Alert(Alert.AlertType.CONFIRMATION, "You Didn't Add Any File To Your Product. Do You Wish To Proceed?", ButtonType.YES, ButtonType.NO).showAndWait();
             }
             if(buttonType.get() == ButtonType.YES) {
+                if(((ProductProcessor) parentProcessor).menuType == ProductMenuType.VENDOR_EDIT && ((ProductProcessor)parentProcessor).isFileAdded) {
+                    (((ProductProcessor) parentProcessor).subProcessors.get(2)).tickImage.setDisable(false);
+                    (((ProductProcessor) parentProcessor).subProcessors.get(2)).tickImage.setOpacity(1);
+                }
                 ((ProductProcessor) parentProcessor).productFileInfo = new Product.ProductFileInfo(((ProductProcessor) parentProcessor).product.getID(), fileNameField.getText(), fileCreatorField.getText(), fileExtensionComboBox.getSelectionModel().getSelectedItem(), fileDescriptionArea.getText());
                 ((ProductProcessor) parentProcessor).initImagePanel();
             }
