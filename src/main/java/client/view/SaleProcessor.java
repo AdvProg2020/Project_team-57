@@ -354,12 +354,6 @@ public class SaleProcessor extends Processor implements Initializable {
         return textField.getText() == null || textField.getText().isEmpty();
     }
 
-    public ArrayList<Account> getDiscountAddedUsers() {
-        Command<String>command = new Command("get discount added users", Command.HandleType.GENERAL, (discount.getID() == null ? "" : discount.getID()));
-        Response<Account> response = client.postAndGet(command, Response.class, (Class<Account>)Account.class);
-        return new ArrayList<>(response.getData());
-    }
-
     public ArrayList<String> getDiscountAddedUsernames() {
         Command<String>command = new Command("get discount added users", Command.HandleType.GENERAL, (discount.getID() == null ? "" : discount.getID()));
         Response<Account> response = client.postAndGet(command, Response.class, (Class<Account>)Account.class);
@@ -384,8 +378,6 @@ public class SaleProcessor extends Processor implements Initializable {
         this.discount = discount;
         Command<Discount> command = new Command<>("add discount to property", Command.HandleType.GENERAL, discount);
         client.postAndGet(command, Response.class, (Class<Object>)Object.class);
-        //Todo Jesus
-//        setFields();
     }
 
     @Override
@@ -396,11 +388,7 @@ public class SaleProcessor extends Processor implements Initializable {
                 parentProcessor.removeSubStage(myStage);
                 removeDiscountFromProperty(discount.getID());
             });
-        } /*else {
-            myStage.setOnCloseRequest(event -> {
-                parentProcessor.removeSubStage(myStage);
-            });
-        }*/
+        }
 
     }
 
@@ -566,10 +554,6 @@ public class SaleProcessor extends Processor implements Initializable {
         ((SaleProcessor)parentProcessor).offImageFile = client.getFile(command);
         ((SaleProcessor)parentProcessor).isDefaultPicture = true;
         updateImageRectangle();
-    }
-
-    public void setDefaultPicture(boolean defaultPicture) {
-        isDefaultPicture = defaultPicture;
     }
 
     public void setEditing(boolean editing) {

@@ -13,6 +13,8 @@ import notification.Notification;
 import server.server.Property;
 import server.server.Property.*;
 import server.server.RandomGenerator;
+import static server.controller.Lock.*;
+
 
 import java.io.*;
 import java.sql.SQLException;
@@ -53,8 +55,20 @@ public class ProductControl implements RandomGenerator {
             CartTable.deleteProductFromCarts(productId);
             ProductTable.removeAllProductComments(productId);
             ProductTable.deleteProductFromScores(productId);
-            ProductTable.removeAllProductImages(productId);
-            EditingProductTable.removeAllEditingProductImages(productId);
+
+            synchronized (PRODUCT_IMAGE_LOCK) {
+                ProductTable.removeAllProductImages(productId);
+            }
+            synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
+                EditingProductTable.removeAllEditingProductImages(productId);
+            }
+            synchronized (PRODUCT_FILE_LOCK) {
+                ProductTable.removeProductFileByID(productId);
+            }
+            synchronized (EDITING_PRODUCT_FILE_LOCK) {
+                EditingProductTable.removeEditingProductFile(productId);
+            }
+
             return Notification.REMOVE_PRODUCT_SUCCESSFULLY;
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
@@ -164,9 +178,11 @@ public class ProductControl implements RandomGenerator {
 
     public Notification removeEditingProductById(String editingProductID) {
         try {
-            EditingProductTable.removeProductById(editingProductID);
-            ProductTable.setProductStatus(editingProductID, 1);
-            return Notification.DECLINE_EDITING_PRODUCT;
+            synchronized (ADMIN_MODIFY_EDIT_PRODUCT_LOCK) {
+                EditingProductTable.removeProductById(editingProductID);
+                ProductTable.setProductStatus(editingProductID, 1);
+                return Notification.DECLINE_EDITING_PRODUCT;
+            }
         } catch (SQLException e) {
             //:)
         } catch (ClassNotFoundException e) {
@@ -582,23 +598,14 @@ public class ProductControl implements RandomGenerator {
     }
 
     public boolean doesProductHaveImage(String ID) {
-        return ProductTable.getProductImageFilePath(ID, 1) != null;
+        synchronized (PRODUCT_IMAGE_LOCK) {
+            return ProductTable.getProductImageFilePath(ID, 1) != null;
+        }
     }
 
     public boolean doesProductHaveImageWithNumber(String ID, int number) {
-        return ProductTable.getProductImageFilePath(ID, number) != null;
-    }
-
-    public void setOffPicture(String offID, File pictureFile) {
-        if(pictureFile != null) {
-            if(doesOffHaveImage(offID)) {
-                OffTable.removeOffImage(offID);
-            }
-            try {
-                OffTable.setOffImage(offID, pictureFile);
-            } catch (IOException e) {
-                //:)
-            }
+        synchronized (PRODUCT_IMAGE_LOCK) {
+            return ProductTable.getProductImageFilePath(ID, number) != null;
         }
     }
 
@@ -622,63 +629,35 @@ public class ProductControl implements RandomGenerator {
     }
 
     public int getProductImagesNumberByID(String productID) {
-        int counter = 0;
-        for(int i = 1; i < 6; ++i) {
-            if(doesProductHaveImageWithNumber(productID, i))
-                counter++;
+        synchronized (PRODUCT_IMAGE_LOCK) {
+            int counter = 0;
+            for(int i = 1; i < 6; ++i) {
+                if(doesProductHaveImageWithNumber(productID, i))
+                    counter++;
+            }
+            return counter;
         }
-        return counter;
     }
 
     public int getEditingProductImagesNumberByID(String productID) {
-        int counter = 0;
-        for(int i = 1; i < 6; ++i) {
-            if(doesEditingProductHaveImageWithNumber(productID, i))
-                counter++;
+        synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
+            int counter = 0;
+            for(int i = 1; i < 6; ++i) {
+                if(doesEditingProductHaveImageWithNumber(productID, i))
+                    counter++;
+            }
+            return counter;
         }
-        return counter;
     }
 
     private boolean doesEditingProductHaveImageWithNumber(String productID, int number) {
-        return EditingProductTable.getEditingProductImageFilePath(productID, number) != null;
-    }
-
-    @Deprecated
-    public TreeItem<Category> getCategoryTableRoot() {
-        try {
-            TreeItem rootCategory = new TreeItem(CategoryTable.getCategoryWithName("All Products"));
-            setSubCategories(rootCategory);
-            return rootCategory;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return null;
-    }
-
-    public void setSubCategories(TreeItem parentCategoryTreeItem) throws SQLException, ClassNotFoundException {
-        Category parentCategory = (Category) parentCategoryTreeItem.getValue();
-        for (Category subCategory : CategoryTable.getSubCategories(parentCategory.getName())) {
-            TreeItem subCategoryTreeItem = new TreeItem(subCategory);
-            parentCategoryTreeItem.getChildren().add(subCategoryTreeItem);
-            setSubCategories(subCategoryTreeItem);
-        }
-    }
-
-    public void addProductPicture(String productID, File pictureFile) {
-        if(pictureFile != null) {
-            try {
-                ProductTable.addImage(productID, getProductImagesNumberByID(productID) + 1, pictureFile);
-            } catch (IOException e) {
-                //:)
-            }
+        synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
+            return EditingProductTable.getEditingProductImageFilePath(productID, number) != null;
         }
     }
 
     public FileOutputStream getProductPictureOutputStream(String productID, String fileExtension) {
         try {
-//            ProductTable.addImage(productID, getProductImagesNumberByID(productID) + 1, pictureFile);
             return ProductTable.getProductImageOutputStream(productID, fileExtension, getProductImagesNumberByID(productID) + 1);
         } catch (IOException e) {
             e.printStackTrace();
@@ -698,24 +677,8 @@ public class ProductControl implements RandomGenerator {
     }
 
     public boolean doesEditingProductHaveImage(String ID) {
-        return EditingProductTable.getEditingProductImageFilePath(ID, 1) != null;
-    }
-
-    public void addEditingProductPictures(String productId, ArrayList<File> productImageFiles) {
-        try {
-            ArrayList<File> productNewImageFiles = EditingProductTable.copyEditingProductNewImagesInTemp(productId,productImageFiles);
-            if(doesEditingProductHaveImage(productId)) {
-                int board = getEditingProductImagesNumberByID(productId);
-                for(int i = 0; i < board; ++i) {
-                    EditingProductTable.deleteImage(productId, (i + 1));
-                }
-            }
-            for (int i = 0; i < productNewImageFiles.size(); i++) {
-                EditingProductTable.addImage(productId, (i + 1), productNewImageFiles.get(i));
-            }
-            EditingProductTable.removeEditingProductTempImages(productId);
-        } catch (IOException e) {
-            //:)
+        synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
+            return EditingProductTable.getEditingProductImageFilePath(ID, 1) != null;
         }
     }
 
@@ -740,52 +703,6 @@ public class ProductControl implements RandomGenerator {
         }
 
         return null;
-    }
-
-    public Image getEditingProductImage(String ID, int number) {
-        try {
-            if(doesEditingProductHaveImage(ID)) {
-                FileInputStream fileInputStream = EditingProductTable.getEditingProductImageInputStream(ID, number);
-                Image image = new Image(fileInputStream);
-                fileInputStream.close();
-                return image;
-            }
-            FileInputStream fileInputStream = EditingProductTable.getEditingProductImageInputStream("1", 1);
-            Image image = new Image(fileInputStream);
-            fileInputStream.close();
-            return image;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public ArrayList<File> getProductImageFiles(Product product) {
-        ArrayList<File> imageFiles = new ArrayList<>();
-        if(product.getStatus() != 3) {
-            imageFiles.addAll(getProductNonEditedImageFiles(product));
-        } else {
-            for(int i = 0; i < getEditingProductImagesNumberByID(product.getID()); ++i) {
-                imageFiles.add(
-                        new File(EditingProductTable.getEditingProductImageFilePath(product.getID(), (i+1)))
-                );
-            }
-        }
-        return imageFiles;
-    }
-
-    public Image getProductDefaultImage() {
-        return getProductImageByID("1", 2);
-    }
-
-    public ArrayList<File> getProductNonEditedImageFiles(Product product) {
-        ArrayList<File> imageFiles = new ArrayList<>();
-        for(int i = 0; i < getProductImagesNumberByID(product.getID()); ++i) {
-            imageFiles.add(
-                    new File(ProductTable.getProductImageFilePath(product.getID(), (i+1)))
-            );
-        }
-        return imageFiles;
     }
 
     public ArrayList<Product> getAllOffProductsByOffID(String offID, boolean isEditing) {
@@ -906,7 +823,9 @@ public class ProductControl implements RandomGenerator {
     }
 
     public boolean doesProductHaveFile(String productID) {
-        return ProductTable.doesProductHaveFile(productID);
+        synchronized (PRODUCT_FILE_LOCK) {
+            return ProductTable.doesProductHaveFile(productID);
+        }
     }
 
     public String getProductFileExtension(String productID) {
@@ -981,6 +900,8 @@ public class ProductControl implements RandomGenerator {
     }
 
     public Boolean doesEditingProductHaveFile(String productID) {
-        return EditingProductTable.doesEditingProductHaveFile(productID);
+        synchronized (EDITING_PRODUCT_FILE_LOCK) {
+            return EditingProductTable.doesEditingProductHaveFile(productID);
+        }
     }
 }

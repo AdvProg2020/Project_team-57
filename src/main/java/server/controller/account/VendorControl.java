@@ -8,6 +8,7 @@ import server.model.existence.Off;
 import server.model.existence.Product;
 import notification.Notification;
 import server.server.RandomGenerator;
+import static server.controller.Lock.*;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -60,9 +61,13 @@ public class VendorControl extends AccountControl{
             checkNotifications.add(Notification.EMPTY_PRODUCT_NAME);
         } if(product.getCategory() == null || product.getCategory().isEmpty()) {
             product.setCategory("All Products");
-        } if(product.getCategory() != null && !CategoryTable.isThereCategoryWithName(product.getCategory())) {
-            checkNotifications.add(Notification.INVALID_PRODUCT_CATEGORY);
-        } if(product.isCountable() && product.getCount() == 0) {
+        }
+        synchronized (CATEGORY_LOCK) {
+            if(product.getCategory() != null && !CategoryTable.isThereCategoryWithName(product.getCategory())) {
+                checkNotifications.add(Notification.INVALID_PRODUCT_CATEGORY);
+            }
+        }
+        if(product.isCountable() && product.getCount() == 0) {
             checkNotifications.add(Notification.EMPTY_PRODUCT_COUNT);
         } if(!product.isCountable() && product.getAmount() == 0) {
             checkNotifications.add(Notification.EMPTY_PRODUCT_AMOUNT);
@@ -80,20 +85,22 @@ public class VendorControl extends AccountControl{
 
         try {
             editProductNotification = checkEditingProduct(currentProduct, editingProduct);
+            synchronized (EDITING_PRODUCT_LOCK) {
+                if (editProductNotification == null) {
+                    editingProduct.setStatus(3);
+                    editingProduct.setSellerUserName(username);
+                    ProductTable.setProductStatus(editingProduct.getID(), 3);
 
-            if (editProductNotification == null) {
-                editingProduct.setStatus(3);
-                editingProduct.setSellerUserName(username);
-                ProductTable.setProductStatus(editingProduct.getID(), 3);
-                if (EditingProductTable.isIDFree(editingProduct.getID())) {
-                    EditingProductTable.addProduct(editingProduct);
-                } else {
-                    if (editingProduct.isCountable())
-                        EditingProductTable.updateCountableProduct(editingProduct);
-                    else
-                        EditingProductTable.updateUnCountableProduct(editingProduct);
+                    if (EditingProductTable.isIDFree(editingProduct.getID())) {
+                        EditingProductTable.addProduct(editingProduct);
+                    } else {
+                        if (editingProduct.isCountable())
+                            EditingProductTable.updateCountableProduct(editingProduct);
+                        else
+                            EditingProductTable.updateUnCountableProduct(editingProduct);
+                    }
+                    editProductNotification = Notification.EDIT_PRODUCT;
                 }
-                editProductNotification = Notification.EDIT_PRODUCT;
             }
         } catch (SQLException | ClassNotFoundException e) {
             editProductNotification = Notification.UNKNOWN_ERROR;
@@ -110,10 +117,12 @@ public class VendorControl extends AccountControl{
         if(editingProduct.getName() == null || editingProduct.getName().isEmpty())
             editingProduct.setName(currentProduct.getName());
 
-        if(editingProduct.getCategory() == null || editingProduct.getCategory().isEmpty())
-            editingProduct.setCategory(currentProduct.getCategory());
-        else if(editingProduct.getCategory() != null && !CategoryTable.isThereCategoryWithName(editingProduct.getCategory()))
-            return Notification.INVALID_PRODUCT_CATEGORY;
+        synchronized (CATEGORY_LOCK) {
+            if(editingProduct.getCategory() == null || editingProduct.getCategory().isEmpty())
+                editingProduct.setCategory(currentProduct.getCategory());
+            else if(editingProduct.getCategory() != null && !CategoryTable.isThereCategoryWithName(editingProduct.getCategory()))
+                return Notification.INVALID_PRODUCT_CATEGORY;
+        }
 
         if(editingProduct.isCountable() && editingProduct.getCount() == 0)
             editingProduct.setCount(currentProduct.getCount());
@@ -127,28 +136,6 @@ public class VendorControl extends AccountControl{
             editingProduct.setDescription(currentProduct.getDescription());
 
         return null;
-    }
-
-/*    private String generateProductID()
-    {
-        char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
-        StringBuilder ID = new StringBuilder("p");
-        for(int i = 0; i < 7; ++i)
-        {
-            ID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
-        }
-        return ID.toString();
-    }*/
-
-    public boolean isThereCategoryWithName(String categoryName) {
-        try {
-            return CategoryTable.isThereCategoryWithName(categoryName);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return false;
     }
 
     public ArrayList<Off> getAllOffs(String usernameByAuth) {
@@ -191,9 +178,7 @@ public class VendorControl extends AccountControl{
 
             OffTable.addOff(off);
             return Notification.ADD_OFF;
-        } catch (SQLException e) {
-            return Notification.UNKNOWN_ERROR;
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
     }
@@ -209,9 +194,11 @@ public class VendorControl extends AccountControl{
                     }
                 }
             }
-            for (Product product : VendorTable.getProductsWithUsername(username)) {
-                if(!OffTable.isThereProductInOffIgnoreStatus(product.getID()) && product.getStatus() != 2)
-                    nonOffProducts.add(product);
+            synchronized (ADMIN_MODIFY_PRODUCT_LOCK) {
+                for (Product product : VendorTable.getProductsWithUsername(username)) {
+                    if(!OffTable.isThereProductInOffIgnoreStatus(product.getID()) && product.getStatus() != 2)
+                        nonOffProducts.add(product);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
@@ -242,39 +229,6 @@ public class VendorControl extends AccountControl{
             //:)
         }
         return customers;
-    }
-
-    public double getMaxSale(String productID) {
-        try {
-            return LogTable.getMaxSaleByID(productID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return 0;
-    }
-
-    public int getMaxCountOfSale(String productID) {
-        try {
-            return LogTable.getMaxCountOfSaleByProductID(productID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return 0;
-    }
-
-    public double getMaxAmountOfSale(String productID) {
-        try {
-            return LogTable.getMaxAmountOfSaleByProductID(productID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return 0;
     }
 
     public ArrayList<Product> getAllProducts(String username) {

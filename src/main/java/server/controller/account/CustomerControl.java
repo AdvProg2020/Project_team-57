@@ -10,6 +10,8 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import static server.controller.Lock.*;
+
 
 public class CustomerControl extends AccountControl{
     private static CustomerControl customerControl = null;
@@ -138,8 +140,10 @@ public class CustomerControl extends AccountControl{
             synchronized (purchaseLock) {
                 double initPrice = 0; double offPrice = 0; double finalPrice;
                 for (Product product : CartTable.getAllCartWithUsername(username)) {
-                    if(product.getStatus() != 1)
-                        return Notification.UNAVAILABLE_CART_PRODUCT;
+                    synchronized (EDITING_PRODUCT_LOCK) {
+                        if(product.getStatus() != 1)
+                            return Notification.UNAVAILABLE_CART_PRODUCT;
+                    }
                     if(product.isCountable()) {
                         if(product.getCount() > ProductTable.getProductByID(product.getID()).getCount())
                             return Notification.CART_PRODUCT_OUT_OF_STOCK;
@@ -334,17 +338,6 @@ public class CustomerControl extends AccountControl{
             //:)
         }
         return new ArrayList<>();
-    }
-
-    public Log getCurrentLog(){
-        try {
-            return LogTable.getCustomerLogByID(getCurrentLogID());
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return new Log();
     }
 
     public boolean isProductPurchasedByCustomer(String productID, String customerUsername) {

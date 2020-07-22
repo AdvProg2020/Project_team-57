@@ -14,6 +14,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import static server.controller.Lock.*;
+
 
 public class AdminControl extends AccountControl{
     private static AdminControl adminControl = null;
@@ -25,70 +27,27 @@ public class AdminControl extends AccountControl{
         return adminControl;
     }
 
-    private HashMap<Discount, ArrayList<String>> discountsAddedUsers;
-
-    public void createDiscountAddedUsers() {
-        this.discountsAddedUsers = new HashMap<>();
-    }
-
-    public void addDiscountToHashMap(Discount discount) {
-        if(discount.getCustomersWithRepetition().isEmpty())
-            discountsAddedUsers.put(discount, new ArrayList<>());
-        else {
-            ArrayList<String> users = new ArrayList<>();
-            users.addAll(discount.getCustomersWithRepetition().keySet());
-            discountsAddedUsers.put(discount, users);
-        }
-    }
-
-    public void removeDiscountFromHashMap(Discount discount) {
-        if(discount != null && discountsAddedUsers != null)
-            discountsAddedUsers.remove(discount);
-    }
-
-    public HashMap<Discount, ArrayList<String>> getDiscountsAddedUsers() {
-        return discountsAddedUsers;
-    }
-
-    public void addUserToDiscountAddedUsers(Discount discount, String userName) {
-        if(discountsAddedUsers.containsKey(discount) && !discountsAddedUsers.get(discount).contains(userName)) {
-            discountsAddedUsers.get(discount).add(userName);
-        }
-    }
-
-    public void removeUserFromDiscountAddedUsers(Discount discount, String userName) {
-        if(discountsAddedUsers.containsKey(discount) && discountsAddedUsers.get(discount).contains(userName)) {
-            discountsAddedUsers.get(discount).remove(userName);
-        }
-    }
-
-    public boolean isUserAddedInDiscount(Discount discount, String userName) {
-        if(discountsAddedUsers.containsKey(discount))
-            return discountsAddedUsers.get(discount).contains(userName);
-        return false;
-    }
-
     public Notification addCategory(Category category)
     {
         try {
-            if (!CategoryTable.isThereCategoryWithName(category.getName())) {
-                if(category.getName().length() > 5 && category.getName().length() < 17) {
-                    if(category.getFeatures().length() < 101) {
-                        if (category.getParentCategory() != null && !CategoryTable.isThereCategoryWithName(category.getParentCategory()))
-                            return Notification.PARENT_CATEGORY_NOT_FOUND;
-                        if (category.getParentCategory() == null)
-                            category.setParentCategory("All Products");
-                        CategoryTable.addCategory(category);
-                        return Notification.CATEGORY_ADDED;
+            synchronized (CATEGORY_LOCK) {
+                if (!CategoryTable.isThereCategoryWithName(category.getName())) {
+                    if(category.getName().length() > 5 && category.getName().length() < 17) {
+                        if(category.getFeatures().length() < 101) {
+                            if (category.getParentCategory() != null && !CategoryTable.isThereCategoryWithName(category.getParentCategory()))
+                                return Notification.PARENT_CATEGORY_NOT_FOUND;
+                            if (category.getParentCategory() == null)
+                                category.setParentCategory("All Products");
+                            CategoryTable.addCategory(category);
+                            return Notification.CATEGORY_ADDED;
+                        }
+                        return Notification.INVALID_FEATURES;
                     }
-                    return Notification.INVALID_FEATURES;
+                    return Notification.INVALID_CATEGORY_NAME;
                 }
-                return Notification.INVALID_CATEGORY_NAME;
+                return Notification.DUPLICATE_CATEGORY_NAME;
             }
-            return Notification.DUPLICATE_CATEGORY_NAME;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
 
@@ -97,28 +56,28 @@ public class AdminControl extends AccountControl{
 
     public Notification removeCategory(Category category) {
         try {
-            if (category == null)
-                return Notification.NOT_SELECTED_CATEGORY;
-            if(category.getName().equals("All Products"))
-                return Notification.CANT_DELETE_CATEGORY;
-            if (CategoryTable.isThereCategoryWithName(category.getName())) {
-                ArrayList<Category> subCategories = CategoryTable.getSubCategories(category.getName());
-                for (Category subCategory : subCategories) {
-                    CategoryTable.setCategoryParentName(subCategory.getName(), category.getParentCategory());
+            synchronized (CATEGORY_LOCK) {
+                if (category == null)
+                    return Notification.NOT_SELECTED_CATEGORY;
+                if(category.getName().equals("All Products"))
+                    return Notification.CANT_DELETE_CATEGORY;
+                if (CategoryTable.isThereCategoryWithName(category.getName())) {
+                    ArrayList<Category> subCategories = CategoryTable.getSubCategories(category.getName());
+                    for (Category subCategory : subCategories) {
+                        CategoryTable.setCategoryParentName(subCategory.getName(), category.getParentCategory());
+                    }
+                    CategoryTable.removeCategoryWithName(category.getName());
+                    ArrayList<Product> products = ProductTable.getProductsWithCategory(category.getName());
+                    for (Product product : products) {
+                        ProductTable.removeProductByID(product.getID());
+                        if (!EditingProductTable.isIDFree(product.getID()))
+                            EditingProductTable.removeProductById(product.getID());
+                    }
+                    return Notification.CATEGORY_DELETED;
                 }
-                CategoryTable.removeCategoryWithName(category.getName());
-                ArrayList<Product> products = ProductTable.getProductsWithCategory(category.getName());
-                for (Product product : products) {
-                    ProductTable.removeProductByID(product.getID());
-                    if (!EditingProductTable.isIDFree(product.getID()))
-                        EditingProductTable.removeProductById(product.getID());
-                }
-                return Notification.CATEGORY_DELETED;
+                return Notification.CATEGORY_NOT_FOUND;
             }
-            return Notification.CATEGORY_NOT_FOUND;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
 
@@ -126,21 +85,21 @@ public class AdminControl extends AccountControl{
     }
 
     public Notification editCategory(Category oldCategory, Category newCategory, String fieldName) {
-        Notification notification = null;
-
-        switch (fieldName) {
-            case "name" :
-                notification = editCategoryName(oldCategory, newCategory);
-                break;
-            case "parent name" :
-                notification = editCategoryParentName(oldCategory, newCategory);
-                break;
-            case "features" :
-                notification = editCategoryFeatures(oldCategory, newCategory);
-                break;
+        synchronized (CATEGORY_LOCK) {
+            Notification notification = null;
+            switch (fieldName) {
+                case "name" :
+                    notification = editCategoryName(oldCategory, newCategory);
+                    break;
+                case "parent name" :
+                    notification = editCategoryParentName(oldCategory, newCategory);
+                    break;
+                case "features" :
+                    notification = editCategoryFeatures(oldCategory, newCategory);
+                    break;
+            }
+            return notification;
         }
-
-        return notification;
     }
 
     public Notification editCategoryName(Category oldCategory, Category newCategory)
@@ -165,7 +124,6 @@ public class AdminControl extends AccountControl{
                 return Notification.DUPLICATE_CATEGORY_NAME;
             }
             return Notification.CATEGORY_MODIFIED;
-            //return Notification.SAME_CATEGORY_FIELD_ERROR;
         } catch (SQLException e) {
             //:)
         } catch (ClassNotFoundException e) {
@@ -185,7 +143,6 @@ public class AdminControl extends AccountControl{
                 return Notification.INVALID_FEATURES;
             }
             return Notification.CATEGORY_MODIFIED;
-            //return Notification.SAME_CATEGORY_FIELD_ERROR;
         } catch (SQLException e) {
             //:)
         } catch (ClassNotFoundException e) {
@@ -213,18 +170,6 @@ public class AdminControl extends AccountControl{
             }
         }
         return Notification.CATEGORY_MODIFIED;
-        //return Notification.SAME_FIELD_ERROR;
-    }
-
-    public Category getCategoryByName(String categoryName) {
-        try {
-            return CategoryTable.getCategoryWithName(categoryName);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return new Category();
     }
 
     public ArrayList<Discount> getAllDiscounts() {
@@ -237,17 +182,6 @@ public class AdminControl extends AccountControl{
             //:)
         }
         return new ArrayList<>();
-    }
-
-    public Discount getDiscountByID(String ID) {
-        try {
-            return DiscountTable.getDiscountByID(ID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-        return new Discount();
     }
 
     public Notification removeDiscountByID(String ID)
@@ -536,10 +470,12 @@ public class AdminControl extends AccountControl{
     }
 
     public Notification modifyProductApprove(String productID, boolean approved) {
-        if(approved)
-            return approveProductByID(productID);
-        else
-            return ProductControl.getController().removeProductById(productID);
+        synchronized (ADMIN_MODIFY_PRODUCT_LOCK) {
+            if(approved)
+                return approveProductByID(productID);
+            else
+                return ProductControl.getController().removeProductById(productID);
+        }
     }
 
     private Notification approveProductByID(String id){
@@ -556,17 +492,19 @@ public class AdminControl extends AccountControl{
 
     private Notification acceptEditingProductByID(String editingProductID) {
         try {
-            Product editingProduct = EditingProductTable.getEditingProductWithID(editingProductID);
-            editingProduct.setApprovalDate(ProductTable.getProductByID(editingProductID).getApprovalDate());
-            editingProduct.setSeen(ProductTable.getProductByID(editingProductID).getSeen());
-            EditingProductTable.removeProductById(editingProductID);
-            ProductTable.removeProductByID(editingProduct.getID());
-            if(editingProduct.isCountable())
-                VendorTable.addCountableProduct(editingProduct, editingProduct.getSellerUserName());
-            else
-                VendorTable.addUnCountableProduct(editingProduct, editingProduct.getSellerUserName());
-            ProductTable.setProductStatus(editingProduct.getID(), 1);
-            return Notification.ACCEPT_EDITING_PRODUCT;
+            synchronized (ADMIN_MODIFY_EDIT_PRODUCT_LOCK) {
+                Product editingProduct = EditingProductTable.getEditingProductWithID(editingProductID);
+                editingProduct.setApprovalDate(ProductTable.getProductByID(editingProductID).getApprovalDate());
+                editingProduct.setSeen(ProductTable.getProductByID(editingProductID).getSeen());
+                EditingProductTable.removeProductById(editingProductID);
+                ProductTable.removeProductByID(editingProduct.getID());
+                if(editingProduct.isCountable())
+                    VendorTable.addCountableProduct(editingProduct, editingProduct.getSellerUserName());
+                else
+                    VendorTable.addUnCountableProduct(editingProduct, editingProduct.getSellerUserName());
+                ProductTable.setProductStatus(editingProduct.getID(), 1);
+                return Notification.ACCEPT_EDITING_PRODUCT;
+            }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
@@ -574,12 +512,14 @@ public class AdminControl extends AccountControl{
     }
 
     public ArrayList<Category> getAllCategories() {
-        try {
-            return CategoryTable.getAllCategories();
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+        synchronized (CATEGORY_LOCK) {
+            try {
+                return CategoryTable.getAllCategories();
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
     }
 
     public Notification setMarketWage(Double wage) {

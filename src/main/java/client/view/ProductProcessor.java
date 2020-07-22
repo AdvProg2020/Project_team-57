@@ -692,7 +692,7 @@ public class ProductProcessor extends Processor {
                     (getImageFromFileArray((Integer.parseInt(imageNumberLabel.getText()) - 1))));
         } else {
             productImageRectangle.setFill(
-                    new ImagePattern(productControl.getProductDefaultImage()));
+                    new ImagePattern(getProductImageByID("1", 2, "product")));
             modifyVendorButtons(false);
             modifyChangeButtons(false);
         }

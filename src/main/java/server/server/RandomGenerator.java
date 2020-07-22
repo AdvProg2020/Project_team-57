@@ -8,7 +8,7 @@ public interface RandomGenerator {
         StringBuilder commentID = new StringBuilder();
         do {
             char[] validChars = {'0', '2', '1', '3', '5', '8', '4', '9', '7', '6'};
-            for (int i = 0; i < 7; ++i)
+            for (int i = 0; i < board; ++i)
                 commentID.append(validChars[((int) (Math.random() * 1000000)) % validChars.length]);
         } while (predicate.test(commentID.toString()));
         return commentID.toString();
