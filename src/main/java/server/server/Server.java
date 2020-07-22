@@ -93,11 +93,6 @@ public class Server implements RandomGenerator{
         return gson.toJson(response);
     }
 
-    private String getMessage(String input) throws JsonProcessingException {
-        ObjectNode objectNode = mapper.readValue(input, ObjectNode.class);
-        return objectNode.get("message").asText();
-    }
-
     public static void main(String[] args) {
         new Server();
     }
@@ -122,10 +117,6 @@ public class Server implements RandomGenerator{
 
     public String makeAuth() {
         String auth = generateRandomString(12, s -> authTokens.containsKey(s));
-/*        String auth;
-        do {
-            auth = generateRandomString();
-        } while (authTokens.containsKey(auth));*/
         return auth;
     }
 
@@ -135,10 +126,6 @@ public class Server implements RandomGenerator{
 
     public String makeRelic() {
         String relic = generateRandomString(12, s -> relics.containsKey(s));
-/*        String relic;
-        do {
-            relic = generateRandomString();
-        }while (relics.containsKey(relic));*/
         return relic;
     }
 

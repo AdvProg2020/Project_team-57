@@ -33,6 +33,7 @@ public class PictureHandler extends Handler {
                 default:
                     System.err.println("Serious Error In Picture Handler");
             }
+            System.out.println(new Date() + ", Duration: " + formatter.format(new Date(new Date().getTime() - startOperationDate.getTime())));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -185,7 +186,6 @@ public class PictureHandler extends Handler {
 
         inputStream.close();
         outStream.close();
-        System.out.println(new Date());
     }
 
     private FileInputStream getEditingProductFileInputStream() {

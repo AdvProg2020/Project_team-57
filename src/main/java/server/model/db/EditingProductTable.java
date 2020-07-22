@@ -338,4 +338,10 @@ public class EditingProductTable extends Database{
             }
         }
     }
+
+    public static Boolean doesEditingProductHaveFile(String productID) {
+        String fileName = "database\\Files\\EditingProducts\\" + productID;
+        File file = new File(fileName);
+        return file.list() != null && file.list().length != 0;
+    }
 }

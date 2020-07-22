@@ -979,4 +979,8 @@ public class ProductControl implements RandomGenerator {
         }
 
     }
+
+    public Boolean doesEditingProductHaveFile(String productID) {
+        return EditingProductTable.doesEditingProductHaveFile(productID);
+    }
 }

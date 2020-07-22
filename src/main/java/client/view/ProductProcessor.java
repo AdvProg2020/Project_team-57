@@ -254,15 +254,6 @@ public class ProductProcessor extends Processor {
             return getNonEditedProductFileFromServer(productID);
         Command<String> command = new Command<>("get edit product file", Command.HandleType.PICTURE_GET, productID);
         return client.getFile(command);
-        /*ArrayList<File> imageFiles = new ArrayList<>();
-        Command<String> integerCommand = new Command<>("get edit product image count", Command.HandleType.PRODUCT, product.getID());
-        Response<Integer> integerResponse = client.postAndGet(integerCommand, Response.class, (Class<Integer>)Integer.class);
-        int bound = integerResponse.getDatum();
-        for (int i = 0; i < bound; i++) {
-            Command<String> command = new Command<>("get edit product image-" + (i + 1), Command.HandleType.PICTURE_GET, product.getID());
-            imageFiles.add(client.getFile(command));
-        }
-        return imageFiles;*/
     }
 
     private boolean didCustomerBuyProduct(String username, String productID) {
@@ -318,14 +309,6 @@ public class ProductProcessor extends Processor {
         }
         initFileMenu(false, false);
     }
-
-//    public void similarProductsMouseClicked(MouseEvent mouseEvent) {
-//        similarProductsPane.setCollapsible(true);
-//        similarProductsPane.setExpanded(!similarProductsPane.isExpanded());
-//        similarProductsPane.setCollapsible(false);
-//
-//        downPartScrollPane.setVvalue(1.0);
-//    }
 
     public static enum ProductMenuType {
         CART, VENDOR_ADD, VENDOR_EDIT, VENDOR_EDIT_UNAPPROVED,
@@ -966,6 +949,19 @@ public class ProductProcessor extends Processor {
                 productFileInfo.setProductID(product.getID());
                 Command<String> command = new Command<>("init product file countability", Command.HandleType.PRODUCT, product.getID());
                 client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+            }
+            if(sendType.equals("edit")) {
+                if(productFileInfo == null) {
+                    String commandStr = doesEditingProductHaveFile(product.getID()) ? "get edit product file info" : "get product file info";
+                    Command<String> command = new Command<>(commandStr, Command.HandleType.PRODUCT, product.getID());
+                    Response<Product.ProductFileInfo> response = client.postAndGet(command, Response.class, (Class<Product.ProductFileInfo>)Product.ProductFileInfo.class);
+                    productFileInfo = response.getDatum();
+                }
+                if(productFile == null) {
+                    String commandStr = (doesEditingProductHaveFile(product.getID()) ? "get edit product file" : "get product file");
+                    Command<String> command = new Command<>(commandStr, Command.HandleType.PICTURE_GET, product.getID());
+                    productFile = client.getFile(command);
+                }
             }
             Command<Product.ProductFileInfo> command = new Command<>(sendType + " product file info", Command.HandleType.PRODUCT, productFileInfo);
             client.postAndGet(command, Response.class, (Class<Object>)Object.class);

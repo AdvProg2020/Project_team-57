@@ -108,10 +108,18 @@ public class ProductHandler extends Handler {
                 return initProductFileCountability();
             case "get purchased file infos":
                 return getPurchasedFileInfos();
+            case "does edit product have file":
+                return doesEditProductHaveFile();
             default:
                 System.err.println("Serious Error In Product Handler");
                 return null;
         }
+    }
+
+    private String doesEditProductHaveFile() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, productControl.doesEditingProductHaveFile(command.getDatum()));
+        return gson.toJson(response);
     }
 
     private String getPurchasedFileInfos() {
