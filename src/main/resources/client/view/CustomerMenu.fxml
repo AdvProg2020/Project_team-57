@@ -34,7 +34,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Pane>
-      <Pane fx:id="historyPane" layoutX="641.0" layoutY="252.0" onMouseClicked="#showBuyLogs" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10; -fx-background-color: #ffb74d;" styleClass="CustomerPane" stylesheets="@CustomerProfileMenu.css">
+      <Pane fx:id="historyPane" layoutX="641.0" layoutY="252.0" onMouseClicked="#openLadiesMenu" prefHeight="268.0" prefWidth="247.0" style="-fx-background-radius: 10; -fx-background-color: #ffb74d;" styleClass="CustomerPane" stylesheets="@CustomerProfileMenu.css">
          <children>
             <ImageView fx:id="historyImage" fitHeight="92.0" fitWidth="105.0" layoutX="78.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
                <image>

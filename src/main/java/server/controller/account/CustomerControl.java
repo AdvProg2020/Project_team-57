@@ -1,5 +1,6 @@
 package server.controller.account;
 
+import server.controller.product.ProductControl;
 import server.model.db.*;
 import server.model.existence.*;
 import notification.Notification;
@@ -424,5 +425,18 @@ public class CustomerControl extends AccountControl{
         }
 
         return false;
+    }
+
+    public ArrayList<Product.ProductFileInfo> getPurchasedFileInfo(String username) {
+        ProductControl productControl = ProductControl.getController();
+        ArrayList<Product.ProductFileInfo> productFileInfos = new ArrayList<>();
+        for (Log log : getAllLogs(username)) {
+            for (Log.ProductOfLog product : log.getAllProducts()) {
+                if(productControl.doesProductHaveFile(product.getProductID())) {
+                    productFileInfos.add(productControl.getProductFileInfo(product.getProductID()));
+                }
+            }
+        }
+        return productFileInfos;
     }
 }

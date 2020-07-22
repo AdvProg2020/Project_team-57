@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import server.model.existence.Account;
 import server.model.existence.Log;
 import notification.Notification;
+import server.model.existence.Product;
 import server.server.Response;
 
 import java.io.IOException;
@@ -100,7 +101,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     }
 
     public void showBuyLogs(MouseEvent mouseEvent) {
-        if (canOpenSubStage("Show Buy Logs", this)) {
+        if (canOpenSubStage("Invoices", this)) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
                 Parent root = loader.load();
@@ -111,7 +112,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
                 newStage.setScene(new Scene(root));
                 newStage.getIcons().add(new Image(Main.class.getResourceAsStream("customer invoice.png")));
                 newStage.setResizable(false);
-                newStage.setTitle("Show Buy Logs");
+                newStage.setTitle("Invoices");
                 this.addSubStage(newStage);
                 tableViewProcessor.setMyStage(newStage);
                 newStage.show();
@@ -213,6 +214,46 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
                 newStage.getIcons().add(new Image(Main.class.getResourceAsStream("discount menu customer.png")));
                 newStage.setResizable(false);
                 newStage.setTitle(loggedInAccount.getUsername() + " Discount Codes");
+                this.addSubStage(newStage);
+                tableViewProcessor.setMyStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                //:)
+            }
+        }
+    }
+
+    public void openLadiesMenu(MouseEvent mouseEvent) {
+        if (canOpenSubStage("Buy History", this)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerLogsMenu.fxml"));
+                Parent root = loader.load();
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("buyHistoryCustomer.png")));
+                newStage.setResizable(false);
+                newStage.setTitle("Buy History");
+                this.addSubStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                //:)
+            }
+        }
+    }
+
+    public void showPurchasedFiles(MouseEvent mouseEvent) {
+        if (canOpenSubStage("Purchased Files", this)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
+                Parent root = loader.load();
+                TableViewProcessor<Product.ProductFileInfo> tableViewProcessor = loader.getController();
+                tableViewProcessor.setParentProcessor(this);
+                tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.FILES);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("customer invoice.png")));
+                newStage.setResizable(false);
+                newStage.setTitle("Purchased Files");
                 this.addSubStage(newStage);
                 tableViewProcessor.setMyStage(newStage);
                 newStage.show();

@@ -103,6 +103,9 @@ public class TableViewProcessor<T> extends Processor {
     public ImageView logsImageView;
     public Circle periodSpot;
     public JFXButton sendProductsButton;
+    public Label fileName;
+    public JFXTextArea fileDescription;
+    public JFXButton showProductFileButton;
     private TableViewType tableViewType;
     private T selectedItem;
     private String searchedUsername;
@@ -116,7 +119,7 @@ public class TableViewProcessor<T> extends Processor {
         CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN),
         DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS, ADMIN_OFFS,
         VENDOR_OFFS, LOGS, PRODUCTS_OF_LOG, CUSTOMER_DISCOUNTS,
-        PRODUCT_BUYERS;
+        PRODUCT_BUYERS, FILES;
 
         Account.AccountType accountType;
 
@@ -212,7 +215,18 @@ public class TableViewProcessor<T> extends Processor {
             case PRODUCT_BUYERS:
                 initProductBuyersColumns();
                 break;
+            case FILES:
+                initFilesColumns();
+                break;
         }
+    }
+
+    private void initFilesColumns() {
+        TableColumn<T, String> name = makeColumn("File Name", "name", 0.23);
+        TableColumn<T, String> creator = makeColumn("Creator", "creator", 0.25);
+        TableColumn<T, String> extension = makeColumn("File Extension", "extension", 0.25);
+        TableColumn<T, String> description = makeColumn("Description", "description", 0.25);
+        tableView.getColumns().addAll(name, creator, extension, description);
     }
 
     private void initProductBuyersColumns() {
@@ -337,10 +351,20 @@ public class TableViewProcessor<T> extends Processor {
             case PRODUCT_BUYERS:
                 tableList.addAll((ArrayList<T>) getProductBuyers());
                 break;
+            case FILES:
+                tableList.addAll((ArrayList<T>) getFileInfos());
+
+                break;
         }
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
         selectedItem = tableView.getSelectionModel().getSelectedItem();
+    }
+
+    private ArrayList<Product.ProductFileInfo> getFileInfos() {
+        Command command = new Command("get purchased file infos", Command.HandleType.PRODUCT);
+        Response<Product.ProductFileInfo> response = client.postAndGet(command, Response.class, (Class<Product.ProductFileInfo>) Product.ProductFileInfo.class);
+        return new ArrayList<>(response.getData());
     }
 
     private ArrayList<Account> getProductBuyers() {
@@ -464,7 +488,29 @@ public class TableViewProcessor<T> extends Processor {
             case PRODUCT_BUYERS:
                 mainBorderPane.setLeft(initProductBuyersOptions());
                 break;
+            case FILES:
+                mainBorderPane.setLeft(initFileOptions());
+                break;
         }
+    }
+
+    private Pane initFileOptions() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewCustomerFileOptions.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            if(selectedItem != null) {
+                Product.ProductFileInfo productFileInfo = (Product.ProductFileInfo) selectedItem;
+                processor.fileName.setText(productFileInfo.getName());
+                processor.fileDescription.setText(productFileInfo.getDescription());
+                processor.showProductFileButton.setDisable(false);
+            }
+            return root;
+        } catch (IOException e) {
+            //:)
+        }
+        return null;
     }
 
     private Pane initProductBuyersOptions() {
@@ -1256,7 +1302,6 @@ public class TableViewProcessor<T> extends Processor {
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Approve " + selectedOff.getOffName() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
             client.postAndGet(new Command<String>("approve editing off", Command.HandleType.SALE, selectedOff.getOffID()), Response.class, (Class<Object>)Object.class);
-//            AdminControl.getController().modifyOffEditingApprove(selectedOff.getOffID(), true);
         }
         ((TableViewProcessor)parentProcessor).updateTable();
         ((TableViewProcessor)parentProcessor).updateSelectedItem();
@@ -1268,7 +1313,6 @@ public class TableViewProcessor<T> extends Processor {
                 (Alert.AlertType.CONFIRMATION, "Are You Sure You Want To Unapprove " + selectedOff.getOffName() + "?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
             client.postAndGet(new Command<String>("unapprove editing off", Command.HandleType.SALE, selectedOff.getOffID()), Response.class, (Class<Object>)Object.class);
-//            AdminControl.getController().modifyOffEditingApprove(selectedOff.getOffID(), false);
         }
         ((TableViewProcessor)parentProcessor).updateTable();
         ((TableViewProcessor)parentProcessor).updateSelectedItem();
@@ -1355,5 +1399,29 @@ public class TableViewProcessor<T> extends Processor {
         }
         ((TableViewProcessor)parentProcessor).updateTable();
         ((TableViewProcessor)parentProcessor).updateSelectedItem();
+    }
+
+    public void showProductFile(ActionEvent actionEvent) {
+        Product.ProductFileInfo productFileInfo = (Product.ProductFileInfo) ((TableViewProcessor)parentProcessor).selectedItem;
+        Product product = getProductByID(productFileInfo.getProductID(), "product");
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenu.fxml"));
+        try {
+            addSeenToProduct(product.getID());
+            Parent root = loader.load();
+            ProductProcessor processor = loader.getController();
+            processor.setParentProcessor(parentProcessor);
+            processor.initProcessor(product, ProductProcessor.ProductMenuType.PRODUCTS_CUSTOMER);
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle(product.getName() + " Menu");
+            processor.setMyStage(stage);
+            if(parentProcessor.parentProcessor != null)
+                parentProcessor.parentProcessor.addSubStage(stage);
+            stage.setResizable(false);
+            stage.getIcons().add(new Image(Main.class.getResourceAsStream("Product Icon.png")));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

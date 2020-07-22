@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="620.0" prefWidth="230.0" style="-fx-background-color: #ffd180;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.TableViewProcessor">
+   <children>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f57c00" height="10.0" layoutX="170.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
+      <Label fx:id="fileName" alignment="CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="232.0" prefWidth="210.0" text="File Name">
+         <font>
+            <Font name="Calibri" size="17.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="100.0" fitWidth="100.0" layoutX="65.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../Images/Icons/customer%20invoice.png" />
+         </image>
+      </ImageView>
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f57c00" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
+      <JFXTextArea fx:id="fileDescription" layoutX="26.0" layoutY="278.0" prefHeight="229.0" prefWidth="183.0" promptText=" File Description" />
+      <JFXButton fx:id="showProductFileButton" buttonType="RAISED" disable="true" layoutX="18.0" layoutY="576.0" onAction="#showProductFile" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="30.0" prefWidth="194.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Product">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </JFXButton>
+   </children>
+</Pane>
