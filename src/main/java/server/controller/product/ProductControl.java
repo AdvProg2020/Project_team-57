@@ -134,36 +134,6 @@ public class ProductControl implements RandomGenerator {
         }
     }
 
-    private boolean checkFieldEquality(String fieldName, String newField, String ID) {
-        Product product = getEditedProductByID(ID);
-
-        if (fieldName.equals("Name")) {
-            if (product.getName() == null)
-                return false;
-            return product.getName().equals(newField);
-        } else if (fieldName.equals("Brand")) {
-            if (product.getBrand() == null)
-                return false;
-            return product.getBrand().equals(newField);
-        } else if (fieldName.equals("Count")) {
-            return Integer.parseInt(newField) == product.getCount();
-        } else if (fieldName.equals("Amount")) {
-            return Double.parseDouble(newField) == product.getAmount();
-        } else if (fieldName.equals("Category")) {
-            if (product.getCategory() == null)
-                return false;
-            return product.getCategory().equals(newField);
-        } else if (fieldName.equals("Description")) {
-            if (product.getDescription() == null)
-                return false;
-            return product.getDescription().equals(newField);
-        } else if (fieldName.equals("Price")) {
-            return Double.parseDouble(newField) == product.getPrice();
-        }
-
-        return false;
-    }
-
     public Product getEditedProductByID(String ID) {
         try {
             Product product = null;

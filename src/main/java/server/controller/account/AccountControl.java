@@ -18,6 +18,12 @@ import static server.controller.Lock.*;
 public class AccountControl implements IOValidity, RandomGenerator {
     private static AccountControl customerControl = null;
 
+    public static AccountControl getController() {
+        if (customerControl == null)
+            customerControl = new AccountControl();
+        return customerControl;
+    }
+
     public Account getAccountByUsername(String username){
         try {
             return AccountTable.getAccountByUsername(username);
@@ -92,12 +98,6 @@ public class AccountControl implements IOValidity, RandomGenerator {
         }
     }
 
-    public static AccountControl getController() {
-        if (customerControl == null)
-            customerControl = new AccountControl();
-        return customerControl;
-    }
-
     public synchronized Notification deleteUserWithUsername(String username) {
         try {
             synchronized (IO_LOCK) {
@@ -151,7 +151,9 @@ public class AccountControl implements IOValidity, RandomGenerator {
                     case ADMIN:
                         return AccountTable.getAllAdmins();
                     case VENDOR:
-                        return AccountTable.getAllVendors();
+                        synchronized (IO_LOCK) {
+                            return AccountTable.getAllVendors();
+                        }
                     case CUSTOMER:
                         return AccountTable.getAllCustomers();
                 }
@@ -225,7 +227,7 @@ public class AccountControl implements IOValidity, RandomGenerator {
         return null;
     }
 
-    public Notification editAccount(final Account newAccount) {
+    public Notification editAccount(Account newAccount) {
         try {
             Account oldAccount = AccountTable.getAccountByUsername(newAccount.getUsername());
             if (newAccount.getFirstName() != null)
