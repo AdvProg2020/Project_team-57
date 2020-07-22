@@ -100,28 +100,6 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         }
     }
 
-    public void showBuyLogs(MouseEvent mouseEvent) {
-        if (canOpenSubStage("Invoices", this)) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
-                Parent root = loader.load();
-                TableViewProcessor<Log> tableViewProcessor = loader.getController();
-                tableViewProcessor.setParentProcessor(this);
-                tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.LOGS);
-                Stage newStage = new Stage();
-                newStage.setScene(new Scene(root));
-                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("customer invoice.png")));
-                newStage.setResizable(false);
-                newStage.setTitle("Invoices");
-                this.addSubStage(newStage);
-                tableViewProcessor.setMyStage(newStage);
-                newStage.show();
-            } catch (IOException e) {
-                //:)
-            }
-        }
-    }
-
     public void purchase(ActionEvent event) {
         name.setBorder(null);
         phoneNumber.setBorder(null);
@@ -228,6 +206,8 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerLogsMenu.fxml"));
                 Parent root = loader.load();
+                CustomerProfileProcessor processor = loader.getController();
+                processor.setParentProcessor(this);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
                 newStage.getIcons().add(new Image(Main.class.getResourceAsStream("buyHistoryCustomer.png")));
@@ -241,20 +221,42 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
         }
     }
 
+    public void showBuyLogs(MouseEvent mouseEvent) {
+        if (canOpenSubStage("Invoices", parentProcessor)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
+                Parent root = loader.load();
+                TableViewProcessor<Log> tableViewProcessor = loader.getController();
+                tableViewProcessor.setParentProcessor(parentProcessor);
+                tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.LOGS);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("customer invoice.png")));
+                newStage.setResizable(false);
+                newStage.setTitle("Invoices");
+                parentProcessor.addSubStage(newStage);
+                tableViewProcessor.setMyStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                //:)
+            }
+        }
+    }
+
     public void showPurchasedFiles(MouseEvent mouseEvent) {
-        if (canOpenSubStage("Purchased Files", this)) {
+        if (canOpenSubStage("Purchased Files", parentProcessor)) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
                 Parent root = loader.load();
                 TableViewProcessor<Product.ProductFileInfo> tableViewProcessor = loader.getController();
-                tableViewProcessor.setParentProcessor(this);
+                tableViewProcessor.setParentProcessor(parentProcessor);
                 tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.FILES);
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
                 newStage.getIcons().add(new Image(Main.class.getResourceAsStream("customer invoice.png")));
                 newStage.setResizable(false);
                 newStage.setTitle("Purchased Files");
-                this.addSubStage(newStage);
+                parentProcessor.addSubStage(newStage);
                 tableViewProcessor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {
