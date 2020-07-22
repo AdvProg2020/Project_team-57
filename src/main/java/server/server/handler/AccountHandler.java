@@ -199,7 +199,7 @@ public class AccountHandler extends Handler {
             List<Log> allLogs = new ArrayList<>();
             switch (type) {
                 case "Vendor":
-                    allLogs = vendorControl.getAllVendorLogs(server.getUsernameByAuth(command.getAuthToken()));
+                    allLogs = vendorControl.getAllLogs(server.getUsernameByAuth(command.getAuthToken()));
                     break;
                 case "Customer":
                     allLogs = customerControl.getAllLogs(server.getUsernameByAuth(command.getAuthToken()));

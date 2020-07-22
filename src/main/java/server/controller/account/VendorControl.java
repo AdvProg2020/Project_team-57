@@ -140,17 +140,17 @@ public class VendorControl extends AccountControl{
 
     public ArrayList<Off> getAllOffs(String usernameByAuth) {
         try {
-            OffTable.removeOutDatedOffs();
-            return OffTable.getVendorOffs(usernameByAuth);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            synchronized (OFF_LOCK) {
+                OffTable.removeOutDatedOffs();
+                return OffTable.getVendorOffs(usernameByAuth);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
     }
 
-    public Notification addOff(Off off, String username){
+    public Notification addOff(Off off, String username) {
         if (off.getOffName() == null)
             return Notification.UNCOMPLETED_OFF_NAME;
         if (off.getFinishDate() == null)
@@ -163,21 +163,20 @@ public class VendorControl extends AccountControl{
             return Notification.START_DATE_AFTER_FINISH_DATE;
         off.setVendorUsername(username);
         try {
+            synchronized (OFF_LOCK) {
+                off.setOffID("o" + generateRandomNumber(7, s -> {
+                    try {
+                        return OffTable.isThereOffWithID(s);
+                    } catch (SQLException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    return false;
+                }));
+                off.setStatus(2);
 
-            off.setOffID("o" + generateRandomNumber(7, s -> {
-                try {
-                    return OffTable.isThereOffWithID(s);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                return false;
-            }));
-            off.setStatus(2);
-
-            OffTable.addOff(off);
-            return Notification.ADD_OFF;
+                OffTable.addOff(off);
+                return Notification.ADD_OFF;
+            }
         } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
@@ -206,12 +205,12 @@ public class VendorControl extends AccountControl{
         return nonOffProducts;
     }
 
-    public ArrayList<Log> getAllVendorLogs(String username) {
+    public ArrayList<Log> getAllLogs(String username) {
         try {
-            return LogTable.getAllVendorLogs(username);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            synchronized (LOG_LOCK) {
+                return LogTable.getAllVendorLogs(username);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
@@ -243,36 +242,6 @@ public class VendorControl extends AccountControl{
         return new ArrayList<>();
     }
 
-    @Deprecated
-    public Notification editOff(Off off, File offImageFile) {
-        if (off.getOffName() == null)
-            return Notification.UNCOMPLETED_OFF_NAME;
-        if (off.getFinishDate() == null)
-            return Notification.NOT_SET_FINISH_DATE;
-        if (off.getOffPercent() <= 0 || off.getOffPercent() >= 100)
-            return Notification.OUT_BOUND_OF_PERCENT;
-        if(off.getProductIDs() == null || off.getProductIDs().size() == 0)
-            return Notification.EMPTY_OFF_PRODUCTS;
-        if(off.getStartDate().compareTo(off.getFinishDate()) > -1)
-            return Notification.START_DATE_AFTER_FINISH_DATE;
-        try {
-            off.setStatus(3);
-            if(offImageFile != null) {
-                ProductControl.getController().setEditingOffPicture(off.getOffID(), offImageFile);
-            } else {
-                ProductControl.getController().deleteEditingOffPicture(off.getOffID());
-            }
-            OffTable.changeOffStatus(off.getOffID(), 3);
-            if(ProductControl.getController().isOffEditing(off.getOffID())) {
-                OffTable.removeEditingOff(off.getOffID());
-            }
-            OffTable.addEditingOff(off);
-            return Notification.EDIT_OFF;
-        } catch (SQLException | ClassNotFoundException e) {
-            return Notification.UNKNOWN_ERROR;
-        }
-    }
-
     public Notification editOff(Off off) {
         if (off.getOffName() == null)
             return Notification.UNCOMPLETED_OFF_NAME;
@@ -285,13 +254,15 @@ public class VendorControl extends AccountControl{
         if(off.getStartDate().compareTo(off.getFinishDate()) > -1)
             return Notification.START_DATE_AFTER_FINISH_DATE;
         try {
-            off.setStatus(3);
-            OffTable.changeOffStatus(off.getOffID(), 3);
-            if(ProductControl.getController().isOffEditing(off.getOffID())) {
-                OffTable.removeEditingOff(off.getOffID());
+            synchronized (OFF_LOCK) {
+                off.setStatus(3);
+                OffTable.changeOffStatus(off.getOffID(), 3);
+                if(ProductControl.getController().isOffEditing(off.getOffID())) {
+                    OffTable.removeEditingOff(off.getOffID());
+                }
+                OffTable.addEditingOff(off);
+                return Notification.EDIT_OFF;
             }
-            OffTable.addEditingOff(off);
-            return Notification.EDIT_OFF;
         } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }

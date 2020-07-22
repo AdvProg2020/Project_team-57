@@ -1,6 +1,5 @@
 package server.controller.account;
 
-import javafx.scene.image.Image;
 import notification.Notification;
 import server.controller.product.ProductControl;
 import server.model.db.*;
@@ -118,8 +117,10 @@ public class AccountControl implements IOValidity, RandomGenerator {
                         }
                     }
                 } else {
-                    ProductTable.removeAllUserComments(username);
-                    ProductTable.removeAllUserScores(username);
+                    synchronized (COMMENT_SCORE_LOCK) {
+                        ProductTable.removeAllUserComments(username);
+                        ProductTable.removeAllUserScores(username);
+                    }
                     CartTable.removeAllCustomerCartProducts(username);
                 }
                 AccountTable.deleteUserWithUsername(username);
@@ -175,31 +176,12 @@ public class AccountControl implements IOValidity, RandomGenerator {
         }
     }
 
-    public Image getProfileImageByUsername(String username) {
-        try {
-            if(doesUserHaveImage(username))
-            {
-                FileInputStream fileInputStream = AccountTable.getProfileImageInputStream(username);
-                Image image = new Image(fileInputStream);
-                fileInputStream.close();
-                return image;
-            }
-            FileInputStream fileInputStream = AccountTable.getProfileImageInputStream("1");
-            Image image = new Image(fileInputStream);
-            fileInputStream.close();
-            return image;
-        } catch (FileNotFoundException e) {
-            //:)
-        } catch (IOException e) {
-            //:)
-        }
-        return null;
-    }
-
     public FileInputStream getUserImageInputStream(String username) {
         try {
-            String imageInput = doesUserHaveImage(username) ? username : "1";
-            return AccountTable.getProfileImageInputStream(imageInput);
+            synchronized (USER_IMAGE_LOCK) {
+                String imageInput = doesUserHaveImage(username) ? username : "1";
+                return AccountTable.getProfileImageInputStream(imageInput);
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -212,20 +194,21 @@ public class AccountControl implements IOValidity, RandomGenerator {
     }
 
     public void setAccountPicture(String username, File pictureFile) {
-        if(pictureFile == null) {
-            if(doesUserHaveImage(username))
-                AccountTable.deleteProfileImage(username);
-        } else {
-            if(doesUserHaveImage(username)) {
-                AccountTable.deleteProfileImage(username);
-            }
-            try {
-                AccountTable.setProfileImage(username, pictureFile);
-            } catch (IOException e) {
-                //:)
+        synchronized (USER_IMAGE_LOCK) {
+            if(pictureFile == null) {
+                if(doesUserHaveImage(username))
+                    AccountTable.deleteProfileImage(username);
+            } else {
+                if(doesUserHaveImage(username)) {
+                    AccountTable.deleteProfileImage(username);
+                }
+                try {
+                    AccountTable.setProfileImage(username, pictureFile);
+                } catch (IOException e) {
+                    //:)
+                }
             }
         }
-
     }
 
     public FileOutputStream getAccountPictureOutputStream(String username, String pictureExtension) {
@@ -295,7 +278,9 @@ public class AccountControl implements IOValidity, RandomGenerator {
 
     public Double getWage() {
         try {
-            return AccountTable.getWage();
+            synchronized (WAGE_LOCK) {
+                return AccountTable.getWage();
+            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -304,7 +289,9 @@ public class AccountControl implements IOValidity, RandomGenerator {
 
     public Double getMinimumWallet() {
         try {
-            return AccountTable.getMinimumWallet();
+            synchronized (MINIMUM_WALLET_LOCK) {
+                return AccountTable.getMinimumWallet();
+            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }

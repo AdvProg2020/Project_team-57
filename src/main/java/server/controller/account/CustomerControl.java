@@ -15,7 +15,6 @@ import static server.controller.Lock.*;
 
 public class CustomerControl extends AccountControl{
     private static CustomerControl customerControl = null;
-    public static final Object purchaseLock = new Object();
     public static CustomerControl getController() {
         if (customerControl == null)
             customerControl = new CustomerControl();
@@ -110,11 +109,11 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Discount> getDiscounts(String username) {
         try {
-            DiscountTable.removeOutDatedDiscounts();
-            return DiscountTable.getCustomerDiscountCodes(username);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            synchronized (DISCOUNT_LOCK) {
+                DiscountTable.removeOutDatedDiscounts();
+                return DiscountTable.getCustomerDiscountCodes(username);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
@@ -123,21 +122,21 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Off> getAllShowingOffs() {
         try {
-            OffTable.removeOutDatedOffs();
-            return OffTable.getAllShowingOffs();
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            synchronized (OFF_LOCK) {
+                OffTable.removeOutDatedOffs();
+                return OffTable.getAllShowingOffs();
+            }
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
     }
 
-    //-------------------------------------------------PURCHASE-------------------------------------------------//
+    //-------------------------------------------------KAER MORHEN-------------------------------------------------//
     public Notification purchase(String username, Property property)
     {
         try {
-            synchronized (purchaseLock) {
+            synchronized (PURCHASE_LOCK) {
                 double initPrice = 0; double offPrice = 0; double finalPrice;
                 for (Product product : CartTable.getAllCartWithUsername(username)) {
                     synchronized (EDITING_PRODUCT_LOCK) {
@@ -151,14 +150,17 @@ public class CustomerControl extends AccountControl{
                         if(product.getAmount() > ProductTable.getProductByID(product.getID()).getAmount())
                             return Notification.CART_PRODUCT_OUT_OF_STOCK;
                     }
-                    if(OffTable.isThereProductInOff(product.getID())) {
-                        offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100))
-                                * product.getPrice() * product.getCount();
-                        offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100))
-                                * product.getPrice() * product.getAmount();
-                    } else {
-                        offPrice += product.getPrice() * product.getAmount();
-                        offPrice += product.getPrice() * product.getCount();
+
+                    synchronized (OFF_LOCK) {
+                        if(OffTable.isThereProductInOff(product.getID())) {
+                            offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100))
+                                    * product.getPrice() * product.getCount();
+                            offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent()/100))
+                                    * product.getPrice() * product.getAmount();
+                        } else {
+                            offPrice += product.getPrice() * product.getAmount();
+                            offPrice += product.getPrice() * product.getCount();
+                        }
                     }
                     initPrice += product.getPrice() * product.getAmount();
                     initPrice += product.getPrice() * product.getCount();
@@ -182,7 +184,9 @@ public class CustomerControl extends AccountControl{
             giveCreditToVendors(customer.getUsername());
             int giftState = createLog(customer, property);
             if(property.hasDiscount()) {
-                DiscountTable.addRepetitionToDiscount(property.getDiscount(), customer.getUsername());
+                synchronized (DISCOUNT_LOCK) {
+                    DiscountTable.addRepetitionToDiscount(property.getDiscount(), customer.getUsername());
+                }
             }
             reduceProductFromStock(customer.getUsername());
             CartTable.deleteCustomerCart(customer.getUsername());
@@ -324,7 +328,9 @@ public class CustomerControl extends AccountControl{
 
     public Discount getCustomerDiscountByID(String discountID) {
         try {
-            return DiscountTable.getDiscountByID(discountID);
+            synchronized (DISCOUNT_LOCK) {
+                return DiscountTable.getDiscountByID(discountID);
+            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -333,7 +339,9 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Log> getAllLogs(String username) {
         try {
-            return LogTable.getAllCustomerLogs(username);
+            synchronized (LOG_LOCK) {
+                return LogTable.getAllCustomerLogs(username);
+            }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
@@ -372,14 +380,16 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Discount> getAllAvailableCustomerDisCounts(String username) {
         try {
-            ArrayList<Discount> availableDiscounts = new ArrayList<>();
-            for (Discount customerDiscountCode : DiscountTable.getCustomerDiscountCodes(username)) {
-                if(customerDiscountCode.canCustomerUseThisDiscount(username)) {
-                    availableDiscounts.add(customerDiscountCode);
+            synchronized (DISCOUNT_LOCK) {
+                ArrayList<Discount> availableDiscounts = new ArrayList<>();
+                for (Discount customerDiscountCode : DiscountTable.getCustomerDiscountCodes(username)) {
+                    if(customerDiscountCode.canCustomerUseThisDiscount(username)) {
+                        availableDiscounts.add(customerDiscountCode);
+                    }
                 }
-            }
 
-            return availableDiscounts;
+                return availableDiscounts;
+            }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
@@ -420,7 +430,7 @@ public class CustomerControl extends AccountControl{
         return false;
     }
 
-    public ArrayList<Product.ProductFileInfo> getPurchasedFileInfo(String username) {
+    public ArrayList<Product.ProductFileInfo> getPurchasedFileInfos(String username) {
         ProductControl productControl = ProductControl.getController();
         ArrayList<Product.ProductFileInfo> productFileInfos = new ArrayList<>();
         for (Log log : getAllLogs(username)) {

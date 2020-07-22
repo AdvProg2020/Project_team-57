@@ -1,5 +1,7 @@
 package server.server.bank.sapahbank;
 
+import server.controller.Lock;
+
 import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
@@ -82,30 +84,36 @@ public class SapahDB {
     }
     //Finish Init
 
-    public static void createAccount(String accountID, String firstName, String lastName, String username, String password) throws SQLException, ClassNotFoundException {
-        String command = "INSERT INTO Accounts (AccountID, Username, Password, FirstName, LastName, Balance) Values (?, ?, ?, ?, ?, ?)";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, accountID);
-        preparedStatement.setString(2, username);
-        preparedStatement.setString(3, password);
-        preparedStatement.setString(4, firstName);
-        preparedStatement.setString(5, lastName);
-        preparedStatement.setDouble(6, 0);
-        preparedStatement.execute();
+    public synchronized static void createAccount(String accountID, String firstName, String lastName, String username, String password) throws SQLException, ClassNotFoundException {
+        synchronized (Lock.ACCOUNT_LOCK) {
+            String command = "INSERT INTO Accounts (AccountID, Username, Password, FirstName, LastName, Balance) Values (?, ?, ?, ?, ?, ?)";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+            preparedStatement.setString(1, accountID);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, password);
+            preparedStatement.setString(4, firstName);
+            preparedStatement.setString(5, lastName);
+            preparedStatement.setDouble(6, 0);
+            preparedStatement.execute();
+        }
     }
 
     public static boolean isThereAccountWithID(String accountID) throws SQLException, ClassNotFoundException {
-        String command = "SELECT * FROM Accounts WHERE AccountID = ?;";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, accountID);
-        return preparedStatement.executeQuery().next();
+        synchronized (Lock.ACCOUNT_LOCK) {
+            String command = "SELECT * FROM Accounts WHERE AccountID = ?;";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+            preparedStatement.setString(1, accountID);
+            return preparedStatement.executeQuery().next();
+        }
     }
 
     public static boolean isThereAccountWithUsername(String username) throws SQLException, ClassNotFoundException {
-        String command = "SELECT * FROM Accounts WHERE Username = ?;";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, username);
-        return preparedStatement.executeQuery().next();
+        synchronized (Lock.ACCOUNT_LOCK) {
+            String command = "SELECT * FROM Accounts WHERE Username = ?;";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+            preparedStatement.setString(1, username);
+            return preparedStatement.executeQuery().next();
+        }
     }
 
     public static String getPasswordWithUsername(String username) throws SQLException, ClassNotFoundException {
@@ -222,25 +230,31 @@ public class SapahDB {
     }
 
     public static double getMoneyWithAccountID(String accountID) throws SQLException, ClassNotFoundException {
-        String command = "SELECT Balance FROM Accounts WHERE AccountID = ?;";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setString(1, accountID);
-        return preparedStatement.executeQuery().getDouble("Balance");
+        synchronized (Lock.TRANSACTION_LOCK) {
+            String command = "SELECT Balance FROM Accounts WHERE AccountID = ?;";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+            preparedStatement.setString(1, accountID);
+            return preparedStatement.executeQuery().getDouble("Balance");
+        }
     }
 
     public static void addMoney(String accountID, double money) throws SQLException, ClassNotFoundException {
-        String command = "UPDATE Accounts SET Balance = ? WHERE AccountID = ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setDouble(1, getMoneyWithAccountID(accountID) + money);
-        preparedStatement.setString(2, accountID);
-        preparedStatement.execute();
+        synchronized (Lock.TRANSACTION_LOCK) {
+            String command = "UPDATE Accounts SET Balance = ? WHERE AccountID = ?";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+            preparedStatement.setDouble(1, getMoneyWithAccountID(accountID) + money);
+            preparedStatement.setString(2, accountID);
+            preparedStatement.execute();
+        }
     }
 
     public static void subtractMoney(String accountID, double money) throws SQLException, ClassNotFoundException {
-        String command = "UPDATE Accounts SET Balance = ? WHERE AccountID = ?";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-        preparedStatement.setDouble(1, getMoneyWithAccountID(accountID) - money);
-        preparedStatement.setString(2, accountID);
-        preparedStatement.execute();
+        synchronized (Lock.TRANSACTION_LOCK) {
+            String command = "UPDATE Accounts SET Balance = ? WHERE AccountID = ?";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+            preparedStatement.setDouble(1, getMoneyWithAccountID(accountID) - money);
+            preparedStatement.setString(2, accountID);
+            preparedStatement.execute();
+        }
     }
 }

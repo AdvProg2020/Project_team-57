@@ -155,6 +155,7 @@ public class PictureHandler extends Handler {
             case "get edit product image-4":
             case "get edit product image-5":
             case "get edit product image-6":
+
                 sendExtension("editing product");
                 inputStream = getEditProductImageInputStream();
                 break;

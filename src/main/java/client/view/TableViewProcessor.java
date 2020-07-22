@@ -907,7 +907,7 @@ public class TableViewProcessor<T> extends Processor {
 
     private void terminateAccountOptions() {
         imageCircle.setFill(new ImagePattern
-                (AccountControl.getController().getProfileImageByUsername("1")));
+                (getProfileImage("1")));
         showProfileButton.setDisable(true);
         approveUserButton.setDisable(true);
         deleteUserButton.setDisable(true);

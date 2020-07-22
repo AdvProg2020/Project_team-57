@@ -48,13 +48,20 @@ public class ProductControl implements RandomGenerator {
     public synchronized Notification removeProductById(String productId) {
         try {
             ProductTable.removeProductByID(productId);
+
             if (!EditingProductTable.isIDFree(productId))
                 EditingProductTable.removeProductById(productId);
-            OffTable.removeProductFromOffs(productId);
-            OffTable.removeProductFromEditingOffs(productId);
+            synchronized (OFF_LOCK) {
+                OffTable.removeProductFromOffs(productId);
+                OffTable.removeProductFromEditingOffs(productId);
+            }
+
             CartTable.deleteProductFromCarts(productId);
-            ProductTable.removeAllProductComments(productId);
-            ProductTable.deleteProductFromScores(productId);
+
+            synchronized (COMMENT_SCORE_LOCK) {
+                ProductTable.removeAllProductComments(productId);
+                ProductTable.deleteProductFromScores(productId);
+            }
 
             synchronized (PRODUCT_IMAGE_LOCK) {
                 ProductTable.removeAllProductImages(productId);
@@ -183,9 +190,7 @@ public class ProductControl implements RandomGenerator {
                 ProductTable.setProductStatus(editingProductID, 1);
                 return Notification.DECLINE_EDITING_PRODUCT;
             }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return Notification.UNKNOWN_ERROR;
@@ -198,9 +203,7 @@ public class ProductControl implements RandomGenerator {
             filterProductsWithPrice(showingProducts, property.getFilter());
             sortProducts(showingProducts, property.getSort());
             return showingProducts;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
@@ -255,9 +258,7 @@ public class ProductControl implements RandomGenerator {
             }
 
             return productPriceForVendor;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return 0;
@@ -325,9 +326,7 @@ public class ProductControl implements RandomGenerator {
                         result = false;
                     }
                 }
-            } catch (SQLException e) {
-                //:)
-            } catch (ClassNotFoundException e) {
+            } catch (SQLException | ClassNotFoundException e) {
                 //:)
             }
             return result;
@@ -337,20 +336,8 @@ public class ProductControl implements RandomGenerator {
     public void addSeenToProduct(String productID) {
         try {
             ProductTable.addSeenToProductWithID(productID);
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-    }
-
-    public Off getOffByProductID(String productID) {
-        try {
-            return OffTable.getOffByProductID(productID);
-        } catch (SQLException e) {
-            return new Off();
-        } catch (ClassNotFoundException e) {
-            return new Off();
         }
     }
 
@@ -410,9 +397,7 @@ public class ProductControl implements RandomGenerator {
                 averageScore += score;
             }
             return averageScore / ProductTable.getAllScores(productID).size();
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return 1;
@@ -427,9 +412,7 @@ public class ProductControl implements RandomGenerator {
             commentID = "c" + generateRandomNumber(7, s -> {
                 try {
                     return ProductTable.isThereCommentByID(s);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
+                } catch (SQLException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
                 return false;
@@ -477,42 +460,12 @@ public class ProductControl implements RandomGenerator {
         return productComments;
     }
 
-    public Comment getCommentByID(String commentID) {
-        try {
-            return ProductTable.getCommentByID(commentID);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
-            //:)
-        }
-
-        return new Comment();
-    }
-
-    public Image getProductImageByID(String ID, int number) {
-        try {
-            if(doesProductHaveImage(ID)) {
-                FileInputStream fileInputStream = ProductTable.getProductImageInputStream(ID, number);
-                Image image = new Image(fileInputStream);
-                fileInputStream.close();
-                return image;
-            }
-            FileInputStream fileInputStream = ProductTable.getProductImageInputStream("1", 1);
-            Image image = new Image(fileInputStream);
-            fileInputStream.close();
-            return image;
-        } catch (FileNotFoundException e) {
-            //:)
-        } catch (IOException e) {
-            //:)
-        }
-        return null;
-    }
-
     public FileInputStream getProductImageFileInputStreamByID(String ID, int number) {
         try {
-            String productID = doesProductHaveImage(ID) ? ID : ("" + 1);
-            return ProductTable.getProductImageInputStream(productID, number);
+            synchronized (PRODUCT_IMAGE_LOCK) {
+                String productID = doesProductHaveImage(ID) ? ID : ("" + 1);
+                return ProductTable.getProductImageInputStream(productID, number);
+            }
         } catch (FileNotFoundException e) {
             //:)
         }
@@ -521,8 +474,10 @@ public class ProductControl implements RandomGenerator {
 
     public FileInputStream getEditingProductImageFileInputStreamByID(String ID, int number) {
         try {
-            String productID = doesEditingProductHaveImage(ID) ? ID : ("" + 1);
-            return EditingProductTable.getEditingProductImageInputStream(productID, number);
+            synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
+                String productID = doesEditingProductHaveImage(ID) ? ID : ("" + 1);
+                return EditingProductTable.getEditingProductImageInputStream(productID, number);
+            }
         } catch (FileNotFoundException e) {
             //:)
         }
@@ -541,52 +496,17 @@ public class ProductControl implements RandomGenerator {
         Image image = new Image(fileInputStream);
         fileInputStream.close();
         return image;
-        } catch (FileNotFoundException e) {
-            //:)
         } catch (IOException e) {
             //:)
         }
         return null;
-    }
-
-    public void deleteEditingOffPicture(String offID) {
-        if(doesEditingOffHaveImage(offID)) {
-            OffTable.removeEditingOffImage(offID);
-        }
-    }
-
-    public Image getEditingOffImageByID(String offID) {
-        try {
-            if(doesEditingOffHaveImage(offID)) {
-                FileInputStream fileInputStream = OffTable.getEditingOffImageInputStream(offID);
-                Image image = new Image(fileInputStream);
-                fileInputStream.close();
-                return image;
-            }
-            FileInputStream fileInputStream = OffTable.getOffImageInputStream("1");
-            Image image = new Image(fileInputStream);
-            fileInputStream.close();
-            return image;
-        } catch (FileNotFoundException e) {
-            //:)
-        } catch (IOException e) {
-            //:)
-        }
-        return null;
-    }
-
-    @Deprecated
-    public File getOffImageFileByID(String offID) {
-        if(doesOffHaveImage(offID)) {
-            return new File(OffTable.getOffImageFilePath(offID));
-        } else
-            return new File(OffTable.getOffImageFilePath("1"));
-
     }
 
     public FileInputStream getOffImageFileInputStreamByID(String offID) {
         try {
-            return OffTable.getOffImageInputStream((doesOffHaveImage(offID) ? offID : "1"));
+            synchronized (OFF_IMAGE_LOCK) {
+                return OffTable.getOffImageInputStream((doesOffHaveImage(offID) ? offID : "1"));
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -594,7 +514,9 @@ public class ProductControl implements RandomGenerator {
     }
 
     public boolean doesOffHaveImage(String offID) {
-        return OffTable.getOffImageFilePath(offID) != null;
+        synchronized (OFF_IMAGE_LOCK) {
+            return OffTable.getOffImageFilePath(offID) != null;
+        }
     }
 
     public boolean doesProductHaveImage(String ID) {
@@ -625,7 +547,9 @@ public class ProductControl implements RandomGenerator {
     }
 
     public boolean doesEditingOffHaveImage(String offID) {
-        return OffTable.getEditingOffImageFilePath(offID) != null;
+        synchronized (EDITING_OFF_IMAGE_LOCK) {
+            return OffTable.getEditingOffImageFilePath(offID) != null;
+        }
     }
 
     public int getProductImagesNumberByID(String productID) {
@@ -658,7 +582,9 @@ public class ProductControl implements RandomGenerator {
 
     public FileOutputStream getProductPictureOutputStream(String productID, String fileExtension) {
         try {
-            return ProductTable.getProductImageOutputStream(productID, fileExtension, getProductImagesNumberByID(productID) + 1);
+            synchronized (PRODUCT_IMAGE_LOCK) {
+                return ProductTable.getProductImageOutputStream(productID, fileExtension, getProductImagesNumberByID(productID) + 1);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -668,7 +594,9 @@ public class ProductControl implements RandomGenerator {
 
     public FileOutputStream getOffPictureOutputStream(String offID, String fileExtension) {
         try {
-            return OffTable.getOffImageOutputStream(offID, fileExtension);
+            synchronized (OFF_IMAGE_LOCK) {
+                return OffTable.getOffImageOutputStream(offID, fileExtension);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -697,7 +625,9 @@ public class ProductControl implements RandomGenerator {
 
     public FileOutputStream getEditingProductPictureOutputStream(String productID, String fileExtension) {
         try {
-            return EditingProductTable.getEditingProductImageOutputStream(productID, fileExtension, getEditingProductImagesNumberByID(productID) + 1);
+            synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
+                return EditingProductTable.getEditingProductImageOutputStream(productID, fileExtension, getEditingProductImagesNumberByID(productID) + 1);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -734,7 +664,9 @@ public class ProductControl implements RandomGenerator {
 
     public boolean isOffEditing(String offID) {
         try {
-            return OffTable.isThereEditingOffWithID(offID);
+            synchronized (OFF_LOCK) {
+                return OffTable.isThereEditingOffWithID(offID);
+            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -750,10 +682,12 @@ public class ProductControl implements RandomGenerator {
 
     public FileInputStream getEditingOffImageFileInputStreamByID(String offID) {
         try {
-            if(doesEditingOffHaveImage(offID)) {
-                return OffTable.getEditingOffImageInputStream(offID);
-            } else
-                return OffTable.getOffImageInputStream("1");
+            synchronized (EDITING_OFF_IMAGE_LOCK) {
+                if(doesEditingOffHaveImage(offID)) {
+                    return OffTable.getEditingOffImageInputStream(offID);
+                } else
+                    return OffTable.getOffImageInputStream("1");
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -762,7 +696,9 @@ public class ProductControl implements RandomGenerator {
 
     public Off getEditingOffByID(String offID) {
         try {
-            return OffTable.getSpecificEditingOff(offID);
+            synchronized (OFF_LOCK) {
+                return OffTable.getSpecificEditingOff(offID);
+            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -770,24 +706,34 @@ public class ProductControl implements RandomGenerator {
     }
 
     public String getProductImageExtensionByNumber(String productID, int imageNumber) {
-        return ProductTable.getProductImageFileExtension(productID, imageNumber);
+        synchronized (PRODUCT_IMAGE_LOCK) {
+            return ProductTable.getProductImageFileExtension(productID, imageNumber);
+        }
     }
 
     public String getEditingProductImageExtensionByNumber(String productID, int imageNumber) {
-        return EditingProductTable.getEditingProductImageFileExtension(productID, imageNumber);
+        synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
+            return EditingProductTable.getEditingProductImageFileExtension(productID, imageNumber);
+        }
     }
 
     public String getOffImageExtensionByID(String ID) {
-        return OffTable.getOffImageExtensionByID(ID);
+        synchronized (OFF_IMAGE_LOCK) {
+            return OffTable.getOffImageExtensionByID(ID);
+        }
     }
 
     public String getEditingOffImageExtensionByID(String ID) {
-        return OffTable.getEditingOffImageExtensionByID(ID);
+        synchronized (EDITING_OFF_IMAGE_LOCK) {
+            return OffTable.getEditingOffImageExtensionByID(ID);
+        }
     }
 
     public FileOutputStream getEditingOffPictureOutputStream(String offID, String fileExtension) {
         try {
-            return OffTable.getEditingOffImageOutputStream(offID, fileExtension);
+            synchronized (EDITING_OFF_IMAGE_LOCK) {
+                return OffTable.getEditingOffImageOutputStream(offID, fileExtension);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -804,8 +750,10 @@ public class ProductControl implements RandomGenerator {
 
     public FileOutputStream getProductFileOutputStream(String productID, String fileExtension) {
         try {
-            Product.ProductFileInfo productFileInfo = getProductFileInfo(productID);
-            return ProductTable.getProductFileOutputStream(productID, productFileInfo.getName(), fileExtension);
+            synchronized (PRODUCT_FILE_LOCK) {
+                Product.ProductFileInfo productFileInfo = getProductFileInfo(productID);
+                return ProductTable.getProductFileOutputStream(productID, productFileInfo.getName(), fileExtension);
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -814,8 +762,10 @@ public class ProductControl implements RandomGenerator {
 
     public Product.ProductFileInfo getProductFileInfo(String productID) {
         try {
-            String productFileInfoJson = ProductTable.getProductFileInfo(productID);
-            return gson.fromJson(productFileInfoJson, Product.ProductFileInfo.class);
+            synchronized (PRODUCT_FILE_INFO_LOCK) {
+                String productFileInfoJson = ProductTable.getProductFileInfo(productID);
+                return gson.fromJson(productFileInfoJson, Product.ProductFileInfo.class);
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -829,13 +779,17 @@ public class ProductControl implements RandomGenerator {
     }
 
     public String getProductFileExtension(String productID) {
-        return getProductFileInfo(productID).getExtension().toLowerCase();
+        synchronized (PRODUCT_FILE_LOCK) {
+            return getProductFileInfo(productID).getExtension().toLowerCase();
+        }
     }
 
     public FileInputStream getProductFileInputStreamByID(String productID) {
         try {
-            Product.ProductFileInfo productFileInfo = getProductFileInfo(productID);
-            return ProductTable.getProductFileInputStream(productID, productFileInfo.getName(), productFileInfo.getExtension().toLowerCase());
+            synchronized (PRODUCT_FILE_LOCK) {
+                Product.ProductFileInfo productFileInfo = getProductFileInfo(productID);
+                return ProductTable.getProductFileInputStream(productID, productFileInfo.getName(), productFileInfo.getExtension().toLowerCase());
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -844,20 +798,26 @@ public class ProductControl implements RandomGenerator {
 
     public void editProductFileInfo(String productID, String productFileInfoJson) {
         try {
-            EditingProductTable.editProductFileInfo(productID, productFileInfoJson);
+            synchronized (EDITING_PRODUCT_FILE_INFO_LOCK) {
+                EditingProductTable.editProductFileInfo(productID, productFileInfoJson);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void deleteEditingProductFile(String productID) {
-        EditingProductTable.removeEditingProductFile(productID);
+        synchronized (EDITING_PRODUCT_FILE_LOCK) {
+            EditingProductTable.removeEditingProductFile(productID);
+        }
     }
 
     public FileOutputStream getEditingProductFileOutputStream(String productID, String fileExtension) {
         try {
-            Product.ProductFileInfo editingProductFileInfo = getEditingProductFileInfo(productID);
-            return EditingProductTable.getEditingProductFileOutputStream(productID, editingProductFileInfo.getName(), fileExtension);
+            synchronized (EDITING_PRODUCT_FILE_LOCK) {
+                Product.ProductFileInfo editingProductFileInfo = getEditingProductFileInfo(productID);
+                return EditingProductTable.getEditingProductFileOutputStream(productID, editingProductFileInfo.getName(), fileExtension);
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -866,8 +826,10 @@ public class ProductControl implements RandomGenerator {
 
     public Product.ProductFileInfo getEditingProductFileInfo(String productID) {
         try {
-            String productFileInfoJson = EditingProductTable.getEditingProductFileInfo(productID);
-            return gson.fromJson(productFileInfoJson, Product.ProductFileInfo.class);
+            synchronized (EDITING_PRODUCT_FILE_INFO_LOCK) {
+                String productFileInfoJson = EditingProductTable.getEditingProductFileInfo(productID);
+                return gson.fromJson(productFileInfoJson, Product.ProductFileInfo.class);
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -875,13 +837,17 @@ public class ProductControl implements RandomGenerator {
     }
 
     public String getEditingProductFileExtension(String productID) {
-        return getEditingProductFileInfo(productID).getExtension().toLowerCase();
+        synchronized (EDITING_PRODUCT_FILE_LOCK) {
+            return getEditingProductFileInfo(productID).getExtension().toLowerCase();
+        }
     }
 
     public FileInputStream getEditingProductFileInputStreamByID(String productID) {
         try {
-            Product.ProductFileInfo productFileInfo = getEditingProductFileInfo(productID);
-            return EditingProductTable.getEditingProductFileInputStream(productID, productFileInfo.getName(), productFileInfo.getExtension().toLowerCase());
+            synchronized (EDITING_PRODUCT_FILE_LOCK) {
+                Product.ProductFileInfo productFileInfo = getEditingProductFileInfo(productID);
+                return EditingProductTable.getEditingProductFileInputStream(productID, productFileInfo.getName(), productFileInfo.getExtension().toLowerCase());
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

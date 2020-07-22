@@ -59,8 +59,7 @@ public class CartTable extends Database{
         PreparedStatement preparedStatement = getConnection().prepareStatement(command);
         preparedStatement.setString(1, customerUsername);
         ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next())
-        {
+        while (resultSet.next()) {
             Product product = ProductTable.getProductByID(resultSet.getString("ID"));
             if(product.isCountable())
                 product.setCount(resultSet.getInt("Count"));

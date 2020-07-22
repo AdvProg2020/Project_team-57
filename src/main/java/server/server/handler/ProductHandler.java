@@ -125,7 +125,7 @@ public class ProductHandler extends Handler {
     private String getPurchasedFileInfos() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
         if (!server.getAuthTokens().containsKey(command.getAuthToken()) || accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
-            Response<Product.ProductFileInfo> response = new Response<>(Notification.PACKET_NOTIFICATION, customerControl.getPurchasedFileInfo(server.getUsernameByAuth(command.getAuthToken())).toArray(new Product.ProductFileInfo[0]));
+            Response<Product.ProductFileInfo> response = new Response<>(Notification.PACKET_NOTIFICATION, customerControl.getPurchasedFileInfos(server.getUsernameByAuth(command.getAuthToken())).toArray(new Product.ProductFileInfo[0]));
             return gson.toJson(response);
         }
         return gson.toJson(HACK_RESPONSE);
