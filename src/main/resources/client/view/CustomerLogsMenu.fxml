@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" stylesheets="@../CSS%20files/customerProfile.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <left>
+      <Pane prefHeight="600.0" prefWidth="550.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="600.0" fitWidth="550.0" opacity="0.8" pickOnBounds="true" styleClass="Girl_Pointing_Button">
+               <image>
+                  <Image url="@../Images/Backgrounds/CustomerLogMenu1%20(2).jpg" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="299.0" layoutY="140.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Backgrounds/Invoices%20(2).png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+   </left>
+   <right>
+      <Pane prefHeight="600.0" prefWidth="550.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="600.0" fitWidth="550.0" opacity="0.8" pickOnBounds="true" styleClass="Girl_Pointing_Button">
+               <image>
+                  <Image url="@../Images/Backgrounds/CustomerLogMenu2%20(2).jpg" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="107.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Backgrounds/Files.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+   </right>
+   <center>
+      <Separator orientation="VERTICAL" prefHeight="600.0" prefWidth="10.0" style="-fx-background-color: #616161;" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
