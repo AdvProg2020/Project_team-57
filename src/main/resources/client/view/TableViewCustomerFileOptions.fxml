@@ -24,7 +24,7 @@
       </ImageView>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f57c00" height="10.0" layoutY="158.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="60.0" />
       <JFXTextArea fx:id="fileDescription" layoutX="26.0" layoutY="278.0" prefHeight="229.0" prefWidth="183.0" promptText=" File Description" />
-      <JFXButton fx:id="showProductFileButton" buttonType="RAISED" disable="true" layoutX="18.0" layoutY="576.0" onAction="#showProductFile" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="30.0" prefWidth="194.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Product">
+      <JFXButton fx:id="showProductFileButton" buttonType="RAISED" disable="true" layoutX="18.0" layoutY="570.0" onAction="#showProductFile" onMouseEntered="#onMouse" onMouseExited="#outMouse" prefHeight="30.0" prefWidth="194.0" ripplerFill="WHITE" style="-fx-background-color: #ffffff; -fx-background-radius: 10 10 10 10;" text="Show Product">
          <font>
             <Font size="14.0" />
          </font>

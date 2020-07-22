@@ -62,7 +62,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
              loggedInAccount = getLoggedInAccount();
             if (loggedInAccount.getFirstName() != null && loggedInAccount.getLastName() != null)
                 name.setText(loggedInAccount.getFirstName() + " " + loggedInAccount.getLastName());
-        } else {
+        } else if(location.toString().contains("CustomerMenu.fxml")){
             loggedInAccount = getLoggedInAccount();
             initAudios();
             initMusicPlayer();
