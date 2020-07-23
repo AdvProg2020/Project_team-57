@@ -1009,6 +1009,7 @@ public class TableViewProcessor<T> extends Processor {
     public void addNewAdmin(ActionEvent actionEvent) {
         try {
             WelcomeProcessor.setIsNormal(false);
+            WelcomeProcessor.setIsAdmin(true);
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("SignUpMenu.fxml"));
             Parent root = loader.load();
             WelcomeProcessor signUpProcessor = loader.getController();

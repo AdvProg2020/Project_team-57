@@ -40,15 +40,16 @@ public class Account {
         private String password;
         private String firstName;
         private String lastName;
-        private String email;
         private String onlineStatus;
+
+        public Supporter() {
+        }
 
         public Supporter(ResultSet resultSet) throws SQLException {
             this.username = resultSet.getString("Username");
             this.password = resultSet.getString("Password");
             this.firstName = resultSet.getString("FirstName");
             this.lastName = resultSet.getString("LastName");
-            this.email = resultSet.getString("Email");
         }
 
         public String getUsername() {
@@ -81,14 +82,6 @@ public class Account {
 
         public void setLastName(String lastName) {
             this.lastName = lastName;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
         }
 
         public String getOnlineStatus() {

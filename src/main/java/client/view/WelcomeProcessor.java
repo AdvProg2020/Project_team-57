@@ -24,6 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import server.server.Response;
 import server.model.existence.Account;
+import server.model.existence.Account.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -43,6 +44,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
 
     //SignUpMenu
     private static boolean isNormal = true;
+    private static boolean isAdmin = true;
     public Button signUp;
     public JFXTextField username;
     public JFXPasswordField password;
@@ -232,7 +234,11 @@ public class WelcomeProcessor extends Processor implements Initializable {
         } else {
             imageOfSignUp.setImage(new Image(IMAGE_FOLDER_URL + "Backgrounds\\steve jobs.png"));
             pane.getChildren().remove(backImage);
-            accountTypeComboBox.getItems().add("Admin");
+            if(isAdmin) {
+                accountTypeComboBox.getItems().add("Admin");
+            } else {
+                accountTypeComboBox.getItems().add("Supporter");
+            }
             accountTypeComboBox.getSelectionModel().selectFirst();
         }
     }
@@ -241,14 +247,29 @@ public class WelcomeProcessor extends Processor implements Initializable {
         WelcomeProcessor.isNormal = isNormal;
     }
 
+    public static void setIsAdmin(boolean isAdmin) {
+        WelcomeProcessor.isAdmin = isAdmin;
+    }
+
     public void register(ActionEvent event) {
         if (!isTextFieldEmpty()) {
-            final Account account = new Account(username.getText(), password.getText());
-            account.setFirstName(name.getText());
-            account.setLastName(lastName.getText());
-            account.setType(getAccountType());
-            Response response =
-                    client.postAndGet(getIOCommand("register", account), Response.class, (Class<Object>)Object.class);
+            Response response = null;
+            if(isAdmin || isNormal /*accountTypeComboBox.getSelectionModel().getSelectedItem().equals("Supporter")*/) {
+                final Account account = new Account(username.getText(), password.getText());
+                account.setFirstName(name.getText());
+                account.setLastName(lastName.getText());
+                account.setType(getAccountType());
+                response =
+                        client.postAndGet(getIOCommand("register", account), Response.class, (Class<Object>)Object.class);
+            } else {
+                final Supporter supporter = new Supporter();
+                supporter.setUsername(userNameField.getText());
+                supporter.setPassword(passwordField.getText());
+                supporter.setFirstName(name.getText());
+                supporter.setLastName(lastName.getText());
+                response = registerSupporter(supporter);
+            }
+
             Alert alert = response.getMessage().getAlert();
             if (alert.getTitle().equals("Successful")) {
                 alert.show();
@@ -265,6 +286,11 @@ public class WelcomeProcessor extends Processor implements Initializable {
             }
             showError(alert);
         }
+    }
+
+    private Response registerSupporter(Supporter supporter) {
+        Command<Supporter> command = new Command<>("register supporter", Command.HandleType.ACCOUNT, supporter);
+        return client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 
     private void showError(Alert alert) {

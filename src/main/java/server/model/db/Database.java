@@ -327,7 +327,6 @@ public class Database {
                     "Password varchar (16)," +
                     "FirstName varchar (25)," +
                     "LastName varchar (25)," +
-                    "Email varchar (35)," +
                     "primary key(Username)" +
                     ");");
         }
