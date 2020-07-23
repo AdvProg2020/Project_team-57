@@ -18,6 +18,7 @@ import server.server.Server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +29,8 @@ public class SaleHandler extends Handler {
     AdminControl adminControl = AdminControl.getController();
     CustomerControl customerControl = CustomerControl.getController();
 
-    public SaleHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
-        super(outStream, inStream, server, input);
+    public SaleHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input, Socket clientSocket) throws JsonProcessingException {
+        super(outStream, inStream, server, input, clientSocket);
     }
 
     @Override
