@@ -26,6 +26,7 @@ public class Database {
         Connection
                 initConnection = DriverManager.getConnection(localDBUrl);
         initAccountTable(initConnection.createStatement());
+        initSupportTable(initConnection.createStatement());
         initProductTable(initConnection.createStatement());
         initEditingProductTable(initConnection.createStatement());
         initCartsTable(initConnection.createStatement());
@@ -310,6 +311,23 @@ public class Database {
                     "Brand varchar(35)," +
                     "Credit double," +
                     "IsApproved BIT," +
+                    "primary key(Username)" +
+                    ");");
+        }
+
+        statement.close(); resultSet.close();
+    }
+
+    private static void initSupportTable(Statement statement) throws SQLException {
+        String command = "SELECT name from sqlite_master WHERE type = 'table' AND name = 'Supporters'";
+        ResultSet resultSet = statement.executeQuery(command);
+        if(!resultSet.next()) {
+            statement.execute("CREATE TABLE Supporters(" +
+                    "Username varchar (16)," +
+                    "Password varchar (16)," +
+                    "FirstName varchar (25)," +
+                    "LastName varchar (25)," +
+                    "Email varchar (35)," +
                     "primary key(Username)" +
                     ");");
         }

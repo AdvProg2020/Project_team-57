@@ -34,6 +34,72 @@ public class Account {
     private double credit;
     private String onlineStatus;
 
+
+    public static class Supporter {
+        private String username;
+        private String password;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String onlineStatus;
+
+        public Supporter(ResultSet resultSet) throws SQLException {
+            this.username = resultSet.getString("Username");
+            this.password = resultSet.getString("Password");
+            this.firstName = resultSet.getString("FirstName");
+            this.lastName = resultSet.getString("LastName");
+            this.email = resultSet.getString("Email");
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getOnlineStatus() {
+            return onlineStatus;
+        }
+
+        public void setOnlineStatus(String onlineStatus) {
+            this.onlineStatus = onlineStatus;
+        }
+    }
+
     public static Account makeAccount(ResultSet resultSet) throws SQLException {
         Account account = new Account(resultSet.getString("Username"), resultSet.getString("Password"));
         account.setType(resultSet.getString("AccType"));

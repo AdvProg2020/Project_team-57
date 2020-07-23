@@ -5,6 +5,7 @@ import com.sun.corba.se.impl.corba.CORBAObjectImpl;
 import server.controller.product.ProductControl;
 import server.model.db.*;
 import server.model.existence.*;
+import server.model.existence.Account.*;
 import notification.Notification;
 
 import java.io.IOException;
@@ -589,5 +590,30 @@ public class AdminControl extends AccountControl{
             e.printStackTrace();
         }
     }
+
+    public Notification addSupporter(Supporter supporter) {
+        if (supporter.getUsername().length() < 6 || supporter.getUsername().length() > 16)
+            return Notification.ERROR_USERNAME_LENGTH;
+        if (!isUsernameValid(supporter.getUsername()))
+            return Notification.ERROR_USERNAME_FORMAT;
+        if (supporter.getPassword().length() < 8 || supporter.getPassword().length() > 16)
+            return Notification.ERROR_PASSWORD_LENGTH;
+        if (!this.isPasswordValid(supporter.getPassword()))
+            return Notification.ERROR_PASSWORD_FORMAT;
+        if (supporter.getFirstName().length() > 25)
+            return Notification.ERROR_FIRST_NAME_LENGTH;
+        if (supporter.getLastName().length() > 25)
+            return Notification.ERROR_LAST_NAME_LENGTH;
+        try {
+            if (AccountTable.isUsernameFreeForSupporter(supporter.getUsername())) {
+                AccountTable.addSupporter(supporter);
+                return Notification.REGISTER_SUCCESSFUL;
+            } else
+                return Notification.ERROR_FULL_USERNAME;
+        } catch (SQLException | ClassNotFoundException e) {
+            return Notification.UNKNOWN_ERROR;
+        }
+    }
+
 
 }

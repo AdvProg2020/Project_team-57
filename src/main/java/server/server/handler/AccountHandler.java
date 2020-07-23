@@ -8,6 +8,7 @@ import server.controller.account.AccountControl;
 import server.controller.account.AdminControl;
 import server.controller.account.CustomerControl;
 import server.controller.account.VendorControl;
+import server.model.existence.Account.*;
 import server.model.existence.Account;
 import server.model.existence.Log;
 import server.server.Response;
@@ -33,6 +34,8 @@ public class AccountHandler extends Handler {
         switch (message) {
             case "register":
                 return register();
+            case "register supporter":
+                return registerSupporter();
             case "login":
                 return login();
             case "log out":
@@ -69,6 +72,8 @@ public class AccountHandler extends Handler {
                 return getAllCustomersWithSearch();
             case "get all customers":
                 return getAllCustomers();
+            case "get all supporters":
+                return getAllSupporters();
             case "get vendor logs":
                 return getAllLogs("Vendor");
             case "get customer logs":
@@ -99,6 +104,26 @@ public class AccountHandler extends Handler {
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String registerSupporter() {
+        Command<Supporter> command = commandParser.parseToCommand(Command.class, (Class<Supporter>)Supporter.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            return gson.toJson(new Response(adminControl.addSupporter(command.getDatum())));
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String getAllSupporters() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) &&
+                (accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")
+                    || accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer"))) {
+            Response<Supporter> response = new Response<>(Notification.PACKET_NOTIFICATION);
+            response.setData(accountControl.getAllSupporters());
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String modifyLogDeliveryStatus() {

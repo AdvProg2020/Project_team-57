@@ -1,6 +1,7 @@
 package server.model.db;
 
 import server.model.existence.Account;
+import server.model.existence.Account.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -283,4 +284,37 @@ public class AccountTable extends Database {
         ResultSet resultSet = preparedStatement.executeQuery();
         return resultSet.getDouble("Holder");
     }
+
+    public static ArrayList<Supporter> getAllSupporters() throws SQLException, ClassNotFoundException {
+        String command = "SELECT * FROM Supporters;";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        ArrayList<Supporter> allUsers = new ArrayList<>();
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            allUsers.add(new Supporter(resultSet));
+        }
+        return allUsers;
+    }
+
+    public static void addSupporter(Supporter supporter) throws SQLException, ClassNotFoundException {
+        String command = "INSERT INTO Supporters (Username, Password, FirstName, LastName) " +
+                "VALUES (?, ?, ?, ?);";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, supporter.getUsername());
+        preparedStatement.setString(2, supporter.getPassword());
+        preparedStatement.setString(3, supporter.getFirstName());
+        preparedStatement.setString(4, supporter.getLastName());
+        preparedStatement.execute();
+    }
+
+    public static boolean isUsernameFreeForSupporter(String supporterUsername) throws SQLException, ClassNotFoundException {
+        if (isUsernameFree(supporterUsername)) {
+            String command = "SELECT * From Supporters WHERE Username = ?";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+            preparedStatement.setString(1, supporterUsername);
+            return !preparedStatement.executeQuery().next();
+        }
+        return false;
+    }
+
 }

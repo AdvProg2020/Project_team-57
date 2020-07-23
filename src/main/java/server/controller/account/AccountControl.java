@@ -4,6 +4,7 @@ import notification.Notification;
 import server.controller.product.ProductControl;
 import server.model.db.*;
 import server.model.existence.Account;
+import server.model.existence.Account.*;
 import server.model.existence.Off;
 import server.model.existence.Product;
 import server.server.RandomGenerator;
@@ -11,6 +12,7 @@ import server.server.RandomGenerator;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static server.controller.Lock.*;
 
@@ -300,4 +302,12 @@ public class AccountControl implements IOValidity, RandomGenerator {
         return 0.0;
     }
 
+    public ArrayList<Supporter> getAllSupporters() {
+        try {
+            return AccountTable.getAllSupporters();
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 }
