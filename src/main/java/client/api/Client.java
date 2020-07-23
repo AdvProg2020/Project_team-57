@@ -18,9 +18,9 @@ import java.util.function.Function;
 
 public class Client {
     private static final String CACHE_FOLDER_URL = "cache\\";
-    private static int PORT = 18408;
+    private static int PORT = 50931;
     private static Client client = null;
-    private final static String IP = "0.tcp.ngrok.io";
+    private final static String IP = "127.0.0.1";
     private Socket mySocket;
     private DataOutputStream outStream;
     private DataInputStream inStream;

@@ -32,7 +32,7 @@ public class ProductHandler extends Handler {
     }
 
     @Override
-    protected String handle() throws InterruptedException {
+    protected String handle() throws Exception {
         switch (message) {
             case "add product":
             case "edit product":

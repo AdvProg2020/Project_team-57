@@ -30,7 +30,7 @@ public class GeneralHandler extends Handler {
     }
 
     @Override
-    protected String handle() throws InterruptedException {
+    protected String handle() throws Exception {
         switch (message) {
             case "get relic":
                 return getRelic();

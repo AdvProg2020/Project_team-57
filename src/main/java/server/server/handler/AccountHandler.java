@@ -31,7 +31,7 @@ public class AccountHandler extends Handler {
     }
 
     @Override
-    protected String handle() throws InterruptedException {
+    protected String handle() throws Exception {
         switch (message) {
             case "register":
                 return register();
