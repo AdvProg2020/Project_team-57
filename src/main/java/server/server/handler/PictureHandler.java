@@ -20,6 +20,7 @@ public class PictureHandler extends Handler {
         this.handleType = handleType;
     }
 
+    //ROME
     @Override
     public void run() {
         try {
@@ -35,7 +36,7 @@ public class PictureHandler extends Handler {
             }
             System.out.println(new Date() + ", Duration: " + formatter.format(new Date(new Date().getTime() - startOperationDate.getTime())));
         } catch (IOException e) {
-            e.printStackTrace();
+            //:) Fuck You Hacker
         }
     }
 
