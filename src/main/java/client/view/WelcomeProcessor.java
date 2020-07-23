@@ -63,10 +63,24 @@ public class WelcomeProcessor extends Processor implements Initializable {
         if(locationFile.contains("WelcomeMenu"))
             setBG();
         else if(locationFile.contains("SignInMenu")) {
-        }
-        else if(locationFile.contains("SignUpMenu"))
+            initSignInFields();
+        } else if(locationFile.contains("SignUpMenu")) {
+            initSignUpFields();
             initAccTypeComboBox();
+        }
 
+    }
+
+    private void initSignInFields() {
+        setStringFields(userNameField, 16);
+        setStringFields(passwordField, 16);
+    }
+
+    private void initSignUpFields() {
+        setStringFields(username, 16);
+        setStringFields(password, 16);
+        setStringFields(name, 25);
+        setStringFields(lastName, 25);
     }
 
     //WelcomeMenu
