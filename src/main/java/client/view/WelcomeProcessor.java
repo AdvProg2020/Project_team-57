@@ -203,14 +203,12 @@ public class WelcomeProcessor extends Processor implements Initializable {
                     if(isUserSupporter(userNameField.getText())) {
                         ChatClient client = new ChatClient(loginResponse.getData(0), null);
                         client.setChatProcessor(openChatPane(client));
-                    } else {
-                        if(parentProcessor != null && parentProcessor instanceof ProductsProcessor) {
-                            ((ProductsProcessor) parentProcessor).myStage.close();
-                            ((ProductsProcessor)((ProductsProcessor) parentProcessor).parentProcessor).showCartProducts(null);
-                        }
-                        client.setAuthToken(loginResponse.getData(0));
-                        myStage.close();
+                    } else if(parentProcessor != null && parentProcessor instanceof ProductsProcessor) {
+                        ((ProductsProcessor) parentProcessor).myStage.close();
+                        ((ProductsProcessor)((ProductsProcessor) parentProcessor).parentProcessor).showCartProducts(null);
                     }
+                    client.setAuthToken(loginResponse.getData(0));
+                    myStage.close();
                 }
                 if(alert.getHeaderText().contains("Username"))
                     userNameField.setStyle(errorTextFieldStyle);
@@ -227,8 +225,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
             Parent root = loader.load();
             ChatProcessor chatProcessor = loader.getController();
             chatProcessor.initChatPane(chatClient);
-            myStage.setScene(new Scene(root));
-            return chatProcessor;
+            Main.setScene("Supporter Menu", root);
         } catch (IOException e) {
             e.printStackTrace();
         }

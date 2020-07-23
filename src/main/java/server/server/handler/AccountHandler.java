@@ -133,10 +133,10 @@ public class AccountHandler extends Handler {
         Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
         if(server.getAuthTokens().containsKey(command.getAuthToken())) {
             String username = server.getUsernameByAuth(command.getAuthToken());
-            if(accountControl.getAccountByUsername(username).getType().equals("Customer")) {
-                server.addChatter(username, clientSocket);
-            } else if(accountControl.isUserSupporter(username)) {
+            if(accountControl.isUserSupporter(username)) {
                 server.addSupporter(username, clientSocket);
+            } else if(accountControl.getAccountByUsername(username).getType().equals("Customer")) {
+                server.addChatter(username, clientSocket);
             }
         }
         return gson.toJson(HACK_RESPONSE);
@@ -149,7 +149,8 @@ public class AccountHandler extends Handler {
             Response<Supporter> response = new Response<>(Notification.PACKET_NOTIFICATION);
             ArrayList<Supporter> supporters = new ArrayList<>();
             for (String supporterUsername : server.getSupporterSockets().keySet()) {
-                supporters.add(accountControl.getSupporterByUsername(supporterUsername));
+                if(server.isSupporterAvailable(supporterUsername))
+                    supporters.add(accountControl.getSupporterByUsername(supporterUsername));
             }
             response.setData(supporters);
             return gson.toJson(response);

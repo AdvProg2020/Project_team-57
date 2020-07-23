@@ -33,7 +33,7 @@
                   <Image url="@../Images/Icons/sendMessage.png" />
                </image>
             </ImageView>
-            <JFXTextArea fx:id="writingMessage" prefHeight="48.0" prefWidth="482.0" promptText=" Type Your Message Here" wrapText="true" />
+            <JFXTextArea fx:id="writingMessage" disable="true" prefHeight="48.0" prefWidth="482.0" promptText=" Type Your Message Here" wrapText="true" />
          </children>
       </Pane>
       <VBox fx:id="messageBox" alignment="BOTTOM_LEFT" focusTraversable="true" layoutY="108.0" mouseTransparent="true" prefHeight="465.0" prefWidth="529.0" />
