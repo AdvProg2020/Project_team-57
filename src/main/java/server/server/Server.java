@@ -227,7 +227,7 @@ public class Server implements RandomGenerator{
                     try {
                         while (!off) {
                             Thread.sleep(DOS_CHECK_PERIOD_MILLIS);
-                            counter = 0;
+                            counter = 1;
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
