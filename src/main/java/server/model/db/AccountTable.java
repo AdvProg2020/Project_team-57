@@ -335,4 +335,11 @@ public class AccountTable extends Database {
         preparedStatement.setString(1, supporterUsername);
         preparedStatement.execute();
     }
+
+    public static Supporter getSupporter(String supporterUsername) throws SQLException, ClassNotFoundException {
+        String command = "SELECT * From Supporters WHERE Username = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, supporterUsername);
+        return new Supporter(preparedStatement.executeQuery());
+    }
 }

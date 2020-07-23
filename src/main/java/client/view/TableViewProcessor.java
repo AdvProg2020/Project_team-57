@@ -6,7 +6,6 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import notification.Notification;
-import server.controller.account.AccountControl;
 import server.controller.product.ProductControl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -37,6 +36,7 @@ import java.util.Optional;
 import server.model.existence.Log.ProductOfLog;
 import server.server.Response;
 import static server.model.existence.Account.AccountType.*;
+import server.model.existence.Account.*;
 
 public class TableViewProcessor<T> extends Processor {
 
@@ -108,6 +108,7 @@ public class TableViewProcessor<T> extends Processor {
     public JFXTextArea fileDescription;
     public JFXButton showProductFileButton;
     public JFXButton deleteSupporterButton;
+    public JFXButton startChatButton;
     private TableViewType tableViewType;
     private T selectedItem;
     private String searchedUsername;
@@ -121,7 +122,7 @@ public class TableViewProcessor<T> extends Processor {
         CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN),
         DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS, ADMIN_OFFS,
         VENDOR_OFFS, LOGS, PRODUCTS_OF_LOG, CUSTOMER_DISCOUNTS,
-        PRODUCT_BUYERS, FILES, ADMIN_SUPPORTERS;
+        PRODUCT_BUYERS, FILES, ADMIN_SUPPORTERS, AVAILABLE_SUPPORTERS;
 
         Account.AccountType accountType;
 
@@ -221,12 +222,13 @@ public class TableViewProcessor<T> extends Processor {
                 initFilesColumns();
                 break;
             case ADMIN_SUPPORTERS:
-                initAdminSupporters();
+            case AVAILABLE_SUPPORTERS:
+                initSupportersColumns();
                 break;
         }
     }
 
-    private void initAdminSupporters() {
+    private void initSupportersColumns() {
         TableColumn<T, String> usernameColumn = makeColumn("Username", "username", 0.26);
         TableColumn<T, String> firstNameColumn = makeColumn("First Name", "firstName", 0.30);
         TableColumn<T, String> lastNameColumn = makeColumn("Last Name", "lastName", 0.30);
@@ -370,17 +372,26 @@ public class TableViewProcessor<T> extends Processor {
             case ADMIN_SUPPORTERS:
                 tableList.addAll((ArrayList<T>) getAllSupportersForAdmin());
                 break;
+            case AVAILABLE_SUPPORTERS:
+                tableList.addAll((ArrayList<T>) getAllAvailableSupporters());
+                break;
         }
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
         selectedItem = tableView.getSelectionModel().getSelectedItem();
     }
 
-    private ArrayList<Account.Supporter> getAllSupportersForAdmin() {
+    private ArrayList<Supporter> getAllAvailableSupporters() {
+        Command command = new Command("get all available supporters", Command.HandleType.ACCOUNT);
+        Response<Supporter> response = client.postAndGet(command, Response.class, (Class<Supporter>)Supporter.class);
+        return new ArrayList<>(response.getData());
+    }
+
+    private ArrayList<Supporter> getAllSupportersForAdmin() {
         Command command = new Command<>("get all supporters", Command.HandleType.ACCOUNT);
-        Response<Account.Supporter> response = client.postAndGet(command, Response.class, (Class<Account.Supporter>) Account.Supporter.class);
-        ArrayList<Account.Supporter> accounts = new ArrayList<>(response.getData());
-        for (Account.Supporter account : accounts) {
+        Response<Supporter> response = client.postAndGet(command, Response.class, (Class<Supporter>) Supporter.class);
+        ArrayList<Supporter> accounts = new ArrayList<>(response.getData());
+        for (Supporter account : accounts) {
             account.setOnlineStatus(getAccountOnlineStatus(account.getUsername()));
         }
         return accounts;
@@ -518,7 +529,29 @@ public class TableViewProcessor<T> extends Processor {
             case ADMIN_SUPPORTERS:
                 mainBorderPane.setLeft(initSupporterOptions());
                 break;
+            case AVAILABLE_SUPPORTERS:
+                mainBorderPane.setLeft(initAvailableSupporterOptions());
+                break;
         }
+    }
+
+    private Pane initAvailableSupporterOptions() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewAvailableSupportersOptions.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            if(selectedItem != null) {
+                Supporter supporter = (Supporter)selectedItem;
+                processor.startChatButton.setDisable(false);
+                processor.imageCircle.setFill(new ImagePattern(getProfileImage(supporter.getUsername())));
+                processor.nameLabel.setText(supporter.getFirstName() + " " + supporter.getLastName());
+            }
+            return root;
+        } catch (IOException e) {
+            //:)
+        }
+        return null;
     }
 
     private Pane initSupporterOptions() {
@@ -528,7 +561,8 @@ public class TableViewProcessor<T> extends Processor {
             TableViewProcessor processor = loader.getController();
             processor.setParentProcessor(this);
             if(selectedItem != null) {
-                Account.Supporter supporter = (Account.Supporter)selectedItem;
+                Supporter supporter = (Supporter)selectedItem;
+                processor.periodSpot.setFill(Color.valueOf((supporter.getOnlineStatus().equalsIgnoreCase("online") ? JUNGLE_PERIOD_COLOR : PERIOD_COLOR)));
                 processor.deleteSupporterButton.setDisable(false);
                 processor.imageCircle.setFill(new ImagePattern(getProfileImage(supporter.getUsername())));
                 processor.nameLabel.setText(supporter.getFirstName() + " " + supporter.getLastName());
@@ -1473,7 +1507,7 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void deleteSupporter(ActionEvent actionEvent) {
-        Account.Supporter supporter = (Account.Supporter) ((TableViewProcessor)parentProcessor).selectedItem;
+        Supporter supporter = (Supporter) ((TableViewProcessor)parentProcessor).selectedItem;
         Command<String> command = new Command<>("delete supporter", Command.HandleType.ACCOUNT, supporter.getUsername());
         Optional<ButtonType> buttonType = new Alert(Alert.AlertType.CONFIRMATION, "Are You Sure About Deleting This Supporter?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {
@@ -1504,5 +1538,9 @@ public class TableViewProcessor<T> extends Processor {
         } catch (IOException e) {
             //:)
         }
+    }
+
+    public void startChat(ActionEvent actionEvent) {
+
     }
 }

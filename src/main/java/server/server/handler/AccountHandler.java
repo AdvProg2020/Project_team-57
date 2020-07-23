@@ -17,7 +17,6 @@ import server.server.Server;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class AccountHandler extends Handler {
@@ -78,6 +77,8 @@ public class AccountHandler extends Handler {
                 return getAllCustomers();
             case "get all supporters":
                 return getAllSupporters();
+            case "get all available supporters":
+                return getAllAvailableSupporters();
             case "get vendor logs":
                 return getAllLogs("Vendor");
             case "get customer logs":
@@ -110,6 +111,21 @@ public class AccountHandler extends Handler {
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String getAllAvailableSupporters() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) &&
+                accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            Response<Supporter> response = new Response<>(Notification.PACKET_NOTIFICATION);
+            ArrayList<Supporter> supporters = new ArrayList<>();
+            for (String supporterUsername : server.getSupporterSockets().keySet()) {
+                supporters.add(accountControl.getSupporterByUsername(supporterUsername));
+            }
+            response.setData(supporters);
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String deleteSupporter() {
@@ -443,7 +459,7 @@ public class AccountHandler extends Handler {
             server.addAuth(auth, account.getUsername());
 
             if(accountControl.isUserSupporter(account.getUsername())) {
-                server.addSupporter()
+                server.addSupporter(clientSocket, account.getUsername());
             }
         } else {
             server.addIOIP(clientSocket.getInetAddress().getHostAddress());

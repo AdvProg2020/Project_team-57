@@ -16,7 +16,7 @@ public class ChatHandler extends Handler {
         super(new DataOutputStream(new BufferedOutputStream(clientSocket.getOutputStream()))
                 , new DataInputStream(new BufferedInputStream(clientSocket.getInputStream())),
                 server,
-                input);
+                input, clientSocket);
         this.guiderOutput = new DataOutputStream(new BufferedOutputStream(guideSocket.getOutputStream()));
         this.guiderInput = new DataInputStream(new BufferedInputStream(guideSocket.getInputStream()));
         this.isChatOpen = true;

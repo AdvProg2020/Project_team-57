@@ -26,6 +26,7 @@ public class Server implements RandomGenerator{
     private HashMap<String, String> authTokens;
     private HashMap<String, Property> relics;
     private HashMap<String, Clock> IPs, IOIPs;
+    private HashMap<String, Socket> supporterSockets;
     private ArrayList<String> bannedIPs, tempBannedIPs;
     private static final long DOS_CHECK_PERIOD_MILLIS = 10000;
     private static final long DOS_CHECK_COUNTER = 100;
@@ -46,6 +47,7 @@ public class Server implements RandomGenerator{
             this.authTokens = new HashMap<>();
             this.relics = new HashMap<>();
             this.IOIPs = new HashMap<>();
+            this.supporterSockets = new HashMap<>();
             gson = new GsonBuilder().setPrettyPrinting().create();
             IPs = new HashMap<>();
             bannedIPs = new ArrayList<>();
@@ -243,6 +245,14 @@ public class Server implements RandomGenerator{
 
     public boolean isIPBannedTemporarily(String IP) {
         return tempBannedIPs.contains(IP);
+    }
+
+    public void addSupporter(Socket clientSocket, String username) {
+        supporterSockets.put(username, clientSocket);
+    }
+
+    public HashMap<String, Socket> getSupporterSockets() {
+        return supporterSockets;
     }
 
     private static class Clock {

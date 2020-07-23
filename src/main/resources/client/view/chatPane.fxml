@@ -13,13 +13,13 @@
    <children>
       <Pane prefHeight="108.0" prefWidth="529.0">
          <children>
-            <Circle fx:id="anotherImage" fill="DODGERBLUE" layoutX="54.0" layoutY="57.0" radius="54.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fx:id="anotherImage" fill="DODGERBLUE" layoutX="54.0" layoutY="57.0" radius="45.0" stroke="BLACK" strokeType="INSIDE" />
             <Label fx:id="anotherPerson" layoutX="118.0" layoutY="43.0" text="I am Guider">
                <font>
                   <Font name="Oswald Regular" size="15.0" />
                </font>
             </Label>
-            <ImageView fitHeight="108.0" fitWidth="108.0" layoutX="415.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="108.0" fitWidth="108.0" layoutX="211.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/Icons/smallBosMarket.png" />
                </image>
