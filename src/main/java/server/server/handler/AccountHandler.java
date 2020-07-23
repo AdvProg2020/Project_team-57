@@ -88,6 +88,8 @@ public class AccountHandler extends Handler {
                 return getProductBuyers();
             case "delete user":
                 return deleteUser();
+            case "delete supporter":
+                return deleteSupporter();
             case "set minimum wallet money":
                 return setMinimumWallet();
             case "set market wage":
@@ -106,6 +108,14 @@ public class AccountHandler extends Handler {
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String deleteSupporter() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            return gson.toJson(new Response(adminControl.deleteSupporter(command.getDatum())));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String isUserSupporter() {

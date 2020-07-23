@@ -1,5 +1,6 @@
 package server.model.db;
 
+import notification.Notification;
 import server.model.existence.Account;
 import server.model.existence.Account.*;
 
@@ -331,4 +332,10 @@ public class AccountTable extends Database {
         return supporterPassword.equals(resultSet.getString("Password"));
     }
 
+    public static void deleteSupporter(String supporterUsername) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Supporters WHERE Username = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, supporterUsername);
+        preparedStatement.execute();
+    }
 }
