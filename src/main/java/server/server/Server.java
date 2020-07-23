@@ -257,6 +257,19 @@ public class Server implements RandomGenerator{
         chatterSockets.put(username, clientSocket);
     }
 
+    public boolean isSupporterAvailable(String username) {
+        return !chatterSockets.containsKey(username);
+    }
+
+    public boolean isSupporterOnline(String username) {
+        return supporterSockets.containsKey(username);
+    }
+
+    public void startChat(String customerUsername, String supporterUsername, Socket customerSocket) {
+        chatterSockets.put(customerUsername, customerSocket);
+        chatterSockets.put(supporterUsername, supporterSockets.get(supporterUsername));
+    }
+
     private static class Clock {
         private int counter;
         private Thread clock;

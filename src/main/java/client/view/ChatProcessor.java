@@ -4,6 +4,7 @@ import client.api.Client;
 import client.chatapi.ChatClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -30,7 +31,7 @@ public class ChatProcessor extends Processor{
     private ChatClient chatClient;
     public Circle anotherImage;
     public Label anotherPerson;
-    public JFXTextField writingMessage;
+    public JFXTextArea writingMessage;
     public ImageView send;
     public VBox messageBox;
 
@@ -48,8 +49,6 @@ public class ChatProcessor extends Processor{
                 writeMessage(this.chatClient.getMessage());
             }
         }).start();*/
-        writingMessage.setDisable(chatClient.getContactUsername() == null);
-        send.setDisable(chatClient.getContactUsername() == null);
 
     }
 

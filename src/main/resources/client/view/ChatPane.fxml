@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXTextArea?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -28,16 +28,12 @@
       </Pane>
       <Pane layoutY="572.0" prefHeight="48.0" prefWidth="529.0">
          <children>
-            <JFXTextField fx:id="writingMessage" alignment="CENTER" prefHeight="46.0" prefWidth="487.0" promptText="Type your message here" unFocusColor="#544949">
-               <font>
-                  <Font name="Franklin Gothic Demi Cond" size="15.0" />
-               </font>
-            </JFXTextField>
-            <ImageView fx:id="send" fitHeight="46.0" fitWidth="46.0" layoutX="483.0" layoutY="3.0" onMouseClicked="#sendMessage" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="send" disable="true" fitHeight="46.0" fitWidth="37.0" layoutX="487.0" layoutY="5.0" onMouseClicked="#sendMessage" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/Icons/sendMessage.png" />
                </image>
             </ImageView>
+            <JFXTextArea fx:id="writingMessage" prefHeight="48.0" prefWidth="482.0" promptText=" Type Your Message Here" wrapText="true" />
          </children>
       </Pane>
       <VBox fx:id="messageBox" alignment="BOTTOM_LEFT" focusTraversable="true" layoutY="108.0" mouseTransparent="true" prefHeight="465.0" prefWidth="529.0" />

@@ -22,23 +22,32 @@ public class ChatClient {
     private Gson gson;
     private ChatProcessor chatProcessor;
 
-    public ChatClient(String auth) {
+    public ChatClient(String auth, String contactUsername) {
         this.auth = auth;
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         try {
             restlessSocket = new Socket(IP, PORT);
-            Command command = new Command("take me", Command.HandleType.ACCOUNT);
-            command.setAuthToken(this.auth);
-            outStream = new DataOutputStream(new BufferedOutputStream(restlessSocket.getOutputStream()));
-            inStream = new DataInputStream(new BufferedInputStream(restlessSocket.getInputStream()));
-            outStream.writeUTF(gson.toJson(command));
-            outStream.flush();
-            inStream.readUTF();
-            if(contactUsername == null)
+            if(contactUsername == null) {
+                Command command = new Command("take me", Command.HandleType.ACCOUNT);
+                command.setAuthToken(this.auth);
+                post(gson.toJson(command));
                 waitForContact();
+            } else {
+                Command<String> command = new Command<>("start chat", Command.HandleType.ACCOUNT, contactUsername);
+                command.setAuthToken(this.auth);
+                post(gson.toJson(command));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String post(String commandJson) throws IOException {
+        outStream = new DataOutputStream(new BufferedOutputStream(restlessSocket.getOutputStream()));
+        inStream = new DataInputStream(new BufferedInputStream(restlessSocket.getInputStream()));
+        outStream.writeUTF(commandJson);
+        outStream.flush();
+        return inStream.readUTF();
     }
 
     public void setChatProcessor(ChatProcessor chatProcessor) {
@@ -69,7 +78,6 @@ public class ChatClient {
     public void setContactUsername(String contactUsername) {
         this.contactUsername = contactUsername;
     }
-
 
     public void startListening() {
         new Thread() {

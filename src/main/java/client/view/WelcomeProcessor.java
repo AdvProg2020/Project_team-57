@@ -201,7 +201,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
             if(optionalButtonType.get() == ButtonType.OK) {
                 if(alert.getHeaderText().equals("Congratulations")) {
                     if(isUserSupporter(userNameField.getText())) {
-                        ChatClient client = new ChatClient(loginResponse.getData(0));
+                        ChatClient client = new ChatClient(loginResponse.getData(0), null);
                         client.setChatProcessor(openChatPane(client));
                     } else {
                         if(parentProcessor != null && parentProcessor instanceof ProductsProcessor) {

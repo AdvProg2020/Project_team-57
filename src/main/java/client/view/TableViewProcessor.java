@@ -1,6 +1,7 @@
 package client.view;
 
 import client.api.Command;
+import client.chatapi.ChatClient;
 import com.jfoenix.controls.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.Node;
@@ -1541,6 +1542,18 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void startChat(ActionEvent actionEvent) {
+        Supporter supporter = (Supporter) ((TableViewProcessor)parentProcessor).selectedItem;
+        ChatClient chatClient = new ChatClient(client.getAuthToken(), supporter.getUsername());
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChatPane.fxml"));
+        try {
+            Parent root = fxmlLoader.load();
+            ChatProcessor chatProcessor = fxmlLoader.getController();
+            chatProcessor.initChatPane(chatClient);
+            chatClient.setChatProcessor(chatProcessor);
+            chatProcessor.startChat();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -109,10 +109,24 @@ public class AccountHandler extends Handler {
                 return logOutIfCan();
             case "take me":
                 return addFucker();
+            case "start chat":
+                return startChat();
 
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String startChat() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            String supporterUsername = command.getDatum();
+            if(server.isSupporterOnline(supporterUsername) && server.isSupporterAvailable(supporterUsername)) {
+                server.startChat(server.getUsernameByAuth(command.getAuthToken()), supporterUsername, clientSocket);
+                return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+            }
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String addFucker() {
