@@ -321,4 +321,14 @@ public class AccountTable extends Database {
         String fileName = "database\\Images\\Supporter\\1.png";
         return new FileInputStream(fileName);
     }
+
+    public static boolean isPasswordCorrectForSupporter(String supporterUsername, String supporterPassword) throws SQLException, ClassNotFoundException {
+        String command = "SELECT Password From Supporters WHERE Username = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, supporterUsername);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        return supporterPassword.equals(resultSet.getString("Password"));
+    }
+
 }

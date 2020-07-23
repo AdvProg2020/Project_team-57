@@ -50,6 +50,8 @@ public class AccountHandler extends Handler {
                 return getAccountByUsername();
             case "is there admin":
                 return isThereAdmin();
+            case "is user supporter":
+                return isUserSupporter();
             case "does user have image":
                 return doesUserHaveImage();
             case "delete user image":
@@ -104,6 +106,12 @@ public class AccountHandler extends Handler {
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String isUserSupporter() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
+        Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, accountControl.isUserSupporter(command.getDatum()));
+        return gson.toJson(response);
     }
 
     private String registerSupporter() {

@@ -319,4 +319,13 @@ public class AccountControl implements IOValidity, RandomGenerator {
         }
         return new ArrayList<>();
     }
+
+    public boolean isUserSupporter(String username) {
+        try {
+            return !AccountTable.isUsernameFreeForSupporter(username);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

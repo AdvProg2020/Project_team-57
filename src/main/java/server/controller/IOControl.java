@@ -44,6 +44,14 @@ public class IOControl implements IOValidity {
 
     public Notification login(Account account){
         try {
+            synchronized (SUPPORTER_LOCK) {
+                if (!AccountTable.isUsernameFreeForSupporter(account.getUsername())) {
+                    if (AccountTable.isPasswordCorrectForSupporter(account.getUsername(), account.getPassword())) {
+                        return Notification.LOGIN_SUCCESSFUL;
+                    } else
+                        return Notification.WRONG_PASSWORD;
+                }
+            }
             synchronized (IO_LOCK) {
                 if (!AccountTable.isUsernameFree(account.getUsername())) {
                     if (AccountTable.isPasswordCorrect(account.getUsername(), account.getPassword())) {
