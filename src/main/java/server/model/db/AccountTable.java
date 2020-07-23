@@ -317,4 +317,8 @@ public class AccountTable extends Database {
         return false;
     }
 
+    public static FileInputStream getSupporterDefaultImageInputStream() throws FileNotFoundException {
+        String fileName = "database\\Images\\Supporter\\1.png";
+        return new FileInputStream(fileName);
+    }
 }

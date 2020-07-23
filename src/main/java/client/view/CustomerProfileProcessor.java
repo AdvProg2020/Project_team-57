@@ -264,4 +264,9 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
             }
         }
     }
+
+    public void showSupporters(ActionEvent actionEvent) {
+        //Todo
+    }
+
 }

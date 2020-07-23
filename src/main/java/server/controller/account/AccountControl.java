@@ -182,11 +182,20 @@ public class AccountControl implements IOValidity, RandomGenerator {
 
     public FileInputStream getUserImageInputStream(String username) {
         try {
+
+            synchronized (SUPPORTER_LOCK) {
+                if(!AccountTable.isUsernameFreeForSupporter(username)) {
+                    synchronized (SUPPORTER_IMAGE_LOCK) {
+                        return AccountTable.getSupporterDefaultImageInputStream();
+                    }
+                }
+            }
+
             synchronized (USER_IMAGE_LOCK) {
                 String imageInput = doesUserHaveImage(username) ? username : "1";
                 return AccountTable.getProfileImageInputStream(imageInput);
             }
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
