@@ -194,7 +194,8 @@ public enum Notification {
     SUCCESSFUL_TRANSACTION("Transaction Successful", Alert.AlertType.INFORMATION, "Successful", "Transaction"),
     NOT_ENOUGH_MONEY_BANK("Your Bank Account Doesn't Have Enough Money", Alert.AlertType.ERROR, "Error", "Bank Account"),
     CHANGED_SUCCESSFUL("Successfully Modified", Alert.AlertType.INFORMATION, "Information", "Market Credit"),
-    MARKET_NOT_ENOUGH_MONEY("Market Doesn't Have Enough Money", Alert.AlertType.ERROR, "Yeah, We Can", "Ha Ha Ha Ha");
+    MARKET_NOT_ENOUGH_MONEY("Market Doesn't Have Enough Money", Alert.AlertType.ERROR, "Yeah, We Can", "Ha Ha Ha Ha"),
+    BANNED_TEMPORARILY("You Have Banned Temporarily. \nSorry", Alert.AlertType.ERROR, "Banned", "Jesus. Thank God, Man, That We Are Secure.");
 
 
     private String message;

@@ -7,6 +7,7 @@ import server.controller.product.ProductControl;
 import server.server.Server;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.Date;
 import java.util.List;
 
@@ -15,8 +16,8 @@ public class PictureHandler extends Handler {
     private AccountControl accountControl = AccountControl.getController();
     private ProductControl productControl = ProductControl.getController();
 
-    public PictureHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input, Command.HandleType handleType) throws JsonProcessingException {
-        super(outStream, inStream, server, input);
+    public PictureHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input, Command.HandleType handleType, Socket clientSocket) throws JsonProcessingException {
+        super(outStream, inStream, server, input, clientSocket);
         this.handleType = handleType;
     }
 

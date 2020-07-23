@@ -25,10 +25,13 @@ public class Server implements RandomGenerator{
     private Gson gson;
     private HashMap<String, String> authTokens;
     private HashMap<String, Property> relics;
-    private HashMap<String, Clock> IPs;
-    private ArrayList<String> bannedIPs;
+    private HashMap<String, Clock> IPs, IOIPs;
+    private ArrayList<String> bannedIPs, tempBannedIPs;
     private static final long DOS_CHECK_PERIOD_MILLIS = 10000;
     private static final long DOS_CHECK_COUNTER = 100;
+    private static final long BRUTE_FORCE_PERIOD_MILLIS = 30000;
+    private static final long BRUTE_FORCE_BAN_PERIOD = 60000;
+    private static final long BRUTE_FORCE_CHECK_COUNTER = 5;
 
     public static final String MARKET_BANK_USERNAME = "boosmarket";
     public static final String MARKET_BANK_PASSWORD = "a1234567";
@@ -42,9 +45,11 @@ public class Server implements RandomGenerator{
             mapper = new ObjectMapper();
             this.authTokens = new HashMap<>();
             this.relics = new HashMap<>();
+            this.IOIPs = new HashMap<>();
             gson = new GsonBuilder().setPrettyPrinting().create();
             IPs = new HashMap<>();
             bannedIPs = new ArrayList<>();
+            tempBannedIPs = new ArrayList<>();
             run();
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,6 +71,7 @@ public class Server implements RandomGenerator{
                 public void run() {
                     try {
                         System.out.println("Client Accepted");
+                        System.out.println("Client IP : " + clientSocket.getInetAddress().getHostAddress());
                         DataInputStream inStream = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
                         DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(clientSocket.getOutputStream()));
                         String input = inStream.readUTF();
@@ -73,20 +79,20 @@ public class Server implements RandomGenerator{
                         Command.HandleType type = gson.fromJson(objectNode.get("type").asText(), Command.HandleType.class);
                         switch (type) {
                             case GENERAL:
-                                new GeneralHandler(outStream, inStream, server, input).start();
+                                new GeneralHandler(outStream, inStream, server, input, clientSocket).start();
                                 break;
                             case ACCOUNT:
-                                new AccountHandler(outStream, inStream, server, input).start();
+                                new AccountHandler(outStream, inStream, server, input, clientSocket).start();
                                 break;
                             case SALE:
-                                new SaleHandler(outStream, inStream, server, input).start();
+                                new SaleHandler(outStream, inStream, server, input, clientSocket).start();
                                 break;
                             case PRODUCT:
-                                new ProductHandler(outStream, inStream, server, input).start();
+                                new ProductHandler(outStream, inStream, server, input, clientSocket).start();
                                 break;
                             case PICTURE_SEND:
                             case PICTURE_GET:
-                                new PictureHandler(outStream, inStream, server, input, type).start();
+                                new PictureHandler(outStream, inStream, server, input, type, clientSocket).start();
                                 break;
                             default:
                                 outStream.writeUTF(getUnknownError());
@@ -110,9 +116,30 @@ public class Server implements RandomGenerator{
                 return true;
             }
         } else {
-            IPs.put(clientIP, new Clock());
+            IPs.put(clientIP, new Clock(DOS_CHECK_PERIOD_MILLIS));
         }
         return false;
+    }
+
+    public void addIOIP(String IP) {
+        if(IOIPs.containsKey(IP)) {
+            if (IOIPs.get(IP).addToCounter() > 5) {
+                tempBannedIPs.add(IP);
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            sleep(BRUTE_FORCE_BAN_PERIOD);
+                            tempBannedIPs.remove(IP);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
+            }
+        } else {
+            IOIPs.put(IP, new Clock(BRUTE_FORCE_PERIOD_MILLIS));
+        }
     }
 
     public String getUnknownError() {
@@ -213,12 +240,16 @@ public class Server implements RandomGenerator{
         return BankAPI.getInstance().postAndGet(bankCommand);
     }
 
+    public boolean isIPBannedTemporarily(String IP) {
+        return tempBannedIPs.contains(IP);
+    }
+
     private static class Clock {
         private int counter;
         private Thread clock;
         private boolean off;
 
-        public Clock() {
+        private Clock(long clockPeriod) {
             this.counter = 1;
             this.off = false;
             this.clock = new Thread() {
@@ -226,7 +257,7 @@ public class Server implements RandomGenerator{
                 public void run() {
                     try {
                         while (!off) {
-                            Thread.sleep(DOS_CHECK_PERIOD_MILLIS);
+                            Thread.sleep(clockPeriod);
                             counter = 1;
                         }
                     } catch (InterruptedException e) {

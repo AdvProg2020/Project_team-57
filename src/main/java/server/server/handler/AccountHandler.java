@@ -14,7 +14,9 @@ import server.server.Response;
 import server.server.Server;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AccountHandler extends Handler {
@@ -24,8 +26,8 @@ public class AccountHandler extends Handler {
     private final VendorControl vendorControl = VendorControl.getController();
     private final CustomerControl customerControl = CustomerControl.getController();
 
-    public AccountHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
-        super(outStream, inStream, server, input);
+    public AccountHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input, Socket clientSocket) throws JsonProcessingException {
+        super(outStream, inStream, server, input, clientSocket);
     }
 
     @Override
@@ -387,6 +389,9 @@ public class AccountHandler extends Handler {
     }
 
     private String login() {
+        if(server.isIPBannedTemporarily(clientSocket.getInetAddress().getHostAddress())) {
+            return gson.toJson(TEMP_BAN_RESPONSE);
+        }
         Account account = commandParser.parseDatum(Command.class, (Class<Account>)Account.class);
         Notification result = ioControl.login(account);
         Response<String> response;
@@ -395,6 +400,7 @@ public class AccountHandler extends Handler {
             response = new Response<>(result, auth);
             server.addAuth(auth, account.getUsername());
         } else {
+            server.addIOIP(clientSocket.getInetAddress().getHostAddress());
             response = new Response<>(result, "EMPTY");
         }
         return gson.toJson(response);

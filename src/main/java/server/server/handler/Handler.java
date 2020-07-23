@@ -16,6 +16,7 @@ import server.server.Server;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,6 +25,7 @@ import java.util.TimeZone;
 public abstract class Handler extends Thread{
     protected static DateFormat formatter;
     protected static final Response<String> HACK_RESPONSE = new Response<>(Notification.FUCK_YOU, "Bi Adab");
+    protected static final Response TEMP_BAN_RESPONSE = new Response(Notification.BANNED_TEMPORARILY);
     protected DataOutputStream outStream;
     protected DataInputStream inStream;
     protected Gson gson;
@@ -31,16 +33,18 @@ public abstract class Handler extends Thread{
     protected String message;
     protected Server server;
     protected Date startOperationDate;
+    protected Socket clientSocket;
 
     static {
         formatter = new SimpleDateFormat("HH:mm:ss.SSS");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
-    public Handler(DataOutputStream outStream, DataInputStream inStream, Server server, String input) throws JsonProcessingException {
+    public Handler(DataOutputStream outStream, DataInputStream inStream, Server server, String input, Socket clientSocket) throws JsonProcessingException {
         startOperationDate = new Date();
         this.outStream = outStream;
         this.inStream = inStream;
+        this.clientSocket = clientSocket;
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.commandParser = new CommandParser(gson);
         commandParser.setJson(input);
