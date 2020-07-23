@@ -14,6 +14,7 @@ import server.server.handler.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -24,7 +25,10 @@ public class Server implements RandomGenerator{
     private Gson gson;
     private HashMap<String, String> authTokens;
     private HashMap<String, Property> relics;
-    private HashMap<String, Socket> supportersSocket;
+    private HashMap<String, Clock> IPs;
+    private ArrayList<String> bannedIPs;
+    private static final long DOS_CHECK_PERIOD_MILLIS = 10000;
+    private static final long DOS_CHECK_COUNTER = 100;
 
     public static final String MARKET_BANK_USERNAME = "boosmarket";
     public static final String MARKET_BANK_PASSWORD = "a1234567";
@@ -38,8 +42,9 @@ public class Server implements RandomGenerator{
             mapper = new ObjectMapper();
             this.authTokens = new HashMap<>();
             this.relics = new HashMap<>();
-            this.supportersSocket = new HashMap<>();
             gson = new GsonBuilder().setPrettyPrinting().create();
+            IPs = new HashMap<>();
+            bannedIPs = new ArrayList<>();
             run();
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,6 +56,11 @@ public class Server implements RandomGenerator{
         while (true) {
             System.out.println("Server Listening...");
             Socket clientSocket = serverSocket.accept();
+            String clientIP = clientSocket.getInetAddress().getHostAddress();
+            if(addToIPs(clientIP)) {
+                clientSocket.close();
+                continue;
+            }
             new Thread() {
                 @Override
                 public void run() {
@@ -88,6 +98,21 @@ public class Server implements RandomGenerator{
                 }
             }.start();
         }
+    }
+
+    private boolean addToIPs(String clientIP) {
+        if(bannedIPs.contains(clientIP))
+            return true;
+        if(IPs.containsKey(clientIP)) {
+            if(IPs.get(clientIP).addToCounter() > DOS_CHECK_COUNTER) {
+                bannedIPs.add(clientIP);
+                IPs.remove(clientIP).disableClock();
+                return true;
+            }
+        } else {
+            IPs.put(clientIP, new Clock());
+        }
+        return false;
     }
 
     public String getUnknownError() {
@@ -186,5 +211,38 @@ public class Server implements RandomGenerator{
     public String payReceipt(String receiptID) {
         String bankCommand = "pay " + receiptID;
         return BankAPI.getInstance().postAndGet(bankCommand);
+    }
+
+    private static class Clock {
+        private int counter;
+        private Thread clock;
+        private boolean off;
+
+        public Clock() {
+            this.counter = 1;
+            this.off = false;
+            this.clock = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        while (!off) {
+                            Thread.sleep(DOS_CHECK_PERIOD_MILLIS);
+                            counter = 1;
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            clock.start();
+        }
+
+        private int addToCounter() {
+            return (++counter);
+        }
+
+        private void disableClock() {
+            this.off = true;
+        }
     }
 }
