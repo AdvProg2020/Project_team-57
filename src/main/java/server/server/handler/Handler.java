@@ -51,6 +51,7 @@ public abstract class Handler extends Thread{
         this.server = server;
     }
 
+    //ROME
     @Override
     public void run() {
         try {
@@ -61,12 +62,12 @@ public abstract class Handler extends Thread{
             outStream.writeUTF(output);
             outStream.flush();
             System.out.println(new Date() + ", Duration: " + formatter.format(new Date(new Date().getTime() - startOperationDate.getTime())));
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            //:) Fuck You Hacker
         }
     }
 
-    abstract protected String handle() throws InterruptedException;
+    abstract protected String handle() throws Exception;
 
     protected boolean canChangeOff(String offID, String auth){
         if(server.getAuthTokens().containsKey(auth)) {

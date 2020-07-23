@@ -33,7 +33,7 @@ public class SaleHandler extends Handler {
     }
 
     @Override
-    protected String handle() throws InterruptedException {
+    protected String handle() throws Exception {
         switch (message) {
             case "get all categories" :
                 return getAllCategories();

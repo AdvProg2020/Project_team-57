@@ -51,10 +51,11 @@ public class Server implements RandomGenerator{
         }
     }
 
+    //ROME
     private void run() throws IOException {
         final Server server = this;
+        System.out.println("Server Listening...");
         while (true) {
-            System.out.println("Server Listening...");
             Socket clientSocket = serverSocket.accept();
             String clientIP = clientSocket.getInetAddress().getHostAddress();
             if(addToIPs(clientIP)) {
@@ -93,7 +94,7 @@ public class Server implements RandomGenerator{
                                 outStream.flush();
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        //:)
                     }
                 }
             }.start();
