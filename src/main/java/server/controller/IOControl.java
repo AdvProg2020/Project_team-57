@@ -75,6 +75,7 @@ public class IOControl implements IOValidity {
                     return Notification.ERROR_FREE_USERNAME;
             }
         } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
         }
     }

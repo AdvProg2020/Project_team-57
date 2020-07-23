@@ -371,4 +371,25 @@ public class AdminProcessor extends AccountProcessor implements Initializable {
             }
         }
     }
+
+    public void manageSupporters(MouseEvent mouseEvent) {
+        if (canOpenSubStage("Manage Supporters", parentProcessor)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
+                Parent root = loader.load();
+                TableViewProcessor<Account> tableViewProcessor = loader.getController();
+                tableViewProcessor.setParentProcessor(parentProcessor);
+                tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.ADMIN_SUPPORTERS);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.getIcons().add(new Image(getClass().getResourceAsStream("admin supporters icon.png")));
+                newStage.setResizable(false);
+                newStage.setTitle("Manage Supporters");
+                parentProcessor.addSubStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                //:)
+            }
+        }
+    }
 }

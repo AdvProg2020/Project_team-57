@@ -309,13 +309,10 @@ public class AccountTable extends Database {
     }
 
     public static boolean isUsernameFreeForSupporter(String supporterUsername) throws SQLException, ClassNotFoundException {
-        if (isUsernameFree(supporterUsername)) {
-            String command = "SELECT * From Supporters WHERE Username = ?";
-            PreparedStatement preparedStatement = getConnection().prepareStatement(command);
-            preparedStatement.setString(1, supporterUsername);
-            return !preparedStatement.executeQuery().next();
-        }
-        return false;
+        String command = "SELECT * From Supporters WHERE Username = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, supporterUsername);
+        return !preparedStatement.executeQuery().next();
     }
 
     public static FileInputStream getSupporterDefaultImageInputStream() throws FileNotFoundException {

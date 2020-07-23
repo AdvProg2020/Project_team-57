@@ -227,9 +227,9 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     private void initAdminSupporters() {
-        TableColumn<T, String> usernameColumn = makeColumn("Username", "username", 0.21);
-        TableColumn<T, String> firstNameColumn = makeColumn("First Name", "firstName", 0.25);
-        TableColumn<T, String> lastNameColumn = makeColumn("Last Name", "lastName", 0.25);
+        TableColumn<T, String> usernameColumn = makeColumn("Username", "username", 0.26);
+        TableColumn<T, String> firstNameColumn = makeColumn("First Name", "firstName", 0.30);
+        TableColumn<T, String> lastNameColumn = makeColumn("Last Name", "lastName", 0.30);
         TableColumn<T, String> status = makeColumn("Status", "onlineStatus", 0.12);
         tableView.getColumns().addAll(usernameColumn, firstNameColumn, lastNameColumn, status);
     }
@@ -531,6 +531,7 @@ public class TableViewProcessor<T> extends Processor {
                 Account.Supporter supporter = (Account.Supporter)selectedItem;
                 processor.deleteSupporterButton.setDisable(false);
                 processor.imageCircle.setFill(new ImagePattern(getProfileImage(supporter.getUsername())));
+                processor.nameLabel.setText(supporter.getFirstName() + " " + supporter.getLastName());
             }
             return root;
         } catch (IOException e) {
@@ -1472,7 +1473,7 @@ public class TableViewProcessor<T> extends Processor {
     }
 
     public void deleteSupporter(ActionEvent actionEvent) {
-        Account.Supporter supporter = (Account.Supporter) selectedItem;
+        Account.Supporter supporter = (Account.Supporter) ((TableViewProcessor)parentProcessor).selectedItem;
         Command<String> command = new Command<>("delete supporter", Command.HandleType.ACCOUNT, supporter.getUsername());
         Optional<ButtonType> buttonType = new Alert(Alert.AlertType.CONFIRMATION, "Are You Sure About Deleting This Supporter?", ButtonType.YES, ButtonType.NO).showAndWait();
         if(buttonType.get() == ButtonType.YES) {

@@ -273,8 +273,8 @@ public class WelcomeProcessor extends Processor implements Initializable {
                         client.postAndGet(getIOCommand("register", account), Response.class, (Class<Object>)Object.class);
             } else {
                 final Supporter supporter = new Supporter();
-                supporter.setUsername(userNameField.getText());
-                supporter.setPassword(passwordField.getText());
+                supporter.setUsername(username.getText());
+                supporter.setPassword(password.getText());
                 supporter.setFirstName(name.getText());
                 supporter.setLastName(lastName.getText());
                 response = registerSupporter(supporter);
