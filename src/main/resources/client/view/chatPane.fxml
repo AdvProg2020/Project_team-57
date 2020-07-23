@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="616.0" prefWidth="529.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.ChatProcessor">
+   <children>
+      <Pane prefHeight="108.0" prefWidth="529.0">
+         <children>
+            <Circle fx:id="anotherImage" fill="DODGERBLUE" layoutX="54.0" layoutY="57.0" radius="54.0" stroke="BLACK" strokeType="INSIDE" />
+            <Label fx:id="anotherPerson" layoutX="118.0" layoutY="43.0" text="I am Guider">
+               <font>
+                  <Font name="Oswald Regular" size="15.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="108.0" fitWidth="108.0" layoutX="415.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/smallBosMarket.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <Pane layoutY="572.0" prefHeight="48.0" prefWidth="529.0">
+         <children>
+            <JFXTextField fx:id="writingMessage" alignment="CENTER" prefHeight="46.0" prefWidth="487.0" promptText="Type your message here" unFocusColor="#544949">
+               <font>
+                  <Font name="Franklin Gothic Demi Cond" size="15.0" />
+               </font>
+            </JFXTextField>
+            <ImageView fx:id="send" fitHeight="46.0" fitWidth="46.0" layoutX="483.0" layoutY="3.0" onMouseClicked="#sendMessage" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Images/Icons/sendMessage.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <VBox fx:id="messageBox" alignment="BOTTOM_LEFT" focusTraversable="true" layoutY="108.0" mouseTransparent="true" prefHeight="465.0" prefWidth="529.0" />
+   </children>
+</Pane>

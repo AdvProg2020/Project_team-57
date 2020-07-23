@@ -24,6 +24,7 @@ public class Server implements RandomGenerator{
     private Gson gson;
     private HashMap<String, String> authTokens;
     private HashMap<String, Property> relics;
+    private HashMap<String, Socket> supportersSocket;
 
     public static final String MARKET_BANK_USERNAME = "boosmarket";
     public static final String MARKET_BANK_PASSWORD = "a1234567";
@@ -37,6 +38,7 @@ public class Server implements RandomGenerator{
             mapper = new ObjectMapper();
             this.authTokens = new HashMap<>();
             this.relics = new HashMap<>();
+            this.supportersSocket = new HashMap<>();
             gson = new GsonBuilder().setPrettyPrinting().create();
             run();
         } catch (IOException e) {

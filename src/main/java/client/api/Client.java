@@ -244,4 +244,32 @@ public class Client {
         outStream = new DataOutputStream(new BufferedOutputStream(mySocket.getOutputStream()));
     }
 
+    public boolean startChat(final String guiderUsername) throws IOException {
+        makeConnection();
+        Command<String> command = new Command<>("start chat with guider", Command.HandleType.CHAT, guiderUsername);
+        post(command);
+        String response = inStream.readUTF();
+        return response.equals("chat started");
+    }
+
+    public void sendMessage(final String message) {
+        try {
+            outStream.writeUTF(message);
+            outStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getMessage() {
+        try {
+            return inStream.readUTF();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+
+
 }
