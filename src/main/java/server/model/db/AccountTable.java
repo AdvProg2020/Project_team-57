@@ -1,5 +1,6 @@
 package server.model.db;
 
+import notification.Notification;
 import server.model.existence.Account;
 import server.model.existence.Account.*;
 
@@ -320,5 +321,21 @@ public class AccountTable extends Database {
     public static FileInputStream getSupporterDefaultImageInputStream() throws FileNotFoundException {
         String fileName = "database\\Images\\Supporter\\1.png";
         return new FileInputStream(fileName);
+    }
+
+    public static boolean isPasswordCorrectForSupporter(String supporterUsername, String supporterPassword) throws SQLException, ClassNotFoundException {
+        String command = "SELECT Password From Supporters WHERE Username = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, supporterUsername);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        return supporterPassword.equals(resultSet.getString("Password"));
+    }
+
+    public static void deleteSupporter(String supporterUsername) throws SQLException, ClassNotFoundException {
+        String command = "DELETE FROM Supporters WHERE Username = ?";
+        PreparedStatement preparedStatement = getConnection().prepareStatement(command);
+        preparedStatement.setString(1, supporterUsername);
+        preparedStatement.execute();
     }
 }

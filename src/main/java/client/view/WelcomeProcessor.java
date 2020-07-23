@@ -184,12 +184,16 @@ public class WelcomeProcessor extends Processor implements Initializable {
             Optional<ButtonType> optionalButtonType = alert.showAndWait();
             if(optionalButtonType.get() == ButtonType.OK) {
                 if(alert.getHeaderText().equals("Congratulations")) {
-                    if(parentProcessor != null && parentProcessor instanceof ProductsProcessor) {
-                        ((ProductsProcessor) parentProcessor).myStage.close();
-                        ((ProductsProcessor)((ProductsProcessor) parentProcessor).parentProcessor).showCartProducts(null);
+                    if(isUserSupporter(userNameField.getText())) {
+                        //Todo Open Supporter Menu
+                    } else {
+                        if(parentProcessor != null && parentProcessor instanceof ProductsProcessor) {
+                            ((ProductsProcessor) parentProcessor).myStage.close();
+                            ((ProductsProcessor)((ProductsProcessor) parentProcessor).parentProcessor).showCartProducts(null);
+                        }
+                        client.setAuthToken(loginResponse.getData().get(0));
+                        myStage.close();
                     }
-                    client.setAuthToken(loginResponse.getData().get(0));
-                    myStage.close();
                 }
                 if(alert.getHeaderText().contains("Username"))
                     userNameField.setStyle(errorTextFieldStyle);
@@ -198,6 +202,12 @@ public class WelcomeProcessor extends Processor implements Initializable {
             }
         }
 
+    }
+
+    private boolean isUserSupporter(String username) {
+        Command<String> command = new Command<>("is user supporter", Command.HandleType.ACCOUNT, username);
+        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+        return response.getDatum();
     }
 
     public void enterSignUpMenu(MouseEvent mouseEvent) {

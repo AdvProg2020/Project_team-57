@@ -50,6 +50,8 @@ public class AccountHandler extends Handler {
                 return getAccountByUsername();
             case "is there admin":
                 return isThereAdmin();
+            case "is user supporter":
+                return isUserSupporter();
             case "does user have image":
                 return doesUserHaveImage();
             case "delete user image":
@@ -86,6 +88,8 @@ public class AccountHandler extends Handler {
                 return getProductBuyers();
             case "delete user":
                 return deleteUser();
+            case "delete supporter":
+                return deleteSupporter();
             case "set minimum wallet money":
                 return setMinimumWallet();
             case "set market wage":
@@ -104,6 +108,20 @@ public class AccountHandler extends Handler {
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String deleteSupporter() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+            return gson.toJson(new Response(adminControl.deleteSupporter(command.getDatum())));
+        }
+        return gson.toJson(HACK_RESPONSE);
+    }
+
+    private String isUserSupporter() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
+        Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, accountControl.isUserSupporter(command.getDatum()));
+        return gson.toJson(response);
     }
 
     private String registerSupporter() {

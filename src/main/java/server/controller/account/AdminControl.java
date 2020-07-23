@@ -2,6 +2,7 @@ package server.controller.account;
 
 
 import com.sun.corba.se.impl.corba.CORBAObjectImpl;
+import com.sun.jmx.remote.security.NotificationAccessController;
 import server.controller.product.ProductControl;
 import server.model.db.*;
 import server.model.existence.*;
@@ -616,4 +617,13 @@ public class AdminControl extends AccountControl{
     }
 
 
+    public Notification deleteSupporter(String supporterUsername) {
+        try {
+            AccountTable.deleteSupporter(supporterUsername);
+            return Notification.DELETE_USER;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return Notification.UNKNOWN_ERROR;
+        }
+    }
 }
