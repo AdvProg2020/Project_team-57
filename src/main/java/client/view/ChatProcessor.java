@@ -41,9 +41,7 @@ public class ChatProcessor extends Processor implements Initializable {
     public JFXTextField senderName;
     public TextArea senderMessage;
 
-    /**
-     *
-     */
+
     private Image myImage;
     private Image frontImage;
 

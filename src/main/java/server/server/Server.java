@@ -1,13 +1,11 @@
 package server.server;
 
 import client.api.Command;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import notification.Notification;
-import server.model.existence.Account;
 import server.server.bank.BankAPI;
 import server.server.handler.*;
 
@@ -27,6 +25,7 @@ public class Server implements RandomGenerator{
     private HashMap<String, Property> relics;
     private HashMap<String, Clock> IPs;
     private ArrayList<String> bannedIPs;
+    private HashMap<String, Socket> supportersSocket;
     private static final long DOS_CHECK_PERIOD_MILLIS = 10000;
     private static final long DOS_CHECK_COUNTER = 100;
 
@@ -45,6 +44,7 @@ public class Server implements RandomGenerator{
             gson = new GsonBuilder().setPrettyPrinting().create();
             IPs = new HashMap<>();
             bannedIPs = new ArrayList<>();
+            this.supportersSocket = new HashMap<>();
             run();
         } catch (IOException e) {
             e.printStackTrace();
