@@ -155,7 +155,6 @@ public class WelcomeProcessor extends Processor implements Initializable {
     }
 
     public void openProductsMenu(ActionEvent actionEvent) {
-        /*ProductControl.getController().setOffListic(false);*/
         setOffListic(false);
         try {
             Parent root;
@@ -202,15 +201,14 @@ public class WelcomeProcessor extends Processor implements Initializable {
             if(optionalButtonType.get() == ButtonType.OK) {
                 if(alert.getHeaderText().equals("Congratulations")) {
                     if(isUserSupporter(userNameField.getText())) {
-                        Command<String> supporterCommand = new Command<>("login supporter", Command.HandleType.ACCOUNT, userNameField.getText());
-                        Response<String> response = client.postAndGet(command, Response.class, (Class<String>)String.class);
-                        ChatClient chatClient = new ChatClient();
+                        ChatClient client = new ChatClient(loginResponse.getData(0));
+                        client.setChatProcessor(openChatPane(client));
                     } else {
                         if(parentProcessor != null && parentProcessor instanceof ProductsProcessor) {
                             ((ProductsProcessor) parentProcessor).myStage.close();
                             ((ProductsProcessor)((ProductsProcessor) parentProcessor).parentProcessor).showCartProducts(null);
                         }
-                        client.setAuthToken(loginResponse.getData().get(0));
+                        client.setAuthToken(loginResponse.getData(0));
                         myStage.close();
                     }
                 }
@@ -221,6 +219,20 @@ public class WelcomeProcessor extends Processor implements Initializable {
             }
         }
 
+    }
+
+    private ChatProcessor openChatPane(ChatClient chatClient) {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("ChatPane.fxml"));
+        try {
+            Parent root = loader.load();
+            ChatProcessor chatProcessor = loader.getController();
+            chatProcessor.initChatPane(chatClient);
+            myStage.setScene(new Scene(root));
+            return chatProcessor;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private boolean isUserSupporter(String username) {

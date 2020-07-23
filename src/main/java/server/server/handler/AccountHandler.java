@@ -107,10 +107,25 @@ public class AccountHandler extends Handler {
                 return isAccountOnline();
             case "log out if can":
                 return logOutIfCan();
+            case "take me":
+                return addFucker();
 
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String addFucker() {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if(server.getAuthTokens().containsKey(command.getAuthToken())) {
+            String username = server.getUsernameByAuth(command.getAuthToken());
+            if(accountControl.getAccountByUsername(username).getType().equals("Customer")) {
+                server.addChatter(username, clientSocket);
+            } else if(accountControl.isUserSupporter(username)) {
+                server.addSupporter(username, clientSocket);
+            }
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String getAllAvailableSupporters() {
@@ -458,9 +473,6 @@ public class AccountHandler extends Handler {
             response = new Response<>(result, auth);
             server.addAuth(auth, account.getUsername());
 
-            if(accountControl.isUserSupporter(account.getUsername())) {
-                server.addSupporter(clientSocket, account.getUsername());
-            }
         } else {
             server.addIOIP(clientSocket.getInetAddress().getHostAddress());
             response = new Response<>(result, "EMPTY");

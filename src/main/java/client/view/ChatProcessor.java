@@ -1,6 +1,7 @@
 package client.view;
 
 import client.api.Client;
+import client.chatapi.ChatClient;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jfoenix.controls.JFXTextField;
@@ -17,53 +18,43 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import server.model.existence.Message;
 import server.server.ChatServer;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ChatProcessor extends Processor implements Initializable {
+public class ChatProcessor extends Processor{
 
-    /**
-     * chatPane.fxml elements
-     */
+    private ChatClient chatClient;
     public Circle anotherImage;
     public Label anotherPerson;
     public JFXTextField writingMessage;
     public ImageView send;
     public VBox messageBox;
 
-    /**
-     * Message.fxml elements
-     */
     public Circle senderImage;
     public JFXTextField senderName;
     public TextArea senderMessage;
 
-
     private Image myImage;
     private Image frontImage;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        if (location.toString().contains("chatPane")) {
-            final Client client = this.client;
-            Thread getter = new Thread(() -> {
-                while (true) {
-                    writeMessage(client.getMessage());
-                }
-            });
-            getter.start();
-        }
-        writingMessage.setDisable(false);
-        send.setDisable(false);
+    public void initChatPane(ChatClient chatClient) {
+        this.chatClient = chatClient;
+/*        new Thread(() -> {
+            while (true) {
+                writeMessage(this.chatClient.getMessage());
+            }
+        }).start();*/
+        writingMessage.setDisable(chatClient.getContactUsername() == null);
+        send.setDisable(chatClient.getContactUsername() == null);
+
     }
 
-    private void writeMessage(final String messageJson) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        ChatServer.Message message = gson.fromJson(messageJson, ChatServer.Message.class);
-        if (message.getAlert().equals("send message")) {
+    public void writeMessage(Message message) {
+        if (!message.isEndAlert()) {
             Pane messagePane = getFrontMessagePane(message);
             messageBox.getChildren().add(messagePane);
         } else {
@@ -71,7 +62,7 @@ public class ChatProcessor extends Processor implements Initializable {
         }
     }
 
-    private void closeChat(final ChatServer.Message message) {
+    private void closeChat(Message message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "Chat Closed!", ButtonType.OK);
         alert.setTitle("Ask Me");
         alert.show();
@@ -79,7 +70,7 @@ public class ChatProcessor extends Processor implements Initializable {
         send.setDisable(true);
     }
 
-    private Pane getFrontMessagePane(final ChatServer.Message message) {
+    private Pane getFrontMessagePane(final Message message) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("Message.fxml"));
         try {
             Pane messagePane = fxmlLoader.load();
@@ -97,7 +88,7 @@ public class ChatProcessor extends Processor implements Initializable {
         if (!writingMessage.toString().isEmpty()) {
             Pane myMessage = getMyMessagePane();
             messageBox.getChildren().add(myMessage);
-            ChatServer.Message message = new ChatServer.Message(writingMessage.getText(), "send Message", getUsername());
+            Message message = new Message(writingMessage.getText(), chatClient.getContactUsername(),false, getUsername());
             client.sendMessage(new Gson().toJson(message));
         }
     }
@@ -114,5 +105,11 @@ public class ChatProcessor extends Processor implements Initializable {
             e.printStackTrace();
         }
         return new Pane();
+    }
+
+    public void startChat() {
+        writingMessage.setDisable(false);
+        send.setDisable(false);
+        chatClient.startListening();
     }
 }

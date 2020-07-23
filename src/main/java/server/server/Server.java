@@ -1,13 +1,11 @@
 package server.server;
 
 import client.api.Command;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import notification.Notification;
-import server.model.existence.Account;
 import server.server.bank.BankAPI;
 import server.server.handler.*;
 
@@ -26,6 +24,7 @@ public class Server implements RandomGenerator{
     private HashMap<String, Property> relics;
     private HashMap<String, Clock> IPs, IOIPs;
     private HashMap<String, Socket> supporterSockets;
+    private HashMap<String, Socket> chatterSockets;
     private ArrayList<String> bannedIPs, tempBannedIPs;
     private static final long DOS_CHECK_PERIOD_MILLIS = 10000;
     private static final long DOS_CHECK_COUNTER = 100;
@@ -40,11 +39,12 @@ public class Server implements RandomGenerator{
     public Server() {
         try {
             serverSocket = new ServerSocket(0);
-            System.out.println("PORT: " + serverSocket.getLocalPort());
+            System.out.println("Boos Server Started To Listen On Port: " + serverSocket.getLocalPort());
             mapper = new ObjectMapper();
             this.authTokens = new HashMap<>();
             this.relics = new HashMap<>();
             this.IOIPs = new HashMap<>();
+            this.chatterSockets = new HashMap<>();
             this.supporterSockets = new HashMap<>();
             gson = new GsonBuilder().setPrettyPrinting().create();
             IPs = new HashMap<>();
@@ -245,12 +245,16 @@ public class Server implements RandomGenerator{
         return tempBannedIPs.contains(IP);
     }
 
-    public void addSupporter(Socket clientSocket, String username) {
+    public void addSupporter(String username, Socket clientSocket) {
         supporterSockets.put(username, clientSocket);
     }
 
     public HashMap<String, Socket> getSupporterSockets() {
         return supporterSockets;
+    }
+
+    public void addChatter(String username, Socket clientSocket) {
+        chatterSockets.put(username, clientSocket);
     }
 
     private static class Clock {

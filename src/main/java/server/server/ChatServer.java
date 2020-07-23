@@ -1,28 +1,25 @@
 package server.server;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import server.controller.account.AccountControl;
-import server.model.existence.Message;
-import server.server.handler.Handler;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class ChatServer {
     private ServerSocket serverSocket;
     private Gson gson;
-    private boolean isChatOpen;
+    private HashMap<String, Socket> chatters;
 
     public ChatServer() throws IOException {
         serverSocket = new ServerSocket(0);
+        System.out.println("Chat Server Started To Listen On Port: " + serverSocket.getLocalPort());
+        chatters = new HashMap<>();
         gson = new GsonBuilder().setPrettyPrinting().create();
-
     }
 
-    public void run() {
+/*    public void run() {
         Thread clientThread = null, guiderThread = null;
         while (isChatOpen()) {
             if (clientThread == null || !clientThread.isAlive()) {
@@ -74,5 +71,5 @@ public class ChatServer {
 
     public void setChatOpen(boolean chatOpen) {
         isChatOpen = chatOpen;
-    }
+    }*/
 }

@@ -1,10 +1,8 @@
 package server.server.bank.sapahbank;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import server.server.RandomGenerator;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -28,7 +26,7 @@ public class SapahServer {
         try {
             serverSocket = new ServerSocket(0);
             SERVER_PORT = serverSocket.getLocalPort();
-            System.out.println("PORT: " + SERVER_PORT);
+            System.out.println("Sapah Server Started To Listen On Port: " + SERVER_PORT);
             run();
         } catch (IOException e) {
             e.printStackTrace();
