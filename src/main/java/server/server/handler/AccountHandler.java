@@ -436,6 +436,10 @@ public class AccountHandler extends Handler {
             String auth = server.makeAuth();
             response = new Response<>(result, auth);
             server.addAuth(auth, account.getUsername());
+
+            if(accountControl.isUserSupporter(account.getUsername())) {
+                server.addSupporter()
+            }
         } else {
             response = new Response<>(result, "EMPTY");
         }
