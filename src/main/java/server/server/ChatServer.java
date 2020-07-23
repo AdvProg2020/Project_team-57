@@ -1,33 +1,27 @@
-package server.server.handler;
+package server.server;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import server.controller.account.AccountControl;
-import server.server.Server;
+import server.model.existence.Message;
+import server.server.handler.Handler;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 
-public class ChatHandler extends Handler {
-    private final DataInputStream guiderInput;
-    private final DataOutputStream guiderOutput;
+public class ChatServer {
+    private ServerSocket serverSocket;
+    private Gson gson;
     private boolean isChatOpen;
 
-    public ChatHandler(Socket clientSocket, Socket guideSocket, Server server, String input) throws IOException {
-        super(new DataOutputStream(new BufferedOutputStream(clientSocket.getOutputStream()))
-                , new DataInputStream(new BufferedInputStream(clientSocket.getInputStream())),
-                server,
-                input, clientSocket);
-        this.guiderOutput = new DataOutputStream(new BufferedOutputStream(guideSocket.getOutputStream()));
-        this.guiderInput = new DataInputStream(new BufferedInputStream(guideSocket.getInputStream()));
-        this.isChatOpen = true;
+    public ChatServer() throws IOException {
+        serverSocket = new ServerSocket(0);
+        gson = new GsonBuilder().setPrettyPrinting().create();
+
     }
 
-    @Override
-    protected String handle() {
-        return null;
-    }
-
-    @Override
     public void run() {
         Thread clientThread = null, guiderThread = null;
         while (isChatOpen()) {
@@ -35,8 +29,8 @@ public class ChatHandler extends Handler {
                 clientThread = new Thread(() -> {
                     try {
                         String clientMessage = inStream.readUTF();
-                        ChatHandler.Message message = new Gson().fromJson(clientMessage, ChatHandler.Message.class);
-                        if (!message.getAlert().equals("send message")) {
+                        Message message = new Gson().fromJson(clientMessage, Message.class);
+                        if (message.isEndAlert()) {
                             setChatOpen(false);
                         }
                         sendMessage(message);
@@ -50,8 +44,8 @@ public class ChatHandler extends Handler {
                 guiderThread = new Thread(() -> {
                     try {
                         String guiderMessage = guiderInput.readUTF();
-                        ChatHandler.Message message = new Gson().fromJson(guiderMessage, ChatHandler.Message.class);
-                        if (!message.getAlert().equals("send message")) {
+                        Message message = new Gson().fromJson(guiderMessage, Message.class);
+                        if (message.isEndAlert()) {
                             setChatOpen(false);
                         }
                         sendMessage(message);
@@ -80,30 +74,5 @@ public class ChatHandler extends Handler {
 
     public void setChatOpen(boolean chatOpen) {
         isChatOpen = chatOpen;
-    }
-
-    public static class Message {
-        private final String message;
-        private final String alert;
-        private final String senderName;
-
-        public Message(String message, String alert, String senderName) {
-            this.message = message;
-            this.alert = alert;
-            this.senderName = senderName;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public String getAlert() {
-            return alert;
-        }
-
-        public String getSenderName() {
-            return senderName;
-        }
-
     }
 }

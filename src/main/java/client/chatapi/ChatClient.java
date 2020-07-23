@@ -14,9 +14,8 @@ public class ChatClient {
     private Socket mySocket;
     private DataOutputStream outStream;
     private DataInputStream inStream;
-    private String authToken;
-    private String relic;
     private Gson gson;
+
 
 
 }

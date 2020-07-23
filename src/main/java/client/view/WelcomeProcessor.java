@@ -1,6 +1,7 @@
 package client.view;
 
 import client.api.Command;
+import client.chatapi.ChatClient;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
@@ -25,8 +26,10 @@ import javafx.stage.Stage;
 import server.server.Response;
 import server.model.existence.Account;
 import server.model.existence.Account.*;
+import server.server.Server;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -199,7 +202,9 @@ public class WelcomeProcessor extends Processor implements Initializable {
             if(optionalButtonType.get() == ButtonType.OK) {
                 if(alert.getHeaderText().equals("Congratulations")) {
                     if(isUserSupporter(userNameField.getText())) {
-                        //Todo Open Supporter Menu
+                        Command<String> supporterCommand = new Command<>("login supporter", Command.HandleType.ACCOUNT, userNameField.getText());
+                        Response<String> response = client.postAndGet(command, Response.class, (Class<String>)String.class);
+                        ChatClient chatClient = new ChatClient();
                     } else {
                         if(parentProcessor != null && parentProcessor instanceof ProductsProcessor) {
                             ((ProductsProcessor) parentProcessor).myStage.close();

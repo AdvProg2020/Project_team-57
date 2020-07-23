@@ -19,7 +19,6 @@ import java.util.HashMap;
 
 
 public class Server implements RandomGenerator{
-    public static int SERVER_PORT;
     private ServerSocket serverSocket;
     private ObjectMapper mapper;
     private Gson gson;
@@ -41,8 +40,7 @@ public class Server implements RandomGenerator{
     public Server() {
         try {
             serverSocket = new ServerSocket(0);
-            SERVER_PORT = serverSocket.getLocalPort();
-            System.out.println("PORT: " + SERVER_PORT);
+            System.out.println("PORT: " + serverSocket.getLocalPort());
             mapper = new ObjectMapper();
             this.authTokens = new HashMap<>();
             this.relics = new HashMap<>();

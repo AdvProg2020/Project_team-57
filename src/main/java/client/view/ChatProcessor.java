@@ -17,7 +17,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import server.server.handler.ChatHandler;
+import server.server.ChatServer;
 
 import java.io.IOException;
 import java.net.URL;
@@ -62,7 +62,7 @@ public class ChatProcessor extends Processor implements Initializable {
 
     private void writeMessage(final String messageJson) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        ChatHandler.Message message = gson.fromJson(messageJson, ChatHandler.Message.class);
+        ChatServer.Message message = gson.fromJson(messageJson, ChatServer.Message.class);
         if (message.getAlert().equals("send message")) {
             Pane messagePane = getFrontMessagePane(message);
             messageBox.getChildren().add(messagePane);
@@ -71,7 +71,7 @@ public class ChatProcessor extends Processor implements Initializable {
         }
     }
 
-    private void closeChat(final ChatHandler.Message message) {
+    private void closeChat(final ChatServer.Message message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "Chat Closed!", ButtonType.OK);
         alert.setTitle("Ask Me");
         alert.show();
@@ -79,7 +79,7 @@ public class ChatProcessor extends Processor implements Initializable {
         send.setDisable(true);
     }
 
-    private Pane getFrontMessagePane(final ChatHandler.Message message) {
+    private Pane getFrontMessagePane(final ChatServer.Message message) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("Message.fxml"));
         try {
             Pane messagePane = fxmlLoader.load();
@@ -97,7 +97,7 @@ public class ChatProcessor extends Processor implements Initializable {
         if (!writingMessage.toString().isEmpty()) {
             Pane myMessage = getMyMessagePane();
             messageBox.getChildren().add(myMessage);
-            ChatHandler.Message message = new ChatHandler.Message(writingMessage.getText(), "send Message", getUsername());
+            ChatServer.Message message = new ChatServer.Message(writingMessage.getText(), "send Message", getUsername());
             client.sendMessage(new Gson().toJson(message));
         }
     }
