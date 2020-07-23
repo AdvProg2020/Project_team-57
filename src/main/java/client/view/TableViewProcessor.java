@@ -3,6 +3,7 @@ package client.view;
 import client.api.Command;
 import com.jfoenix.controls.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import notification.Notification;
 import server.controller.account.AccountControl;
@@ -106,6 +107,7 @@ public class TableViewProcessor<T> extends Processor {
     public Label fileName;
     public JFXTextArea fileDescription;
     public JFXButton showProductFileButton;
+    public JFXButton deleteSupporterButton;
     private TableViewType tableViewType;
     private T selectedItem;
     private String searchedUsername;
@@ -119,7 +121,7 @@ public class TableViewProcessor<T> extends Processor {
         CUSTOMERS(CUSTOMER), VENDORS(VENDOR), ADMINS(ADMIN),
         DISCOUNTS, DISCOUNT_CUSTOMERS, ADMIN_COMMENTS, ADMIN_OFFS,
         VENDOR_OFFS, LOGS, PRODUCTS_OF_LOG, CUSTOMER_DISCOUNTS,
-        PRODUCT_BUYERS, FILES;
+        PRODUCT_BUYERS, FILES, ADMIN_SUPPORTERS;
 
         Account.AccountType accountType;
 
@@ -218,7 +220,18 @@ public class TableViewProcessor<T> extends Processor {
             case FILES:
                 initFilesColumns();
                 break;
+            case ADMIN_SUPPORTERS:
+                initAdminSupporters();
+                break;
         }
+    }
+
+    private void initAdminSupporters() {
+        TableColumn<T, String> usernameColumn = makeColumn("Username", "username", 0.21);
+        TableColumn<T, String> firstNameColumn = makeColumn("First Name", "firstName", 0.25);
+        TableColumn<T, String> lastNameColumn = makeColumn("Last Name", "lastName", 0.25);
+        TableColumn<T, String> status = makeColumn("Status", "onlineStatus", 0.12);
+        tableView.getColumns().addAll(usernameColumn, firstNameColumn, lastNameColumn, status);
     }
 
     private void initFilesColumns() {
@@ -353,12 +366,24 @@ public class TableViewProcessor<T> extends Processor {
                 break;
             case FILES:
                 tableList.addAll((ArrayList<T>) getFileInfos());
-
+                break;
+            case ADMIN_SUPPORTERS:
+                tableList.addAll((ArrayList<T>) getAllSupportersForAdmin());
                 break;
         }
         tableView.getItems().addAll(tableList);
         tableView.getSelectionModel().selectFirst();
         selectedItem = tableView.getSelectionModel().getSelectedItem();
+    }
+
+    private ArrayList<Account.Supporter> getAllSupportersForAdmin() {
+        Command command = new Command<>("get all supporters", Command.HandleType.ACCOUNT);
+        Response<Account.Supporter> response = client.postAndGet(command, Response.class, (Class<Account.Supporter>) Account.Supporter.class);
+        ArrayList<Account.Supporter> accounts = new ArrayList<>(response.getData());
+        for (Account.Supporter account : accounts) {
+            account.setOnlineStatus(getAccountOnlineStatus(account.getUsername()));
+        }
+        return accounts;
     }
 
     private ArrayList<Product.ProductFileInfo> getFileInfos() {
@@ -464,7 +489,6 @@ public class TableViewProcessor<T> extends Processor {
                 mainBorderPane.setLeft(initDiscountOptions());
                 break;
             case DISCOUNT_CUSTOMERS:
-                //TODO(FOR CHECKBOX)
                 mainBorderPane.setLeft(initDiscountCustomersOptions());
                 break;
             case ADMIN_COMMENTS:
@@ -491,7 +515,28 @@ public class TableViewProcessor<T> extends Processor {
             case FILES:
                 mainBorderPane.setLeft(initFileOptions());
                 break;
+            case ADMIN_SUPPORTERS:
+                mainBorderPane.setLeft(initSupporterOptions());
+                break;
         }
+    }
+
+    private Pane initSupporterOptions() {
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("TableViewAdminSupporterOptions.fxml"));
+        try {
+            Pane root = loader.load();
+            TableViewProcessor processor = loader.getController();
+            processor.setParentProcessor(this);
+            if(selectedItem != null) {
+                Account.Supporter supporter = (Account.Supporter)selectedItem;
+                processor.deleteSupporterButton.setDisable(false);
+                processor.imageCircle.setFill(new ImagePattern(getProfileImage(supporter.getUsername())));
+            }
+            return root;
+        } catch (IOException e) {
+            //:)
+        }
+        return null;
     }
 
     private Pane initFileOptions() {
@@ -1423,6 +1468,40 @@ public class TableViewProcessor<T> extends Processor {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void deleteSupporter(ActionEvent actionEvent) {
+        Account.Supporter supporter = (Account.Supporter) selectedItem;
+        Command<String> command = new Command<>("delete supporter", Command.HandleType.ACCOUNT, supporter.getUsername());
+        Optional<ButtonType> buttonType = new Alert(Alert.AlertType.CONFIRMATION, "Are You Sure About Deleting This Supporter?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if(buttonType.get() == ButtonType.YES) {
+            client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+            ((TableViewProcessor)parentProcessor).updateTable();
+            ((TableViewProcessor)parentProcessor).updateSelectedItem();
+        }
+    }
+
+    public void addNewSupporter(ActionEvent actionEvent) {
+        try {
+            WelcomeProcessor.setIsNormal(false);
+            WelcomeProcessor.setIsAdmin(false);
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("SignUpMenu.fxml"));
+            Parent root = loader.load();
+            WelcomeProcessor signUpProcessor = loader.getController();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            signUpProcessor.setMyStage(newStage);
+            newStage.getIcons().add(new Image(getClass().getResourceAsStream("Login Icon.png")));
+            newStage.setResizable(false);
+            newStage.setTitle("Register New Supporter");
+            newStage.show();
+            newStage.setOnCloseRequest(event -> {
+                ((TableViewProcessor)parentProcessor).updateTable();
+                ((TableViewProcessor)parentProcessor).updateSelectedItem();
+            });
+        } catch (IOException e) {
+            //:)
         }
     }
 }

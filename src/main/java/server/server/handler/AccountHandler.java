@@ -117,8 +117,7 @@ public class AccountHandler extends Handler {
     private String getAllSupporters() {
         Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
         if (server.getAuthTokens().containsKey(command.getAuthToken()) &&
-                (accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")
-                    || accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer"))) {
+                accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
             Response<Supporter> response = new Response<>(Notification.PACKET_NOTIFICATION);
             response.setData(accountControl.getAllSupporters());
             return gson.toJson(response);

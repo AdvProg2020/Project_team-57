@@ -369,4 +369,5 @@ public abstract class Processor {
         Command<String> command = new Command<>("does edit product have file", PRODUCT, productID);
         return client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class).getDatum();
     }
+
 }
