@@ -36,4 +36,7 @@ public class Message {
         return endAlert;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

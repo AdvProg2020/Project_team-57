@@ -116,10 +116,22 @@ public class AccountHandler extends Handler {
                 return sendMessage();
             case "logout supporter":
                 return supporterLogout();
-
+            case "logout customer from chat":
+                return logoutCustomerFromChat();
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String logoutCustomerFromChat() throws IOException {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
+            if(server.getChatterSockets().containsKey(server.getUsernameByAuth(command.getAuthToken()))) {
+                server.customerEndChat(server.getUsernameByAuth(command.getAuthToken()));
+            }
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String supporterLogout() throws IOException {

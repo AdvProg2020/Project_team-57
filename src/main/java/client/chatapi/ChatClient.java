@@ -14,7 +14,7 @@ import java.net.Socket;
 
 public class ChatClient {
     private final static String IP = "127.0.0.1";
-    private static int PORT = 62142;
+    private static int PORT = 62785;
     private String auth;
     private String contactUsername;
     private Socket restlessSocket;
@@ -56,7 +56,7 @@ public class ChatClient {
         this.chatProcessor = chatProcessor;
     }
 
-    private void waitForContact() {
+    public void waitForContact() {
         new Thread() {
             @Override
             public void run() {
@@ -89,10 +89,11 @@ public class ChatClient {
         new Thread() {
             @Override
             public void run() {
+                Message message;
                 while (true) {
                     try {
                         String json = inStream.readUTF();
-                        Message message = gson.fromJson(json, Message.class);
+                        message = gson.fromJson(json, Message.class);
 
                         if (message.isEndAlert()) {
                             break;
@@ -103,7 +104,7 @@ public class ChatClient {
                         e.printStackTrace();
                     }
                 }
-                chatProcessor.endChatByClient(false);
+                chatProcessor.endChat(message.getMessage().split("\\s")[0].equals("isSupporterEnded"), message.getMessage().split("\\s")[1].equals("isSupporter"));
             }
         }.start();
     }
@@ -125,13 +126,14 @@ public class ChatClient {
     }
 
     public void customerCloseChat() {
-        //Todo
+        Command command = new Command("logout customer from chat", Command.HandleType.ACCOUNT);
+        Client.getClient().postAndGet(command, Response.class, (Class<Object>)Object.class);
+        closeConnection();
     }
 
     public void supporterLogOut() {
         Command command = new Command("logout supporter", Command.HandleType.ACCOUNT);
         Client.getClient().postAndGet(command, Response.class, (Class<Object>)Object.class);
-        closeConnection();
         Client.getClient().setAuthToken(null);
     }
 }

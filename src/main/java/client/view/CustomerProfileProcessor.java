@@ -266,7 +266,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     }
 
     public void showSupporters(ActionEvent actionEvent) {
-        if (canOpenSubStage("Available Supporter", this)) {
+        if (canOpenSubStage("Available Supporters", this) && canOpenSubStage("Support Menu", this)) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
                 Parent root = loader.load();
@@ -277,8 +277,8 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
                 newStage.setScene(new Scene(root));
                 newStage.getIcons().add(new Image(Main.class.getResourceAsStream("admin supporters icon.png")));
                 newStage.setResizable(false);
-                newStage.setTitle("Available Supporter");
-                this.addSubStage(newStage);
+                newStage.setTitle("Available Supporters");
+                subStages.add(newStage);
                 tableViewProcessor.setMyStage(newStage);
                 newStage.show();
             } catch (IOException e) {

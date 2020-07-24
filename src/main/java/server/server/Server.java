@@ -306,24 +306,15 @@ public class Server implements RandomGenerator{
     }
 
     public boolean areTalking(String senderUsername, String contactUsername) {
-        System.err.println(senderUsername + ", " + contactUsername);
-        System.err.println("ALL TALKS: ");
-        for (String sender : chatDualities.keySet()) {
-            System.err.println(sender + ", " + chatDualities.get(sender));
-        }
         if(chatDualities.containsKey(senderUsername)) {
             if(chatDualities.get(senderUsername).equals(contactUsername)) {
                 return true;
             }
-            System.err.println("ERROR 1");
         } else if(chatDualities.containsKey(contactUsername)) {
             if(chatDualities.get(contactUsername).equals(senderUsername)) {
                 return true;
             }
-            System.err.println("ERROR 2");
-
         }
-        System.err.println("Error 3");
         return false;
     }
 
@@ -333,12 +324,11 @@ public class Server implements RandomGenerator{
 
     public void supporterEndChat(String supporterUsername) throws IOException {
         Socket socket = supporterSockets.get(supporterUsername);
-
         Message message = new Message(true);
+        message.setMessage("isSupporterEnded isSupporter");
         DataOutputStream supporterOutputStream = getOutputStream(supporterUsername);
         supporterOutputStream.writeUTF(gson.toJson(message));
         supporterOutputStream.flush();
-
         String customerUsername = getSupportersCustomer(supporterUsername);
         chatDualities.remove(customerUsername);
         supporterSockets.remove(supporterUsername);
@@ -346,10 +336,32 @@ public class Server implements RandomGenerator{
         removeOutputStream(socket);
         socket.close();
         DataOutputStream outputStream = getOutputStream(customerUsername);
-        outputStream.writeUTF(gson.toJson(new Message(true)));
+        message.setMessage("isSupporterEnded isCustomer");
+        outputStream.writeUTF(gson.toJson(message));
         outputStream.flush();
         removeOutputStream(chatterSockets.get(customerUsername));
         chatterSockets.remove(customerUsername);
+    }
+
+    public void customerEndChat(String customerUsername) throws IOException {
+        Socket socket = chatterSockets.get(customerUsername);
+        Message message = new Message(true);
+        message.setMessage("isCustomerEnded isCustomer");
+        String messageJson = gson.toJson(message);
+        DataOutputStream customerOutputStream = getOutputStream(customerUsername);
+        customerOutputStream.writeUTF(messageJson);
+        customerOutputStream.flush();
+        String supporterUsername = chatDualities.get(customerUsername);
+        chatDualities.remove(customerUsername);
+        chatterSockets.remove(customerUsername);
+        removeOutputStream(socket);
+        socket.close();
+        DataOutputStream supporterOutStream = getOutputStream(supporterUsername);
+        message.setMessage("isCustomerEnded isSupporter");
+        messageJson = gson.toJson(message);
+        supporterOutStream.writeUTF(messageJson);
+        supporterOutStream.flush();
+        chatterSockets.remove(supporterUsername);
     }
 
     public void offLineSupporter(String supporterUsername) throws IOException {

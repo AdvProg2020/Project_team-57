@@ -1556,6 +1556,9 @@ public class TableViewProcessor<T> extends Processor {
             chatProcessor.initChatPane(chatClient);
             chatClient.setChatProcessor(chatProcessor);
             chatProcessor.startChat();
+            chatProcessor.setMyStage(stage);
+            chatProcessor.setParentProcessor(parentProcessor.parentProcessor);
+            stage.setTitle("Support Menu");
             stage.setScene(new Scene(root));
         } catch (IOException e) {
             e.printStackTrace();

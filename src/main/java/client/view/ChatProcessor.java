@@ -35,7 +35,7 @@ public class ChatProcessor extends Processor {
     public HBox messageHBox;
     public ScrollPane chatScroll;
     public ImageView logoutButton;
-    public JFXTextField startChatCustomerNameField;
+    public JFXTextField serverMessageField;
     private ChatClient chatClient;
     public Circle anotherImageCircle;
     public Label anotherPersonLabel;
@@ -131,12 +131,26 @@ public class ChatProcessor extends Processor {
         }
     }
 
-    public void endChatByClient(boolean isSupporter) {
+    public void endChat(boolean isSupporterEnded, boolean isSupporter) {
         Task displayMessage = new Task<Void>() {
             @Override
             public Void call() throws Exception {
                 Platform.runLater( () -> {
-                    endChat(isSupporter);
+                    if(isSupporterEnded) {
+                        if(isSupporter) {
+                            //:))
+                        } else {
+                            sendFinishChatMessage();
+                        }
+                    } else {
+                        if(isSupporter) {
+                            sendFinishChatMessage();
+                            chatClient.setContactUsername(null);
+                            chatClient.waitForContact();
+                        } else {
+                            //:)
+                        }
+                    }
                 });
                 return null;
             }
@@ -144,18 +158,13 @@ public class ChatProcessor extends Processor {
         executor.execute(displayMessage);
     }
 
-    private void endChat(boolean isSupporter) {
-        if(isSupporter) {
-
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Hope You Two Enjeyed That. \n(By Admin)");
-            alert.setHeaderText("Chat Ended");
-            alert.setTitle("Time's Over");
-            alert.show();
-
-            sendImageView.setDisable(true);
-            writingMessageArea.setDisable(true);
-        }
+    private void sendFinishChatMessage() {
+        HBox messageHBox = getServerMessageHBox(chatClient.getContactUsername() + " Has Left Your Chat!");
+        messageBox.getChildren().add(messageHBox);
+        chatScroll.layout();
+        chatScroll.setVvalue(1.0);
+        sendImageView.setDisable(true);
+        writingMessageArea.setDisable(true);
     }
 
     public void logoutMouseClicked(MouseEvent mouseEvent) {
@@ -167,9 +176,10 @@ public class ChatProcessor extends Processor {
         if(optionalButtonType.get() == ButtonType.YES) {
             if(getType() != null && getType().equals("Customer")) {
                 chatClient.customerCloseChat();
+                myStage.close();
+                this.parentProcessor.getSubStages().remove(myStage);
             } else {
                 chatClient.supporterLogOut();
-
                 FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("WelcomeMenu.fxml"));
                 try {
                     Parent root = fxmlLoader.load();
@@ -189,7 +199,7 @@ public class ChatProcessor extends Processor {
             @Override
             public Void call() throws Exception {
                 Platform.runLater( () -> {
-                    HBox messageHBox = getStartChatMessage(contactUsername);
+                    HBox messageHBox = getServerMessageHBox(contactUsername + START_CHAT_MESSAGE);
                     messageBox.getChildren().add(messageHBox);
                     chatScroll.layout();
                     chatScroll.setVvalue(1.0);
@@ -200,12 +210,12 @@ public class ChatProcessor extends Processor {
         executor.execute(displayMessage);
     }
 
-    private HBox getStartChatMessage(String contactUsername) {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChatSupporterStartChat.fxml"));
+    private HBox getServerMessageHBox(String message) {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChatServerMessage.fxml"));
         try {
             HBox messageHBox = fxmlLoader.load();
             ChatProcessor chatProcessor = fxmlLoader.getController();
-            chatProcessor.startChatCustomerNameField.setText(contactUsername + START_CHAT_MESSAGE);
+            chatProcessor.serverMessageField.setText(message);
             return messageHBox;
         } catch (IOException e) {
             e.printStackTrace();
