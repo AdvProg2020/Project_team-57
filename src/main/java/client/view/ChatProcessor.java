@@ -1,121 +1,149 @@
 package client.view;
 
-import client.api.Client;
 import client.chatapi.ChatClient;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.geometry.NodeOrientation;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import server.model.existence.Message;
-import server.server.ChatServer;
-
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ChatProcessor extends Processor{
 
+    public HBox messageHBox;
+    public ScrollPane chatScroll;
     private ChatClient chatClient;
-    public Circle anotherImage;
-    public Label anotherPerson;
-    public JFXTextArea writingMessage;
-    public ImageView send;
+    public Circle anotherImageCircle;
+    public Label anotherPersonLabel;
+    public JFXTextArea writingMessageArea;
+    public ImageView sendImageView;
     public VBox messageBox;
 
-    public Circle senderImage;
-    public JFXTextField senderName;
-    public TextArea senderMessage;
+    public Circle senderImageCircle;
+    public JFXTextField senderNameField;
+    public JFXTextArea senderMessageArea;
+    private ExecutorService executor = Executors.newCachedThreadPool ( );
 
     private Image myImage;
     private Image frontImage;
 
     public void initChatPane(ChatClient chatClient) {
         this.chatClient = chatClient;
-        setStringFields(writingMessage, 2500);
+        chatScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        setStringFields(writingMessageArea, 2500);
     }
 
     public void writeMessage(Message message) {
-        if (!message.isEndAlert()) {
-            Pane messagePane = getFrontMessagePane(message);
-            messageBox.getChildren().add(messagePane);
-        } else {
-            closeChat(message);
-        }
+        Task displayMessage = new Task<Void>() {
+            @Override
+            public Void call() throws Exception {
+                Platform.runLater( () -> {
+                    if (!message.isEndAlert()) {
+                        HBox messageHBox = getFrontMessagePane(message);
+                        messageBox.getChildren().add(messageHBox);
+                        chatScroll.layout();
+                        chatScroll.setVvalue(1.0);
+/*                        try {
+                            Thread.sleep(2000);
+                            System.out.println("After Sleep");
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        chatScroll.setVvalue(1.0);*/
+                    } else {
+                        closeChat(message);
+                    }
+                });
+                return null;
+            }
+        };
+        executor.execute(displayMessage);
     }
 
     private void closeChat(Message message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "Chat Closed!", ButtonType.OK);
         alert.setTitle("Ask Me");
         alert.show();
-        writingMessage.setDisable(true);
-        send.setDisable(true);
+        writingMessageArea.setDisable(true);
+        sendImageView.setDisable(true);
     }
 
-    private Pane getFrontMessagePane(final Message message) {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Message.fxml"));
+    private HBox getFrontMessagePane(final Message message) {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChatMessage.fxml"));
         try {
-            Pane messagePane = fxmlLoader.load();
+            HBox messageHBox = fxmlLoader.load();
             ChatProcessor chatProcessor = fxmlLoader.getController();
             chatProcessor.initMessage(message, ((frontImage == null) ? frontImage = getProfileImage(message.getSenderName()) : frontImage));
-            return messagePane;
+            messageHBox.setNodeOrientation(NodeOrientation.INHERIT);
+            return messageHBox;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new Pane();
+        return null;
     }
 
     private void initMessage(Message message, Image image) {
-        senderImage.setFill(new ImagePattern(image));
-        senderName.setText(message.getSenderName());
-        senderMessage.setText(message.getMessage());
+        senderImageCircle.setFill(new ImagePattern(image));
+        senderNameField.setText(message.getSenderName());
+        senderMessageArea.setText(message.getMessage());
     }
 
     public void sendMessage(MouseEvent event) {
-        if (!writingMessage.getText().isEmpty()) {
-            Message message = new Message(writingMessage.getText(), chatClient.getContactUsername(),false, getUsername());
+        if (!writingMessageArea.getText().isEmpty()) {
+            Message message = new Message(writingMessageArea.getText(), chatClient.getContactUsername(),false, getUsername());
             chatClient.sendMessage(message);
-            Pane myMessage = getMyMessagePane(message);
-            messageBox.getChildren().add(myMessage);
+            HBox messageHBox = getMyMessagePane(message);
+            messageBox.getChildren().add(messageHBox);
+            chatScroll.layout();
+            chatScroll.setVvalue(1.0);
+/*            try {
+                Thread.sleep(2000);
+                System.out.println("After Sleep");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            chatScroll.setVvalue(1.0);*/
+            writingMessageArea.setText("");
         }
     }
 
-    private Pane getMyMessagePane(Message myMessage) {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Message.fxml"));
+    private HBox getMyMessagePane(Message myMessage) {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChatMessage.fxml"));
         try {
-            Pane message = fxmlLoader.load();
+            HBox messageHBox = fxmlLoader.load();
             ChatProcessor chatProcessor = fxmlLoader.getController();
             chatProcessor.initMessage(myMessage, ((myImage == null) ? getProfileImage(getUsername()) : myImage));
-            return message;
+            messageHBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            return messageHBox;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new Pane();
+        return null;
     }
 
     public void startChat() {
-        writingMessage.setDisable(false);
-        send.setDisable(false);
+        writingMessageArea.setDisable(false);
+        sendImageView.setDisable(false);
         chatClient.startListening();
     }
 
     public void textAreaOnKey(KeyEvent keyEvent) {
         if(keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.ENTER) {
-            System.out.println("YES");
+            sendMessage(null);
         }
     }
 }

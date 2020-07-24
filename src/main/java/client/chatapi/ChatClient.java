@@ -14,7 +14,7 @@ import java.net.Socket;
 
 public class ChatClient {
     private final static String IP = "127.0.0.1";
-    private static int PORT = 58320;
+    private static int PORT = 59957;
     private String auth;
     private String contactUsername;
     private Socket restlessSocket;
@@ -54,7 +54,6 @@ public class ChatClient {
 
     public void setChatProcessor(ChatProcessor chatProcessor) {
         this.chatProcessor = chatProcessor;
-        System.out.println("init: " + this.chatProcessor);
     }
 
     private void waitForContact() {

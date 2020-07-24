@@ -469,8 +469,7 @@ public class AccountHandler extends Handler {
 
     private String getUsername() {
         Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
-        Account account = accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken()));
-        Response<String> response = new Response<>(Notification.PACKET_NOTIFICATION, account.getUsername());
+        Response<String> response = new Response<>(Notification.PACKET_NOTIFICATION, server.getUsernameByAuth(command.getAuthToken()));
         return gson.toJson(response);
     }
 

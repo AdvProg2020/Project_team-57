@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXTextArea?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="616.0" prefWidth="529.0" stylesheets="@../CSS%20files/ChatCss.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.ChatProcessor">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="616.0" prefWidth="530.0" style="-fx-background-color: #ffffff;" stylesheets="@../CSS%20files/ChatCss.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.ChatProcessor">
    <children>
-      <Pane prefHeight="108.0" prefWidth="529.0">
+      <Pane prefHeight="108.0" prefWidth="4.0" style="-fx-background-color: #ffffff;">
          <children>
-            <Circle fx:id="anotherImage" fill="DODGERBLUE" layoutX="54.0" layoutY="57.0" radius="45.0" stroke="BLACK" strokeType="INSIDE" />
-            <Label fx:id="anotherPerson" layoutX="118.0" layoutY="43.0" text="I am Guider">
-               <font>
-                  <Font name="Oswald Regular" size="15.0" />
-               </font>
-            </Label>
             <ImageView fitHeight="108.0" fitWidth="108.0" layoutX="211.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../Images/Icons/smallBosMarket.png" />
@@ -26,16 +18,20 @@
             </ImageView>
          </children>
       </Pane>
-      <Pane layoutY="572.0" prefHeight="48.0" prefWidth="529.0">
+      <Pane layoutY="572.0" prefHeight="48.0" prefWidth="530.0">
          <children>
-            <ImageView fx:id="send" disable="true" fitHeight="46.0" fitWidth="37.0" layoutX="487.0" layoutY="5.0" onMouseClicked="#sendMessage" pickOnBounds="true" preserveRatio="true" styleClass="send_message_button">
+            <ImageView fx:id="sendImageView" disable="true" fitHeight="46.0" fitWidth="37.0" layoutX="487.0" layoutY="5.0" onMouseClicked="#sendMessage" pickOnBounds="true" preserveRatio="true" styleClass="send_message_button">
                <image>
                   <Image url="@../Images/Icons/sendMessage.png" />
                </image>
             </ImageView>
-            <JFXTextArea fx:id="writingMessage" disable="true" onKeyPressed="#textAreaOnKey" prefHeight="48.0" prefWidth="482.0" promptText=" Type Your Message Here" wrapText="true" />
+            <JFXTextArea fx:id="writingMessageArea" disable="true" layoutX="10.0" onKeyPressed="#textAreaOnKey" prefHeight="48.0" prefWidth="475.0" promptText=" Type Your Message Here" wrapText="true" />
          </children>
       </Pane>
-      <VBox fx:id="messageBox" alignment="BOTTOM_LEFT" focusTraversable="true" layoutY="108.0" mouseTransparent="true" prefHeight="465.0" prefWidth="529.0" />
+      <ScrollPane fx:id="chatScroll" layoutY="108.0" prefHeight="465.0" prefWidth="549.0" vvalue="1.0">
+         <content>
+            <VBox fx:id="messageBox" alignment="BOTTOM_LEFT" focusTraversable="true" mouseTransparent="true" prefHeight="465.0" prefWidth="530.0" style="-fx-background-color: #ffffff;" />
+         </content>
+      </ScrollPane>
    </children>
 </Pane>
