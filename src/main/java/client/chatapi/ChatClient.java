@@ -14,7 +14,7 @@ import java.net.Socket;
 
 public class ChatClient {
     private final static String IP = "127.0.0.1";
-    private static int PORT = 59957;
+    private static int PORT = 11996;
     private String auth;
     private String contactUsername;
     private Socket restlessSocket;
@@ -65,6 +65,11 @@ public class ChatClient {
                     System.out.println(json);
                     Response<String> response = gson.fromJson(json, TypeToken.getParameterized(Response.class, (Class<String>)String.class).getType());
                     contactUsername = response.getDatum();
+                    if(contactUsername.equals("Sep")) {
+                        closeConnection();
+                        return;
+                    }
+
                     System.out.println(chatProcessor);
                     chatProcessor.startChat();
                 } catch (IOException e) {
@@ -72,7 +77,6 @@ public class ChatClient {
                 }
             }
         }.start();
-
     }
 
     public String getContactUsername() {
@@ -91,11 +95,17 @@ public class ChatClient {
                     try {
                         String json = inStream.readUTF();
                         Message message = gson.fromJson(json, Message.class);
-                        chatProcessor.writeMessage(message);
+
+                        if (message.isEndAlert()) {
+                            break;
+                        } else {
+                            chatProcessor.writeMessage(message);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
+                chatProcessor.endChatByClient(false);
             }
         }.start();
     }
@@ -104,5 +114,26 @@ public class ChatClient {
         Client client = Client.getClient();
         Command<Message> command = new Command<>("send message", Command.HandleType.ACCOUNT, message);
         client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+    }
+
+    public void closeConnection() {
+        try {
+            restlessSocket.close();
+            outStream.close();
+            inStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void customerCloseChat() {
+        //Todo
+    }
+
+    public void supporterLogOut() {
+        Command command = new Command("logout supporter", Command.HandleType.ACCOUNT);
+        Client.getClient().postAndGet(command, Response.class, (Class<Object>)Object.class);
+        closeConnection();
+        Client.getClient().setAuthToken(null);
     }
 }

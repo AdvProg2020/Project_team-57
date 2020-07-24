@@ -7,7 +7,11 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.control.*;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -17,15 +21,19 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import server.model.existence.Message;
+
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ChatProcessor extends Processor{
+public class ChatProcessor extends Processor {
 
     public HBox messageHBox;
     public ScrollPane chatScroll;
+    public ImageView logoutButton;
     private ChatClient chatClient;
     public Circle anotherImageCircle;
     public Label anotherPersonLabel;
@@ -52,34 +60,15 @@ public class ChatProcessor extends Processor{
             @Override
             public Void call() throws Exception {
                 Platform.runLater( () -> {
-                    if (!message.isEndAlert()) {
-                        HBox messageHBox = getFrontMessagePane(message);
-                        messageBox.getChildren().add(messageHBox);
-                        chatScroll.layout();
-                        chatScroll.setVvalue(1.0);
-/*                        try {
-                            Thread.sleep(2000);
-                            System.out.println("After Sleep");
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        chatScroll.setVvalue(1.0);*/
-                    } else {
-                        closeChat(message);
-                    }
+                    HBox messageHBox = getFrontMessagePane(message);
+                    messageBox.getChildren().add(messageHBox);
+                    chatScroll.layout();
+                    chatScroll.setVvalue(1.0);
                 });
                 return null;
             }
         };
         executor.execute(displayMessage);
-    }
-
-    private void closeChat(Message message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Chat Closed!", ButtonType.OK);
-        alert.setTitle("Ask Me");
-        alert.show();
-        writingMessageArea.setDisable(true);
-        sendImageView.setDisable(true);
     }
 
     private HBox getFrontMessagePane(final Message message) {
@@ -110,13 +99,6 @@ public class ChatProcessor extends Processor{
             messageBox.getChildren().add(messageHBox);
             chatScroll.layout();
             chatScroll.setVvalue(1.0);
-/*            try {
-                Thread.sleep(2000);
-                System.out.println("After Sleep");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            chatScroll.setVvalue(1.0);*/
             writingMessageArea.setText("");
         }
     }
@@ -146,4 +128,58 @@ public class ChatProcessor extends Processor{
             sendMessage(null);
         }
     }
+
+    public void endChatByClient(boolean isSupporter) {
+        Task displayMessage = new Task<Void>() {
+            @Override
+            public Void call() throws Exception {
+                Platform.runLater( () -> {
+                    endChat(isSupporter);
+                });
+                return null;
+            }
+        };
+        executor.execute(displayMessage);
+    }
+
+    private void endChat(boolean isSupporter) {
+        if(isSupporter) {
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Hope You Two Enjeyed That. \n(By Admin)");
+            alert.setHeaderText("Chat Ended");
+            alert.setTitle("Time's Over");
+            alert.show();
+
+            sendImageView.setDisable(true);
+            writingMessageArea.setDisable(true);
+        }
+    }
+
+    public void logoutMouseClicked(MouseEvent mouseEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are You Sure About That?", ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Be Caucious");
+
+        Optional<ButtonType> optionalButtonType = alert.showAndWait();
+        if(optionalButtonType.get() == ButtonType.YES) {
+            if(getType() != null && getType().equals("Customer")) {
+                chatClient.customerCloseChat();
+            } else {
+                chatClient.supporterLogOut();
+
+                FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("WelcomeMenu.fxml"));
+                try {
+                    Parent root = fxmlLoader.load();
+                    Main.setScene("BoosMarket", root);
+                    Stage stage = Main.getStage();
+                    stage.getIcons().removeAll(stage.getIcons());
+                    stage.getIcons().add(new Image(getClass().getResourceAsStream("Main Icon.png")));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }

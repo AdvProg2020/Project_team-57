@@ -332,6 +332,53 @@ public class Server implements RandomGenerator{
         return chatterSockets;
     }
 
+    public void supporterEndChat(String supporterUsername) throws IOException {
+        Socket socket = supporterSockets.get(supporterUsername);
+
+        Message message = new Message(true);
+        DataOutputStream supporterOutputStream = getOutputStream(supporterUsername);
+        supporterOutputStream.writeUTF(gson.toJson(message));
+        supporterOutputStream.flush();
+
+        String customerUsername = getSupportersCustomer(supporterUsername);
+        chatDualities.remove(customerUsername);
+        supporterSockets.remove(supporterUsername);
+        chatterSockets.remove(supporterUsername);
+        removeOutputStream(socket);
+        socket.close();
+        DataOutputStream outputStream = getOutputStream(customerUsername);
+        outputStream.writeUTF(gson.toJson(new Message(true)));
+        outputStream.flush();
+        removeOutputStream(chatterSockets.get(customerUsername));
+        chatterSockets.remove(customerUsername);
+    }
+
+    public void offLineSupporter(String supporterUsername) throws IOException {
+        Socket socket = supporterSockets.get(supporterUsername);
+
+        Message message = new Message(true);
+        DataOutputStream supporterOutputStream = getOutputStream(supporterUsername);
+        supporterOutputStream.writeUTF(gson.toJson(new Response<String>(Notification.PACKET_NOTIFICATION, "Sep")));
+        supporterOutputStream.flush();
+        supporterSockets.remove(socket);
+        socket.close();
+    }
+
+    private void removeOutputStream(Socket socket) throws IOException {
+        if(chatterOutputStreams.containsKey(socket)) {
+            chatterOutputStreams.get(socket).close();
+            chatterOutputStreams.remove(socket);
+        }
+    }
+
+    private String getSupportersCustomer(String supporterUsername) {
+        for (String customerUsername : chatDualities.keySet()) {
+            if(chatDualities.get(customerUsername).equals(supporterUsername))
+                return customerUsername;
+        }
+        return null;
+    }
+
     private static class Clock {
         private int counter;
         private Thread clock;

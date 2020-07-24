@@ -13,6 +13,13 @@ public class Message {
         this.senderName = senderName;
     }
 
+    public Message(boolean endAlert) {
+        this.endAlert = endAlert;
+    }
+
+    public Message() {
+    }
+
     public String getContactUsername() {
         return contactUsername;
     }

@@ -114,10 +114,29 @@ public class AccountHandler extends Handler {
                 return startChat();
             case "send message":
                 return sendMessage();
+            case "logout supporter":
+                return supporterLogout();
 
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String supporterLogout() throws IOException {
+        Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.isUserSupporter(server.getUsernameByAuth(command.getAuthToken()))) {
+            String username = server.getUsernameByAuth(command.getAuthToken());
+            server.removeAuth(command.getAuthToken());
+
+            if(!server.isSupporterAvailable(username)) {
+                server.supporterEndChat(username);
+            } else {
+                server.offLineSupporter(username);
+            }
+
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String sendMessage() throws IOException {

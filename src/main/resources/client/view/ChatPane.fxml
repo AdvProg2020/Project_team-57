@@ -33,5 +33,10 @@
             <VBox fx:id="messageBox" alignment="BOTTOM_LEFT" focusTraversable="true" mouseTransparent="true" prefHeight="465.0" prefWidth="530.0" style="-fx-background-color: #ffffff;" />
          </content>
       </ScrollPane>
+      <ImageView fx:id="logoutButton" fitHeight="100.0" fitWidth="55.0" layoutX="427.0" layoutY="24.0" onMouseClicked="#logoutMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="send_message_button">
+         <image>
+            <Image url="@../Images/Icons/ChatMenu/Logout%202.png" />
+         </image>
+      </ImageView>
    </children>
 </Pane>
