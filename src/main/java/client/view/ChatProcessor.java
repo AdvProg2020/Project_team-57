@@ -14,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -44,12 +46,7 @@ public class ChatProcessor extends Processor{
 
     public void initChatPane(ChatClient chatClient) {
         this.chatClient = chatClient;
-/*        new Thread(() -> {
-            while (true) {
-                writeMessage(this.chatClient.getMessage());
-            }
-        }).start();*/
-
+        setStringFields(writingMessage, 2500);
     }
 
     public void writeMessage(Message message) {
@@ -84,11 +81,11 @@ public class ChatProcessor extends Processor{
     }
 
     public void sendMessage(MouseEvent event) {
-        if (!writingMessage.toString().isEmpty()) {
+        if (!writingMessage.getText().isEmpty()) {
             Pane myMessage = getMyMessagePane();
             messageBox.getChildren().add(myMessage);
             Message message = new Message(writingMessage.getText(), chatClient.getContactUsername(),false, getUsername());
-            client.sendMessage(new Gson().toJson(message));
+            chatClient.sendMessage(message);
         }
     }
 
@@ -110,5 +107,11 @@ public class ChatProcessor extends Processor{
         writingMessage.setDisable(false);
         send.setDisable(false);
         chatClient.startListening();
+    }
+
+    public void textAreaOnKey(KeyEvent keyEvent) {
+        if(keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.ENTER) {
+            System.out.println("YES");
+        }
     }
 }

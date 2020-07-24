@@ -1,10 +1,10 @@
 package server.model.existence;
 
 public class Message {
-    private final String message;
-    private final String contactUsername;
-    private final boolean endAlert;
-    private final String senderName;
+    private String message;
+    private String contactUsername;
+    private boolean endAlert;
+    private String senderName;
 
     public Message(String message, String contactUsername, boolean endAlert, String senderName) {
         this.message = message;

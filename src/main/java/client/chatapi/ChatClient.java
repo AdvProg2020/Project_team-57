@@ -1,5 +1,6 @@
 package client.chatapi;
 
+import client.api.Client;
 import client.api.Command;
 import client.view.ChatProcessor;
 import com.google.gson.Gson;
@@ -13,7 +14,7 @@ import java.net.Socket;
 
 public class ChatClient {
     private final static String IP = "127.0.0.1";
-    private static int PORT = 57162;
+    private static int PORT = 57536;
     private String auth;
     private String contactUsername;
     private Socket restlessSocket;
@@ -97,5 +98,11 @@ public class ChatClient {
                 }
             }
         }.start();
+    }
+
+    public void sendMessage(Message message) {
+        Client client = Client.getClient();
+        Command<Message> command = new Command<>("send message", Command.HandleType.ACCOUNT, message);
+        client.postAndGet(command, Response.class, (Class<Object>)Object.class);
     }
 }

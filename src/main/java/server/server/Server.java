@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import notification.Notification;
+import server.model.existence.Message;
 import server.server.bank.BankAPI;
 import server.server.handler.*;
 
@@ -25,6 +26,7 @@ public class Server implements RandomGenerator{
     private HashMap<String, Clock> IPs, IOIPs;
     private HashMap<String, Socket> supporterSockets;
     private HashMap<String, Socket> chatterSockets;
+    private HashMap<String, String> chatDualities;
     private ArrayList<String> bannedIPs, tempBannedIPs;
     private static final long DOS_CHECK_PERIOD_MILLIS = 10000;
     private static final long DOS_CHECK_COUNTER = 100;
@@ -46,6 +48,7 @@ public class Server implements RandomGenerator{
             this.IOIPs = new HashMap<>();
             this.chatterSockets = new HashMap<>();
             this.supporterSockets = new HashMap<>();
+            this.chatDualities = new HashMap<>();
             gson = new GsonBuilder().setPrettyPrinting().create();
             IPs = new HashMap<>();
             bannedIPs = new ArrayList<>();
@@ -270,6 +273,7 @@ public class Server implements RandomGenerator{
             Socket socket =  supporterSockets.get(supporterUsername);
             chatterSockets.put(customerUsername, customerSocket);
             chatterSockets.put(supporterUsername, socket);
+            chatDualities.put(customerUsername, supporterUsername);
             Response<String> response = new Response<>(Notification.PACKET_NOTIFICATION, customerUsername);
             DataOutputStream outputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
             outputStream.writeUTF(gson.toJson(response));
@@ -278,6 +282,14 @@ public class Server implements RandomGenerator{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean areTalking(String senderUsername, String contactUsername) {
+        return (chatDualities.containsKey(senderUsername) && chatDualities.get(senderUsername).equals(contactUsername)) || (chatDualities.containsKey(contactUsername) && chatDualities.get(contactUsername).equals(senderUsername));
+    }
+
+    public HashMap<String, Socket> getChatterSockets() {
+        return chatterSockets;
     }
 
     private static class Clock {

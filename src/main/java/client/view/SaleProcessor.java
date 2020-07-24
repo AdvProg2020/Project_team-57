@@ -444,7 +444,6 @@ public class SaleProcessor extends Processor implements Initializable {
                     processor.initProcessor(ProductsProcessor.ProductsMenuType.ADMIN_OFF_PRODUCTS);
                 }
                 offMainPane.setCenter(root);
-
                 //TODO
             }
         } catch (IOException e) {

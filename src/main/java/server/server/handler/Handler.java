@@ -1,5 +1,6 @@
 package server.server.handler;
 
+import client.api.Command;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -9,6 +10,7 @@ import notification.Notification;
 import server.controller.account.AccountControl;
 import server.controller.account.VendorControl;
 import server.model.existence.Account;
+import server.model.existence.Message;
 import server.model.existence.Off;
 import server.server.Response;
 import server.server.Server;
@@ -87,5 +89,10 @@ public abstract class Handler extends Thread{
             }
         }
         return false;
+    }
+
+    protected boolean canTalk(Command<Message> command) {
+        Message message = command.getDatum();
+        return server.getAuthTokens().containsKey(command.getAuthToken()) && message.getSenderName().equals(server.getUsernameByAuth(command.getAuthToken())) && server.areTalking(message.getSenderName(), message.getContactUsername());
     }
 }

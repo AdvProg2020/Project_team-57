@@ -11,6 +11,7 @@ import server.controller.account.VendorControl;
 import server.model.existence.Account.*;
 import server.model.existence.Account;
 import server.model.existence.Log;
+import server.model.existence.Message;
 import server.server.Response;
 import server.server.Server;
 
@@ -111,10 +112,25 @@ public class AccountHandler extends Handler {
                 return addFucker();
             case "start chat":
                 return startChat();
+            case "send message":
+                return sendMessage();
 
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String sendMessage() throws IOException {
+        Command<Message> command = commandParser.parseToCommand(Command.class, (Class<Message>)Message.class);
+        if(canTalk(command)) {
+            Message message = command.getDatum();
+            DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(server.getChatterSockets().get(message.getContactUsername()).getOutputStream()));
+            outStream.writeUTF(gson.toJson(message));
+            outStream.flush();
+            outStream.close();
+            return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String startChat() {
