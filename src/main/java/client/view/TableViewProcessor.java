@@ -385,7 +385,11 @@ public class TableViewProcessor<T> extends Processor {
     private ArrayList<Supporter> getAllAvailableSupporters() {
         Command command = new Command("get all available supporters", Command.HandleType.ACCOUNT);
         Response<Supporter> response = client.postAndGet(command, Response.class, (Class<Supporter>)Supporter.class);
-        return new ArrayList<>(response.getData());
+        ArrayList<Supporter> accounts = new ArrayList<>(response.getData());
+        for (Supporter account : accounts) {
+            account.setOnlineStatus(getAccountOnlineStatus(account.getUsername()));
+        }
+        return accounts;
     }
 
     private ArrayList<Supporter> getAllSupportersForAdmin() {

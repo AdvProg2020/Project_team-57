@@ -31,9 +31,11 @@ import java.util.concurrent.Executors;
 
 public class ChatProcessor extends Processor {
 
+    private static final String START_CHAT_MESSAGE = " Started To Talk To You";
     public HBox messageHBox;
     public ScrollPane chatScroll;
     public ImageView logoutButton;
+    public JFXTextField startChatCustomerNameField;
     private ChatClient chatClient;
     public Circle anotherImageCircle;
     public Label anotherPersonLabel;
@@ -182,4 +184,32 @@ public class ChatProcessor extends Processor {
         }
     }
 
+    public void chatStartedForSupporter(String contactUsername) {
+        Task displayMessage = new Task<Void>() {
+            @Override
+            public Void call() throws Exception {
+                Platform.runLater( () -> {
+                    HBox messageHBox = getStartChatMessage(contactUsername);
+                    messageBox.getChildren().add(messageHBox);
+                    chatScroll.layout();
+                    chatScroll.setVvalue(1.0);
+                });
+                return null;
+            }
+        };
+        executor.execute(displayMessage);
+    }
+
+    private HBox getStartChatMessage(String contactUsername) {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChatSupporterStartChat.fxml"));
+        try {
+            HBox messageHBox = fxmlLoader.load();
+            ChatProcessor chatProcessor = fxmlLoader.getController();
+            chatProcessor.startChatCustomerNameField.setText(contactUsername + START_CHAT_MESSAGE);
+            return messageHBox;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

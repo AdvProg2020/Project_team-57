@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<HBox fx:id="messageHBox" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="530.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.ChatProcessor">
+   <children>
+      <Pane prefWidth="530.0">
+         <children>
+            <Pane layoutX="45.0" layoutY="6.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="68.0" prefWidth="440.0" style="-fx-background-color: #ffffff;">
+               <children>
+                  <Pane layoutX="50.0" layoutY="4.0" prefHeight="61.0" prefWidth="340.0" style="-fx-background-color: #eeeeee; -fx-background-radius: 10 10 10 10;">
+                     <children>
+                        <JFXTextField alignment="CENTER" focusColor="#7d7e80" layoutX="5.0" prefWidth="330.0" style="-fx-text-fill: #fb8c00;" text="Server" unFocusColor="#e8dcdc">
+                           <font>
+                              <Font name="Franklin Gothic Demi Cond" size="15.0" />
+                           </font>
+                        </JFXTextField>
+                        <JFXTextField fx:id="startChatCustomerNameField" alignment="CENTER" focusColor="#7d7e80" layoutX="5.0" layoutY="28.0" prefHeight="28.0" prefWidth="330.0" text="Felani Started To Talk To You" unFocusColor="#e8dcdc">
+                           <font>
+                              <Font name="Franklin Gothic Demi Cond" size="15.0" />
+                           </font>
+                        </JFXTextField>
+                     </children>
+                  </Pane>
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+   </children>
+</HBox>

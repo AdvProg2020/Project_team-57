@@ -127,7 +127,6 @@ public class AccountHandler extends Handler {
         if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.isUserSupporter(server.getUsernameByAuth(command.getAuthToken()))) {
             String username = server.getUsernameByAuth(command.getAuthToken());
             server.removeAuth(command.getAuthToken());
-
             if(!server.isSupporterAvailable(username)) {
                 server.supporterEndChat(username);
             } else {
@@ -185,7 +184,7 @@ public class AccountHandler extends Handler {
             Response<Supporter> response = new Response<>(Notification.PACKET_NOTIFICATION);
             ArrayList<Supporter> supporters = new ArrayList<>();
             for (String supporterUsername : server.getSupporterSockets().keySet()) {
-                if(server.isSupporterAvailable(supporterUsername))
+                if(server.isSupporterOnline(supporterUsername) && server.isSupporterAvailable(supporterUsername))
                     supporters.add(accountControl.getSupporterByUsername(supporterUsername));
             }
             response.setData(supporters);
@@ -245,7 +244,8 @@ public class AccountHandler extends Handler {
 
     private String isAccountOnline() {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>) String.class);
-        if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")) {
+        if (server.getAuthTokens().containsKey(command.getAuthToken()) &&
+                (accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Admin")||accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer"))) {
             Boolean result = false;
             for (String auth : server.getAuthTokens().keySet()) {
                 if(server.getAuthTokens().get(auth).equals(command.getDatum())) {

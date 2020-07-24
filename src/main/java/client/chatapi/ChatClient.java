@@ -14,7 +14,7 @@ import java.net.Socket;
 
 public class ChatClient {
     private final static String IP = "127.0.0.1";
-    private static int PORT = 11996;
+    private static int PORT = 62142;
     private String auth;
     private String contactUsername;
     private Socket restlessSocket;
@@ -62,15 +62,13 @@ public class ChatClient {
             public void run() {
                 try {
                     String json = inStream.readUTF();
-                    System.out.println(json);
                     Response<String> response = gson.fromJson(json, TypeToken.getParameterized(Response.class, (Class<String>)String.class).getType());
                     contactUsername = response.getDatum();
                     if(contactUsername.equals("Sep")) {
                         closeConnection();
                         return;
                     }
-
-                    System.out.println(chatProcessor);
+                    chatProcessor.chatStartedForSupporter(contactUsername);
                     chatProcessor.startChat();
                 } catch (IOException e) {
                     e.printStackTrace();

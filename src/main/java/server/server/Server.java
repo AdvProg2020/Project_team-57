@@ -207,7 +207,6 @@ public class Server implements RandomGenerator{
         return null;
     }
 
-
     //Bank Part
     public String getBankAuthToken(String username, String password) {
         String bankCommand = "get_token " + username + " " + password;
@@ -355,12 +354,10 @@ public class Server implements RandomGenerator{
 
     public void offLineSupporter(String supporterUsername) throws IOException {
         Socket socket = supporterSockets.get(supporterUsername);
-
-        Message message = new Message(true);
-        DataOutputStream supporterOutputStream = getOutputStream(supporterUsername);
+        DataOutputStream supporterOutputStream = new DataOutputStream(new BufferedOutputStream(supporterSockets.get(supporterUsername).getOutputStream()));
         supporterOutputStream.writeUTF(gson.toJson(new Response<String>(Notification.PACKET_NOTIFICATION, "Sep")));
         supporterOutputStream.flush();
-        supporterSockets.remove(socket);
+        supporterSockets.remove(supporterUsername);
         socket.close();
     }
 
