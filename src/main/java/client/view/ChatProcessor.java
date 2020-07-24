@@ -100,9 +100,6 @@ public class ChatProcessor extends Processor{
             Pane message = fxmlLoader.load();
             ChatProcessor chatProcessor = fxmlLoader.getController();
             chatProcessor.initMessage(myMessage, ((myImage == null) ? getProfileImage(getUsername()) : myImage));
-//            senderImage.setFill(new ImagePattern((myImage == null) ? getProfileImage(getUsername()) : myImage));
-//            senderName.setText(getUsername());
-//            senderMessage.setText(writingMessage.getText());
             return message;
         } catch (IOException e) {
             e.printStackTrace();

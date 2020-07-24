@@ -95,9 +95,17 @@ public abstract class Handler extends Thread{
     protected boolean canTalk(Command<Message> command) {
         Message message = command.getDatum();
         if(!server.getAuthTokens().containsKey(command.getAuthToken())) {
+            System.err.println("HERE");
             return false;
-        } else {
-            return message.getSenderName().equals(server.getUsernameByAuth(command.getAuthToken())) && server.areTalking(message.getSenderName(), message.getContactUsername());
         }
+        if(!message.getSenderName().equals(server.getUsernameByAuth(command.getAuthToken()))) {
+            System.err.println("HERE 2");
+            return false;
+        }
+        if(!server.areTalking(message.getSenderName(), message.getContactUsername())) {
+            System.err.println("HERE 3");
+            return false;
+        }
+        return true;
     }
 }

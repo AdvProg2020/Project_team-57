@@ -307,7 +307,25 @@ public class Server implements RandomGenerator{
     }
 
     public boolean areTalking(String senderUsername, String contactUsername) {
-        return (chatDualities.containsKey(senderUsername) && chatDualities.get(senderUsername).equals(contactUsername)) || (chatDualities.containsKey(contactUsername) && chatDualities.get(contactUsername).equals(senderUsername));
+        System.err.println(senderUsername + ", " + contactUsername);
+        System.err.println("ALL TALKS: ");
+        for (String sender : chatDualities.keySet()) {
+            System.err.println(sender + ", " + chatDualities.get(sender));
+        }
+        if(chatDualities.containsKey(senderUsername)) {
+            if(chatDualities.get(senderUsername).equals(contactUsername)) {
+                return true;
+            }
+            System.err.println("ERROR 1");
+        } else if(chatDualities.containsKey(contactUsername)) {
+            if(chatDualities.get(contactUsername).equals(senderUsername)) {
+                return true;
+            }
+            System.err.println("ERROR 2");
+
+        }
+        System.err.println("Error 3");
+        return false;
     }
 
     public HashMap<String, Socket> getChatterSockets() {

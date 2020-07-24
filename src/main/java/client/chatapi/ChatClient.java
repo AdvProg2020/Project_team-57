@@ -14,7 +14,7 @@ import java.net.Socket;
 
 public class ChatClient {
     private final static String IP = "127.0.0.1";
-    private static int PORT = 10220;
+    private static int PORT = 58320;
     private String auth;
     private String contactUsername;
     private Socket restlessSocket;
@@ -34,6 +34,7 @@ public class ChatClient {
                 post(gson.toJson(command));
                 waitForContact();
             } else {
+                this.contactUsername = contactUsername;
                 Command<String> command = new Command<>("start chat", Command.HandleType.ACCOUNT, contactUsername);
                 command.setAuthToken(this.auth);
                 post(gson.toJson(command));
