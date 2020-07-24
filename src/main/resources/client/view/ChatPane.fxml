@@ -30,7 +30,7 @@
       </Pane>
       <ScrollPane fx:id="chatScroll" layoutY="108.0" prefHeight="465.0" prefWidth="549.0" vvalue="1.0">
          <content>
-            <VBox fx:id="messageBox" alignment="BOTTOM_LEFT" focusTraversable="true" mouseTransparent="true" prefHeight="465.0" prefWidth="530.0" style="-fx-background-color: #ffffff;" />
+            <VBox fx:id="messageBox" alignment="BOTTOM_LEFT" focusTraversable="true" prefHeight="465.0" prefWidth="530.0" style="-fx-background-color: #ffffff;" />
          </content>
       </ScrollPane>
       <ImageView fx:id="logoutButton" fitHeight="100.0" fitWidth="55.0" layoutX="427.0" layoutY="24.0" onMouseClicked="#logoutMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="send_message_button">

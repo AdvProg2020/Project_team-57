@@ -14,7 +14,7 @@ import java.net.Socket;
 
 public class ChatClient {
     private final static String IP = "127.0.0.1";
-    private static int PORT = 62862;
+    private static int PORT = 12742;
     private String auth;
     private String contactUsername;
     private Socket restlessSocket;

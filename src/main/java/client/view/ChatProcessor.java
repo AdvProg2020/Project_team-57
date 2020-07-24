@@ -90,7 +90,9 @@ public class ChatProcessor extends Processor {
     private void initMessage(Message message, Image image) {
         senderImageCircle.setFill(new ImagePattern(image));
         senderNameField.setText(message.getSenderName());
+        senderNameField.setEditable(false);
         senderMessageArea.setText(message.getMessage());
+        senderMessageArea.setEditable(false);
     }
 
     public void sendMessage(MouseEvent event) {
