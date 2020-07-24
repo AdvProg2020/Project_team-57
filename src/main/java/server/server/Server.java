@@ -234,7 +234,6 @@ public class Server implements RandomGenerator{
                 return null;
         }
 
-
         String bankCommand = "create_receipt " + token + " " + receiptType + " " + moneyString + " " + sourceID + " " + destID + " " + description;
         System.err.println("Command : " + bankCommand);
         return BankAPI.getInstance().postAndGet(bankCommand);

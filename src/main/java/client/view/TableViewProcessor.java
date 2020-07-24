@@ -1560,6 +1560,10 @@ public class TableViewProcessor<T> extends Processor {
             chatProcessor.setParentProcessor(parentProcessor.parentProcessor);
             stage.setTitle("Support Menu");
             stage.setScene(new Scene(root));
+            stage.setOnCloseRequest(event -> {
+                chatClient.customerCloseChat();
+                chatProcessor.parentProcessor.getSubStages().remove(stage);
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }

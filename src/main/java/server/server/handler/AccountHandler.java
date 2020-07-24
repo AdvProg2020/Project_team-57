@@ -374,10 +374,17 @@ public class AccountHandler extends Handler {
         return gson.toJson(HACK_RESPONSE);
     }
 
-    private String logOut() {
+    private String logOut() throws IOException {
         Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
-        Response response = new Response(server.removeAuth(command.getAuthToken()) ? Notification.PACKET_NOTIFICATION : Notification.UNKNOWN_ERROR);
-        return gson.toJson(response);
+        if(server.getAuthTokens().containsKey(command.getAuthToken())){
+            String username = server.getUsernameByAuth(command.getAuthToken());
+            if(accountControl.getAccountByUsername(username).getType().equals("Customer") && server.getChatterSockets().containsKey(username)) {
+                server.customerEndChat(server.getUsernameByAuth(command.getAuthToken()));
+            }
+            Response response = new Response(server.removeAuth(command.getAuthToken()) ? Notification.PACKET_NOTIFICATION : Notification.UNKNOWN_ERROR);
+            return gson.toJson(response);
+        }
+        return gson.toJson(HACK_RESPONSE);
     }
 
     private String getAccountByUsername() {
