@@ -266,7 +266,25 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     }
 
     public void showSupporters(ActionEvent actionEvent) {
-        //Todo
+        if (canOpenSubStage("Available Supporter", this)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("TableViewMenu.fxml"));
+                Parent root = loader.load();
+                TableViewProcessor tableViewProcessor = loader.getController();
+                tableViewProcessor.setParentProcessor(this);
+                tableViewProcessor.initProcessor(TableViewProcessor.TableViewType.AVAILABLE_SUPPORTERS);
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                newStage.getIcons().add(new Image(Main.class.getResourceAsStream("admin supporters icon.png")));
+                newStage.setResizable(false);
+                newStage.setTitle("Available Supporter");
+                this.addSubStage(newStage);
+                tableViewProcessor.setMyStage(newStage);
+                newStage.show();
+            } catch (IOException e) {
+                //:)
+            }
+        }
     }
 
 }

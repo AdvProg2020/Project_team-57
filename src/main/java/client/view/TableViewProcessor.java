@@ -1546,12 +1546,13 @@ public class TableViewProcessor<T> extends Processor {
         ChatClient chatClient = new ChatClient(client.getAuthToken(), supporter.getUsername());
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChatPane.fxml"));
         try {
+            Stage stage = ((TableViewProcessor) parentProcessor).myStage;
             Parent root = fxmlLoader.load();
             ChatProcessor chatProcessor = fxmlLoader.getController();
             chatProcessor.initChatPane(chatClient);
             chatClient.setChatProcessor(chatProcessor);
             chatProcessor.startChat();
-
+            stage.setScene(new Scene(root));
         } catch (IOException e) {
             e.printStackTrace();
         }
