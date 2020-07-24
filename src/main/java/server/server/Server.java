@@ -266,8 +266,18 @@ public class Server implements RandomGenerator{
     }
 
     public void startChat(String customerUsername, String supporterUsername, Socket customerSocket) {
-        chatterSockets.put(customerUsername, customerSocket);
-        chatterSockets.put(supporterUsername, supporterSockets.get(supporterUsername));
+        try {
+            Socket socket =  supporterSockets.get(supporterUsername);
+            chatterSockets.put(customerUsername, customerSocket);
+            chatterSockets.put(supporterUsername, socket);
+            Response<String> response = new Response<>(Notification.PACKET_NOTIFICATION, customerUsername);
+            DataOutputStream outputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+            outputStream.writeUTF(gson.toJson(response));
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static class Clock {

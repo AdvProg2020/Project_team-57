@@ -13,7 +13,7 @@ import java.net.Socket;
 
 public class ChatClient {
     private final static String IP = "127.0.0.1";
-    private static int PORT = 54476;
+    private static int PORT = 57162;
     private String auth;
     private String contactUsername;
     private Socket restlessSocket;
@@ -52,6 +52,7 @@ public class ChatClient {
 
     public void setChatProcessor(ChatProcessor chatProcessor) {
         this.chatProcessor = chatProcessor;
+        System.out.println("init: " + this.chatProcessor);
     }
 
     private void waitForContact() {
@@ -60,8 +61,10 @@ public class ChatClient {
             public void run() {
                 try {
                     String json = inStream.readUTF();
+                    System.out.println(json);
                     Response<String> response = gson.fromJson(json, TypeToken.getParameterized(Response.class, (Class<String>)String.class).getType());
                     contactUsername = response.getDatum();
+                    System.out.println(chatProcessor);
                     chatProcessor.startChat();
                 } catch (IOException e) {
                     e.printStackTrace();

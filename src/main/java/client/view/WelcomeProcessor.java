@@ -226,6 +226,7 @@ public class WelcomeProcessor extends Processor implements Initializable {
             ChatProcessor chatProcessor = loader.getController();
             chatProcessor.initChatPane(chatClient);
             Main.setScene("Supporter Menu", root);
+            return chatProcessor;
         } catch (IOException e) {
             e.printStackTrace();
         }
