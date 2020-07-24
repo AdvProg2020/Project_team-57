@@ -70,6 +70,7 @@ public abstract class Handler extends Thread{
             System.out.println(new Date() + ", Duration: " + formatter.format(new Date(new Date().getTime() - startOperationDate.getTime())));
         } catch (Exception e) {
             //:) Fuck You Hacker
+            e.printStackTrace();
         }
     }
 
@@ -93,6 +94,10 @@ public abstract class Handler extends Thread{
 
     protected boolean canTalk(Command<Message> command) {
         Message message = command.getDatum();
-        return server.getAuthTokens().containsKey(command.getAuthToken()) && message.getSenderName().equals(server.getUsernameByAuth(command.getAuthToken())) && server.areTalking(message.getSenderName(), message.getContactUsername());
+        if(!server.getAuthTokens().containsKey(command.getAuthToken())) {
+            return false;
+        } else {
+            return message.getSenderName().equals(server.getUsernameByAuth(command.getAuthToken())) && server.areTalking(message.getSenderName(), message.getContactUsername());
+        }
     }
 }

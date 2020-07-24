@@ -26,6 +26,7 @@ public class Server implements RandomGenerator{
     private HashMap<String, Clock> IPs, IOIPs;
     private HashMap<String, Socket> supporterSockets;
     private HashMap<String, Socket> chatterSockets;
+    private HashMap<Socket, DataOutputStream> chatterOutputStreams;
     private HashMap<String, String> chatDualities;
     private ArrayList<String> bannedIPs, tempBannedIPs;
     private static final long DOS_CHECK_PERIOD_MILLIS = 10000;
@@ -49,6 +50,7 @@ public class Server implements RandomGenerator{
             this.chatterSockets = new HashMap<>();
             this.supporterSockets = new HashMap<>();
             this.chatDualities = new HashMap<>();
+            this.chatterOutputStreams = new HashMap<>();
             gson = new GsonBuilder().setPrettyPrinting().create();
             IPs = new HashMap<>();
             bannedIPs = new ArrayList<>();
@@ -275,13 +277,33 @@ public class Server implements RandomGenerator{
             chatterSockets.put(supporterUsername, socket);
             chatDualities.put(customerUsername, supporterUsername);
             Response<String> response = new Response<>(Notification.PACKET_NOTIFICATION, customerUsername);
-            DataOutputStream outputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+            DataOutputStream outputStream = getOutputStream(supporterUsername);
             outputStream.writeUTF(gson.toJson(response));
             outputStream.flush();
-            outputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public DataOutputStream getOutputStream(String username) {
+        try {
+            Socket socket = chatterSockets.get(username);
+            DataOutputStream dataOutputStream;
+            if(chatterOutputStreams.containsKey(socket)) {
+                System.out.println("1");
+                dataOutputStream = chatterOutputStreams.get(socket);
+            } else {
+                System.out.println("2");
+                dataOutputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                chatterOutputStreams.put(socket, dataOutputStream);
+//                dataOutputStream = chatterOutputStreams.get(socket);
+            }
+            System.out.println("Init : Data Out : " + dataOutputStream);
+            return dataOutputStream;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public boolean areTalking(String senderUsername, String contactUsername) {

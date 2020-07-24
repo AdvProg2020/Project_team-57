@@ -123,11 +123,12 @@ public class AccountHandler extends Handler {
     private String sendMessage() throws IOException {
         Command<Message> command = commandParser.parseToCommand(Command.class, (Class<Message>)Message.class);
         if(canTalk(command)) {
+            System.out.println("Dele Dakete");
             Message message = command.getDatum();
-            DataOutputStream outStream = new DataOutputStream(new BufferedOutputStream(server.getChatterSockets().get(message.getContactUsername()).getOutputStream()));
+            DataOutputStream outStream = server.getOutputStream(message.getContactUsername());
+            System.out.println("DataOutputStream : " + outStream);
             outStream.writeUTF(gson.toJson(message));
             outStream.flush();
-            outStream.close();
             return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
         }
         return gson.toJson(HACK_RESPONSE);

@@ -67,12 +67,11 @@ public class ChatProcessor extends Processor{
     }
 
     private Pane getFrontMessagePane(final Message message) {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("Message.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Message.fxml"));
         try {
             Pane messagePane = fxmlLoader.load();
-            senderImage.setFill(new ImagePattern((frontImage == null) ? getProfileImage(message.getSenderName()) : frontImage));
-            senderName.setText(message.getSenderName());
-            senderMessage.setText(message.getMessage());
+            ChatProcessor chatProcessor = fxmlLoader.getController();
+            chatProcessor.initMessage(message, ((frontImage == null) ? frontImage = getProfileImage(message.getSenderName()) : frontImage));
             return messagePane;
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,22 +79,30 @@ public class ChatProcessor extends Processor{
         return new Pane();
     }
 
+    private void initMessage(Message message, Image image) {
+        senderImage.setFill(new ImagePattern(image));
+        senderName.setText(message.getSenderName());
+        senderMessage.setText(message.getMessage());
+    }
+
     public void sendMessage(MouseEvent event) {
         if (!writingMessage.getText().isEmpty()) {
-            Pane myMessage = getMyMessagePane();
-            messageBox.getChildren().add(myMessage);
             Message message = new Message(writingMessage.getText(), chatClient.getContactUsername(),false, getUsername());
             chatClient.sendMessage(message);
+            Pane myMessage = getMyMessagePane(message);
+            messageBox.getChildren().add(myMessage);
         }
     }
 
-    private Pane getMyMessagePane() {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("Message.fxml"));
+    private Pane getMyMessagePane(Message myMessage) {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Message.fxml"));
         try {
             Pane message = fxmlLoader.load();
-            senderImage.setFill(new ImagePattern((myImage == null) ? getProfileImage(getUsername()) : myImage));
-            senderName.setText(getUsername());
-            senderMessage.setText(writingMessage.getText());
+            ChatProcessor chatProcessor = fxmlLoader.getController();
+            chatProcessor.initMessage(myMessage, ((myImage == null) ? getProfileImage(getUsername()) : myImage));
+//            senderImage.setFill(new ImagePattern((myImage == null) ? getProfileImage(getUsername()) : myImage));
+//            senderName.setText(getUsername());
+//            senderMessage.setText(writingMessage.getText());
             return message;
         } catch (IOException e) {
             e.printStackTrace();
