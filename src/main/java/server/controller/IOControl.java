@@ -44,35 +44,39 @@ public class IOControl implements IOValidity {
 
     public Notification login(Account account){
         try {
-            synchronized (SUPPORTER_LOCK) {
-                if (!AccountTable.isUsernameFreeForSupporter(account.getUsername())) {
-                    if (AccountTable.isPasswordCorrectForSupporter(account.getUsername(), account.getPassword())) {
-                        return Notification.LOGIN_SUCCESSFUL;
-                    } else
-                        return Notification.WRONG_PASSWORD;
-                }
-            }
-            synchronized (IO_LOCK) {
-                if (!AccountTable.isUsernameFree(account.getUsername())) {
-                    if (AccountTable.isPasswordCorrect(account.getUsername(), account.getPassword())) {
-                        if(AccountTable.isUserApproved(account.getUsername())) {
-                            String type = AccountTable.getTypeByUsername(account.getUsername());
-                            if (type.equals("Customer")) {
-                                CartTable.addTempToUsername(account.getUsername());
-                            }
-                            CartTable.removeTemp();
-                            if (type.equals("Customer") && AccountTable.didPeriodPass("Ya Zahra"))
-                                AdminControl.getController().getGiftDiscount();
-                            DiscountTable.removeOutDatedDiscounts();
-                            OffTable.removeOutDatedOffs();
+            if(isUsernameValid(account.getUsername())) {
+                synchronized (SUPPORTER_LOCK) {
+                    if (!AccountTable.isUsernameFreeForSupporter(account.getUsername())) {
+                        if (AccountTable.isPasswordCorrectForSupporter(account.getUsername(), account.getPassword())) {
                             return Notification.LOGIN_SUCCESSFUL;
-                        } else {
-                            return Notification.USER_NOT_APPROVED;
-                        }
+                        } else
+                            return Notification.WRONG_PASSWORD;
+                    }
+                }
+                synchronized (IO_LOCK) {
+                    if (!AccountTable.isUsernameFree(account.getUsername())) {
+                        if (AccountTable.isPasswordCorrect(account.getUsername(), account.getPassword())) {
+                            if (AccountTable.isUserApproved(account.getUsername())) {
+                                String type = AccountTable.getTypeByUsername(account.getUsername());
+                                if (type.equals("Customer")) {
+                                    CartTable.addTempToUsername(account.getUsername());
+                                }
+                                CartTable.removeTemp();
+                                if (type.equals("Customer") && AccountTable.didPeriodPass("Ya Zahra"))
+                                    AdminControl.getController().getGiftDiscount();
+                                DiscountTable.removeOutDatedDiscounts();
+                                OffTable.removeOutDatedOffs();
+                                return Notification.LOGIN_SUCCESSFUL;
+                            } else {
+                                return Notification.USER_NOT_APPROVED;
+                            }
+                        } else
+                            return Notification.WRONG_PASSWORD;
                     } else
-                        return Notification.WRONG_PASSWORD;
-                } else
-                    return Notification.ERROR_FREE_USERNAME;
+                        return Notification.ERROR_FREE_USERNAME;
+                }
+            } else {
+                return Notification.FUCK_YOU;
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
