@@ -42,6 +42,7 @@ public class CustomerProfileProcessor extends AccountProcessor implements Initia
     public Pane historyPane;
     public Pane cartPane;
     public ImageView back;
+    public JFXButton backButton;
     private Stage myStage;
     public Pane pain;
     public JFXButton profileButton;

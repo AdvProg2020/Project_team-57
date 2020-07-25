@@ -12,9 +12,10 @@ import server.server.Response;
 import java.io.*;
 import java.net.Socket;
 
+import static client.Protocol.CLIENT_COMPONENT;
+
+
 public class ChatClient {
-    private final static String IP = "127.0.0.1";
-    private static int PORT = 50276;
     private String auth;
     private String contactUsername;
     private Socket restlessSocket;
@@ -27,7 +28,7 @@ public class ChatClient {
         this.auth = auth;
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         try {
-            restlessSocket = new Socket(IP, PORT);
+            restlessSocket = new Socket(CLIENT_COMPONENT.Ip, CLIENT_COMPONENT.port);
             if(contactUsername == null) {
                 Command command = new Command("take me", Command.HandleType.ACCOUNT);
                 command.setAuthToken(this.auth);
@@ -69,7 +70,7 @@ public class ChatClient {
                         return;
                     }
                     chatProcessor.chatStartedForSupporter(contactUsername);
-                    chatProcessor.startChat();
+                    chatProcessor.startChat(true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

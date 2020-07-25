@@ -27,7 +27,7 @@
                   <Image url="@../Images/Icons/sendMessage.png" />
                </image>
             </ImageView>
-            <JFXTextArea fx:id="writingMessageArea" disable="true" layoutX="10.0" onKeyPressed="#textAreaOnKey" prefHeight="48.0" prefWidth="475.0" promptText=" Type Your Message Here" wrapText="true" />
+            <JFXTextArea fx:id="writingMessageArea" disable="true" layoutX="10.0" onKeyPressed="#textAreaOnKey" prefHeight="48.0" prefWidth="475.0" promptText=" Type Your Message Here (Ctrl + ENTER To Send Message)" wrapText="true" />
          </children>
       </Pane>
       <ScrollPane fx:id="chatScroll" layoutY="108.0" prefHeight="465.0" prefWidth="549.0" vvalue="1.0">
@@ -35,7 +35,7 @@
             <VBox fx:id="messageBox" alignment="BOTTOM_LEFT" focusTraversable="true" prefHeight="465.0" prefWidth="530.0" style="-fx-background-color: #ffffff;" />
          </content>
       </ScrollPane>
-      <ImageView fx:id="logoutButton" fitHeight="100.0" fitWidth="55.0" layoutX="427.0" layoutY="24.0" onMouseClicked="#logoutMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="send_message_button">
+      <ImageView fx:id="logoutButton" fitHeight="55.0" fitWidth="55.0" layoutX="427.0" layoutY="24.0" onMouseClicked="#logoutMouseClicked" pickOnBounds="true" preserveRatio="true" styleClass="send_message_button">
          <image>
             <Image url="@../Images/Icons/ChatMenu/Logout%202.png" />
          </image>
@@ -45,5 +45,10 @@
             <Font name="Franklin Gothic Demi Cond" size="15.0" />
          </font>
       </Label>
+      <ImageView fx:id="notifButton" fitHeight="55.0" fitWidth="55.0" layoutX="28.0" layoutY="27.0" onMouseClicked="#modifyNotifStat" pickOnBounds="true" preserveRatio="true" styleClass="send_message_button">
+         <image>
+            <Image url="@../Images/Icons/ChatMenu/notif%20on.png" />
+         </image>
+      </ImageView>
    </children>
 </Pane>

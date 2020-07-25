@@ -1555,7 +1555,7 @@ public class TableViewProcessor<T> extends Processor {
             ChatProcessor chatProcessor = fxmlLoader.getController();
             chatProcessor.initChatPane(chatClient);
             chatClient.setChatProcessor(chatProcessor);
-            chatProcessor.startChat();
+            chatProcessor.startChat(false);
             chatProcessor.setMyStage(stage);
             chatProcessor.setParentProcessor(parentProcessor.parentProcessor);
             stage.setTitle("Support Menu");
@@ -1563,7 +1563,9 @@ public class TableViewProcessor<T> extends Processor {
             stage.setOnCloseRequest(event -> {
                 chatClient.customerCloseChat();
                 chatProcessor.parentProcessor.getSubStages().remove(stage);
+                ((CustomerProfileProcessor)chatProcessor.parentProcessor).backButton.setDisable(false);
             });
+            ((CustomerProfileProcessor)chatProcessor.parentProcessor).backButton.setDisable(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

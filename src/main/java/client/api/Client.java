@@ -1,5 +1,6 @@
 package client.api;
 
+import client.Protocol;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -15,12 +16,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import static client.Protocol.CLIENT_COMPONENT;
 
 public class Client {
     private static final String CACHE_FOLDER_URL = "cache\\";
-    private static int PORT = 50276;
     private static Client client = null;
-    private final static String IP = "127.0.0.1";
     private Socket mySocket;
     private DataOutputStream outStream;
     private DataInputStream inStream;
@@ -238,7 +238,7 @@ public class Client {
     }
 
     private void makeConnection() throws IOException {
-        mySocket = new Socket(IP, PORT);
+        mySocket = new Socket(CLIENT_COMPONENT.Ip, CLIENT_COMPONENT.port);
         inStream = new DataInputStream(new BufferedInputStream(mySocket.getInputStream()));
         outStream = new DataOutputStream(new BufferedOutputStream(mySocket.getOutputStream()));
     }

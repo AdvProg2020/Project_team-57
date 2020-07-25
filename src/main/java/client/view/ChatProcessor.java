@@ -21,6 +21,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -28,6 +29,7 @@ import server.model.existence.Message;
 import server.server.Response;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,6 +42,8 @@ public class ChatProcessor extends Processor {
     public ImageView logoutButton;
     public JFXTextField serverMessageField;
     public Label isContactTypingLabel;
+    public ImageView notifButton;
+    private boolean isNotifOn = false;
     private ChatClient chatClient;
     public JFXTextArea writingMessageArea;
     public ImageView sendImageView;
@@ -48,6 +52,10 @@ public class ChatProcessor extends Processor {
     public JFXTextField senderNameField;
     public JFXTextArea senderMessageArea;
     private ExecutorService executor = Executors.newCachedThreadPool ( );
+    private AudioClip startChatMedia;
+    private AudioClip finishChatMedia;
+    private AudioClip myMessageMedia;
+    private AudioClip yourMessageMedia;
 
     private Image myImage;
     private Image frontImage;
@@ -66,7 +74,20 @@ public class ChatProcessor extends Processor {
         this.chatClient = chatClient;
         chatScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         setStringFields(writingMessageArea, 2500);
+        modifyNotifStat(null);
+        initMedias();
         initAnimationTimers();
+    }
+
+    private void initMedias() {
+        try {
+            startChatMedia = new AudioClip(Main.class.getResource("Chat SoundTracks\\start chat message.mp3").toURI().toString());
+            finishChatMedia = new AudioClip(Main.class.getResource("Chat SoundTracks\\end chat.mp3").toURI().toString());
+            myMessageMedia = new AudioClip(Main.class.getResource("Chat SoundTracks\\my message.mp3").toURI().toString());
+            yourMessageMedia = new AudioClip(Main.class.getResource("Chat SoundTracks\\your message.mp3").toURI().toString());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initAnimationTimers() {
@@ -152,6 +173,8 @@ public class ChatProcessor extends Processor {
                     messageBox.getChildren().add(messageHBox);
                     chatScroll.layout();
                     chatScroll.setVvalue(1.0);
+                    if(isNotifOn)
+                        yourMessageMedia.play();
                 });
                 return null;
             }
@@ -165,7 +188,6 @@ public class ChatProcessor extends Processor {
             HBox messageHBox = fxmlLoader.load();
             ChatProcessor chatProcessor = fxmlLoader.getController();
             if(frontImage == null) {
-                System.err.println("Downloading Your Pic: " + message.getSenderName());
                 frontImage = getProfileImage(message.getSenderName());
             }
             chatProcessor.initMessage(message, frontImage);
@@ -194,6 +216,8 @@ public class ChatProcessor extends Processor {
             chatScroll.layout();
             chatScroll.setVvalue(1.0);
             writingMessageArea.setText("");
+            if(isNotifOn)
+                myMessageMedia.play();
         }
     }
 
@@ -203,10 +227,9 @@ public class ChatProcessor extends Processor {
             HBox messageHBox = fxmlLoader.load();
             ChatProcessor chatProcessor = fxmlLoader.getController();
             if(myImage == null) {
-                System.err.println("Downloading My Pic: " + getUsername());
                 myImage = getProfileImage(getUsername());
             }
-            chatProcessor.initMessage(myMessage, ((myImage == null) ? getProfileImage(getUsername()) : myImage));
+            chatProcessor.initMessage(myMessage, myImage);
             messageHBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             return messageHBox;
         } catch (IOException e) {
@@ -215,12 +238,24 @@ public class ChatProcessor extends Processor {
         return null;
     }
 
-    public void startChat() {
+    public void startChat(boolean isSupporter) {
         writingAreaOnKeyListen.start();
         isContactTypingListen.start();
         writingMessageArea.setDisable(false);
         sendImageView.setDisable(false);
         chatClient.startListening();
+        if(isSupporter && isNotifOn) {
+            Task displayMessage = new Task<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    Platform.runLater( () -> {
+                        startChatMedia.play();
+                    });
+                    return null;
+                }
+            };
+            executor.execute(displayMessage);
+        }
     }
 
     public void textAreaOnKey(KeyEvent keyEvent) {
@@ -257,6 +292,7 @@ public class ChatProcessor extends Processor {
                             //:)
                         }
                     }
+                    frontImage = null;
                 });
                 return null;
             }
@@ -271,6 +307,8 @@ public class ChatProcessor extends Processor {
         chatScroll.setVvalue(1.0);
         sendImageView.setDisable(true);
         writingMessageArea.setDisable(true);
+        if(isNotifOn)
+            finishChatMedia.play();
     }
 
     public void logoutMouseClicked(MouseEvent mouseEvent) {
@@ -284,6 +322,7 @@ public class ChatProcessor extends Processor {
                 chatClient.customerCloseChat();
                 myStage.close();
                 this.parentProcessor.getSubStages().remove(myStage);
+                ((CustomerProfileProcessor)this.parentProcessor).backButton.setDisable(false);
             } else {
                 chatClient.supporterLogOut();
                 FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("WelcomeMenu.fxml"));
@@ -331,5 +370,10 @@ public class ChatProcessor extends Processor {
 
     public boolean amITyping() {
         return amITyping;
+    }
+
+    public void modifyNotifStat(MouseEvent mouseEvent) {
+        isNotifOn = !isNotifOn;
+        notifButton.setImage(new Image(IMAGE_FOLDER_URL + "Icons\\ChatMenu\\" + (isNotifOn ? "notif on" : "notif off") + ".png"));
     }
 }
