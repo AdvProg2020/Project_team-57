@@ -81,32 +81,36 @@ public class VendorControl extends AccountControl{
     }
 
     public Notification editProduct(Product currentProduct, Product editingProduct, String username) {
-        Notification editProductNotification = null;
+        if(isGeneralIDValid('p', editingProduct.getID())) {
+            Notification editProductNotification = null;
 
-        try {
-            editProductNotification = checkEditingProduct(currentProduct, editingProduct);
-            synchronized (EDITING_PRODUCT_LOCK) {
-                if (editProductNotification == null) {
-                    editingProduct.setStatus(3);
-                    editingProduct.setSellerUserName(username);
-                    ProductTable.setProductStatus(editingProduct.getID(), 3);
+            try {
+                editProductNotification = checkEditingProduct(currentProduct, editingProduct);
+                synchronized (EDITING_PRODUCT_LOCK) {
+                    if (editProductNotification == null) {
+                        editingProduct.setStatus(3);
+                        editingProduct.setSellerUserName(username);
+                        ProductTable.setProductStatus(editingProduct.getID(), 3);
 
-                    if (EditingProductTable.isIDFree(editingProduct.getID())) {
-                        EditingProductTable.addProduct(editingProduct);
-                    } else {
-                        if (editingProduct.isCountable())
-                            EditingProductTable.updateCountableProduct(editingProduct);
-                        else
-                            EditingProductTable.updateUnCountableProduct(editingProduct);
+                        if (EditingProductTable.isIDFree(editingProduct.getID())) {
+                            EditingProductTable.addProduct(editingProduct);
+                        } else {
+                            if (editingProduct.isCountable())
+                                EditingProductTable.updateCountableProduct(editingProduct);
+                            else
+                                EditingProductTable.updateUnCountableProduct(editingProduct);
+                        }
+                        editProductNotification = Notification.EDIT_PRODUCT;
                     }
-                    editProductNotification = Notification.EDIT_PRODUCT;
                 }
+            } catch (SQLException | ClassNotFoundException e) {
+                editProductNotification = Notification.UNKNOWN_ERROR;
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            editProductNotification = Notification.UNKNOWN_ERROR;
-        }
 
-        return editProductNotification;
+            return editProductNotification;
+        } else {
+            return Notification.FUCK_YOU;
+        }
     }
 
     private Notification checkEditingProduct(Product currentProduct, Product editingProduct) throws SQLException, ClassNotFoundException {
@@ -138,11 +142,13 @@ public class VendorControl extends AccountControl{
         return null;
     }
 
-    public ArrayList<Off> getAllOffs(String usernameByAuth) {
+    public ArrayList<Off> getAllOffs(String username) {
         try {
-            synchronized (OFF_LOCK) {
-                OffTable.removeOutDatedOffs();
-                return OffTable.getVendorOffs(usernameByAuth);
+            if(isUsernameValid(username)) {
+                synchronized (OFF_LOCK) {
+                    OffTable.removeOutDatedOffs();
+                    return OffTable.getVendorOffs(username);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
@@ -151,52 +157,62 @@ public class VendorControl extends AccountControl{
     }
 
     public Notification addOff(Off off, String username) {
-        if (off.getOffName() == null)
-            return Notification.UNCOMPLETED_OFF_NAME;
-        if (off.getFinishDate() == null)
-            return Notification.NOT_SET_FINISH_DATE;
-        if (off.getOffPercent() <= 0 || off.getOffPercent() >= 100)
-            return Notification.OUT_BOUND_OF_PERCENT;
-        if(off.getProductIDs() == null || off.getProductIDs().size() == 0)
-            return Notification.EMPTY_OFF_PRODUCTS;
-        if(off.getStartDate().compareTo(off.getFinishDate()) > -1)
-            return Notification.START_DATE_AFTER_FINISH_DATE;
-        off.setVendorUsername(username);
-        try {
-            synchronized (OFF_LOCK) {
-                off.setOffID("o" + generateRandomNumber(7, s -> {
-                    try {
-                        return OffTable.isThereOffWithID(s);
-                    } catch (SQLException | ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    return false;
-                }));
-                off.setStatus(2);
+        if(isUsernameValid(username)) {
+            if (off.getOffName() == null)
+                return Notification.UNCOMPLETED_OFF_NAME;
+            if (off.getFinishDate() == null)
+                return Notification.NOT_SET_FINISH_DATE;
+            if (off.getOffPercent() <= 0 || off.getOffPercent() >= 100)
+                return Notification.OUT_BOUND_OF_PERCENT;
+            if (off.getProductIDs() == null || off.getProductIDs().size() == 0)
+                return Notification.EMPTY_OFF_PRODUCTS;
+            if (off.getStartDate().compareTo(off.getFinishDate()) > -1)
+                return Notification.START_DATE_AFTER_FINISH_DATE;
+            off.setVendorUsername(username);
+            try {
+                synchronized (OFF_LOCK) {
+                    off.setOffID("o" + generateRandomNumber(7, s -> {
+                        try {
+                            return OffTable.isThereOffWithID(s);
+                        } catch (SQLException | ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        return false;
+                    }));
+                    off.setStatus(2);
 
-                OffTable.addOff(off);
-                return Notification.ADD_OFF;
+                    OffTable.addOff(off);
+                    return Notification.ADD_OFF;
+                }
+            } catch (SQLException | ClassNotFoundException e) {
+                return Notification.UNKNOWN_ERROR;
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            return Notification.UNKNOWN_ERROR;
+        } else {
+            return Notification.FUCK_YOU;
         }
     }
 
     public ArrayList<Product> getNonOffProducts(String username, String... exceptions) {
         ArrayList<Product> nonOffProducts = new ArrayList<>();
         try {
-            OffTable.removeOutDatedOffs();
-            if(exceptions != null && exceptions.length > 0) {
-                for (String exception : exceptions) {
-                    for (String productID : OffTable.getSpecificOff(exception).getProductIDs()) {
-                        nonOffProducts.add(ProductTable.getProductByID(productID));
+            if(isUsernameValid(username)) {
+                OffTable.removeOutDatedOffs();
+                if (exceptions != null && exceptions.length > 0) {
+                    for (String exception : exceptions) {
+                        if(isGeneralIDValid('o', exception)) {
+                            for (String productID : OffTable.getSpecificOff(exception).getProductIDs()) {
+                                nonOffProducts.add(ProductTable.getProductByID(productID));
+                            }
+                        } else {
+                            return new ArrayList<>();
+                        }
                     }
                 }
-            }
-            synchronized (ADMIN_MODIFY_PRODUCT_LOCK) {
-                for (Product product : VendorTable.getProductsWithUsername(username)) {
-                    if(!OffTable.isThereProductInOffIgnoreStatus(product.getID()) && product.getStatus() != 2)
-                        nonOffProducts.add(product);
+                synchronized (ADMIN_MODIFY_PRODUCT_LOCK) {
+                    for (Product product : VendorTable.getProductsWithUsername(username)) {
+                        if (!OffTable.isThereProductInOffIgnoreStatus(product.getID()) && product.getStatus() != 2)
+                            nonOffProducts.add(product);
+                    }
                 }
             }
         } catch (SQLException | ClassNotFoundException e) {
@@ -207,8 +223,10 @@ public class VendorControl extends AccountControl{
 
     public ArrayList<Log> getAllLogs(String username) {
         try {
-            synchronized (LOG_LOCK) {
-                return LogTable.getAllVendorLogs(username);
+            if(isUsernameValid(username)) {
+                synchronized (LOG_LOCK) {
+                    return LogTable.getAllVendorLogs(username);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
@@ -219,12 +237,12 @@ public class VendorControl extends AccountControl{
     public ArrayList<Account> getProductBuyers(String productID) {
         ArrayList<Account> customers = new ArrayList<>();
         try {
-            for (String account : LogTable.getAllCustomerUsernamesForProduct(productID)) {
-                customers.add(AccountTable.getAccountByUsername(account));
+            if(isGeneralIDValid('p', productID)) {
+                for (String account : LogTable.getAllCustomerUsernamesForProduct(productID)) {
+                    customers.add(AccountTable.getAccountByUsername(account));
+                }
             }
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return customers;
@@ -232,39 +250,43 @@ public class VendorControl extends AccountControl{
 
     public ArrayList<Product> getAllProducts(String username) {
         try {
-            OffTable.removeOutDatedOffs();
-            return VendorTable.getProductsWithUsername(username);
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            if(isUsernameValid(username)) {
+                OffTable.removeOutDatedOffs();
+                return VendorTable.getProductsWithUsername(username);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
     }
 
     public Notification editOff(Off off) {
-        if (off.getOffName() == null)
-            return Notification.UNCOMPLETED_OFF_NAME;
-        if (off.getFinishDate() == null)
-            return Notification.NOT_SET_FINISH_DATE;
-        if (off.getOffPercent() <= 0 || off.getOffPercent() >= 100)
-            return Notification.OUT_BOUND_OF_PERCENT;
-        if(off.getProductIDs() == null || off.getProductIDs().size() == 0)
-            return Notification.EMPTY_OFF_PRODUCTS;
-        if(off.getStartDate().compareTo(off.getFinishDate()) > -1)
-            return Notification.START_DATE_AFTER_FINISH_DATE;
-        try {
-            synchronized (OFF_LOCK) {
-                off.setStatus(3);
-                OffTable.changeOffStatus(off.getOffID(), 3);
-                if(ProductControl.getController().isOffEditing(off.getOffID())) {
-                    OffTable.removeEditingOff(off.getOffID());
+        if(isGeneralIDValid('o', off.getOffID())) {
+            if (off.getOffName() == null)
+                return Notification.UNCOMPLETED_OFF_NAME;
+            if (off.getFinishDate() == null)
+                return Notification.NOT_SET_FINISH_DATE;
+            if (off.getOffPercent() <= 0 || off.getOffPercent() >= 100)
+                return Notification.OUT_BOUND_OF_PERCENT;
+            if (off.getProductIDs() == null || off.getProductIDs().size() == 0)
+                return Notification.EMPTY_OFF_PRODUCTS;
+            if (off.getStartDate().compareTo(off.getFinishDate()) > -1)
+                return Notification.START_DATE_AFTER_FINISH_DATE;
+            try {
+                synchronized (OFF_LOCK) {
+                    off.setStatus(3);
+                    OffTable.changeOffStatus(off.getOffID(), 3);
+                    if (ProductControl.getController().isOffEditing(off.getOffID())) {
+                        OffTable.removeEditingOff(off.getOffID());
+                    }
+                    OffTable.addEditingOff(off);
+                    return Notification.EDIT_OFF;
                 }
-                OffTable.addEditingOff(off);
-                return Notification.EDIT_OFF;
+            } catch (SQLException | ClassNotFoundException e) {
+                return Notification.UNKNOWN_ERROR;
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            return Notification.UNKNOWN_ERROR;
+        } else {
+            return Notification.FUCK_YOU;
         }
     }
 

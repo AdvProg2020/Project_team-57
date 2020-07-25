@@ -55,6 +55,11 @@ public interface IOValidity {
         return getMatcher(id, "^" + idDeterminer + "\\d{7}$").matches();
     }
 
+    default boolean isNameInThisRange(String name, int minLength, int maxLength) {
+        int nameLength = name.length();
+        return nameLength >= minLength && nameLength <= maxLength;
+    }
+
     static Matcher getMatcher(String command, String regex) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(command);

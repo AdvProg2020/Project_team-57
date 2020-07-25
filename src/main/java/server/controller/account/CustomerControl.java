@@ -26,13 +26,15 @@ public class CustomerControl extends AccountControl{
         try {
             DiscountTable.removeOutDatedDiscounts();
             OffTable.removeOutDatedOffs();
-            ArrayList<Product> cartProducts = CartTable.getAllCartWithUsername(username);
-            for (Product cartProduct : cartProducts) {
-                Product stockProduct = ProductTable.getProductByID(cartProduct.getID());
-                if(cartProduct.getCount() > stockProduct.getCount() || cartProduct.getAmount() > stockProduct.getAmount())
-                    CartTable.deleteCartProduct(username, cartProduct.getID());
+            if(isUsernameValid(username)) {
+                ArrayList<Product> cartProducts = CartTable.getAllCartWithUsername(username);
+                for (Product cartProduct : cartProducts) {
+                    Product stockProduct = ProductTable.getProductByID(cartProduct.getID());
+                    if (cartProduct.getCount() > stockProduct.getCount() || cartProduct.getAmount() > stockProduct.getAmount())
+                        CartTable.deleteCartProduct(username, cartProduct.getID());
+                }
+                return CartTable.getAllCartWithUsername(username);
             }
-            return CartTable.getAllCartWithUsername(username);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -86,7 +88,8 @@ public class CustomerControl extends AccountControl{
 
     public Product getCartProductByID(String ID, String username) {
         try {
-            return CartTable.getCartProductByID(getUserNameForCart(username), ID);
+            if(isGeneralIDValid('p', ID))
+                return CartTable.getCartProductByID(getUserNameForCart(username), ID);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -95,12 +98,15 @@ public class CustomerControl extends AccountControl{
 
     public Notification removeProductFromCartByID(String username, String productID) {
         try {
-            if(CartTable.isThereCartProductForUsername(getUserNameForCart(username), productID))
-            {
-                CartTable.deleteCartProduct(getUserNameForCart(username), productID);
-                return Notification.CART_PRODUCT_REMOVED;
+            if(isGeneralIDValid('p', productID)) {
+                if (CartTable.isThereCartProductForUsername(getUserNameForCart(username), productID)) {
+                    CartTable.deleteCartProduct(getUserNameForCart(username), productID);
+                    return Notification.CART_PRODUCT_REMOVED;
+                }
+                return Notification.NOT_YOUR_CART_PRODUCT;
+            } else {
+                return Notification.FUCK_YOU;
             }
-            return Notification.NOT_YOUR_CART_PRODUCT;
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -109,9 +115,11 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Discount> getDiscounts(String username) {
         try {
-            synchronized (DISCOUNT_LOCK) {
-                DiscountTable.removeOutDatedDiscounts();
-                return DiscountTable.getCustomerDiscountCodes(username);
+            if(isUsernameValid(username)) {
+                synchronized (DISCOUNT_LOCK) {
+                    DiscountTable.removeOutDatedDiscounts();
+                    return DiscountTable.getCustomerDiscountCodes(username);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
@@ -328,8 +336,12 @@ public class CustomerControl extends AccountControl{
 
     public Discount getCustomerDiscountByID(String discountID) {
         try {
-            synchronized (DISCOUNT_LOCK) {
-                return DiscountTable.getDiscountByID(discountID);
+            if(isGeneralIDValid('d', discountID)) {
+                synchronized (DISCOUNT_LOCK) {
+                    return DiscountTable.getDiscountByID(discountID);
+                }
+            } else {
+                return new Discount();
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -339,8 +351,10 @@ public class CustomerControl extends AccountControl{
 
     public ArrayList<Log> getAllLogs(String username) {
         try {
-            synchronized (LOG_LOCK) {
-                return LogTable.getAllCustomerLogs(username);
+            if(isUsernameValid(username)) {
+                synchronized (LOG_LOCK) {
+                    return LogTable.getAllCustomerLogs(username);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
@@ -350,7 +364,8 @@ public class CustomerControl extends AccountControl{
 
     public boolean isProductPurchasedByCustomer(String productID, String customerUsername) {
         try {
-            return LogTable.isProductPurchasedByCustomer(productID, customerUsername);
+            if(isUsernameValid(customerUsername) && isGeneralIDValid('p', productID))
+                return LogTable.isProductPurchasedByCustomer(productID, customerUsername);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -360,18 +375,20 @@ public class CustomerControl extends AccountControl{
     public double getTotalPriceWithoutDiscount(String username) {
         double offPrice = 0;
         try {
-            for (Product product : CartTable.getAllCartWithUsername(getUserNameForCart(username))) {
-                if (OffTable.isThereProductInOff(product.getID())) {
-                    offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent() / 100))
-                            * product.getPrice() * product.getCount();
-                    offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent() / 100))
-                            * product.getPrice() * product.getAmount();
-                } else {
-                    offPrice += product.getPrice() * product.getAmount();
-                    offPrice += product.getPrice() * product.getCount();
+            if(username == null || username.isEmpty() || isUsernameValid(username)) {
+                for (Product product : CartTable.getAllCartWithUsername(getUserNameForCart(username))) {
+                    if (OffTable.isThereProductInOff(product.getID())) {
+                        offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent() / 100))
+                                * product.getPrice() * product.getCount();
+                        offPrice += (1 - (OffTable.getOffByProductID(product.getID()).getOffPercent() / 100))
+                                * product.getPrice() * product.getAmount();
+                    } else {
+                        offPrice += product.getPrice() * product.getAmount();
+                        offPrice += product.getPrice() * product.getCount();
+                    }
                 }
+                return offPrice;
             }
-            return offPrice;
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -409,20 +426,22 @@ public class CustomerControl extends AccountControl{
 
     public Boolean canPurchase(String username, Property property) {
         try {
-            double price = 0;
-            for (Product product : CartTable.getAllCartWithUsername(username)) {
-                if(product.isOnSale()) {
-                    price += (product.getCount() + product.getAmount()) * product.getOffPrice();
-                } else {
-                    price += (product.getCount() + product.getAmount()) * product.getPrice();
+            if(username.equals("temp") || isUsernameValid(username)) {
+                double price = 0;
+                for (Product product : CartTable.getAllCartWithUsername(username)) {
+                    if (product.isOnSale()) {
+                        price += (product.getCount() + product.getAmount()) * product.getOffPrice();
+                    } else {
+                        price += (product.getCount() + product.getAmount()) * product.getPrice();
+                    }
                 }
-            }
-            if(property.hasDiscount()) {
-                double priceSubtract = price * property.getDiscount().getDiscountPercent() / 100;
-                price -= Math.min(priceSubtract, property.getDiscount().getMaxDiscount());
-            }
+                if (property.hasDiscount()) {
+                    double priceSubtract = price * property.getDiscount().getDiscountPercent() / 100;
+                    price -= Math.min(priceSubtract, property.getDiscount().getMaxDiscount());
+                }
 
-            return price <= (getCredit(username) - getMinimumWallet());
+                return price <= (getCredit(username) - getMinimumWallet());
+            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -435,7 +454,7 @@ public class CustomerControl extends AccountControl{
         ArrayList<Product.ProductFileInfo> productFileInfos = new ArrayList<>();
         for (Log log : getAllLogs(username)) {
             for (Log.ProductOfLog product : log.getAllProducts()) {
-                if(productControl.doesProductHaveFile(product.getProductID())) {
+                if (productControl.doesProductHaveFile(product.getProductID())) {
                     productFileInfos.add(productControl.getProductFileInfo(product.getProductID()));
                 }
             }

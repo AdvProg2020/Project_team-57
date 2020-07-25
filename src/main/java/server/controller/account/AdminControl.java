@@ -64,19 +64,21 @@ public class AdminControl extends AccountControl{
                     return Notification.NOT_SELECTED_CATEGORY;
                 if(category.getName().equals("All Products"))
                     return Notification.CANT_DELETE_CATEGORY;
-                if (CategoryTable.isThereCategoryWithName(category.getName())) {
-                    ArrayList<Category> subCategories = CategoryTable.getSubCategories(category.getName());
-                    for (Category subCategory : subCategories) {
-                        CategoryTable.setCategoryParentName(subCategory.getName(), category.getParentCategory());
+                if(isNameInThisRange(category.getName(), 6, 16)) {
+                    if (CategoryTable.isThereCategoryWithName(category.getName())) {
+                        ArrayList<Category> subCategories = CategoryTable.getSubCategories(category.getName());
+                        for (Category subCategory : subCategories) {
+                            CategoryTable.setCategoryParentName(subCategory.getName(), category.getParentCategory());
+                        }
+                        CategoryTable.removeCategoryWithName(category.getName());
+                        ArrayList<Product> products = ProductTable.getProductsWithCategory(category.getName());
+                        for (Product product : products) {
+                            ProductTable.removeProductByID(product.getID());
+                            if (!EditingProductTable.isIDFree(product.getID()))
+                                EditingProductTable.removeProductById(product.getID());
+                        }
+                        return Notification.CATEGORY_DELETED;
                     }
-                    CategoryTable.removeCategoryWithName(category.getName());
-                    ArrayList<Product> products = ProductTable.getProductsWithCategory(category.getName());
-                    for (Product product : products) {
-                        ProductTable.removeProductByID(product.getID());
-                        if (!EditingProductTable.isIDFree(product.getID()))
-                            EditingProductTable.removeProductById(product.getID());
-                    }
-                    return Notification.CATEGORY_DELETED;
                 }
                 return Notification.CATEGORY_NOT_FOUND;
             }
@@ -127,9 +129,7 @@ public class AdminControl extends AccountControl{
                 return Notification.DUPLICATE_CATEGORY_NAME;
             }
             return Notification.CATEGORY_MODIFIED;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return Notification.UNKNOWN_ERROR;
@@ -146,9 +146,7 @@ public class AdminControl extends AccountControl{
                 return Notification.INVALID_FEATURES;
             }
             return Notification.CATEGORY_MODIFIED;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
 
@@ -166,9 +164,7 @@ public class AdminControl extends AccountControl{
                 }
                     return Notification.PARENT_CATEGORY_NOT_FOUND;
 
-            } catch (SQLException e) {
-                //:)
-            } catch (ClassNotFoundException e) {
+            } catch (SQLException | ClassNotFoundException e) {
                 //:)
             }
         }
@@ -189,8 +185,12 @@ public class AdminControl extends AccountControl{
 
     public Notification removeDiscountByID(String ID) {
         try {
-            synchronized (DISCOUNT_LOCK) {
-                DiscountTable.removeDiscountCode(ID);
+            if(isGeneralIDValid('d', ID)) {
+                synchronized (DISCOUNT_LOCK) {
+                    DiscountTable.removeDiscountCode(ID);
+                }
+            } else {
+                return Notification.FUCK_YOU;
             }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
@@ -301,14 +301,18 @@ public class AdminControl extends AccountControl{
 
     public Notification modifyOffApprove(String offID, boolean flag) {
         try {
-            synchronized (OFF_LOCK) {
-                if (flag) {
-                    OffTable.approveOffByID(offID);
-                    return Notification.ACCEPT_OFF_REQUEST;
-                } else {
-                    OffTable.removeOffByID(offID);
-                    return Notification.DECLINE_REQUEST;
+            if(isGeneralIDValid('o', offID)) {
+                synchronized (OFF_LOCK) {
+                    if (flag) {
+                        OffTable.approveOffByID(offID);
+                        return Notification.ACCEPT_OFF_REQUEST;
+                    } else {
+                        OffTable.removeOffByID(offID);
+                        return Notification.DECLINE_REQUEST;
+                    }
                 }
+            } else {
+                return Notification.FUCK_YOU;
             }
         } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
@@ -317,27 +321,31 @@ public class AdminControl extends AccountControl{
 
     public Notification modifyOffEditingApprove(String offID, boolean isAccepted) {
         try {
-            Off editingOff = OffTable.getSpecificEditingOff(offID);
-            if(isAccepted) {
-                synchronized (OFF_LOCK) {
-                    OffTable.removeOffByID(editingOff.getOffID());
-                    editingOff.setStatus(1);
-                    OffTable.addOff(editingOff);
-                    OffTable.removeEditingOff(editingOff.getOffID());
+            if(isGeneralIDValid('o', offID)) {
+                Off editingOff = OffTable.getSpecificEditingOff(offID);
+                if (isAccepted) {
+                    synchronized (OFF_LOCK) {
+                        OffTable.removeOffByID(editingOff.getOffID());
+                        editingOff.setStatus(1);
+                        OffTable.addOff(editingOff);
+                        OffTable.removeEditingOff(editingOff.getOffID());
+                    }
+                    acceptEditingOffImages(offID);
+                    return Notification.OFF_EDITING_ACCEPTED;
+                } else {
+                    synchronized (OFF_LOCK) {
+                        OffTable.removeEditingOff(offID);
+                        OffTable.changeOffStatus(offID, 1);
+                    }
+
+                    synchronized (EDITING_OFF_IMAGE_LOCK) {
+                        declineEditingOffImages(offID);
+                    }
+
+                    return Notification.OFF_EDITING_DECLINED;
                 }
-                acceptEditingOffImages(offID);
-                return Notification.OFF_EDITING_ACCEPTED;
             } else {
-                synchronized (OFF_LOCK) {
-                    OffTable.removeEditingOff(offID);
-                    OffTable.changeOffStatus(offID, 1);
-                }
-
-                synchronized (EDITING_OFF_IMAGE_LOCK) {
-                    declineEditingOffImages(offID);
-                }
-
-                return Notification.OFF_EDITING_DECLINED;
+                return Notification.FUCK_YOU;
             }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
@@ -387,13 +395,17 @@ public class AdminControl extends AccountControl{
 
     public Notification modifyCommentApproval(String commentID, boolean flag){
         try {
-            synchronized (COMMENT_SCORE_LOCK) {
-                if (flag) {
-                    ProductTable.modifyCommentApproval(commentID, 1);
-                    return Notification.ACCEPTING_COMMENT;
+            if(isGeneralIDValid('c', commentID)) {
+                synchronized (COMMENT_SCORE_LOCK) {
+                    if (flag) {
+                        ProductTable.modifyCommentApproval(commentID, 1);
+                        return Notification.ACCEPTING_COMMENT;
+                    }
+                    ProductTable.modifyCommentApproval(commentID, 3);
+                    return Notification.DECLINE_COMMENT;
                 }
-                ProductTable.modifyCommentApproval(commentID, 3);
-                return Notification.DECLINE_COMMENT;
+            } else {
+                return Notification.FUCK_YOU;
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -427,9 +439,7 @@ public class AdminControl extends AccountControl{
                 DiscountTable.addGiftDiscount(discount, AccountTable.getAllAccounts().get(customerNum).getUsername());
             }
             AccountTable.updatePeriod("Ya Zahra");
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
     }
@@ -456,9 +466,7 @@ public class AdminControl extends AccountControl{
         try {
             OffTable.removeOutDatedOffs();
             return ProductTable.getAllNotApprovedProducts();
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new ArrayList<>();
@@ -466,27 +474,30 @@ public class AdminControl extends AccountControl{
 
     public Notification modifyEditingProductApprove(String productID, boolean approved) {
         try {
-            if(ProductControl.getController().doesProductHaveFile(productID)) {
-                synchronized (EDITING_PRODUCT_FILE_LOCK) {
-                    if(approved) {
-                        ProductTable.removeProductFileByID(productID);
-                        EditingProductTable.transferEditingFiles(productID);
+            if(isGeneralIDValid('p', productID)) {
+                if (ProductControl.getController().doesProductHaveFile(productID)) {
+                    synchronized (EDITING_PRODUCT_FILE_LOCK) {
+                        if (approved) {
+                            ProductTable.removeProductFileByID(productID);
+                            EditingProductTable.transferEditingFiles(productID);
+                        }
+                        EditingProductTable.removeEditingProductFile(productID);
                     }
-                    EditingProductTable.removeEditingProductFile(productID);
                 }
-            }
 
-            if(approved) {
-                synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
-                    EditingProductTable.transferEditingImages(productID);
+                if (approved) {
+                    synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
+                        EditingProductTable.transferEditingImages(productID);
+                    }
+                    return acceptEditingProductByID(productID);
+                } else {
+                    synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
+                        EditingProductTable.removeAllEditingProductImages(productID);
+                    }
+                    return ProductControl.getController().removeEditingProductById(productID);
                 }
-                return acceptEditingProductByID(productID);
-            }
-            else {
-                synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
-                    EditingProductTable.removeAllEditingProductImages(productID);
-                }
-                return ProductControl.getController().removeEditingProductById(productID);
+            } else {
+                return Notification.FUCK_YOU;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -495,19 +506,27 @@ public class AdminControl extends AccountControl{
     }
 
     public Notification modifyProductApprove(String productID, boolean approved) {
-        synchronized (ADMIN_MODIFY_PRODUCT_LOCK) {
-            if(approved)
-                return approveProductByID(productID);
-            else
-                return ProductControl.getController().removeProductById(productID);
+        if(isGeneralIDValid('p', productID)) {
+            synchronized (ADMIN_MODIFY_PRODUCT_LOCK) {
+                if (approved)
+                    return approveProductByID(productID);
+                else
+                    return ProductControl.getController().removeProductById(productID);
+            }
+        } else {
+            return Notification.FUCK_YOU;
         }
     }
 
-    private Notification approveProductByID(String id){
+    private Notification approveProductByID(String productID) {
         try {
-            ProductTable.setProductStatus(id, 1);
-            ProductTable.setProductApprovalDate(id);
-            return Notification.ACCEPT_ADDING_PRODUCT;
+            if(isGeneralIDValid('p', productID)) {
+                ProductTable.setProductStatus(productID, 1);
+                ProductTable.setProductApprovalDate(productID);
+                return Notification.ACCEPT_ADDING_PRODUCT;
+            } else {
+                return Notification.FUCK_YOU;
+            }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
@@ -517,18 +536,22 @@ public class AdminControl extends AccountControl{
 
     private Notification acceptEditingProductByID(String editingProductID) {
         try {
-            synchronized (ADMIN_MODIFY_EDIT_PRODUCT_LOCK) {
-                Product editingProduct = EditingProductTable.getEditingProductWithID(editingProductID);
-                editingProduct.setApprovalDate(ProductTable.getProductByID(editingProductID).getApprovalDate());
-                editingProduct.setSeen(ProductTable.getProductByID(editingProductID).getSeen());
-                EditingProductTable.removeProductById(editingProductID);
-                ProductTable.removeProductByID(editingProduct.getID());
-                if(editingProduct.isCountable())
-                    VendorTable.addCountableProduct(editingProduct, editingProduct.getSellerUserName());
-                else
-                    VendorTable.addUnCountableProduct(editingProduct, editingProduct.getSellerUserName());
-                ProductTable.setProductStatus(editingProduct.getID(), 1);
-                return Notification.ACCEPT_EDITING_PRODUCT;
+            if(isGeneralIDValid('p', editingProductID)) {
+                synchronized (ADMIN_MODIFY_EDIT_PRODUCT_LOCK) {
+                    Product editingProduct = EditingProductTable.getEditingProductWithID(editingProductID);
+                    editingProduct.setApprovalDate(ProductTable.getProductByID(editingProductID).getApprovalDate());
+                    editingProduct.setSeen(ProductTable.getProductByID(editingProductID).getSeen());
+                    EditingProductTable.removeProductById(editingProductID);
+                    ProductTable.removeProductByID(editingProduct.getID());
+                    if (editingProduct.isCountable())
+                        VendorTable.addCountableProduct(editingProduct, editingProduct.getSellerUserName());
+                    else
+                        VendorTable.addUnCountableProduct(editingProduct, editingProduct.getSellerUserName());
+                    ProductTable.setProductStatus(editingProduct.getID(), 1);
+                    return Notification.ACCEPT_EDITING_PRODUCT;
+                }
+            } else {
+                return Notification.FUCK_YOU;
             }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
@@ -584,8 +607,10 @@ public class AdminControl extends AccountControl{
 
     public void modifyLogDeliveryStatus(String logID, int status) {
         try {
-            synchronized (LOG_LOCK) {
-                LogTable.setLogDeliveryStatus(logID, status);
+            if(isGeneralIDValid('l', logID)) {
+                synchronized (LOG_LOCK) {
+                    LogTable.setLogDeliveryStatus(logID, status);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -619,8 +644,12 @@ public class AdminControl extends AccountControl{
 
     public Notification deleteSupporter(String supporterUsername) {
         try {
-            AccountTable.deleteSupporter(supporterUsername);
-            return Notification.DELETE_USER;
+            if(isUsernameValid(supporterUsername)) {
+                AccountTable.deleteSupporter(supporterUsername);
+                return Notification.DELETE_USER;
+            } else {
+                return Notification.FUCK_YOU;
+            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             return Notification.UNKNOWN_ERROR;
