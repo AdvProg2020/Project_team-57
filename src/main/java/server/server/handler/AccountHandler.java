@@ -118,9 +118,21 @@ public class AccountHandler extends Handler {
                 return supporterLogout();
             case "logout customer from chat":
                 return logoutCustomerFromChat();
+            case "is contact typing":
+                return isContactTyping();
             default:
                 return null/*server.getUnknownError()*/;
         }
+    }
+
+    private String isContactTyping() throws IOException {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && server.areTalking(server.getUsernameByAuth(command.getAuthToken()), command.getDatum())) {
+            Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, server.isContactTyping(command.getDatum()));
+            return gson.toJson(response);
+        }
+        Response<Boolean> response = new Response<>(Notification.FUCK_YOU, false);
+        return gson.toJson(response);
     }
 
     private String logoutCustomerFromChat() throws IOException {

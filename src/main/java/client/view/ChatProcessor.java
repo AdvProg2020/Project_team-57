@@ -1,8 +1,10 @@
 package client.view;
 
+import client.api.Command;
 import client.chatapi.ChatClient;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
@@ -23,6 +25,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import server.model.existence.Message;
+import server.server.Response;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -36,13 +39,11 @@ public class ChatProcessor extends Processor {
     public ScrollPane chatScroll;
     public ImageView logoutButton;
     public JFXTextField serverMessageField;
+    public Label isContactTypingLabel;
     private ChatClient chatClient;
-    public Circle anotherImageCircle;
-    public Label anotherPersonLabel;
     public JFXTextArea writingMessageArea;
     public ImageView sendImageView;
     public VBox messageBox;
-
     public Circle senderImageCircle;
     public JFXTextField senderNameField;
     public JFXTextArea senderMessageArea;
@@ -50,11 +51,96 @@ public class ChatProcessor extends Processor {
 
     private Image myImage;
     private Image frontImage;
+    private long writingAreaOnKeyListenTimer = -1;
+    private long writingAreaOnKeyListenClock = 500_000_000L; //0.5 sec
+    private long isContactTypingListenTimer = -1;
+    private long isContactTypingListenClock = 500_000_000L;//0.5 sec
+    private long isTypingLabelListenTimer = -1;
+    private long isTypingLabelListenClock = 500_000_000L;//0.5 sec
+    private AnimationTimer writingAreaOnKeyListen;
+    private AnimationTimer isContactTypingListen;
+    private AnimationTimer isTypingLabelListen;
+    private boolean amITyping = false;
 
     public void initChatPane(ChatClient chatClient) {
         this.chatClient = chatClient;
         chatScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         setStringFields(writingMessageArea, 2500);
+        initAnimationTimers();
+    }
+
+    private void initAnimationTimers() {
+        writingAreaOnKeyListen = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if(writingAreaOnKeyListenTimer == -1) {
+                    writingAreaOnKeyListenTimer = now;
+                } else {
+                    if(now - writingAreaOnKeyListenTimer > writingAreaOnKeyListenClock) {
+                        amITyping = !writingMessageArea.getText().isEmpty();
+                        writingAreaOnKeyListenTimer = now;
+                    }
+                }
+            }
+        };
+        isContactTypingListen = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if(isContactTypingListenTimer == -1) {
+                    isContactTypingListenTimer = now;
+                } else {
+                    if(now - isContactTypingListenTimer > isContactTypingListenClock) {
+                        Command<String> command = new Command<>("is contact typing", Command.HandleType.ACCOUNT, chatClient.getContactUsername());
+                        Response<Boolean> response = client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class);
+                        if(response.getDatum()) {
+                            isTypingLabelListen.start();
+                        }
+                        else {
+                            isTypingLabelListen.stop();
+                            isTypingLabelListenTimer = -1;
+                            isContactTypingLabel.setText("");
+                        }
+                        isContactTypingListenTimer = now;
+                    }
+                }
+            }
+        };
+        isTypingLabelListen = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if(isTypingLabelListenTimer == -1) {
+                    isTypingLabelListenTimer = now;
+                } else {
+                    if(now - isTypingLabelListenTimer > isTypingLabelListenClock) {
+                        if(isContactTypingLabel.getText() == null || isContactTypingLabel.getText().isEmpty()) {
+                            isContactTypingLabel.setText(chatClient.getContactUsername() + " is typing.");
+                        } else {
+                            String[] isContactTypingLabelSplit = isContactTypingLabel.getText().split("\\s");
+                            String text = " ";
+                            for (int i = 1; i < isContactTypingLabelSplit.length; i++) {
+                                text += isContactTypingLabelSplit[i];
+                                text += " ";
+                            }
+                            int dotCounter = 0;
+                            for (char c : text.toCharArray()) {
+                                if(c == '.')
+                                    dotCounter++;
+                            }
+                            ++dotCounter;
+                            dotCounter %= 4;
+                            if(dotCounter == 0)
+                                ++dotCounter;
+                            text = text.split("\\.")[0];
+                            for (int i = 0; i < dotCounter; i++) {
+                                text += ".";
+                            }
+                            isContactTypingLabel.setText(chatClient.getContactUsername() + text);
+                        }
+                        isTypingLabelListenTimer = now;
+                    }
+                }
+            }
+        };
     }
 
     public void writeMessage(Message message) {
@@ -78,7 +164,11 @@ public class ChatProcessor extends Processor {
         try {
             HBox messageHBox = fxmlLoader.load();
             ChatProcessor chatProcessor = fxmlLoader.getController();
-            chatProcessor.initMessage(message, ((frontImage == null) ? frontImage = getProfileImage(message.getSenderName()) : frontImage));
+            if(frontImage == null) {
+                System.err.println("Downloading Your Pic: " + message.getSenderName());
+                frontImage = getProfileImage(message.getSenderName());
+            }
+            chatProcessor.initMessage(message, frontImage);
             messageHBox.setNodeOrientation(NodeOrientation.INHERIT);
             return messageHBox;
         } catch (IOException e) {
@@ -112,6 +202,10 @@ public class ChatProcessor extends Processor {
         try {
             HBox messageHBox = fxmlLoader.load();
             ChatProcessor chatProcessor = fxmlLoader.getController();
+            if(myImage == null) {
+                System.err.println("Downloading My Pic: " + getUsername());
+                myImage = getProfileImage(getUsername());
+            }
             chatProcessor.initMessage(myMessage, ((myImage == null) ? getProfileImage(getUsername()) : myImage));
             messageHBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             return messageHBox;
@@ -122,6 +216,8 @@ public class ChatProcessor extends Processor {
     }
 
     public void startChat() {
+        writingAreaOnKeyListen.start();
+        isContactTypingListen.start();
         writingMessageArea.setDisable(false);
         sendImageView.setDisable(false);
         chatClient.startListening();
@@ -134,6 +230,14 @@ public class ChatProcessor extends Processor {
     }
 
     public void endChat(boolean isSupporterEnded, boolean isSupporter) {
+        amITyping = false;
+        writingAreaOnKeyListen.stop();
+        writingAreaOnKeyListenTimer = -1;
+        isContactTypingListen.stop();
+        isContactTypingListenTimer = -1;
+        isTypingLabelListen.stop();
+        isTypingLabelListenTimer = -1;
+        isContactTypingLabel.setText("");
         Task displayMessage = new Task<Void>() {
             @Override
             public Void call() throws Exception {
@@ -223,5 +327,9 @@ public class ChatProcessor extends Processor {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean amITyping() {
+        return amITyping;
     }
 }

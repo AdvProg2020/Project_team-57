@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import notification.Notification;
 import server.model.existence.Message;
 import server.server.bank.BankAPI;
@@ -27,6 +28,7 @@ public class Server implements RandomGenerator{
     private HashMap<String, Socket> supporterSockets;
     private HashMap<String, Socket> chatterSockets;
     private HashMap<Socket, DataOutputStream> chatterOutputStreams;
+    private HashMap<Socket, DataInputStream> chatterInputStreams;
     private HashMap<String, String> chatDualities;
     private ArrayList<String> bannedIPs, tempBannedIPs;
     private static final long DOS_CHECK_PERIOD_MILLIS = 10000;
@@ -51,6 +53,7 @@ public class Server implements RandomGenerator{
             this.supporterSockets = new HashMap<>();
             this.chatDualities = new HashMap<>();
             this.chatterOutputStreams = new HashMap<>();
+            this.chatterInputStreams = new HashMap<>();
             gson = new GsonBuilder().setPrettyPrinting().create();
             IPs = new HashMap<>();
             bannedIPs = new ArrayList<>();
@@ -304,6 +307,23 @@ public class Server implements RandomGenerator{
         return null;
     }
 
+    public DataInputStream getInputStream(String username) {
+        try {
+            Socket socket = chatterSockets.get(username);
+            DataInputStream dataInputStream;
+            if(chatterInputStreams.containsKey(socket)) {
+                dataInputStream = chatterInputStreams.get(socket);
+            } else {
+                dataInputStream = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+                chatterInputStreams.put(socket, dataInputStream);
+            }
+            return dataInputStream;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public boolean areTalking(String senderUsername, String contactUsername) {
         if(chatDualities.containsKey(senderUsername)) {
             if(chatDualities.get(senderUsername).equals(contactUsername)) {
@@ -333,12 +353,16 @@ public class Server implements RandomGenerator{
         supporterSockets.remove(supporterUsername);
         chatterSockets.remove(supporterUsername);
         removeOutputStream(socket);
+        removeInputStream(socket);
         socket.close();
         DataOutputStream outputStream = getOutputStream(customerUsername);
         message.setMessage("isSupporterEnded isCustomer");
         outputStream.writeUTF(gson.toJson(message));
         outputStream.flush();
-        removeOutputStream(chatterSockets.get(customerUsername));
+        Socket secondSocket = chatterSockets.get(customerUsername);
+        removeOutputStream(secondSocket);
+        removeInputStream(secondSocket);
+        secondSocket.close();
         chatterSockets.remove(customerUsername);
     }
 
@@ -354,6 +378,7 @@ public class Server implements RandomGenerator{
         chatDualities.remove(customerUsername);
         chatterSockets.remove(customerUsername);
         removeOutputStream(socket);
+        removeInputStream(socket);
         socket.close();
         DataOutputStream supporterOutStream = getOutputStream(supporterUsername);
         message.setMessage("isCustomerEnded isSupporter");
@@ -379,12 +404,30 @@ public class Server implements RandomGenerator{
         }
     }
 
+    private void removeInputStream(Socket socket) throws IOException {
+        if(chatterInputStreams.containsKey(socket)) {
+            chatterInputStreams.get(socket).close();
+            chatterInputStreams.remove(socket);
+        }
+    }
+
     private String getSupportersCustomer(String supporterUsername) {
         for (String customerUsername : chatDualities.keySet()) {
             if(chatDualities.get(customerUsername).equals(supporterUsername))
                 return customerUsername;
         }
         return null;
+    }
+
+    public boolean isContactTyping(String contactUsername) throws IOException {
+        Message message = new Message();
+        message.setSenderName("typ");
+        DataOutputStream outStream = getOutputStream(contactUsername);
+        DataInputStream inStream = getInputStream(contactUsername);
+        outStream.writeUTF(gson.toJson(message));
+        outStream.flush();
+        Command<Boolean> command = gson.fromJson(inStream.readUTF(), TypeToken.getParameterized(Command.class, (Class<Boolean>)Boolean.class).getType());
+        return command.getDatum();
     }
 
     private static class Clock {

@@ -14,7 +14,7 @@ import java.net.Socket;
 
 public class ChatClient {
     private final static String IP = "127.0.0.1";
-    private static int PORT = 63937;
+    private static int PORT = 50276;
     private String auth;
     private String contactUsername;
     private Socket restlessSocket;
@@ -94,12 +94,18 @@ public class ChatClient {
                     try {
                         String json = inStream.readUTF();
                         message = gson.fromJson(json, Message.class);
-
-                        if (message.isEndAlert()) {
-                            break;
+                        if(message.getSenderName() != null && message.getSenderName().equals("typ")) {
+                            Command<Boolean> command = new Command<>("Fuck", Command.HandleType.CHAT, chatProcessor.amITyping());
+                            outStream.writeUTF(gson.toJson(command));
+                            outStream.flush();
                         } else {
-                            chatProcessor.writeMessage(message);
+                            if (message.isEndAlert()) {
+                                break;
+                            } else {
+                                chatProcessor.writeMessage(message);
+                            }
                         }
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

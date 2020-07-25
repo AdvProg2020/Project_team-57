@@ -39,4 +39,8 @@ public class Message {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
 }

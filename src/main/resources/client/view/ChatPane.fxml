@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="616.0" prefWidth="530.0" style="-fx-background-color: #ffffff;" stylesheets="@../CSS%20files/ChatCss.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.ChatProcessor">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="645.0" prefWidth="530.0" style="-fx-background-color: #ffffff;" stylesheets="@../CSS%20files/ChatCss.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.view.ChatProcessor">
    <children>
       <Pane prefHeight="108.0" prefWidth="4.0" style="-fx-background-color: #ffffff;">
          <children>
@@ -18,7 +20,7 @@
             </ImageView>
          </children>
       </Pane>
-      <Pane layoutY="572.0" prefHeight="48.0" prefWidth="530.0">
+      <Pane layoutY="597.0" prefHeight="48.0" prefWidth="530.0">
          <children>
             <ImageView fx:id="sendImageView" disable="true" fitHeight="46.0" fitWidth="37.0" layoutX="487.0" layoutY="5.0" onMouseClicked="#sendMessage" pickOnBounds="true" preserveRatio="true" styleClass="send_message_button">
                <image>
@@ -38,5 +40,10 @@
             <Image url="@../Images/Icons/ChatMenu/Logout%202.png" />
          </image>
       </ImageView>
+      <Label fx:id="isContactTypingLabel" layoutX="4.0" layoutY="579.0">
+         <font>
+            <Font name="Franklin Gothic Demi Cond" size="15.0" />
+         </font>
+      </Label>
    </children>
 </Pane>

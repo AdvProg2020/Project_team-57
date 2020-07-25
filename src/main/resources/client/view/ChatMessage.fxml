@@ -11,7 +11,7 @@
    <children>
       <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="440.0" style="-fx-background-color: #ffffff;">
          <children>
-            <Circle fx:id="senderImageCircle" fill="#ffb01f" layoutX="42.0" layoutY="44.0" radius="35.0" smooth="false" stroke="#e1dddd" strokeType="INSIDE" strokeWidth="0.0" />
+            <Circle fx:id="senderImageCircle" fill="#ffb01f" layoutX="42.0" layoutY="44.0" radius="35.0" stroke="#e1dddd" strokeType="INSIDE" strokeWidth="0.0" />
             <Pane layoutX="86.0" layoutY="3.0" prefWidth="340.0" style="-fx-background-color: #eeeeee; -fx-background-radius: 10 10 10 10;">
                <children>
                   <JFXTextField fx:id="senderNameField" focusColor="#7d7e80" layoutX="5.0" prefWidth="330.0" text="Sepehr kianian" unFocusColor="#e8dcdc">
