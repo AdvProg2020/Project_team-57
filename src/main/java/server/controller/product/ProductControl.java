@@ -2,9 +2,8 @@ package server.controller.product;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
-import server.controller.account.IOValidity;
+import server.controller.account.Validity;
 import server.model.db.*;
 import server.model.existence.Category;
 import server.model.existence.Comment;
@@ -22,7 +21,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ProductControl implements RandomGenerator, IOValidity {
+public class ProductControl implements RandomGenerator, Validity {
     private static ProductControl productControl = null;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
