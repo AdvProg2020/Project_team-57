@@ -1227,41 +1227,6 @@ public class ProductProcessor extends Processor {
             descriptionTextArea.setStyle(errorTextFieldStyle);
     }
 
-//    private void editProduct() {
-//        String productID = ((ProductProcessor) parentProcessor).product.getID();
-//
-//        Alert alert = null;
-//        alert = editField("ProductName", nameTextField, productID, alert);
-//        alert = editField("Category", categoryTextField, productID, alert);
-//
-//        String countFieldName = countLabel.getText().equals(" Count ") ? "Count" : "Amount";
-//        alert = editField(countFieldName, countTextField, productID, alert);
-//
-//        alert = editField("Brand", brandTextField, productID, alert);
-//        alert = editField("Description", descriptionTextArea, productID, alert);
-//
-//        if(alert.getTitle().equals("Edit Successful") ) {
-//            ((ProductProcessor) parentProcessor).product = productControl.getEditedProductByID(productID);
-//            setGeneralTextFields();
-//        }
-//
-//        //Todo Koodoomaro Taraf Mitoone Khali Bezare?
-//        //Todo Setting Alerts
-//        alert.show();
-//    }
-
-    private Alert editField(String fieldName, TextInputControl textInputControl, String productID, Alert previousAlert) {
-        Alert alert = productControl.editField(fieldName, textInputControl.getText(), productID).getAlert();
-
-        if(!alert.getTitle().equals("Edit Successful"))
-            textInputControl.setStyle(errorTextFieldStyle);
-
-        if(previousAlert == null || previousAlert.getTitle().equals("Edit Successful"))
-            return alert;
-        else
-            return previousAlert;
-    }
-
     public void changeCountableField(ActionEvent actionEvent) {
         //Todo Checking Setting Change Listener Multiple Times !!!! Exactly
         Product product = ((ProductProcessor) parentProcessor).product;

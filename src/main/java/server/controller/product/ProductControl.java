@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
+import server.controller.account.IOValidity;
 import server.model.db.*;
 import server.model.existence.Category;
 import server.model.existence.Comment;
@@ -21,24 +22,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ProductControl implements RandomGenerator {
+public class ProductControl implements RandomGenerator, IOValidity {
     private static ProductControl productControl = null;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    @Deprecated
-    public void setProductOffPrice(Product product) throws SQLException, ClassNotFoundException {
-        if(OffTable.isThereProductInOff(product.getID())) {
-            product.setOnSale(true);
-            double offPercent = OffTable.getOffPercentByProductID(product.getID());
-            product.setOffPercent(offPercent);
-            product.setOffPrice( (1.0 - offPercent / 100) * product.getPrice());
-        }
-    }
-
     public Product getProductById(String productId) {
         try {
-            Product product = ProductTable.getProductByID(productId);
-/*            setProductOffPrice(product);*/
+            if(isGeneralIDValid('p', productId)) {
+                Product product = ProductTable.getProductByID(productId);
+                return product;
+            }
+            Product product = new Product();
+            product.setStatus(2);
             return product;
         } catch (Exception e) {
             return new Product();
@@ -47,36 +42,40 @@ public class ProductControl implements RandomGenerator {
 
     public synchronized Notification removeProductById(String productId) {
         try {
-            ProductTable.removeProductByID(productId);
+            if(isGeneralIDValid('p', productId)) {
+                ProductTable.removeProductByID(productId);
 
-            if (!EditingProductTable.isIDFree(productId))
-                EditingProductTable.removeProductById(productId);
-            synchronized (OFF_LOCK) {
-                OffTable.removeProductFromOffs(productId);
-                OffTable.removeProductFromEditingOffs(productId);
-            }
+                if (!EditingProductTable.isIDFree(productId))
+                    EditingProductTable.removeProductById(productId);
+                synchronized (OFF_LOCK) {
+                    OffTable.removeProductFromOffs(productId);
+                    OffTable.removeProductFromEditingOffs(productId);
+                }
 
-            CartTable.deleteProductFromCarts(productId);
+                CartTable.deleteProductFromCarts(productId);
 
-            synchronized (COMMENT_SCORE_LOCK) {
-                ProductTable.removeAllProductComments(productId);
-                ProductTable.deleteProductFromScores(productId);
-            }
+                synchronized (COMMENT_SCORE_LOCK) {
+                    ProductTable.removeAllProductComments(productId);
+                    ProductTable.deleteProductFromScores(productId);
+                }
 
-            synchronized (PRODUCT_IMAGE_LOCK) {
-                ProductTable.removeAllProductImages(productId);
-            }
-            synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
-                EditingProductTable.removeAllEditingProductImages(productId);
-            }
-            synchronized (PRODUCT_FILE_LOCK) {
-                ProductTable.removeProductFileByID(productId);
-            }
-            synchronized (EDITING_PRODUCT_FILE_LOCK) {
-                EditingProductTable.removeEditingProductFile(productId);
-            }
+                synchronized (PRODUCT_IMAGE_LOCK) {
+                    ProductTable.removeAllProductImages(productId);
+                }
+                synchronized (EDITING_PRODUCT_IMAGE_LOCK) {
+                    EditingProductTable.removeAllEditingProductImages(productId);
+                }
+                synchronized (PRODUCT_FILE_LOCK) {
+                    ProductTable.removeProductFileByID(productId);
+                }
+                synchronized (EDITING_PRODUCT_FILE_LOCK) {
+                    EditingProductTable.removeEditingProductFile(productId);
+                }
 
-            return Notification.REMOVE_PRODUCT_SUCCESSFULLY;
+                return Notification.REMOVE_PRODUCT_SUCCESSFULLY;
+            } else {
+                return Notification.FUCK_YOU;
+            }
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
         }
@@ -88,66 +87,19 @@ public class ProductControl implements RandomGenerator {
         return productControl;
     }
 
-    public Notification editField(String fieldName, String newField, String ID) {
+    public Product getEditedProductByID(String editedProductID) {
         try {
-            if (ProductTable.getProductByID(ID).getStatus() == 2)
-                return Notification.PRODUCT_NOT_AVAILABLE;
+            if(isGeneralIDValid('p', editedProductID)) {
+                Product product = null;
 
-//            if (checkFieldEquality(fieldName, newField, ID))
-//                return Notification.SAME_FIELD_ERROR;
-            if(newField != null && !newField.isEmpty()) {
-                if (fieldName.equals("Category") && !CategoryTable.isThereCategoryWithName(newField))
-                    return Notification.INVALID_CATEGORY_NAME;
+                if (EditingProductTable.isIDFree(editedProductID))
+                    product = ProductTable.getProductByID(editedProductID);
+                else
+                    product = EditingProductTable.getEditingProductWithID(editedProductID);
 
-                if (ProductTable.getProductByID(ID).getStatus() == 1)
-                    ProductTable.setProductStatus(ID, 3);
-
-                if (EditingProductTable.isIDFree(ID))
-                    EditingProductTable.addProduct(ProductTable.getProductByID(ID));
-
-                editSpecificField(fieldName, newField, ID);
+                return product;
             }
-
-            return Notification.EDIT_FIELD_SUCCESSFULLY;
-        } catch (SQLException e) {
-            return Notification.UNKNOWN_ERROR;
-        } catch (ClassNotFoundException e) {
-            return Notification.UNKNOWN_ERROR;
-        }
-    }
-
-    private void editSpecificField(String fieldName, String newField, String ID) {
-        try {
-            if (fieldName.equals("ProductName") || fieldName.equals("Brand") ||
-                    fieldName.equals("Category") || fieldName.equals("Description")) {
-                EditingProductTable.editFieldWithName(ID, fieldName, newField);
-            } else if (fieldName.equals("Count"))
-                EditingProductTable.changeProductCount(ID, Integer.parseInt(newField));
-
-            else if (fieldName.equals("Amount"))
-                EditingProductTable.changeProductAmount(ID, Double.parseDouble(newField));
-
-            else if (fieldName.equals("Price"))
-                EditingProductTable.changeProductPrice(ID, Double.parseDouble(newField));
-        } catch (Exception e) {
-            //:)
-        }
-    }
-
-    public Product getEditedProductByID(String ID) {
-        try {
-            Product product = null;
-
-            if (EditingProductTable.isIDFree(ID))
-                product = ProductTable.getProductByID(ID);
-            else
-                product = EditingProductTable.getEditingProductWithID(ID);
-
-            /*setProductOffPrice(product);*/
-            return product;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return null;
@@ -155,10 +107,14 @@ public class ProductControl implements RandomGenerator {
 
     public Notification removeEditingProductById(String editingProductID) {
         try {
-            synchronized (ADMIN_MODIFY_EDIT_PRODUCT_LOCK) {
-                EditingProductTable.removeProductById(editingProductID);
-                ProductTable.setProductStatus(editingProductID, 1);
-                return Notification.DECLINE_EDITING_PRODUCT;
+            if(isGeneralIDValid('p', editingProductID)) {
+                synchronized (ADMIN_MODIFY_EDIT_PRODUCT_LOCK) {
+                    EditingProductTable.removeProductById(editingProductID);
+                    ProductTable.setProductStatus(editingProductID, 1);
+                    return Notification.DECLINE_EDITING_PRODUCT;
+                }
+            } else {
+                return Notification.FUCK_YOU;
             }
         } catch (SQLException | ClassNotFoundException e) {
             //:)
@@ -305,7 +261,8 @@ public class ProductControl implements RandomGenerator {
 
     public void addSeenToProduct(String productID) {
         try {
-            ProductTable.addSeenToProductWithID(productID);
+            if(isGeneralIDValid('p', productID))
+                ProductTable.addSeenToProductWithID(productID);
         } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
@@ -362,11 +319,13 @@ public class ProductControl implements RandomGenerator {
 
     public double getAverageScore(String productID){
         try {
-            double averageScore = 0;
-            for (Integer score : ProductTable.getAllScores(productID)) {
-                averageScore += score;
+            if(isGeneralIDValid('p', productID)) {
+                double averageScore = 0;
+                for (Integer score : ProductTable.getAllScores(productID)) {
+                    averageScore += score;
+                }
+                return averageScore / ProductTable.getAllScores(productID).size();
             }
-            return averageScore / ProductTable.getAllScores(productID).size();
         } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
@@ -374,57 +333,63 @@ public class ProductControl implements RandomGenerator {
     }
 
     public Notification addComment(Comment comment, String username) {
-        comment.setStatus(2);
-        comment.setCustomerUsername(username);
-        String commentID;
+        if(isUsernameValid(username)) {
+            comment.setStatus(2);
+            comment.setCustomerUsername(username);
+            String commentID;
 
-        try {
-            commentID = "c" + generateRandomNumber(7, s -> {
-                try {
-                    return ProductTable.isThereCommentByID(s);
-                } catch (SQLException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                return false;
-            });
-            comment.setCommentID(commentID);
-            ProductTable.addComment(comment);
+            try {
+                commentID = "c" + generateRandomNumber(7, s -> {
+                    try {
+                        return ProductTable.isThereCommentByID(s);
+                    } catch (SQLException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    return false;
+                });
+                comment.setCommentID(commentID);
+                ProductTable.addComment(comment);
 
-            //Todo Approving Score Haminjori Nemishe Score Gozasht. Bas Taeid Beshe
-            if(comment.getScore() != 0)
-                setScore(comment, username);
+                //Todo Approving Score Haminjori Nemishe Score Gozasht. Bas Taeid Beshe
+                if (comment.getScore() != 0)
+                    setScore(comment, username);
 
-            return Notification.ADD_COMMENT;
-        } catch (SQLException | ClassNotFoundException e){
-            System.err.println("Error In #addComment");
-            e.printStackTrace();
+                return Notification.ADD_COMMENT;
+            } catch (SQLException | ClassNotFoundException e) {
+                System.err.println("Error In #addComment");
+                e.printStackTrace();
+            }
+            return Notification.UNKNOWN_ERROR;
+        } else {
+            return Notification.FUCK_YOU;
         }
-        return Notification.UNKNOWN_ERROR;
     }
 
     public ArrayList<Comment> getAllProductComments(String productId, String username, String type) {
         ArrayList<Comment> productComments = new ArrayList<>();
 
-        try {
-            for (Comment comment : ProductTable.getAllApprovedCommentsOnThisProduct(productId)) {
-                comment.setScore(getScore(comment));
-                productComments.add(comment);
-            }
-
-            if(type != null && type.equals("Customer")) {
-                for (Comment comment : ProductTable.getAllLoggedInUserComment(username, productId)) {
+        if(isGeneralIDValid('p', productId)) {
+            try {
+                for (Comment comment : ProductTable.getAllApprovedCommentsOnThisProduct(productId)) {
                     comment.setScore(getScore(comment));
                     productComments.add(comment);
                 }
-            }
-            if(username != null && !username.isEmpty()) {
-                for (Comment productComment : productComments) {
-                    if (username.equals(productComment.getCustomerUsername()))
-                        productComment.setCustomerUsername("**You**");
+
+                if (type != null && type.equals("Customer")) {
+                    for (Comment comment : ProductTable.getAllLoggedInUserComment(username, productId)) {
+                        comment.setScore(getScore(comment));
+                        productComments.add(comment);
+                    }
                 }
+                if (username != null && !username.isEmpty()) {
+                    for (Comment productComment : productComments) {
+                        if (username.equals(productComment.getCustomerUsername()))
+                            productComment.setCustomerUsername("**You**");
+                    }
+                }
+            } catch (SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
         }
 
         return productComments;
@@ -616,7 +581,8 @@ public class ProductControl implements RandomGenerator {
 
     public Off getOffByID(String offID) {
         try {
-            return OffTable.getSpecificOff(offID);
+            if(isGeneralIDValid('o', offID))
+                return OffTable.getSpecificOff(offID);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -625,7 +591,8 @@ public class ProductControl implements RandomGenerator {
 
     public boolean isThereOffWithID(String offID) {
         try {
-            return OffTable.isThereOffWithID(offID);
+            if(isGeneralIDValid('o', offID))
+                return OffTable.isThereOffWithID(offID);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -634,8 +601,10 @@ public class ProductControl implements RandomGenerator {
 
     public boolean isOffEditing(String offID) {
         try {
-            synchronized (OFF_LOCK) {
-                return OffTable.isThereEditingOffWithID(offID);
+            if(isGeneralIDValid('o', offID)) {
+                synchronized (OFF_LOCK) {
+                    return OffTable.isThereEditingOffWithID(offID);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -666,8 +635,10 @@ public class ProductControl implements RandomGenerator {
 
     public Off getEditingOffByID(String offID) {
         try {
-            synchronized (OFF_LOCK) {
-                return OffTable.getSpecificEditingOff(offID);
+            if(isGeneralIDValid('o', offID)) {
+                synchronized (OFF_LOCK) {
+                    return OffTable.getSpecificEditingOff(offID);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -712,7 +683,8 @@ public class ProductControl implements RandomGenerator {
 
     public void addProductFileInfo(String productID, String productFileInfoJson) {
         try {
-            ProductTable.addProductFileInfo(productID, productFileInfoJson);
+            if(isGeneralIDValid('p', productID))
+                ProductTable.addProductFileInfo(productID, productFileInfoJson);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -768,8 +740,10 @@ public class ProductControl implements RandomGenerator {
 
     public void editProductFileInfo(String productID, String productFileInfoJson) {
         try {
-            synchronized (EDITING_PRODUCT_FILE_INFO_LOCK) {
-                EditingProductTable.editProductFileInfo(productID, productFileInfoJson);
+            if(isGeneralIDValid('p', productID)) {
+                synchronized (EDITING_PRODUCT_FILE_INFO_LOCK) {
+                    EditingProductTable.editProductFileInfo(productID, productFileInfoJson);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -777,8 +751,10 @@ public class ProductControl implements RandomGenerator {
     }
 
     public void deleteEditingProductFile(String productID) {
-        synchronized (EDITING_PRODUCT_FILE_LOCK) {
-            EditingProductTable.removeEditingProductFile(productID);
+        if(isGeneralIDValid('p', productID)) {
+            synchronized (EDITING_PRODUCT_FILE_LOCK) {
+                EditingProductTable.removeEditingProductFile(productID);
+            }
         }
     }
 
@@ -796,9 +772,11 @@ public class ProductControl implements RandomGenerator {
 
     public Product.ProductFileInfo getEditingProductFileInfo(String productID) {
         try {
-            synchronized (EDITING_PRODUCT_FILE_INFO_LOCK) {
-                String productFileInfoJson = EditingProductTable.getEditingProductFileInfo(productID);
-                return gson.fromJson(productFileInfoJson, Product.ProductFileInfo.class);
+            if(isGeneralIDValid('p', productID)) {
+                synchronized (EDITING_PRODUCT_FILE_INFO_LOCK) {
+                    String productFileInfoJson = EditingProductTable.getEditingProductFileInfo(productID);
+                    return gson.fromJson(productFileInfoJson, Product.ProductFileInfo.class);
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -826,9 +804,11 @@ public class ProductControl implements RandomGenerator {
 
     public void initProductFileCountability(String productID) {
         try {
-            ProductTable.setProductCountability(productID, true);
-            ProductTable.setProductCount(productID, 1);
-            ProductTable.setProductAmount(productID, 0);
+            if(isGeneralIDValid('p', productID)) {
+                ProductTable.setProductCountability(productID, true);
+                ProductTable.setProductCount(productID, 1);
+                ProductTable.setProductAmount(productID, 0);
+            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -840,4 +820,5 @@ public class ProductControl implements RandomGenerator {
             return EditingProductTable.doesEditingProductHaveFile(productID);
         }
     }
+
 }
