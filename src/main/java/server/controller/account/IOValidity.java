@@ -2,6 +2,8 @@ package server.controller.account;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public interface IOValidity {
 
@@ -47,5 +49,15 @@ public interface IOValidity {
                 return false;
         }
         return true;
+    }
+
+    default boolean isGeneralIDValid(char idDeterminer, String id) {
+        return getMatcher(id, "^" + idDeterminer + "\\d{7}$").matches();
+    }
+
+    static Matcher getMatcher(String command, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(command);
+        return matcher;
     }
 }

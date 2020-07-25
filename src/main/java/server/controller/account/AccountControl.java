@@ -28,29 +28,37 @@ public class AccountControl implements IOValidity, RandomGenerator {
 
     public Account getAccountByUsername(String username){
         try {
-            return AccountTable.getAccountByUsername(username);
+            if(isUsernameValid(username))
+                return AccountTable.getAccountByUsername(username);
         } catch (Exception e) {
             //:)
             return new Account();
         }
+        Account account = new Account();
+        account.setType("Hacker");
+        return account;
     }
 
     public Notification changePassword(String username, String oldPassword, String newPassword) {
         try {
-            if(oldPassword == null || oldPassword.isEmpty())
-                return Notification.EMPTY_OLD_PASSWORD;
-            if(newPassword == null || newPassword.isEmpty())
-                return Notification.EMPTY_NEW_PASSWORD;
-            if(!AccountTable.isPasswordCorrect(username, oldPassword))
-                return Notification.WRONG_OLD_PASSWORD;
-            if (oldPassword.equals(newPassword))
-                return Notification.SAME_PASSWORD_ERROR;
-            if (newPassword.length() < 8 || newPassword.length() > 16)
-                return Notification.ERROR_PASSWORD_LENGTH_EDIT;
-            if (!this.isPasswordValid(newPassword))
-                return Notification.ERROR_PASSWORD_FORMAT_EDIT;
-            AccountTable.editField(username, "Password", newPassword);
-            return Notification.CHANGE_PASSWORD_SUCCESSFULLY;
+            if(isUsernameValid(username)) {
+                if (oldPassword == null || oldPassword.isEmpty())
+                    return Notification.EMPTY_OLD_PASSWORD;
+                if (newPassword == null || newPassword.isEmpty())
+                    return Notification.EMPTY_NEW_PASSWORD;
+                if (!AccountTable.isPasswordCorrect(username, oldPassword))
+                    return Notification.WRONG_OLD_PASSWORD;
+                if (oldPassword.equals(newPassword))
+                    return Notification.SAME_PASSWORD_ERROR;
+                if (newPassword.length() < 8 || newPassword.length() > 16)
+                    return Notification.ERROR_PASSWORD_LENGTH_EDIT;
+                if (!this.isPasswordValid(newPassword))
+                    return Notification.ERROR_PASSWORD_FORMAT_EDIT;
+                AccountTable.editField(username, "Password", newPassword);
+                return Notification.CHANGE_PASSWORD_SUCCESSFULLY;
+            } else {
+                return Notification.FUCK_YOU;
+            }
         } catch (Exception e) {
             return Notification.UNKNOWN_ERROR;
         }
@@ -58,10 +66,14 @@ public class AccountControl implements IOValidity, RandomGenerator {
 
     public Notification addMoney(String username, double money) {
         try {
-            if(money != 0)
-                AccountTable.changeCredit(username, money);
+            if(isUsernameValid(username)) {
+                if (money != 0)
+                    AccountTable.changeCredit(username, money);
 
-            return Notification.RISE_MONEY_SUCCESSFULLY;
+                return Notification.RISE_MONEY_SUCCESSFULLY;
+            } else {
+                return Notification.FUCK_YOU;
+            }
         } catch (NumberFormatException e) {
             return Notification.INVALID_ADDING_DOUBLE_MONEY;
         } catch (Exception e) {
@@ -71,11 +83,14 @@ public class AccountControl implements IOValidity, RandomGenerator {
 
     public Notification getMoney(String username, double money) {
         try {
+            if(isUsernameValid(username))
             if(money > 0) {
                 if (AccountTable.getCredit(username) < money)
                     return Notification.LACK_BALANCE_ERROR;
 
                 AccountTable.changeCredit(username, -money);
+            } else {
+                return Notification.FUCK_YOU;
             }
 
             return Notification.GET_MONEY_SUCCESSFULLY;
@@ -136,11 +151,15 @@ public class AccountControl implements IOValidity, RandomGenerator {
 
     public Off getOffByID(String offID) {
         try {
-            Off off = OffTable.getSpecificOff(offID);
-            return off;
-        } catch (SQLException e) {
-            //:)
-        } catch (ClassNotFoundException e) {
+            if(isGeneralIDValid('o', offID)) {
+                Off off = OffTable.getSpecificOff(offID);
+                return off;
+            }else {
+                Off off = new Off();
+                off.setVendorUsername("Fuck");
+                return off;
+            }
+        } catch (SQLException | ClassNotFoundException e) {
             //:)
         }
         return new Off();
@@ -159,9 +178,7 @@ public class AccountControl implements IOValidity, RandomGenerator {
                     case CUSTOMER:
                         return AccountTable.getAllCustomers();
                 }
-            } catch (SQLException e) {
-                //:)
-            } catch (ClassNotFoundException e) {
+            } catch (SQLException | ClassNotFoundException e) {
                 //:)
             }
             return new ArrayList<>();
@@ -182,13 +199,16 @@ public class AccountControl implements IOValidity, RandomGenerator {
 
     public FileInputStream getUserImageInputStream(String username) {
         try {
-
-            synchronized (SUPPORTER_LOCK) {
-                if(!AccountTable.isUsernameFreeForSupporter(username)) {
-                    synchronized (SUPPORTER_IMAGE_LOCK) {
-                        return AccountTable.getSupporterDefaultImageInputStream();
+            if(isUsernameValid(username)) {
+                synchronized (SUPPORTER_LOCK) {
+                    if (!AccountTable.isUsernameFreeForSupporter(username)) {
+                        synchronized (SUPPORTER_IMAGE_LOCK) {
+                            return AccountTable.getSupporterDefaultImageInputStream();
+                        }
                     }
                 }
+            } else {
+                return null;
             }
 
             synchronized (USER_IMAGE_LOCK) {
@@ -203,36 +223,43 @@ public class AccountControl implements IOValidity, RandomGenerator {
     }
 
     public boolean doesUserHaveImage(String username) {
-        return AccountTable.getUserImageFilePath(username) != null;
+        if(isUsernameValid(username))
+            return AccountTable.getUserImageFilePath(username) != null;
+        else
+            return false;
     }
 
     public void setAccountPicture(String username, File pictureFile) {
-        synchronized (USER_IMAGE_LOCK) {
-            if(pictureFile == null) {
-                if(doesUserHaveImage(username))
-                    AccountTable.deleteProfileImage(username);
-            } else {
-                if(doesUserHaveImage(username)) {
-                    AccountTable.deleteProfileImage(username);
-                }
-                try {
-                    AccountTable.setProfileImage(username, pictureFile);
-                } catch (IOException e) {
-                    //:)
+        if(isUsernameValid(username)) {
+            synchronized (USER_IMAGE_LOCK) {
+                if (pictureFile == null) {
+                    if (doesUserHaveImage(username))
+                        AccountTable.deleteProfileImage(username);
+                } else {
+                    if (doesUserHaveImage(username)) {
+                        AccountTable.deleteProfileImage(username);
+                    }
+                    try {
+                        AccountTable.setProfileImage(username, pictureFile);
+                    } catch (IOException e) {
+                        //:)
+                    }
                 }
             }
         }
     }
 
     public FileOutputStream getAccountPictureOutputStream(String username, String pictureExtension) {
-        if(doesUserHaveImage(username)) {
-            AccountTable.deleteProfileImage(username);
-        }
-        try {
-            return AccountTable.getProfileImageOutputStream(username, pictureExtension);
-        } catch (IOException e) {
-            System.err.println("Error In #getAccountPictureOutputStream");
-            e.printStackTrace();
+        if(isUsernameValid(username)) {
+            if (doesUserHaveImage(username)) {
+                AccountTable.deleteProfileImage(username);
+            }
+            try {
+                return AccountTable.getProfileImageOutputStream(username, pictureExtension);
+            } catch (IOException e) {
+                System.err.println("Error In #getAccountPictureOutputStream");
+                e.printStackTrace();
+            }
         }
 
         return null;
@@ -240,29 +267,31 @@ public class AccountControl implements IOValidity, RandomGenerator {
 
     public Notification editAccount(Account newAccount) {
         try {
-            Account oldAccount = AccountTable.getAccountByUsername(newAccount.getUsername());
-            if (newAccount.getFirstName() != null)
-                if (!newAccount.getFirstName().isEmpty() &&
-                        !newAccount.getFirstName().equals(oldAccount.getFirstName())) {
-                    AccountTable.editField(newAccount.getUsername(), "FirstName", newAccount.getFirstName());
+            if(isUsernameValid(newAccount.getUsername())) {
+                Account oldAccount = AccountTable.getAccountByUsername(newAccount.getUsername());
+                if (newAccount.getFirstName() != null)
+                    if (!newAccount.getFirstName().isEmpty() &&
+                            !newAccount.getFirstName().equals(oldAccount.getFirstName())) {
+                        AccountTable.editField(newAccount.getUsername(), "FirstName", newAccount.getFirstName());
+                    }
+                if (newAccount.getLastName() != null)
+                    if (!newAccount.getLastName().isEmpty() &&
+                            !newAccount.getLastName().equals(oldAccount.getLastName())) {
+                        AccountTable.editField(newAccount.getUsername(), "LastName", newAccount.getLastName());
+                    }
+                if (newAccount.getEmail() == null || !newAccount.getEmail().equals(oldAccount.getEmail())) {
+                    AccountTable.editField(newAccount.getUsername(), "Email", newAccount.getEmail() == null ? "" : newAccount.getEmail());
                 }
-            if (newAccount.getLastName() != null)
-                if (!newAccount.getLastName().isEmpty() &&
-                        !newAccount.getLastName().equals(oldAccount.getLastName())) {
-                    AccountTable.editField(newAccount.getUsername(), "LastName", newAccount.getLastName());
+                if (oldAccount.getType().equals("Vendor")) {
+                    if (newAccount.getBrand() == null || !newAccount.getBrand().equals(oldAccount.getBrand())) {
+                        AccountTable.editField(newAccount.getUsername(), "Brand", newAccount.getBrand() == null ? "" : newAccount.getBrand());
+                    }
                 }
-            if (newAccount.getEmail() == null || !newAccount.getEmail().equals(oldAccount.getEmail())) {
-                AccountTable.editField(newAccount.getUsername(), "Email", newAccount.getEmail() == null ? "" : newAccount.getEmail());
+                return Notification.EDIT_FIELD_SUCCESSFULLY;
+            } else {
+                return Notification.FUCK_YOU;
             }
-            if (oldAccount.getType().equals("Vendor")) {
-                if (newAccount.getBrand() == null || !newAccount.getBrand().equals(oldAccount.getBrand())) {
-                    AccountTable.editField(newAccount.getUsername(), "Brand", newAccount.getBrand() == null ? "" : newAccount.getBrand());
-                }
-            }
-            return Notification.EDIT_FIELD_SUCCESSFULLY;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return Notification.UNKNOWN_ERROR;
@@ -270,11 +299,11 @@ public class AccountControl implements IOValidity, RandomGenerator {
 
     public double getCredit(String username) {
         try {
-            Account account = AccountTable.getAccountByUsername(username);
-            return account.getCredit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+            if (isUsernameValid(username)) {
+                Account account = AccountTable.getAccountByUsername(username);
+                return account.getCredit();
+            }
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -322,7 +351,9 @@ public class AccountControl implements IOValidity, RandomGenerator {
 
     public boolean isUserSupporter(String username) {
         try {
-            return !AccountTable.isUsernameFreeForSupporter(username);
+            if(isUsernameValid(username)) {
+                return !AccountTable.isUsernameFreeForSupporter(username);
+            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -331,7 +362,9 @@ public class AccountControl implements IOValidity, RandomGenerator {
 
     public Supporter getSupporterByUsername(String supporterUsername) {
         try {
-            return AccountTable.getSupporter(supporterUsername);
+            if(isUsernameValid(supporterUsername)) {
+                return AccountTable.getSupporter(supporterUsername);
+            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
