@@ -3,7 +3,7 @@ package server.controller.product;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import javafx.scene.image.Image;
-import server.controller.account.Validity;
+import server.controller.Validity;
 import server.model.db.*;
 import server.model.existence.Category;
 import server.model.existence.Comment;
