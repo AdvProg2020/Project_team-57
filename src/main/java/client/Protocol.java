@@ -1,7 +1,7 @@
 package client;
 
 public enum Protocol {
-    CLIENT_COMPONENT("127.0.0.1", 23238);
+    CLIENT_COMPONENT("127.0.0.1", 57184);
 
     public String Ip;
     public int port;

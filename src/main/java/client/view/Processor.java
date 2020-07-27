@@ -30,8 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import static client.api.Command.HandleType.GENERAL;
-import static client.api.Command.HandleType.PRODUCT;
+import static client.api.Command.HandleType.*;
 
 public abstract class Processor {
     protected static final String IMAGE_FOLDER_URL = "client\\Images\\";
@@ -367,6 +366,11 @@ public abstract class Processor {
 
     protected boolean doesEditingProductHaveFile(String productID) {
         Command<String> command = new Command<>("does edit product have file", PRODUCT, productID);
+        return client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class).getDatum();
+    }
+
+    protected boolean isSupporterAvailable(String supporterUsername) {
+        Command<String> command = new Command<>("is supporter available", ACCOUNT, supporterUsername);
         return client.postAndGet(command, Response.class, (Class<Boolean>)Boolean.class).getDatum();
     }
 

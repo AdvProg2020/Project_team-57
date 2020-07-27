@@ -120,10 +120,21 @@ public class AccountHandler extends Handler {
                 return logoutCustomerFromChat();
             case "is contact typing":
                 return isContactTyping();
+            case "is supporter available":
+                return isSupporterAvailable();
             default:
                 return null/*server.getUnknownError()*/;
         }
     }
+
+    private String isSupporterAvailable() {
+        Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
+        if(server.getAuthTokens().containsKey(command.getAuthToken()) && !accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Vendor")) {
+            Response<Boolean> response = new Response<>(Notification.PACKET_NOTIFICATION, server.isSupporterOnline(command.getDatum()) && server.isSupporterAvailable(command.getDatum()));
+            return gson.toJson(response);
+        }
+        Response<Boolean> response = new Response<>(Notification.FUCK_YOU, false);
+        return gson.toJson(response);    }
 
     private String isContactTyping() throws IOException {
         Command<String> command = commandParser.parseToCommand(Command.class, (Class<String>)String.class);
@@ -159,10 +170,6 @@ public class AccountHandler extends Handler {
         Command<Message> command = commandParser.parseToCommand(Command.class, (Class<Message>)Message.class);
         if(canTalk(command)) {
             server.sendMessage(command.getDatum());
-//            Message message = command.getDatum();
-//            DataOutputStream outStream = server.getOutputStream(message.getContactUsername());
-//            outStream.writeUTF(gson.toJson(message));
-//            outStream.flush();
             return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
         }
         return gson.toJson(HACK_RESPONSE);
@@ -198,12 +205,7 @@ public class AccountHandler extends Handler {
         if (server.getAuthTokens().containsKey(command.getAuthToken()) &&
                 accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
             Response<Supporter> response = new Response<>(Notification.PACKET_NOTIFICATION);
-            ArrayList<Supporter> supporters = new ArrayList<>();
-            for (String supporterUsername : server.getSupporterSockets().keySet()) {
-                if(server.isSupporterOnline(supporterUsername) && server.isSupporterAvailable(supporterUsername))
-                    supporters.add(accountControl.getSupporterByUsername(supporterUsername));
-            }
-            response.setData(supporters);
+            response.setData(server.getAllAvailableSupporters());
             return gson.toJson(response);
         }
         return gson.toJson(HACK_RESPONSE);

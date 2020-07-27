@@ -631,11 +631,13 @@ public class AdminControl extends AccountControl{
         if (supporter.getLastName().length() > 25)
             return Notification.ERROR_LAST_NAME_LENGTH;
         try {
-            if (AccountTable.isUsernameFreeForSupporter(supporter.getUsername()) && AccountTable.isUsernameFree(supporter.getUsername())) {
-                AccountTable.addSupporter(supporter);
-                return Notification.REGISTER_SUCCESSFUL;
-            } else
-                return Notification.ERROR_FULL_USERNAME;
+            synchronized (SUPPORTER_LOCK) {
+                if (AccountTable.isUsernameFreeForSupporter(supporter.getUsername()) && AccountTable.isUsernameFree(supporter.getUsername())) {
+                    AccountTable.addSupporter(supporter);
+                    return Notification.REGISTER_SUCCESSFUL;
+                } else
+                    return Notification.ERROR_FULL_USERNAME;
+            }
         } catch (SQLException | ClassNotFoundException e) {
             return Notification.UNKNOWN_ERROR;
         }
@@ -645,8 +647,10 @@ public class AdminControl extends AccountControl{
     public Notification deleteSupporter(String supporterUsername) {
         try {
             if(isUsernameValid(supporterUsername)) {
-                AccountTable.deleteSupporter(supporterUsername);
-                return Notification.DELETE_USER;
+                synchronized (SUPPORTER_LOCK) {
+                    AccountTable.deleteSupporter(supporterUsername);
+                    return Notification.DELETE_USER;
+                }
             } else {
                 return Notification.FUCK_YOU;
             }

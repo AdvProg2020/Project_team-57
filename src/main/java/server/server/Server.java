@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import notification.Notification;
+import server.controller.account.AccountControl;
+import server.model.existence.Account;
 import server.model.existence.Message;
 import server.server.bank.BankAPI;
 import server.server.handler.*;
@@ -16,6 +18,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
+import static server.controller.Lock.CHAT_LOCK;
 
 
 public class Server implements RandomGenerator{
@@ -264,23 +269,29 @@ public class Server implements RandomGenerator{
     }
 
     public boolean isSupporterAvailable(String username) {
-        return !chatterSockets.containsKey(username);
+        synchronized (CHAT_LOCK) {
+            return !chatterSockets.containsKey(username);
+        }
     }
 
     public boolean isSupporterOnline(String username) {
-        return supporterSockets.containsKey(username);
+        synchronized (CHAT_LOCK) {
+            return supporterSockets.containsKey(username);
+        }
     }
 
     public void startChat(String customerUsername, String supporterUsername, Socket customerSocket) {
         try {
-            Socket socket =  supporterSockets.get(supporterUsername);
-            chatterSockets.put(customerUsername, customerSocket);
-            chatterSockets.put(supporterUsername, socket);
-            chatDualities.add(new ChatDuality(customerUsername, supporterUsername));
-            Response<String> response = new Response<>(Notification.PACKET_NOTIFICATION, customerUsername);
-            DataOutputStream outputStream = getOutputStream(supporterUsername);
-            outputStream.writeUTF(gson.toJson(response));
-            outputStream.flush();
+            synchronized (CHAT_LOCK) {
+                Socket socket =  supporterSockets.get(supporterUsername);
+                chatterSockets.put(customerUsername, customerSocket);
+                chatterSockets.put(supporterUsername, socket);
+                chatDualities.add(new ChatDuality(customerUsername, supporterUsername));
+                Response<String> response = new Response<>(Notification.PACKET_NOTIFICATION, customerUsername);
+                DataOutputStream outputStream = getOutputStream(supporterUsername);
+                outputStream.writeUTF(gson.toJson(response));
+                outputStream.flush();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -460,6 +471,15 @@ public class Server implements RandomGenerator{
                     customerEndChat(customerUsername);
             }
         }
+    }
+
+    public ArrayList<Account.Supporter> getAllAvailableSupporters() {
+        ArrayList<Account.Supporter> supporters = new ArrayList<>();
+        for (String supporterUsername : getSupporterSockets().keySet()) {
+            if(isSupporterOnline(supporterUsername) && isSupporterAvailable(supporterUsername))
+                supporters.add(AccountControl.getController().getSupporterByUsername(supporterUsername));
+        }
+        return supporters;
     }
 
     private static class Clock {

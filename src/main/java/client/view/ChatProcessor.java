@@ -60,11 +60,14 @@ public class ChatProcessor extends Processor {
     private Image myImage;
     private Image frontImage;
     private long writingAreaOnKeyListenTimer = -1;
-    private long writingAreaOnKeyListenClock = 1_000_000_000_000L; //1000 sec
+    private long writingAreaOnKeyListenClock = 500_000_000L; //0.5 sec
+    //    private long writingAreaOnKeyListenClock = 1_000_000_000_000L; //1000 sec
     private long isContactTypingListenTimer = -1;
-    private long isContactTypingListenClock = 1_000_000_000_000L;//0.5 sec
+    private long isContactTypingListenClock = 500_000_000L; //0.5 sec
+//    private long isContactTypingListenClock = 1_000_000_000_000L; //1000 sec
     private long isTypingLabelListenTimer = -1;
-    private long isTypingLabelListenClock = 1_000_000_000_000L;//0.5 sec
+    private long isTypingLabelListenClock = 500_000_000L; //0.5 sec
+//    private long isTypingLabelListenClock = 1_000_000_000_000L; //1000 sec
     private AnimationTimer writingAreaOnKeyListen;
     private AnimationTimer isContactTypingListen;
     private AnimationTimer isTypingLabelListen;

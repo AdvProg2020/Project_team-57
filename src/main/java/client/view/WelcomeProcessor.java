@@ -274,11 +274,13 @@ public class WelcomeProcessor extends Processor implements Initializable {
             accountTypeComboBox.getItems().add("Customer");
             accountTypeComboBox.getSelectionModel().selectFirst();
         } else {
-            imageOfSignUp.setImage(new Image(IMAGE_FOLDER_URL + "Backgrounds\\steve jobs.png"));
             pane.getChildren().remove(backImage);
             if(isAdmin) {
                 accountTypeComboBox.getItems().add("Admin");
+                imageOfSignUp.setImage(new Image(IMAGE_FOLDER_URL + "Backgrounds\\steve jobs.png"));
             } else {
+                imageOfSignUp.setImage(new Image(IMAGE_FOLDER_URL + "Backgrounds\\Supporter.png"));
+                imageOfSignUp.setLayoutY(imageOfSignUp.getLayoutY() + 50);
                 accountTypeComboBox.getItems().add("Supporter");
             }
             accountTypeComboBox.getSelectionModel().selectFirst();

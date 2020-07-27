@@ -202,9 +202,7 @@ public class AccountControl implements Validity, RandomGenerator {
             if(isUsernameValid(username)) {
                 synchronized (SUPPORTER_LOCK) {
                     if (!AccountTable.isUsernameFreeForSupporter(username)) {
-                        synchronized (SUPPORTER_IMAGE_LOCK) {
-                            return AccountTable.getSupporterDefaultImageInputStream();
-                        }
+                        return AccountTable.getSupporterDefaultImageInputStream();
                     }
                 }
             } else {
@@ -342,7 +340,9 @@ public class AccountControl implements Validity, RandomGenerator {
 
     public ArrayList<Supporter> getAllSupporters() {
         try {
-            return AccountTable.getAllSupporters();
+            synchronized (SUPPORTER_LOCK) {
+                return AccountTable.getAllSupporters();
+            }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -352,7 +352,9 @@ public class AccountControl implements Validity, RandomGenerator {
     public boolean isUserSupporter(String username) {
         try {
             if(isUsernameValid(username)) {
-                return !AccountTable.isUsernameFreeForSupporter(username);
+                synchronized (SUPPORTER_LOCK) {
+                    return !AccountTable.isUsernameFreeForSupporter(username);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -363,7 +365,9 @@ public class AccountControl implements Validity, RandomGenerator {
     public Supporter getSupporterByUsername(String supporterUsername) {
         try {
             if(isUsernameValid(supporterUsername)) {
-                return AccountTable.getSupporter(supporterUsername);
+                synchronized (SUPPORTER_LOCK) {
+                    return AccountTable.getSupporter(supporterUsername);
+                }
             }
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();

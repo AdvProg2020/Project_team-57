@@ -1547,27 +1547,35 @@ public class TableViewProcessor<T> extends Processor {
 
     public void startChat(ActionEvent actionEvent) {
         Supporter supporter = (Supporter) ((TableViewProcessor)parentProcessor).selectedItem;
-        ChatClient chatClient = new ChatClient(client.getAuthToken(), supporter.getUsername());
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChatPane.fxml"));
-        try {
-            Stage stage = ((TableViewProcessor) parentProcessor).myStage;
-            Parent root = fxmlLoader.load();
-            ChatProcessor chatProcessor = fxmlLoader.getController();
-            chatProcessor.initChatPane(chatClient);
-            chatClient.setChatProcessor(chatProcessor);
-            chatProcessor.startChat(false);
-            chatProcessor.setMyStage(stage);
-            chatProcessor.setParentProcessor(parentProcessor.parentProcessor);
-            stage.setTitle("Support Menu");
-            stage.setScene(new Scene(root));
-            stage.setOnCloseRequest(event -> {
-                chatClient.customerCloseChat();
-                chatProcessor.parentProcessor.getSubStages().remove(stage);
-                ((CustomerProfileProcessor)chatProcessor.parentProcessor).backButton.setDisable(false);
-            });
-            ((CustomerProfileProcessor)chatProcessor.parentProcessor).backButton.setDisable(true);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(isSupporterAvailable(supporter.getUsername()))
+        {
+            ChatClient chatClient = new ChatClient(client.getAuthToken(), supporter.getUsername());
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChatPane.fxml"));
+            try {
+                Stage stage = ((TableViewProcessor) parentProcessor).myStage;
+                Parent root = fxmlLoader.load();
+                ChatProcessor chatProcessor = fxmlLoader.getController();
+                chatProcessor.initChatPane(chatClient);
+                chatClient.setChatProcessor(chatProcessor);
+                chatProcessor.startChat(false);
+                chatProcessor.setMyStage(stage);
+                chatProcessor.setParentProcessor(parentProcessor.parentProcessor);
+                stage.setTitle("Support Menu");
+                stage.setScene(new Scene(root));
+                stage.setOnCloseRequest(event -> {
+                    chatClient.customerCloseChat();
+                    chatProcessor.parentProcessor.getSubStages().remove(stage);
+                    ((CustomerProfileProcessor)chatProcessor.parentProcessor).backButton.setDisable(false);
+                });
+                ((CustomerProfileProcessor)chatProcessor.parentProcessor).backButton.setDisable(true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            new Alert(Alert.AlertType.ERROR, "Sorry, The Supporter Just Got Busy. Please Choose Another One").show();
+            ((TableViewProcessor)parentProcessor).updateTable();
+            ((TableViewProcessor)parentProcessor).updateSelectedItem();
         }
     }
+
 }
