@@ -13,12 +13,12 @@
                <children>
                   <Pane layoutX="50.0" layoutY="4.0" prefHeight="61.0" prefWidth="340.0" style="-fx-background-color: #eeeeee; -fx-background-radius: 10 10 10 10;">
                      <children>
-                        <JFXTextField alignment="CENTER" focusColor="#7d7e80" layoutX="5.0" prefWidth="330.0" style="-fx-text-fill: #fb8c00;" text="Server" unFocusColor="#e8dcdc">
+                        <JFXTextField alignment="CENTER" editable="false" focusColor="#7d7e80" layoutX="5.0" prefWidth="330.0" style="-fx-text-fill: #fb8c00;" text="Server" unFocusColor="#e8dcdc">
                            <font>
                               <Font name="Franklin Gothic Demi Cond" size="15.0" />
                            </font>
                         </JFXTextField>
-                        <JFXTextField fx:id="serverMessageField" alignment="CENTER" focusColor="#7d7e80" layoutX="5.0" layoutY="28.0" prefHeight="28.0" prefWidth="330.0" text="Felani Started To Talk To You" unFocusColor="#e8dcdc">
+                        <JFXTextField fx:id="serverMessageField" alignment="CENTER" editable="false" focusColor="#7d7e80" layoutX="5.0" layoutY="28.0" prefHeight="28.0" prefWidth="330.0" text="Felani Started To Talk To You" unFocusColor="#e8dcdc">
                            <font>
                               <Font name="Franklin Gothic Demi Cond" size="15.0" />
                            </font>

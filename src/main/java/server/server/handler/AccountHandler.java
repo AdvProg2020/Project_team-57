@@ -138,9 +138,7 @@ public class AccountHandler extends Handler {
     private String logoutCustomerFromChat() throws IOException {
         Command command = commandParser.parseToCommand(Command.class, (Class<Object>)Object.class);
         if (server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.getAccountByUsername(server.getUsernameByAuth(command.getAuthToken())).getType().equals("Customer")) {
-            if(server.getChatterSockets().containsKey(server.getUsernameByAuth(command.getAuthToken()))) {
-                server.customerEndChat(server.getUsernameByAuth(command.getAuthToken()));
-            }
+            server.customerLogout(server.getUsernameByAuth(command.getAuthToken()));
             return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
         }
         return gson.toJson(HACK_RESPONSE);
@@ -151,12 +149,7 @@ public class AccountHandler extends Handler {
         if(server.getAuthTokens().containsKey(command.getAuthToken()) && accountControl.isUserSupporter(server.getUsernameByAuth(command.getAuthToken()))) {
             String username = server.getUsernameByAuth(command.getAuthToken());
             server.removeAuth(command.getAuthToken());
-            if(!server.isSupporterAvailable(username)) {
-                server.supporterEndChat(username);
-            } else {
-                server.offLineSupporter(username);
-            }
-
+            server.supporterLogout(username);
             return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
         }
         return gson.toJson(HACK_RESPONSE);
@@ -165,12 +158,11 @@ public class AccountHandler extends Handler {
     private String sendMessage() throws IOException {
         Command<Message> command = commandParser.parseToCommand(Command.class, (Class<Message>)Message.class);
         if(canTalk(command)) {
-            System.out.println("Dele Dakete");
-            Message message = command.getDatum();
-            DataOutputStream outStream = server.getOutputStream(message.getContactUsername());
-            System.out.println("DataOutputStream : " + outStream);
-            outStream.writeUTF(gson.toJson(message));
-            outStream.flush();
+            server.sendMessage(command.getDatum());
+//            Message message = command.getDatum();
+//            DataOutputStream outStream = server.getOutputStream(message.getContactUsername());
+//            outStream.writeUTF(gson.toJson(message));
+//            outStream.flush();
             return gson.toJson(new Response(Notification.PACKET_NOTIFICATION));
         }
         return gson.toJson(HACK_RESPONSE);

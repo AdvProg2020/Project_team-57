@@ -29,7 +29,7 @@ public class Server implements RandomGenerator{
     private HashMap<String, Socket> chatterSockets;
     private HashMap<Socket, DataOutputStream> chatterOutputStreams;
     private HashMap<Socket, DataInputStream> chatterInputStreams;
-    private HashMap<String, String> chatDualities;
+    private ArrayList<ChatDuality> chatDualities;
     private ArrayList<String> bannedIPs, tempBannedIPs;
     private static final long DOS_CHECK_PERIOD_MILLIS = 10000;
     private static final long DOS_CHECK_COUNTER = 100;
@@ -51,7 +51,7 @@ public class Server implements RandomGenerator{
             this.IOIPs = new HashMap<>();
             this.chatterSockets = new HashMap<>();
             this.supporterSockets = new HashMap<>();
-            this.chatDualities = new HashMap<>();
+            this.chatDualities = new ArrayList<>();
             this.chatterOutputStreams = new HashMap<>();
             this.chatterInputStreams = new HashMap<>();
             gson = new GsonBuilder().setPrettyPrinting().create();
@@ -276,7 +276,7 @@ public class Server implements RandomGenerator{
             Socket socket =  supporterSockets.get(supporterUsername);
             chatterSockets.put(customerUsername, customerSocket);
             chatterSockets.put(supporterUsername, socket);
-            chatDualities.put(customerUsername, supporterUsername);
+            chatDualities.add(new ChatDuality(customerUsername, supporterUsername));
             Response<String> response = new Response<>(Notification.PACKET_NOTIFICATION, customerUsername);
             DataOutputStream outputStream = getOutputStream(supporterUsername);
             outputStream.writeUTF(gson.toJson(response));
@@ -325,15 +325,11 @@ public class Server implements RandomGenerator{
     }
 
     public boolean areTalking(String senderUsername, String contactUsername) {
-        if(chatDualities.containsKey(senderUsername)) {
-            if(chatDualities.get(senderUsername).equals(contactUsername)) {
+        for (ChatDuality chatDuality : chatDualities) {
+            if(chatDuality.areTheyForThisDuality(senderUsername, contactUsername))
                 return true;
-            }
-        } else if(chatDualities.containsKey(contactUsername)) {
-            if(chatDualities.get(contactUsername).equals(senderUsername)) {
-                return true;
-            }
         }
+
         return false;
     }
 
@@ -342,50 +338,54 @@ public class Server implements RandomGenerator{
     }
 
     public void supporterEndChat(String supporterUsername) throws IOException {
-        Socket socket = supporterSockets.get(supporterUsername);
-        Message message = new Message(true);
-        message.setMessage("isSupporterEnded isSupporter");
-        DataOutputStream supporterOutputStream = getOutputStream(supporterUsername);
-        supporterOutputStream.writeUTF(gson.toJson(message));
-        supporterOutputStream.flush();
-        String customerUsername = getSupportersCustomer(supporterUsername);
-        chatDualities.remove(customerUsername);
-        supporterSockets.remove(supporterUsername);
-        chatterSockets.remove(supporterUsername);
-        removeOutputStream(socket);
-        removeInputStream(socket);
-        socket.close();
-        DataOutputStream outputStream = getOutputStream(customerUsername);
-        message.setMessage("isSupporterEnded isCustomer");
-        outputStream.writeUTF(gson.toJson(message));
-        outputStream.flush();
-        Socket secondSocket = chatterSockets.get(customerUsername);
-        removeOutputStream(secondSocket);
-        removeInputStream(secondSocket);
-        secondSocket.close();
-        chatterSockets.remove(customerUsername);
+        synchronized (ChatDuality.getChatDuality(chatDualities, supporterUsername, false)) {
+            Socket socket = supporterSockets.get(supporterUsername);
+            Message message = new Message(true);
+            message.setMessage("isSupporterEnded isSupporter");
+            DataOutputStream supporterOutputStream = getOutputStream(supporterUsername);
+            supporterOutputStream.writeUTF(gson.toJson(message));
+            supporterOutputStream.flush();
+            String customerUsername = ChatDuality.getChatterDuality(chatDualities, supporterUsername, false);
+            chatDualities.remove(ChatDuality.getChatDuality(chatDualities, customerUsername, true));
+            supporterSockets.remove(supporterUsername);
+            chatterSockets.remove(supporterUsername);
+            removeOutputStream(socket);
+            removeInputStream(socket);
+            socket.close();
+            DataOutputStream outputStream = getOutputStream(customerUsername);
+            message.setMessage("isSupporterEnded isCustomer");
+            outputStream.writeUTF(gson.toJson(message));
+            outputStream.flush();
+            Socket secondSocket = chatterSockets.get(customerUsername);
+            removeOutputStream(secondSocket);
+            removeInputStream(secondSocket);
+            secondSocket.close();
+            chatterSockets.remove(customerUsername);
+        }
     }
 
     public void customerEndChat(String customerUsername) throws IOException {
-        Socket socket = chatterSockets.get(customerUsername);
-        Message message = new Message(true);
-        message.setMessage("isCustomerEnded isCustomer");
-        String messageJson = gson.toJson(message);
-        DataOutputStream customerOutputStream = getOutputStream(customerUsername);
-        customerOutputStream.writeUTF(messageJson);
-        customerOutputStream.flush();
-        String supporterUsername = chatDualities.get(customerUsername);
-        chatDualities.remove(customerUsername);
-        chatterSockets.remove(customerUsername);
-        removeOutputStream(socket);
-        removeInputStream(socket);
-        socket.close();
-        DataOutputStream supporterOutStream = getOutputStream(supporterUsername);
-        message.setMessage("isCustomerEnded isSupporter");
-        messageJson = gson.toJson(message);
-        supporterOutStream.writeUTF(messageJson);
-        supporterOutStream.flush();
-        chatterSockets.remove(supporterUsername);
+        synchronized (ChatDuality.getChatDuality(chatDualities, customerUsername, true)) {
+            Socket socket = chatterSockets.get(customerUsername);
+            Message message = new Message(true);
+            message.setMessage("isCustomerEnded isCustomer");
+            String messageJson = gson.toJson(message);
+            DataOutputStream customerOutputStream = getOutputStream(customerUsername);
+            customerOutputStream.writeUTF(messageJson);
+            customerOutputStream.flush();
+            String supporterUsername = ChatDuality.getChatterDuality(chatDualities, customerUsername, true);
+            chatDualities.remove(ChatDuality.getChatDuality(chatDualities, customerUsername, true));
+            chatterSockets.remove(customerUsername);
+            removeOutputStream(socket);
+            removeInputStream(socket);
+            socket.close();
+            DataOutputStream supporterOutStream = getOutputStream(supporterUsername);
+            message.setMessage("isCustomerEnded isSupporter");
+            messageJson = gson.toJson(message);
+            supporterOutStream.writeUTF(messageJson);
+            supporterOutStream.flush();
+            chatterSockets.remove(supporterUsername);
+        }
     }
 
     public void offLineSupporter(String supporterUsername) throws IOException {
@@ -411,14 +411,6 @@ public class Server implements RandomGenerator{
         }
     }
 
-    private String getSupportersCustomer(String supporterUsername) {
-        for (String customerUsername : chatDualities.keySet()) {
-            if(chatDualities.get(customerUsername).equals(supporterUsername))
-                return customerUsername;
-        }
-        return null;
-    }
-
     public boolean isContactTyping(String contactUsername) throws IOException {
         Message message = new Message();
         message.setSenderName("typ");
@@ -428,6 +420,46 @@ public class Server implements RandomGenerator{
         outStream.flush();
         Command<Boolean> command = gson.fromJson(inStream.readUTF(), TypeToken.getParameterized(Command.class, (Class<Boolean>)Boolean.class).getType());
         return command.getDatum();
+    }
+
+    public void sendMessage(Message message) {
+        try {
+            synchronized (ChatDuality.getChatDuality(chatDualities, message.getContactUsername(), ChatDuality.isChatterCustomer(chatDualities, message.getContactUsername()))) {
+                DataOutputStream outStream = getOutputStream(message.getContactUsername());
+                outStream.writeUTF(gson.toJson(message));
+                outStream.flush();
+            }
+        } catch (NullPointerException e) {
+            //:) Do Nothing
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void supporterLogout(String supporterUsername) throws IOException {
+        ChatDuality chatDuality = ChatDuality.getChatDuality(chatDualities, supporterUsername, false);
+        if(chatDuality == null) {
+            offLineSupporter(supporterUsername);
+        } else {
+            synchronized (chatDuality) {
+                if(!isSupporterAvailable(supporterUsername)) {
+                    supporterEndChat(supporterUsername);
+                } else {
+                    offLineSupporter(supporterUsername);
+                }
+            }
+        }
+    }
+
+    public void customerLogout(String customerUsername) throws IOException {
+        ChatDuality chatDuality = ChatDuality.getChatDuality(chatDualities, customerUsername, true);
+        if(chatDuality != null) {
+            synchronized (chatDuality) {
+                if(chatterSockets.containsKey(customerUsername))
+                    customerEndChat(customerUsername);
+            }
+        }
     }
 
     private static class Clock {
@@ -462,4 +494,72 @@ public class Server implements RandomGenerator{
             this.off = true;
         }
     }
+
+    public static class ChatDuality {
+        private String customerUsername;
+        private String supporterUsername;
+
+        public ChatDuality() {
+        }
+
+        public ChatDuality(String customerUsername, String supporterUsername) {
+            this.customerUsername = customerUsername;
+            this.supporterUsername = supporterUsername;
+        }
+
+        public void setCustomerUsername(String customerUsername) {
+            this.customerUsername = customerUsername;
+        }
+
+        public void setSupporterUsername(String supporterUsername) {
+            this.supporterUsername = supporterUsername;
+        }
+
+        public String getCustomerUsername() {
+            return customerUsername;
+        }
+
+        public String getSupporterUsername() {
+            return supporterUsername;
+        }
+
+        public boolean areTheyForThisDuality(String chatter1, String chatter2) {
+            return (customerUsername.equals(chatter1) && supporterUsername.equals(chatter2)) ||
+                    (customerUsername.equals(chatter2) && supporterUsername.equals(chatter1));
+        }
+
+        public static String getChatterDuality(ArrayList<ChatDuality> chatDualities, String chatterName, boolean isCustomer) {
+            for (ChatDuality chatDuality : chatDualities) {
+                if(isCustomer && chatDuality.getCustomerUsername().equals(chatterName)) {
+                    return chatDuality.getSupporterUsername();
+                } else if(!isCustomer && chatDuality.getSupporterUsername().equals(chatterName)) {
+                    return chatDuality.getCustomerUsername();
+                }
+            }
+
+            return "";
+        }
+
+        public static ChatDuality getChatDuality(ArrayList<ChatDuality> chatDualities, String chatterName, boolean isCustomer) {
+            for (ChatDuality chatDuality : chatDualities) {
+                if((isCustomer && chatDuality.getCustomerUsername().equals(chatterName)) || (!isCustomer && chatDuality.getSupporterUsername().equals(chatterName)))
+                    return chatDuality;
+            }
+
+            return null;
+        }
+
+        public static Boolean isChatterCustomer(ArrayList<ChatDuality> chatDualities, String chatterName) {
+            for (ChatDuality chatDuality : chatDualities) {
+                if(chatDuality.getSupporterUsername().equals(chatterName)) {
+                    return false;
+                } else if(chatDuality.getCustomerUsername().equals(chatterName)) {
+                    return true;
+                }
+            }
+
+            return null;
+        }
+    }
+
 }

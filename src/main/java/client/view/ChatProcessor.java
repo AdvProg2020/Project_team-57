@@ -294,7 +294,7 @@ public class ChatProcessor extends Processor {
         isContactTypingListenTimer = -1;
         isTypingLabelListen.stop();
         isTypingLabelListenTimer = -1;
-        isContactTypingLabel.setText("");
+//        isContactTypingLabel.setText("");
         Task displayMessage = new Task<Void>() {
             @Override
             public Void call() throws Exception {
@@ -315,6 +315,7 @@ public class ChatProcessor extends Processor {
                         }
                     }
                     frontImage = null;
+                    isContactTypingLabel.setText("");
                 });
                 return null;
             }
@@ -328,6 +329,7 @@ public class ChatProcessor extends Processor {
         chatScroll.layout();
         chatScroll.setVvalue(1.0);
         sendImageView.setDisable(true);
+        writingMessageArea.setText("");
         writingMessageArea.setDisable(true);
         if(isNotifOn)
             finishChatMedia.play();
