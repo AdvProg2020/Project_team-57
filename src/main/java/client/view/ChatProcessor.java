@@ -208,17 +208,39 @@ public class ChatProcessor extends Processor {
     }
 
     public void sendMessage(MouseEvent event) {
-        if (!writingMessageArea.getText().isEmpty()) {
-            Message message = new Message(writingMessageArea.getText(), chatClient.getContactUsername(),false, getUsername());
+        String textMessage = getTextModified(writingMessageArea.getText());
+        if (!textMessage.isEmpty()) {
+            Message message = new Message(textMessage, chatClient.getContactUsername(),false, getUsername());
             chatClient.sendMessage(message);
             HBox messageHBox = getMyMessagePane(message);
             messageBox.getChildren().add(messageHBox);
             chatScroll.layout();
             chatScroll.setVvalue(1.0);
-            writingMessageArea.setText("");
             if(isNotifOn)
                 myMessageMedia.play();
         }
+        writingMessageArea.setText("");
+    }
+
+    private String getTextModified(String text) {
+        text = text.trim();
+        int end = text.length();
+        for (int i = text.toCharArray().length; i > 0; i--) {
+            if(text.charAt(i - 1) == '\n')
+                --end;
+            else
+                break;
+        }
+        text = text.substring(0, end);
+        int start = 0;
+        for (int i = 0; i < text.toCharArray().length; i++) {
+            if(text.charAt(i) == '\n')
+                ++start;
+            else
+                break;
+        }
+        text = text.substring(start);
+        return text.trim();
     }
 
     private HBox getMyMessagePane(Message myMessage) {
