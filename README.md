@@ -5,8 +5,8 @@
 Hi! This is team 57 speaking. The following is a quick review of what we did for our java market and what you can expect while checking our project.
 This project is result of using lots of caffeine, sleepless nights and a lot of efforts from:
 
-[Ashkan Khademian](https://github.com/ashkan-khd)
-[Sepehr Kianian](https://github.com/sepehrkianian09)
+[Ashkan Khademian](https://github.com/ashkan-khd),
+[Sepehr Kianian](https://github.com/sepehrkianian09),
 [Hossein Aghaei](https://github.com/hossein2079)
 
 
