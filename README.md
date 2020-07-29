@@ -38,4 +38,4 @@ Project used a MVC design pattern on Apache Maven. Following is a simple flow on
 
 This is a flowchart which shows the design pattern we used for our Server:
 
-![enter image description here](https://doc-00-5s-docs.googleusercontent.com/docs/securesc/b22bau3ato1opbm37omgr0svoo5ed6l6/opm55fmeav93viq4ghl90mal3ft7o4i7/1596029850000/03857811816447124864/03857811816447124864/1hVvNwHtTwhhKVobTGNAx_4-4AeowXnbP?e=download&authuser=0)
+![enter image description here](http://uupload.ir/files/d4ze_screenshot_%28438%29.png)
