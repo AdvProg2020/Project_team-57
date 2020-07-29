@@ -44,7 +44,7 @@ public class Server implements RandomGenerator{
 
     public static final String MARKET_BANK_USERNAME = "boosmarket";
     public static final String MARKET_BANK_PASSWORD = "a1234567";
-    public static final String MARKET_BANK_ACCOUNT_NUMBER = "10001";
+    public static final String MARKET_BANK_ACCOUNT_NUMBER = "2120728357";
 
     public Server() {
         try {
@@ -243,7 +243,6 @@ public class Server implements RandomGenerator{
         }
 
         String bankCommand = "create_receipt " + token + " " + receiptType + " " + moneyString + " " + sourceID + " " + destID + " " + description;
-        System.err.println("Command : " + bankCommand);
         return BankAPI.getInstance().postAndGet(bankCommand);
     }
 
@@ -302,15 +301,11 @@ public class Server implements RandomGenerator{
             Socket socket = chatterSockets.get(username);
             DataOutputStream dataOutputStream;
             if(chatterOutputStreams.containsKey(socket)) {
-                System.out.println("1");
                 dataOutputStream = chatterOutputStreams.get(socket);
             } else {
-                System.out.println("2");
                 dataOutputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
                 chatterOutputStreams.put(socket, dataOutputStream);
-//                dataOutputStream = chatterOutputStreams.get(socket);
             }
-            System.out.println("Init : Data Out : " + dataOutputStream);
             return dataOutputStream;
         } catch (IOException e) {
             e.printStackTrace();

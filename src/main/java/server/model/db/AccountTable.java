@@ -222,6 +222,7 @@ public class AccountTable extends Database {
     }
 
     public static FileInputStream getProfileImageInputStream(String username) throws FileNotFoundException {
+        System.err.println(username);
         return new FileInputStream(getUserImageFilePath(username));
     }
 

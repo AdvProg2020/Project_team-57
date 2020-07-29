@@ -461,24 +461,28 @@ public class SaleProcessor extends Processor implements Initializable {
             Response<String> response = client.postAndGet(command, Response.class, (Class<String>)String.class);
             Notification resultNotification = response.getMessage();
             off.setOffID(response.getDatum());
-            Command<String> extensionCommand = new Command<>("send off image", Command.HandleType.PICTURE_SEND, off.getOffID(), client.file2Extension.apply(imageFile));
-            client.sendImage(extensionCommand, imageFile);
+            if(imageFile != null) {
+                Command<String> extensionCommand = new Command<>("send off image", Command.HandleType.PICTURE_SEND, off.getOffID(), client.file2Extension.apply(imageFile));
+                client.sendImage(extensionCommand, imageFile);
+            }
             if (resultNotification == Notification.ADD_OFF && this.parentProcessor instanceof TableViewProcessor) {
                 ((TableViewProcessor) parentProcessor).updateTable();
                 ((TableViewProcessor) parentProcessor).updateSelectedItem();
-                closeSubStage(myStage, parentProcessor);
+                closeSubStage(myStage, (parentProcessor).parentProcessor);
             }
             resultNotification.getAlert().show();
         } else {
             Command<Off> command = new Command<>("edit off", Command.HandleType.SALE, off);
             Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
             Notification resultNotification = response.getMessage();
-            Command<String> extensionCommand = new Command<>("send editing off image", Command.HandleType.PICTURE_SEND, off.getOffID(), client.file2Extension.apply(imageFile));
-            client.sendImage(extensionCommand, imageFile);
+            if(imageFile != null) {
+                Command<String> extensionCommand = new Command<>("send editing off image", Command.HandleType.PICTURE_SEND, off.getOffID(), client.file2Extension.apply(imageFile));
+                client.sendImage(extensionCommand, imageFile);
+            }
             if (resultNotification == Notification.EDIT_OFF) {
                 ((TableViewProcessor) parentProcessor).updateTable();
                 ((TableViewProcessor) parentProcessor).updateSelectedItem();
-                closeSubStage(myStage, parentProcessor);
+                closeSubStage(myStage, (parentProcessor).parentProcessor);
             }
             resultNotification.getAlert().show();
         }

@@ -8,7 +8,7 @@ public class BankAPI {
         return new BankAPI();
     }
 
-    private static int PORT = 54818;
+    private static int PORT = 63293;
     private final static String IP = "127.0.0.1";
     private Socket mySocket;
     private DataOutputStream outStream;

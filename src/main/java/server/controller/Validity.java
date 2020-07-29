@@ -52,6 +52,8 @@ public interface Validity {
     }
 
     default boolean isGeneralIDValid(char idDeterminer, String id) {
+        if(id == null || id.isEmpty())
+            return true;
         return getMatcher(id, "^" + idDeterminer + "\\d{7}$").matches();
     }
 

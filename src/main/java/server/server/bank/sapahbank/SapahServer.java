@@ -310,6 +310,7 @@ public class SapahServer {
                     }
                     outStream.writeUTF("invalid input");
                     System.err.println("Client Asked: Invalid Command");
+                    System.err.println("Command: " + command);
                     outStream.flush();
                     System.out.println(new java.util.Date());
                 }

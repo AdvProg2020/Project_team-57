@@ -928,49 +928,50 @@ public class ProductProcessor extends Processor {
         Command<Product> productCommand = new Command<>(sendType + " product", Command.HandleType.PRODUCT, products);
         Response<Notification> productResponse = client.postAndGet(productCommand, Response.class, (Class<Notification>)Notification.class);
 
-        if(sendType.equals("edit")) {
-            Command<String> command = new Command<>("delete editing product pictures", Command.HandleType.PRODUCT, product.getID());
-            client.postAndGet(command, Response.class, (Class<Object>)Object.class);
-        } else {
-            if(productResponse.getData().size() != 0 && productResponse.getDatum() == Notification.ADD_PRODUCT) {
-                product.setID(productResponse.getAdditionalString());
-            }
-        }
-
-        for (File productImageFile : productImageFiles) {
-            String[] splitPath = productImageFile.getPath().split("\\.");
-            String fileExtension = splitPath[splitPath.length - 1];
-            Command<String> imageCommand = new Command<>(sendType + " product image", Command.HandleType.PICTURE_SEND, product.getID(), fileExtension);
-            client.sendImage(imageCommand, productImageFile);
-        }
-
-        if(isFileAdded) {
-            if(sendType.equals("add")) {
-                productFileInfo.setProductID(product.getID());
-                Command<String> command = new Command<>("init product file countability", Command.HandleType.PRODUCT, product.getID());
-                client.postAndGet(command, Response.class, (Class<Object>)Object.class);
-            }
+        if(productResponse.getDatum() == Notification.ADD_PRODUCT || productResponse.getDatum() == Notification.EDIT_PRODUCT) {
             if(sendType.equals("edit")) {
-                if(productFileInfo == null) {
-                    String commandStr = doesEditingProductHaveFile(product.getID()) ? "get edit product file info" : "get product file info";
-                    Command<String> command = new Command<>(commandStr, Command.HandleType.PRODUCT, product.getID());
-                    Response<Product.ProductFileInfo> response = client.postAndGet(command, Response.class, (Class<Product.ProductFileInfo>)Product.ProductFileInfo.class);
-                    productFileInfo = response.getDatum();
-                }
-                if(productFile == null) {
-                    String commandStr = (doesEditingProductHaveFile(product.getID()) ? "get edit product file" : "get product file");
-                    Command<String> command = new Command<>(commandStr, Command.HandleType.PICTURE_GET, product.getID());
-                    productFile = client.getFile(command);
+                Command<String> command = new Command<>("delete editing product pictures", Command.HandleType.PRODUCT, product.getID());
+                client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+            } else {
+                if(productResponse.getData().size() != 0 && productResponse.getDatum() == Notification.ADD_PRODUCT) {
+                    product.setID(productResponse.getAdditionalString());
                 }
             }
-            Command<Product.ProductFileInfo> command = new Command<>(sendType + " product file info", Command.HandleType.PRODUCT, productFileInfo);
-            client.postAndGet(command, Response.class, (Class<Object>)Object.class);
-            String[] splitPath = productFile.getPath().split("\\.");
-            String fileExtension = splitPath[splitPath.length - 1];
-            Command<String> fileCommand = new Command<>(sendType + " product file", Command.HandleType.PICTURE_SEND, product.getID(), fileExtension);
-            client.sendFile(fileCommand, productFile);
-        }
 
+            for (File productImageFile : productImageFiles) {
+                String[] splitPath = productImageFile.getPath().split("\\.");
+                String fileExtension = splitPath[splitPath.length - 1];
+                Command<String> imageCommand = new Command<>(sendType + " product image", Command.HandleType.PICTURE_SEND, product.getID(), fileExtension);
+                client.sendImage(imageCommand, productImageFile);
+            }
+
+            if(isFileAdded) {
+                if(sendType.equals("add")) {
+                    productFileInfo.setProductID(product.getID());
+                    Command<String> command = new Command<>("init product file countability", Command.HandleType.PRODUCT, product.getID());
+                    client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+                }
+                if(sendType.equals("edit")) {
+                    if(productFileInfo == null) {
+                        String commandStr = doesEditingProductHaveFile(product.getID()) ? "get edit product file info" : "get product file info";
+                        Command<String> command = new Command<>(commandStr, Command.HandleType.PRODUCT, product.getID());
+                        Response<Product.ProductFileInfo> response = client.postAndGet(command, Response.class, (Class<Product.ProductFileInfo>)Product.ProductFileInfo.class);
+                        productFileInfo = response.getDatum();
+                    }
+                    if(productFile == null) {
+                        String commandStr = (doesEditingProductHaveFile(product.getID()) ? "get edit product file" : "get product file");
+                        Command<String> command = new Command<>(commandStr, Command.HandleType.PICTURE_GET, product.getID());
+                        productFile = client.getFile(command);
+                    }
+                }
+                Command<Product.ProductFileInfo> command = new Command<>(sendType + " product file info", Command.HandleType.PRODUCT, productFileInfo);
+                client.postAndGet(command, Response.class, (Class<Object>)Object.class);
+                String[] splitPath = productFile.getPath().split("\\.");
+                String fileExtension = splitPath[splitPath.length - 1];
+                Command<String> fileCommand = new Command<>(sendType + " product file", Command.HandleType.PICTURE_SEND, product.getID(), fileExtension);
+                client.sendFile(fileCommand, productFile);
+            }
+        }
         return productResponse.getData();
     }
 
@@ -1223,7 +1224,7 @@ public class ProductProcessor extends Processor {
         if(productNotifications.contains(Notification.EMPTY_PRODUCT_BRAND))
             brandTextField.setStyle(errorTextFieldStyle);
 
-        if(productNotifications.contains(Notification.EMPTY_PRODUCT_NAME))
+        if(productNotifications.contains(Notification.EMPTY_PRODUCT_DESCRIPTION))
             descriptionTextArea.setStyle(errorTextFieldStyle);
     }
 

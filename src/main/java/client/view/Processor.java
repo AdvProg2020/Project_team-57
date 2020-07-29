@@ -270,7 +270,7 @@ public abstract class Processor {
     }
 
     protected Image getProductImageByID(String productID, int imageNumber, String productType) {
-        Command<String> productImageCommand = new Command<>("get " + productType + " image-1", Command.HandleType.PICTURE_GET, productID);
+        Command<String> productImageCommand = new Command<>("get " + productType + " image-" + imageNumber, Command.HandleType.PICTURE_GET, productID);
         return client.getImage(productImageCommand);
     }
 
