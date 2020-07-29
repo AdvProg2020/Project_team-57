@@ -34,7 +34,7 @@ There is also a prototype database uploaded in repository which you can use to h
 
 Project used a MVC design pattern on Apache Maven. Following is a simple flow on our project:
 
-![enter image description here](https://srv-file8.gofile.io/download/zV7TcP/Screenshot%20(437).png)
+![enter image description here](http://uupload.ir/files/z3o0_screenshot_%28437%29.png)
 
 This is a flowchart which shows the design pattern we used for our Server:
 
