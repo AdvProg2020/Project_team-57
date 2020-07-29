@@ -34,36 +34,8 @@ There is also a prototype database uploaded in repository which you can use to h
 
 Project used a MVC design pattern on Apache Maven. Following is a simple flow on our project:
 
-```mermaid
-sequenceDiagram
-View ->> Processor: e.g. A Button Clicked
-Processor ->> Controller: We Are At This State
-Processor ->> Controller: This Button Is Clicked
-Controller ->> Database: Do This
-Controller -->> Database: Give Me Back Result
-Database ->> Database: Modify DB
-Database -->> Controller: Result
-Controller -->> Processor: Result For Current State
-Controller -->> Processor: Change Different Fields
-Processor -->> View: Change Fields
+![enter image description here](https://doc-08-5s-docs.googleusercontent.com/docs/securesc/b22bau3ato1opbm37omgr0svoo5ed6l6/mcinu6cvkbsttp476o8j4q5pukl7pqis/1596029775000/03857811816447124864/03857811816447124864/1204HzGGiTeOXKi_yZfOJAaiPJwyu6il_?e=download&authuser=0&nonce=6k696rnmkomq8&user=03857811816447124864&hash=kliqo583je5chg83oivkljdb8kuf828e)
 
-```
+This is a flowchart which shows the design pattern we used for our Server:
 
-This is a flowchart which shows the design pattern we used for our Server.
-
-```mermaid
-graph LR
-H[Client1] --> A
-I[Client2] --> A
-J[Client3] --> A
-K[...] --> A
-A((Server)) -- Send Command1 To A Handler --> B(Handlers)
-A -- Send Command2 To A Handler --> B
-A -- Send Command3 To A Handler --> B
-A -- Send ... To A Handler --> B
-
-B --> D{Control1}
-B --> E{Control2}
-B --> F{Control3}
-B --> G{...}
-```
+![enter image description here](https://doc-00-5s-docs.googleusercontent.com/docs/securesc/b22bau3ato1opbm37omgr0svoo5ed6l6/opm55fmeav93viq4ghl90mal3ft7o4i7/1596029850000/03857811816447124864/03857811816447124864/1hVvNwHtTwhhKVobTGNAx_4-4AeowXnbP?e=download&authuser=0)
