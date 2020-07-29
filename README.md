@@ -1,5 +1,6 @@
-# BoosMarket
 
+# BoosMarket
+![enter image description here](https://img.shields.io/github/languages/count/AdvProg2020/Project_team-57) ![enter image description here](https://img.shields.io/github/v/release/AdvProg2020/Project_team-57?color=#ffb300%20)  ![enter image description here](https://img.shields.io/github/repo-size/AdvProg2020/Project_team-57) ![enter image description here](https://img.shields.io/github/contributors/AdvProg2020/Project_team-57)
 Hi! This is team 57 speaking. The following is a quick review of what we did for our java market and what you can expect while checking our project.
 This project is result of using lots of caffeine, sleepless nights and a lot of efforts from:
 [Ashkan Khademian](https://github.com/ashkan-khd)
