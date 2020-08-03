@@ -46,6 +46,12 @@
     -fx-opacity: 0.8;
 }
 
+.manage_cash_stats_button:hover {
+    -fx-background-color: #00838f;
+    -fx-cursor: hand;
+    -fx-opacity: 0.8;
+}
+
 .inside_product_pane:hover {
     -fx-cursor: hand;
     -fx-opacity: 1;

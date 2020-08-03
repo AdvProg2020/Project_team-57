@@ -195,24 +195,10 @@ public class AccountProcessor extends Processor{
         }
     }
 
-//    public long getMusicCount() {
-//        if(audios == null)
-//            return 0;
-//        return audios.size();
-//    }
-
-//    public void stopPlayingMusic() {
-//        audios.get((int) (musicCounter % audios.size())).stop();
-//    }
-
     public boolean isMusicPlaying() {
         return isMusicPlaying;
     }
-
-//    public void setMusicPlaying(boolean musicPlaying) {
-//        isMusicPlaying = musicPlaying;
-//    }
-
+    
     public Audio getPlayingMusic() {
         return audios.get((int) (musicCounter % audios.size()));
     }
@@ -224,10 +210,10 @@ public class AccountProcessor extends Processor{
     public MediaPlayer modifyPlayingMusicControl() {
         Audio mediaPlayer = audios.get((int) (musicCounter % audios.size()));
         if(!isMusicPlaying) {
-            changeMusicThread.stopThread();
+            changeMusicThread.stopThread(false);
             changeMusicThread = new ChangeMusicThread(null, mediaPlayer, true);
         } else {
-            changeMusicThread.stopThread();
+            changeMusicThread.stopThread(false);
             changeMusicThread = new ChangeMusicThread(mediaPlayer, null, false);
         }
         changeMusicThread.start();
@@ -243,7 +229,7 @@ public class AccountProcessor extends Processor{
             setMusicCounter(nextMusicK);
         Audio second = audios.get((int) (musicCounter % audios.size()));
         if(isMusicPlaying) {
-            changeMusicThread.stopThread();
+            changeMusicThread.stopThread(true);
             changeMusicThread = new ChangeMusicThread(first, second, true);
             changeMusicThread.start();
             return second.getMusic();
@@ -263,9 +249,12 @@ public class AccountProcessor extends Processor{
             this.isStop = isStop;
         }
 
-        public void stopThread() {
+        public void stopThread(boolean isStop) {
             if (firstMediaPlayer != null)
-                firstMediaPlayer.getMusic().stop();
+                if(isStop)
+                    firstMediaPlayer.getMusic().stop();
+                else
+                    firstMediaPlayer.getMusic().pause();
             super.stop();
         }
 
