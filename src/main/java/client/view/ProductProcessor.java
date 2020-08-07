@@ -1,7 +1,6 @@
 package client.view;
 
 import client.api.Command;
-import com.google.gson.GsonBuilder;
 import com.jfoenix.controls.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -155,7 +154,7 @@ public class ProductProcessor extends Processor {
     }
 
     private void initFileExtensions() {
-        ObservableList<String> availableExtensions = FXCollections.observableArrayList("PNG", "JPEG", "JPG", "BMP", "MP4", "MKV", "WMV" ,"EXE", "PDF", "JAR");
+        ObservableList<String> availableExtensions = FXCollections.observableArrayList("PNG", "JPEG", "JPG", "BMP", "MP4", "MKV", "MP3", "WMV" ,"EXE", "PDF", "JAR");
         fileExtensionComboBox.getItems().addAll(availableExtensions);
     }
 
@@ -252,7 +251,7 @@ public class ProductProcessor extends Processor {
     private File getProductFileFromServer(String productID) {
         if(((ProductProcessor)parentProcessor).product.getStatus() != 3)
             return getNonEditedProductFileFromServer(productID);
-        Command<String> command = new Command<>("get edit product file", Command.HandleType.PICTURE_GET, productID);
+        Command<String> command = new Command<>("get edit product file", Command.HandleType.FILE_GET, productID);
         return client.getFile(command);
     }
 
@@ -262,7 +261,7 @@ public class ProductProcessor extends Processor {
     }
 
     private File getNonEditedProductFileFromServer(String productID) {
-        Command<String> command = new Command<>("get product file", Command.HandleType.PICTURE_GET, productID);
+        Command<String> command = new Command<>("get product file", Command.HandleType.FILE_GET, productID);
         return client.getFile(command);
     }
 
@@ -510,6 +509,7 @@ public class ProductProcessor extends Processor {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("ProductMenuImages.fxml"));
             Parent root = loader.load();
             ProductProcessor processor = loader.getController();
+            processor.imagePane.getChildren().remove(processor.fileButton);
             processor.setParentProcessor(this);
             subProcessors.add(processor);
             processor.imageNumberLabel.setText("1");
@@ -660,7 +660,7 @@ public class ProductProcessor extends Processor {
         Response<Integer> integerResponse = client.postAndGet(integerCommand, Response.class, (Class<Integer>)Integer.class);
         int bound = integerResponse.getDatum();
         for (int i = 0; i < bound; i++) {
-            Command<String> command = new Command<>("get edit product image-" + (i + 1), Command.HandleType.PICTURE_GET, product.getID());
+            Command<String> command = new Command<>("get edit product image-" + (i + 1), Command.HandleType.FILE_GET, product.getID());
             imageFiles.add(client.getFile(command));
         }
         return imageFiles;
@@ -672,7 +672,7 @@ public class ProductProcessor extends Processor {
         Response<Integer> integerResponse = client.postAndGet(integerCommand, Response.class, (Class<Integer>)Integer.class);
         int bound = integerResponse.getDatum();
         for (int i = 0; i < bound; i++) {
-            Command<String> command = new Command<>("get product image-" + (i + 1), Command.HandleType.PICTURE_GET, product.getID());
+            Command<String> command = new Command<>("get product image-" + (i + 1), Command.HandleType.FILE_GET, product.getID());
             imageFiles.add(client.getFile(command));
         }
         return imageFiles;
@@ -941,7 +941,7 @@ public class ProductProcessor extends Processor {
             for (File productImageFile : productImageFiles) {
                 String[] splitPath = productImageFile.getPath().split("\\.");
                 String fileExtension = splitPath[splitPath.length - 1];
-                Command<String> imageCommand = new Command<>(sendType + " product image", Command.HandleType.PICTURE_SEND, product.getID(), fileExtension);
+                Command<String> imageCommand = new Command<>(sendType + " product image", Command.HandleType.FILE_SEND, product.getID(), fileExtension);
                 client.sendImage(imageCommand, productImageFile);
             }
 
@@ -960,7 +960,7 @@ public class ProductProcessor extends Processor {
                     }
                     if(productFile == null) {
                         String commandStr = (doesEditingProductHaveFile(product.getID()) ? "get edit product file" : "get product file");
-                        Command<String> command = new Command<>(commandStr, Command.HandleType.PICTURE_GET, product.getID());
+                        Command<String> command = new Command<>(commandStr, Command.HandleType.FILE_GET, product.getID());
                         productFile = client.getFile(command);
                     }
                 }
@@ -968,7 +968,7 @@ public class ProductProcessor extends Processor {
                 client.postAndGet(command, Response.class, (Class<Object>)Object.class);
                 String[] splitPath = productFile.getPath().split("\\.");
                 String fileExtension = splitPath[splitPath.length - 1];
-                Command<String> fileCommand = new Command<>(sendType + " product file", Command.HandleType.PICTURE_SEND, product.getID(), fileExtension);
+                Command<String> fileCommand = new Command<>(sendType + " product file", Command.HandleType.FILE_SEND, product.getID(), fileExtension);
                 client.sendFile(fileCommand, productFile);
             }
         }

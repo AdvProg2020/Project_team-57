@@ -8,9 +8,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 import javafx.stage.Stage;
 import notification.Notification;
 import server.model.existence.Account;
@@ -19,16 +16,10 @@ import server.model.existence.Off;
 import server.model.existence.Product;
 import server.server.Response;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import static client.api.Command.HandleType.*;
 
@@ -64,7 +55,12 @@ public abstract class Processor {
                 for(ProductProcessor productProcessor : ((ProductProcessor) this).subProcessors) {
                     productProcessor.stopTimer();
                 }
-                ((ProductProcessor) this).imageSubProcessor.stopTimer();
+                if(((ProductProcessor) this).imageSubProcessor == null) {
+                    for (ProductProcessor subProcessor : ((ProductProcessor) this).subProcessors) {
+                        subProcessor.stopTimer();
+                    }
+                } else
+                    ((ProductProcessor) this).imageSubProcessor.stopTimer();
             }
             for (Stage subStage : this.subStages) {
                 subStage.close();
@@ -254,7 +250,7 @@ public abstract class Processor {
     }
 
     protected Image getProfileImage(String username) {
-        Command<String> command = new Command<>("get user image", Command.HandleType.PICTURE_GET, username);
+        Command<String> command = new Command<>("get user image", Command.HandleType.FILE_GET, username);
         return client.getImage(command);
     }
 
@@ -270,7 +266,7 @@ public abstract class Processor {
     }
 
     protected Image getProductImageByID(String productID, int imageNumber, String productType) {
-        Command<String> productImageCommand = new Command<>("get " + productType + " image-" + imageNumber, Command.HandleType.PICTURE_GET, productID);
+        Command<String> productImageCommand = new Command<>("get " + productType + " image-" + imageNumber, Command.HandleType.FILE_GET, productID);
         return client.getImage(productImageCommand);
     }
 
@@ -321,7 +317,7 @@ public abstract class Processor {
     }
 
     protected Command<String> getOffImageCommand(String offID, boolean isEditing) {
-        Command<String> command = new Command<>((isEditing ? "get editing off image" : "get off image"), Command.HandleType.PICTURE_GET, (offID == null ? "" : offID));
+        Command<String> command = new Command<>((isEditing ? "get editing off image" : "get off image"), Command.HandleType.FILE_GET, (offID == null ? "" : offID));
         return command;
     }
 

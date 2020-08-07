@@ -11,12 +11,12 @@ import java.net.Socket;
 import java.util.Date;
 import java.util.List;
 
-public class PictureHandler extends Handler {
+public class FileHandler extends Handler {
     private final Command.HandleType handleType;
     private AccountControl accountControl = AccountControl.getController();
     private ProductControl productControl = ProductControl.getController();
 
-    public PictureHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input, Command.HandleType handleType, Socket clientSocket) throws JsonProcessingException {
+    public FileHandler(DataOutputStream outStream, DataInputStream inStream, Server server, String input, Command.HandleType handleType, Socket clientSocket) throws JsonProcessingException {
         super(outStream, inStream, server, input, clientSocket);
         this.handleType = handleType;
     }
@@ -26,11 +26,11 @@ public class PictureHandler extends Handler {
     public void run() {
         try {
             switch (handleType) {
-                case PICTURE_GET:
-                    getPicture();
+                case FILE_GET:
+                    getFile();
                     break;
-                case PICTURE_SEND:
-                    savePicture();
+                case FILE_SEND:
+                    saveFile();
                     break;
                 default:
                     System.err.println("Serious Error In Picture Handler");
@@ -41,7 +41,7 @@ public class PictureHandler extends Handler {
         }
     }
 
-    private void savePicture() {
+    private void saveFile() {
         try {
             FileOutputStream outputStream = null;
 
@@ -133,7 +133,7 @@ public class PictureHandler extends Handler {
         }
     }
 
-    private void getPicture() throws IOException {
+    private void getFile() throws IOException {
         FileInputStream inputStream = null;
 
         switch (message) {

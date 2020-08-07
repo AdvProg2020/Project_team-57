@@ -18,7 +18,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static server.controller.Lock.CHAT_LOCK;
 
@@ -104,9 +103,9 @@ public class Server implements RandomGenerator{
                             case PRODUCT:
                                 new ProductHandler(outStream, inStream, server, input, clientSocket).start();
                                 break;
-                            case PICTURE_SEND:
-                            case PICTURE_GET:
-                                new PictureHandler(outStream, inStream, server, input, type, clientSocket).start();
+                            case FILE_SEND:
+                            case FILE_GET:
+                                new FileHandler(outStream, inStream, server, input, type, clientSocket).start();
                                 break;
                             default:
                                 outStream.writeUTF(getUnknownError());

@@ -462,7 +462,7 @@ public class SaleProcessor extends Processor implements Initializable {
             Notification resultNotification = response.getMessage();
             off.setOffID(response.getDatum());
             if(imageFile != null) {
-                Command<String> extensionCommand = new Command<>("send off image", Command.HandleType.PICTURE_SEND, off.getOffID(), client.file2Extension.apply(imageFile));
+                Command<String> extensionCommand = new Command<>("send off image", Command.HandleType.FILE_SEND, off.getOffID(), client.file2Extension.apply(imageFile));
                 client.sendImage(extensionCommand, imageFile);
             }
             if (resultNotification == Notification.ADD_OFF && this.parentProcessor instanceof TableViewProcessor) {
@@ -476,7 +476,7 @@ public class SaleProcessor extends Processor implements Initializable {
             Response response = client.postAndGet(command, Response.class, (Class<Object>)Object.class);
             Notification resultNotification = response.getMessage();
             if(imageFile != null) {
-                Command<String> extensionCommand = new Command<>("send editing off image", Command.HandleType.PICTURE_SEND, off.getOffID(), client.file2Extension.apply(imageFile));
+                Command<String> extensionCommand = new Command<>("send editing off image", Command.HandleType.FILE_SEND, off.getOffID(), client.file2Extension.apply(imageFile));
                 client.sendImage(extensionCommand, imageFile);
             }
             if (resultNotification == Notification.EDIT_OFF) {
@@ -553,7 +553,7 @@ public class SaleProcessor extends Processor implements Initializable {
     }
 
     public void deleteImage(MouseEvent mouseEvent) {
-        Command<String> command = new Command<>("get off image", Command.HandleType.PICTURE_GET, "1");
+        Command<String> command = new Command<>("get off image", Command.HandleType.FILE_GET, "1");
         ((SaleProcessor)parentProcessor).offImageFile = client.getFile(command);
         ((SaleProcessor)parentProcessor).isDefaultPicture = true;
         updateImageRectangle();

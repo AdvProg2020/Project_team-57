@@ -7,11 +7,8 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.scene.control.TextInputControl;
 import server.controller.account.AccountControl;
 import javafx.animation.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
@@ -31,8 +28,6 @@ import notification.Notification;
 import server.server.Response;
 
 import java.io.*;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class ProfileProcessor extends Processor {
     private static AccountControl accountControl = AccountControl.getController();
@@ -311,7 +306,7 @@ public class ProfileProcessor extends Processor {
     }
 
     private void sendUserImage(String username, File pictureFile, String pictureExtension) {
-        Command<String> command = new Command<>("send user image", Command.HandleType.PICTURE_SEND, username, pictureExtension);
+        Command<String> command = new Command<>("send user image", Command.HandleType.FILE_SEND, username, pictureExtension);
         client.sendImage(command, pictureFile);
     }
 

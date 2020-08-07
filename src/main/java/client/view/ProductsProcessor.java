@@ -608,8 +608,8 @@ public class ProductsProcessor extends Processor{
     }
 
     private void setProductPaneImage(Pane productPane, ProductsProcessor paneProcessor, Product product) {
-        Command<String> productImageCommand = new Command<>("get product image-1", Command.HandleType.PICTURE_GET, product.getID());
-        Command<String> editingProductImageCommand = new Command<>("get edit product image-1", Command.HandleType.PICTURE_GET, product.getID());
+        Command<String> productImageCommand = new Command<>("get product image-1", Command.HandleType.FILE_GET, product.getID());
+        Command<String> editingProductImageCommand = new Command<>("get edit product image-1", Command.HandleType.FILE_GET, product.getID());
         if(doesProductHaveFile(product.getID())) {
             ImageView imageView = new ImageView(new Image(IMAGE_FOLDER_URL + "Icons\\ProductsMenu\\File2.png"));
             imageView.setFitWidth(paneProcessor.productImage.getWidth()/3);
