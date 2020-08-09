@@ -12,7 +12,7 @@ This project is result of using lots of caffeine, sleepless nights and a lot of 
 
 ## Special Thanks
 - First of all Thank To Dear [Saber Zafarpoor](https://github.com/saberdotcoder), Our Project Supervisor whom we never could do this masterpiece without his everyday helps and guides. We hope greatness for all your life and future.
-- [Mohammad Haghighat](https://github.com/mhaghighat20) and [Mohammad Mohammdadi](Mohammad%20Mohammdadi) for all the courage and persuasion they gave without any expectation for return.
+- [Mohammad Haghighat](https://github.com/mhaghighat20) and [Mohammad Mohammdadi](https://github.com/MhdMohammadi) for all the courage and persuasion they gave without any expectation for return.
 - And in the end all the [CE Students of SUT](https://github.com/AdvProg2020) that helped us through this semester and all our friends and families while we caused them fatigue and they said nothing to help us move forward.
 
 ## Files
